@@ -1,4 +1,4 @@
-# Machine Learning for Networking
+# Machine Learning for Computer Systems
 
 ## Structure
 
@@ -10,46 +10,32 @@ background reading on the topic.
 
 ## Schedule 
 
-|----------------------------------|-------------------------------------|
 | Lecture                          | Topic                               |
 |----------------------------------|-------------------------------------|
 | 1                                | Introduction                        |
-|----------------------------------|-------------------------------------|
 | **Use Cases**                    |                                     |
-|----------------------------------|-------------------------------------|
 | 2                                | Performance                         |
 | 3                                | Security                            |
-|----------------------------------|-------------------------------------|
 | **Data From Computer Systems**   |                                     |
-|----------------------------------|-------------------------------------|
 | 4                                | Networking 101                      |
 | 5                                | Network Measurement                 |
-|----------------------------------|-------------------------------------|
 | **Machine Learning Pipeline**    |                                     |
-|----------------------------------|-------------------------------------|
 | 6                                | Data Preparation and Representation |
 | 7                                | Model Training and Evaluation       |
-|----------------------------------|-------------------------------------|
 | **Supervised Learning Models**   |
-|----------------------------------|-------------------------------------|
 | 8                                | Linear Regression                   |
 | 9                                | Logistic Regression                 |
 | 10                               | Naive Bayes                         |
 | 11                               | Trees and Ensembles                 |
 | 12                               | Support Vector Machines             |
-|----------------------------------|-------------------------------------|
 | **Unsupervised Learning Models** |                                     |
-|----------------------------------|-------------------------------------|
 | 13                               | Dimensionality Reduction            |
 | 14                               | Clustering                          |
 | 15                               | Semi-Supervised Learning            |
-|----------------------------------|-------------------------------------|
 | **Practical Considerations**     |                                     |
-|----------------------------------|-------------------------------------|
 | 16                               | Deployment Costs                    |
 | 17                               | Model Drift                         |
 | 18                               | Privacy, Ethics, and the Law        |
-|----------------------------------|-------------------------------------|
 
 Please come to class having done the reading. 
 
