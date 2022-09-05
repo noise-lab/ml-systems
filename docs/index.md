@@ -1,12 +1,15 @@
 # Machine Learning for Computer Systems
 
+## Course Description
+
 ## Structure
 
-A general structure for a short course on this material is as follows. Each
-lecture has (1) a set of slides explaining concepts, (2) an accompanying
-Jupyter Notebook with example applications from networking to make the concepts
-more concrete and further expand on networking concepts, (3) some basic
-background reading on the topic.
+Each lecture has a set of slides/notes explaining concepts and an associated
+reading. Please do the reading before class. Slides or notes will be posted
+after each class.
+
+Most lectures will also have an accompanying Jupyter Notebook with example
+applications from computer systems to make the concepts more concrete.
 
 ## Schedule 
 
