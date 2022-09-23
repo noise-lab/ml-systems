@@ -154,5 +154,8 @@ know that unless you speak up. If you have a question, there's a good chance
 half of the class is probably thinking the same thing. Be bold.  
 
 Finally, think about when to step back, so that everyone can have a chance to
-speak. 
-
+speak.  To that end, I typically make a concerted effort to step back from
+discussions myself---viewing my role as more of a facilitator---so that you
+can feel free to speak. If I announce (or allude to) my opinion on a matter in
+front of the class, that may make some of you less eager to share your own
+viewpoints, which is also a fail.
