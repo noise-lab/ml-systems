@@ -59,6 +59,9 @@ We're all members of a collective community here, and you often have as much
 to teach the rest of the class, through your questions and perspectives, as I
 do. Lack of participation deprives you of the experience of that interaction,
 and deprives others of your valuable perspective. Come to class, be engaged.
+We may have occasional in-class quizzes to track your engagement with the
+material. These will be included in the participation grade, if applicable;
+don't worry if you miss one.
 
 ## Prerequisites
 

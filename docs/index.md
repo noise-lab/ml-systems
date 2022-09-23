@@ -59,16 +59,17 @@ More details are in the [course syllabus](syllabus.md).
 
 Please come to class having done the reading. 
 
-Each week will also have a short homework assignment and a short accompanying
-quiz to track your knowledge of the material.
 
 ## Background Videos and Readings
+
+The material below is strictly optional unless otherwise noted, although you
+may find it useful.
 
 * Survey Readings
     * [ML for Networking](https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=8121867&tag=1) 
     * [ML for Networking (long)](https://jisajournal.springeropen.com/counter/pdf/10.1186/s13174-018-0087-2.pdf)
 * [Networking videos](https://www.youtube.com/playlist?list=PLpherdrLyny-zJw95jcE-uJkcsIAG1MEn)
-* [Videos and tips on practical machine learning](ml.md)
+* [More tips on practical machine learning](ml.md)
 
 
 
