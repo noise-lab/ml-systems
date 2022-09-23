@@ -24,15 +24,9 @@ learning models to real-world datasets, how to use machine learning to help
 computer systems operate better, and the practical challenges with deploying
 machine learning models in practice.
 
-## Structure
+## Syllabus
 
-Each lecture has a set of slides/notes explaining concepts and an associated
-reading. Please do the reading before class. Slides or notes will be posted
-after each class.
-
-Whenever possible, lectures will also have an accompanying Jupyter Notebook
-with example applications from computer systems to make the concepts more
-concrete.
+More details are in the [course syllabus](syllabus.md).
 
 ## Schedule 
 
@@ -68,7 +62,7 @@ Please come to class having done the reading.
 Each week will also have a short homework assignment and a short accompanying
 quiz to track your knowledge of the material.
 
-## Other Background Videos and Readings
+## Background Videos and Readings
 
 * Survey Readings
     * [ML for Networking](https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=8121867&tag=1) 
