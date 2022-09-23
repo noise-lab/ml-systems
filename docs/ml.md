@@ -1,3 +1,26 @@
+### Machine Learning for Networking
+
+#### Background Readings and Videos
+
+* [ML for Networking](https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=8121867&tag=1) 
+* [ML for Networking (long)](https://jisajournal.springeropen.com/counter/pdf/10.1186/s13174-018-0087-2.pdf)
+* [Networking videos](https://www.youtube.com/playlist?list=PLpherdrLyny-zJw95jcE-uJkcsIAG1MEn)
+
+#### Datasets
+
+* [CIC Network Intrusion Detection Data (CICIDS)](https://www.unb.ca/cic/datasets/)
+* [UC Irvine IDS/Botnet Dataset](https://archive.ics.uci.edu/ml/datasets/detection_of_IoT_botnet_attacks_N_BaIoT)
+* [TLS Handshake Dataset](https://haystack.mobi/datasets.html)
+* [NetML Challenge and Datasets (2020)](https://github.com/ACANETS/NetML-Competition2020)
+* [MAWI Traffic Traces](http://mawi.wide.ad.jp/mawi/)
+      
+#### Tools
+
+* [nPrint Traffic Fingerprinting](https://nprint.github.io/nprint/)
+* [netML Network Traffic Representation](https://github.com/chicago-cdac/netml)
+* [Wireshark](https://wireshark.org/)
+
+
 ### Supervised Learning
 * [Splines](https://www.analyticsvidhya.com/blog/2018/03/introduction-regression-splines-python-codes/)
 * [Bias, Variance, and Regularization in Linear Regression](https://towardsdatascience.com/bias-variance-and-regularization-in-linear-regression-lasso-ridge-and-elastic-net-8bf81991d0c5)
@@ -30,14 +53,16 @@
 * [Colormaps for Clustering](https://matplotlib.org/3.1.0/tutorials/colors/colormaps.html)
 * [Train/Test Split](https://towardsdatascience.com/train-test-split-and-cross-validation-in-python-80b61beca4b6)
 
+### Helpful Notebooks
+
+* [Data Science in Python Cookbook](https://github.com/jakevdp/PythonDataScienceHandbook)
+* [Variety of Topics](https://nbviewer.jupyter.org/github/jakevdp/sklearn_tutorial/blob/master/notebooks/Index.ipynb)
+* [ML from Scratch](https://github.com/eriklindernoren/ML-From-Scratch/)
+
 ### Other
 * [Princeton ML Course](https://www.cs.princeton.edu/courses/archive/spring19/cos324/)
 * [Fourier Transform](https://www.youtube.com/watch?v=spUNpyF58BY)
 * [Human in the Loop](https://hai.stanford.edu/blog/humans-loop-design-interactive-ai-systems)
 * [Data Science Ethics Checklist](https://deon.drivendata.org/#data-science-ethics-checklist)
 
-### Good Notebooks
 
-* [Data Science in Python Cookbook](https://github.com/jakevdp/PythonDataScienceHandbook)
-* [Variety of Topics](https://nbviewer.jupyter.org/github/jakevdp/sklearn_tutorial/blob/master/notebooks/Index.ipynb)
-* [ML from Scratch](https://github.com/eriklindernoren/ML-From-Scratch/)

@@ -65,11 +65,7 @@ Please come to class having done the reading.
 The material below is strictly optional unless otherwise noted, although you
 may find it useful.
 
-* Survey Readings
-    * [ML for Networking](https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=8121867&tag=1) 
-    * [ML for Networking (long)](https://jisajournal.springeropen.com/counter/pdf/10.1186/s13174-018-0087-2.pdf)
-* [Networking videos](https://www.youtube.com/playlist?list=PLpherdrLyny-zJw95jcE-uJkcsIAG1MEn)
-* [More tips on practical machine learning](ml.md)
+* [Resource List](ml.md)
 
 
 
