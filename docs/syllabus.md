@@ -19,10 +19,11 @@ All material will be available from the Github repository.
 
 ## Course Components and Grading
 
-| Exams         | 30% |
-| Assignments   | 40% |
-| Project       | 20% |
-| Participation | 10% |
+| --------      | ------ |
+| Exams         | 30%    |
+| Assignments   | 40%    |
+| Project       | 20%    |
+| Participation | 10%    |
 
 **Exam.** The course will have a midterm exam and a final exam. The goal of these exams
 will be to test your knowledge of concepts covered in class. The format and
