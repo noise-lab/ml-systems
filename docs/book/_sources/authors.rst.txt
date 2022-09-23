@@ -1,0 +1,36 @@
+About The Authors
+==================
+
+**Noah Apthorpe** is an Assistant Professor of Computer Science at Colgate University.
+Previously, he was a graduate fellow in the Princeton University Center for Information Technology Policy (CITP).
+
+His research combines networks, machine learning, and human-computer interaction to study 
+privacy & security implications of connected technologies, including Internet of things (IoT) devices.
+He received his Ph.D. in Computer Science from Princeton University in 2020. 
+His dissertation, "Network Privacy and User Protection in the Internet of Things,"
+identified novel IoT privacy vulnerabilities, enabled the collection and study of IoT network data at scale, 
+and informed recommendations for device manufacturers, regulators, and consumer advocates. 
+He received his M.A. and B.S.E. degrees in computer science from Princeton University in 2017 and 2014, respectively.
+
+Noah lives in Hamilton, New York.
+
+
+**Nick Feamster** is Neubauer Professor of Computer Science and the Director of
+Center for Data and Computing (CDAC) at the University of Chicago. Previously,
+he was a full professor in the Computer Science Department at Princeton
+University, where he directed the Center for Information Technology Policy
+(CITP); prior to Princeton, he was a full professor in the School of Computer
+Science at Georgia Tech.
+
+His research focuses on many aspects of computer networking and networked
+systems, with a focus on network operations, network security, and
+censorship-resistant communication systems. He received his Ph.D. in Computer
+science from MIT in 2005, and his S.B. and M.Eng. degrees in Electrical
+Engineering and Computer Science from MIT in 2000 and 2001, respectively. He
+was an early-stage employee at Looksmart (acquired by AltaVista), where he
+wrote the company's first web crawler; and at Damballa, where he helped design
+the company's first botnet-detection algorithm.
+
+Nick is an avid distance runner, having completed more than 20 marathons,
+including Boston, New York, and Chicago, as well as the Comrades Marathon, an
+iconic ultra-marathon in South Africa. He lives in Chicago, Illinois.

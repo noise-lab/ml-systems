@@ -1,0 +1,331 @@
+Chapter 2: Motivating Problems and Examples
+===========================================
+
+Various tasks in computer networking rely on drawing inferences from data
+gathered from networks. Generally speaking, these networking tasks fall one of
+the following categories:
+
+    * **Attack detection**, which seeks to develop methods to detect and
+      identify a wide class of attacks. Common examples of attack detection
+      include spam filtering, botnet detection, denial of service attack
+      detection, and malicious website detection. 
+    * **Anomaly detection** (also known as **novelty detection**), which seeks
+      to identify unusual traffic, network events, or activity based on
+      deviations from "normal" observations. 
+    * **Performance diagnosis**, which seeks to infer the performance
+      properties of a network device, appliance, or application. Performance
+      diagnosis can be short-term (e.g., detection of a sudden degradation in
+      application quality) or long-term (e.g., determination of the need to
+      provision additional capacity in the network). 
+    * **Performance prediction**, which seeks to determine or predict the
+      effects of the network (or its applications) in response to a particular
+      change in infrastructure and environment. Such "what if" predictions
+      could be concerned with predicting the possible outcomes from a failure
+      (e.g., what happens to traffic load or application performance if a
+      particular component fails) or from changes to configuration (e.g., what
+      happens to application response time or overall reliability if more
+      capacity is added at a particular data center).
+    * **Device and application identification**, which seeks to identify or
+      classify network applications or devices based on observed measurements.
+      Common *fingerprinting* applications include application identification
+      (i.e., identifying applications from observed traffic that is typically
+      encrypted), website fingerprinting (i.e., identifying the webpage or
+      website that a user is visiting from encrypted traffic) and device
+      identification.
+     
+These application categories are not mutually exclusive and may overlap to
+some degree. For example, some aspects of attack detection and anomaly
+detection overlap.  A distinction between attack detection and anomaly
+detection is that attack detection tends to involve supervised learning
+techniques (and labeled data), whereas anomaly detection often draws on
+unsupervised techniques. Anomaly detection applications can also be
+broader than attack detection---for example.  Anomaly detection could
+entail detecting a misconfiguration or component failure. The rest of this
+chapter explores each of these classes of application in more detail and also
+introduces methods that are commonly used to address problems in each area.
+        
+Applications to Security
+------------------------
+
+One of the earliest applications of machine learning to networking was in the
+area of network security; specifically, the problem of detecting email spam
+based on the contents of the message was one of the earliest applications of
+what is known as a Naive Bayes spam filter. Since that first application,
+machine learning techniques have been applied to detect a variety of attacks,
+including the detection of denial of service attacks, phishing, botnets, and
+other attacks.  In many cases, machine learning has been applied to *detect* a
+network-based attack *post hoc*, but in some cases machine learning has even
+been used to *predict* attacks before they happen, as we discuss below.
+
+Botnets, Spam, and Malware
+++++++++++++++++++++++++++
+
+One of the earliest forms of messaging on the Internet was electronic mail
+("email"). The design of the Internet made it possible for anyone to send a
+message to anyone else on the Internet as long as that recipient's email
+address was known. Because the marginal cost of sending an email is so low, an
+ecosystem of *spammers* developed; email spam dates back to the 1990s and at
+one point constituted more than 90% of all email traffic on the Internet. To
+combat the growing tide of email spam, system administrators developed spam
+filters to "automatically" distinguish spam from legitimate email based on the
+words that were included in the contents of the mail.  The intuition behind
+these initial spam filters is relatively straightforward: spam email is more
+likely to contain certain words that do not appear in legitimate email, and
+vice versa.  Based on this simple observation, it was relatively
+straightforward to train simple Naive Bayes classifiers based on existing
+corpora of email that had already been labeled as spam or "ham". Such a Naive
+Bayes classifier could then take an existing email and classify it based on
+the frequencies of different words in the email.
+
+Over time, however, spammers wised up to content-based spam filtering and
+began to create messages that confused and evaded these filters. Common
+approaches included creating emails with "hidden" words (e.g., white text on
+white background) that would increase the likelihood that a spam message would
+be classified as legitimate. One of the more significant challenges with
+content-based spam filters is that they are relatively easy to evade in this
+fashion. Over time, the security industry worked to develop more robust
+filters based on features that are more difficult to evade. One such
+development was the use of network-level features in spam classifiers, such as
+the Internet service provider or autonomous system (AS) from which a spam
+message originated, the distance the message traveled, the density of mail
+servers in the IP address space of the email sender and so forth. These
+features ultimately proved to be more robust, particularly when used in
+conjunction with content-based features.
+
+Ultimately, similar classes of features became useful for detecting other
+types of network attacks, including botnets. A pioneering use of machine
+learning in network security, in particular, was the use of domain name system
+(DNS) traffic to detect large networks of compromised hosts, or so-called
+*botnets*. Various behaviors characteristic of botnets make them particularly
+amenable to detection via machine learning-based classifiers. Notably, many
+botnets rely on some form of "command and control" (C&C) infrastructure from which
+they receive commands about launching different forms of attack (e.g., denial
+of service, spam, phishing).  Coordinating such activity from a C&C---which is
+often at least logically centralized---typically results in DNS lookups to the
+C&C server that do not follow the patterns of normal DNS lookup activity. Such
+lookup characteristics can thus be used to distinguish "normal" Internet hosts
+from those that may be members of a botnet.
+
+Applying machine learning to DNS traffic to detect malware and botnets has
+become a very active area of research and innovation over the past 15 years.
+Recent developments in DNS protocols, however, notably the trend towards
+encrypting DNS traffic, are poised to shift this landscape. Specifically,
+because DNS traffic has been (1) unencrypted, and (2) visible by Internet
+service providers (or anyone operating a recursive DNS resolver), and because
+DNS traffic has been such a good predictor of common forms of Internet attack,
+it has been appealing and relatively straightforward to develop
+machine learning-based attack detection methods based on DNS traffic. Many
+companies, for example, could sell security appliances to Internet service
+providers, enterprise networks, or other institutions that would simply
+"listen" to DNS traffic and detect unusual behavior. More recent
+trends---notably the evolution of DNS to rely on encrpyted transport and
+application protocols (i.e., DNS-over-TLS, and its more popular variant
+DNS-over-HTTPS), and the deployment of these technologies in increasingly more
+(and popular) operating systems and browsers means that DNS traffic is
+becoming more difficult for certain parties to observe, and in many cases
+(e.g., in the case of Oblivious DNS), difficult to attribute a DNS lookup to
+the IP address that performed the lookup.
+
+Some methods have applied machine learning to take attack detection one step
+further---*predicting* the attack before it even occurs. This approach
+recognizes that many network attacks require the establishment of
+infrastructure, including possibly registering one or more domain names,
+setting up a website, and so forth. Other techniques have observed that
+unusual network attachment points (e.g., the Internet service provider that
+provides connectivity for a scam site) can also be indicative of attacks or
+other unwanted network activity (e.g., cybercrime). For example, it is
+well-understood that the Russian Business Network, a cybercriminal
+organization that provides web hosting, routinely changes its upstream ISP to
+maintain connectivity in the face of shutdown.  The ability to detect unusual
+behavior that is evident in the establishment of infrastructure is potentially
+useful because these activities occur *before* an attack takes place. Thus, a
+machine learning algorithm that could detect unusual behavior in these
+settings could potentially not only detect an attack, but also predict one.
+The features that are used to predict such attacks could include those related
+to DNS or other network infrastructure, including various lexical properties of the
+domain name, when and where the domain was registered, the authoritative name
+server for the domain, and so forth; they also may include those related to
+the routing infrastructure such as the entity (or entities) providing upstream
+connectivity to a group of IP addresses, and whether (and how) those
+connectivity properties have evolved over time.
+
+Account Compromise
+++++++++++++++++++
+
+Another area where machine learning is commonly applied is the detection of
+compromised accounts. In particular, attackers may attempt to compromise a
+user account with stolen credentials (e.g., a password, authentication keys),
+and system administrators may wish to detect that such unauthorized access has
+occurred. To do so, system administrators may use a variety of features
+including the geographic location of the user who is logging into the account
+(and whether that has changed over time), the type of device being used to log
+into the account, the number of failed login attempts, various
+telemetry-related features (e.g., keystroke patterns) and so forth.
+
+Past work in this area, for example, has used machine learning techniques to
+detect anomalous behavior, such as a sudden change in login behavior or
+locations. For example, Microsoft's Azure security team uses machine learning
+to adapt to adversaries as these adversaries attempt to gain unauthorized
+access to accounts and systems. The scale of the problem is significant,
+involving hundreds of terabytes of authentication logs, more than a billion
+monthly active users, and more than 25 billion authentications per day.
+Machine learning has proved effective in detecting account compromise in this
+environment, adapting to adversaries with limited human intervention, as well
+as capturing non-linear correlations between features and labels (in this
+case, predicting whether an attack has taken place). These models must take
+into accounta variety of inputs, including authentication logs, threat data,
+the login behavior on accounts, and so forth. Input features to these models
+include aspects such as whether the login occurs at a normal or abnormal time
+of day, whether the login is coming from a known device, application, IP
+address, and country, whether the IP address the login is coming from has been
+blacklisted, and so forth. An interesting characteristic of the application of
+machine learning in this particular context is the importance of domain
+knowledge, both as it pertains to assessing data quality, as well as in the
+process of engineering and representing features to models.
+
+ 
+Anomaly Detection
++++++++++++++++++
+
+Anomaly detection---sometiems also referred to as *novelty detection*---
+describes a broad class of problems that involve attempts to detect anything
+"unusual". Typically, anomaly detection problems involve the application of
+unsupervised machine learning techniques. 
+
+Often, unusual activity (again) involves security-related incidents, including
+attacks.  Yet, anomalies can generally describe anything that is out of the
+ordinary, and so these may describe other events such as unusual or unexpected
+shifts in traffic. Attacks such as those described in the previous section
+could be classified as anomalies, of course, and many security problems are
+framed as anomaly detection problems, particularly when labeled data is
+unavailable. Common applications of anomaly detection in the security domain
+include intrusion detection and denial of service attacks, both of which often
+involve significant observed deviations from normal behavior. In the case of
+intrusion detection, anomaly detection algorithms may identify various
+security incidents, including denial of service attacks, compromise by
+malware, and so forth.
+
+More generally, anomalies can refer to a broad class of "unusual events",
+which need not reflect security incidents. One common type of anomaly that is
+not malicious is an unexpected shift in traffic demand. One notable (and
+relatively frequent!) event that causes a massive shift in traffic demand is a
+software release. For example, when Apple has released a new version of iOS,
+or a new version of World of Warcraft is released, large numbers of Internet
+users may attempt to download software updates at the same time. Because these
+updates can be quite large, users who download these updates can generate a
+massive volume of traffic in a short period of time. Historically, these
+events have been referred to as *flash crowds*. Early work in statsitical
+anomaly detection for networks has attempted to distingiush flash crowds from
+malicious activities such as denial of service attacks. However, regardless of
+intent, the anomalies themselves can pose operational challenges for network
+operators.
+
+Applications to Performance
+---------------------------
+
+When network transport and application protocols were simpler, it was possible
+to model the behavior of protocols as a function of network conditions (e.g.,
+available bandwidth, packet loss rate) in terms of closed-form equations. As
+protocols and networked systems become increasingly complicated, however, it
+has become more difficult to model the behavior of a network protocol or
+application (let alone the user's experience with the application) in closed
+form. The rise of encrypted traffic has also made it difficult to perform
+certain types of analysis directly, making it necessary to develop models that
+can infer properties of transport protocols or applications indirectly from
+various features of the network traffic.
+
+Quality of Experience Inference
++++++++++++++++++++++++++++++++
+An increasingly active area for machine learning inference is *application
+performance inference*, and a related area of *quality of experience (QoE)
+estimation*. As its name suggests application performance inference seeks to
+develop models that can infer various properties of application performance
+based on directly observable features. For example, within the context of
+on-demand video streaming, a machine learning model might be able to infer
+characteristics such as *video resolution* or *startup delay* (i.e., how long it
+takes for the video to start playing) from observable features like packets
+per second, bytes per second, and so forth. Beyond inferring application
+performance, network operators may also want to predict aspects of user
+*engagement* (including information such as how long a user has been watching
+a particular video), from other characteristics of the observed network
+traffic (e.g., packet loss, latency). 
+
+Quality of experience (QoE) and user engagement estimation can be particularly
+challenging given the extent to which network traffic is increasingly
+encrypted. The encryption of network traffic payloads can make it more
+challenging to infer aspects of QoE because certain information is encrypted.
+For example a video stream typically includes client requests for particular
+video segments, which can often directly indicate the resolution of that
+segment; however, if the request itself is obfuscated through encryption, the
+traffic traces themselves will not contain direct indicators of video quality.
+As a result, it is often necessary to develop new models and algorithms to
+infer the quality of these streams from features in encrypted traffic. These
+models typically rely on features such as the rate of arrival of individual
+video segments, the size of these segments, and so forth. 
+
+Performance Prediction
+++++++++++++++++++++++
+
+Machine learning can also apply to scenarios where it is necessary to predict
+the performance of a networked system, where predicting and evaluating the
+performance of the system with closed-form models can often prove inaccurate,
+due to complex interdependencies that may exist in these systems. One area,
+where machine learning has proved to be useful is "what if"
+scenario evaluation, whereby a network operator may want to make a
+configuration change (e.g., a planned maintenance event or upgrade) but is
+unsure how that change may ultimately affect the performance of the system.
+For example, a network operator may want to know how deploying or
+re-provisioning a new front-end web proxy might ultimately affect the 
+response time of the service, which might be a web search engine, a commerce
+site, or some other service. 
+
+In these cases, the complex interaction between different system components
+can make closed-form analysis challenging, and, thus, the ability to model
+service response time can make it possible to both analyze and predict a
+complex target based on various input features. The challenge in such a case
+is ensuring that all relevant features that could affect the target prediction
+are captured as input features to the model. Another challenge involves
+ensuring that the models are provided enough training data (typically packet
+traces, or features derived from these packet traces) to ensure that the
+models can make accurate predictions using models that are trained with
+sufficiently diverse inputs.
+
+Machine learning models can also be used to perform traffic volume
+forecasting, to ensure that networks have sufficient capacity in accordance
+with growing traffic demands. These planning models have been used to help
+network operators adequately provision capacity, and typically involve
+provisioning based on predictions that are fairly far into the future (e.g.,
+at least six months). Cellular networks use prediction models to determine
+traffic volume at individual cellular towers, as well as across the network;
+similarly, fixed-line Internet service providers also use similar models to
+predict how traffic demands will grow among a particular group of subscribers
+(or households), and thus when it may be necessary to perform additional
+provisioning (a so-called "node split"). 
+
+Application, Service, and Device Identification
++++++++++++++++++++++++++++++++++++++++++++++++
+
+Machine learning models are sometimes used to identify specific network
+elements and applications---a process sometimes referred to as
+"fingerprinting". This process can be used to identify applications, devices,
+websites, and other services. *Website fingeprinting* is a common application
+of machine learning whereby a model takes features from network traffic as
+input and attempts to identify the website---or even the specific
+webpage---that a user is visiting. Because individual websites tend to have a
+unique number of objects, and each of those objects tend to have unique sizes,
+the combination of the number and size of objects being transfered can often
+uniquely identify a website or webpage. Other work has observed that
+sets of queries from the Internet's domain name system (DNS) can also uniquely
+identify websites. 
+
+Similar sets of features can also be used to identify network endpoints (e.g.,
+the type of device that is connecting to the network), the type of service
+(e.g., video, web, gaming), and even the specific service (e.g., Netflix,
+YouTube), without the benefits of direct traffic inspection. As with QoE
+estimation, fingerprinting tasks have become more challenging as a result
+of increasing levels of traffic encryption. Yet, the features that are
+available as metadata in network traffic, such as packet sizes and
+interarrival times, the number of traffic flows, the duration of each flow,
+and so forth, have made it possible to uniquely identify applications,
+devices, websites, and services even if the underlying traffic itself is
+encrypted. 

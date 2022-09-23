@@ -1,0 +1,48 @@
+Chapter 7:  Machine Learning in Network Deployment
+==================================================
+
+Programmable Telemetry
+----------------------
+
+* Taurus
+* ...  
+
+Automated ML Pipelines
+----------------------
+
+While the use of deep learning techniques can help automate feature
+engineering, a separate line of research has examined how to perform automated
+machine learning (AutoML). The work examines the use of optimization techniques
+to automate not only feature engineering and selection, but model archietecture
+and hyperparameter optimization as well.  These tools have recently been used
+for model compression, image classification, and even bank failure prediction.
+To our knowledge, we are the first to explore the combination of AutoML and
+network traffic classification.
+
+One implementation of AutoML is AutoGluon-Tabular, which performs feature
+selection, model selection, and hyperparameter optimization by searching
+through a set of base models. These models include deep neural networks, tree
+based methods such as random forests, non-parametric methods such as K-nearest
+neighbors, and gradient boosted tree methods. Beyond searching the singular
+models, AutoGluon-Tabular creates weighted ensemble models out of the base
+models to achieve higher performance than other AutoML tools in less overall
+training time.
+
+AutoGluon-Tabular can perform feature selection, model search, and
+hyperparameter optimization for all eight problems we evaluate.  AutoGluon has
+been shown to outperform many other public AutoML tools given the same data,
+and it is open source.  While many AutoML tools search a set of models and
+corresponding hyperparameters, AutoGluon achieves higher performance by
+ensembling multiple single models that perform well.  AutoGluon has a presets
+parameter that determines the speed of the training and size of the model
+versus the overall predictive quality of the models trained.  One such setting
+is high_quality_fast_inference_only_refit, which produces models with high
+predictive accuracy and fast inference. There is a quality preset of "best
+quality'' which can create models with slightly higher predictive accuracy, but
+at the cost of 10x-200x slower inference and 10x-200x higher disk usage. This
+setting can make sense in many networking scenarios where inference time is an
+important metric.  The preset parameter for an AutoML tool does not represent
+the training of a single model, but an optimization of a set of models for a
+given task.
+
+

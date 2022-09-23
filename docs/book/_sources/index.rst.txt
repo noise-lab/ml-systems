@@ -1,0 +1,31 @@
+.. image:: figures/ml-networks.png
+   :width: 300px
+   :align: center
+   :target: https://github.com/SystemsApproach/ml
+
+|
+	    
+Applied Machine Learning for Networking
+=============================================
+
+Noah Apthorpe and Nick Feamster 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+|
+
+.. toctree::
+   :maxdepth: 2 
+   :caption: Table of Contents 
+
+   text/intro.rst
+   text/motivation.rst  
+   text/measurement.rst
+   text/pipelines.rst
+   text/supervised.rst
+   text/unsupervised.rst
+   text/automation.rst
+   text/concerns.rst
+   text/future.rst
+
+   README.rst
+   authors.rst

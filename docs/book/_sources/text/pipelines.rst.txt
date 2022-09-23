@@ -1,0 +1,263 @@
+Chapter 4: Machine Learning Pipeline 
+====================================
+
+This chapter discusses the process of training machine learning models from
+network traffic---the machine learning pipeline. We will focus our discussion
+on supervised machine learning (i.e., training models where the data has
+labels) initially, before describing the aspects of this process that also
+generalize to unsupervised learning (i.e., when the data does not have labels).
+
+* Data gathering (including how much)
+* Data representation (https://nprint.github.io/nprint/)
+
+The goal of supervised machine learning is to use already-labeled data to train a model that can the predict correct labels for new data points. 
+
+As a human analogue, this is like learning how to solve a general problem by seeing the correct answer to several specific instances and identifying patterns that are useful for solving any instance of the task. 
+
+
+Data Preparation
+----------------
+
+Examples, Features, and Labels
+++++++++++++++++++++++++++++++
+
+Any use of supervised learning to solve a problem must involve the collection of labeled training data. Training data is usually divided into *training examples* and *training labels*. The training examples are observations or data points. The training labels consist of the **correct** categories or values that a trained machine learning algorithm should assign to each of the training examples.  
+
+Many supervised machine learning problems represent the training examples as a 2D matrix. Each row of the matrix contains a single *observation* or *example* (these terms are often used interchangeably). Each column of the matrix corresponds to a single *feature* or *attribute*. 
+This means that each example (row) is a vector of features (columns). This definition is quite flexible and works for many networks problems at different scales. For example, each example might correspond to an IPFIX flow record, with features corresponding to the number of packets in the flow, the start and end times of the flow, the source and destination IP addresses, etc. In a different problem, each example might correspond to a single user, with features representing average throughput and latency to their home router in 1-hour intervals. This flexibility is a boon, because it allows developers of machine learning algorithms to work with a consistent mathematical formulation -- a matrix (or table) of examples and features. In this book, we generally give a matrix of training examples the name X. 
+
+.. list-table:: Training Examples
+   :widths: 25 25 25 25 25
+   :header-rows: 1
+
+   * - Feature 1: Number of packets
+     - Feature 2: Start time
+     - Feature 3: End time
+     - Feature 4: Source IP
+     - Feature 5: Destination IP
+   * - NNNN
+     - NNNN
+     - NNNN
+     - NNNN
+     - NNNN
+   * - NNNN
+     - NNNN
+     - NNNN
+     - NNNN
+     - NNNN
+
+In addition to training examples, creating a supervised machine learning model also requires *training labels*. For single-label tasks, you will have one label for every example in your data set. So if you have a matrix of training examples with 20 rows, you will need to have 20 labels (one for each example). The training labels are therefore usually represented as a vector with the same number of elements as the number of training examples. For instance, each training label for a security task might be a 1 if the corresponding example is malicious or a 0 if the corresponding example is benign.   
+
+.. list-table:: Training Labels for Single-Label Task
+   :widths: 25
+   :header-rows: 1
+
+   * - Label 1: Is malicious
+   * - NNNN
+   * - NNNN
+
+
+For multi-label tasks, you can have multiple label vectors or a combined label matrix. For example, you might want to predict users' responses to a quality of experience questionairre. For each question on the questionairre, you would need a label corresponding to each user. 
+
+.. list-table:: Training Labels for Multi-Label Task
+   :widths: 25 25 25
+   :header-rows: 1
+
+   * - Label 1: ---
+     - Label 1: ---
+     - Label 1: ---
+   * - NNNN
+     - NNNN
+     - NNNN
+   * - NNNN
+     - NNNN
+     - NNNN
+
+For convenience, the vector (or matrix, for multi-label tasks) of training labels are usually given the variable name y. The first dimension of the training labels is the same cardinality as the first dimension of the training examples. 
+
+The format of the training labels distinguishes *regression* problems from *classification* problems. Regression problems involve labels that are continuous numbers. Classification problems involve discrete labels (e.g. integers or strings). Classification tasks can be further categorized into *binary classification* and *multi-class classification* by the number of distinct labels.    
+While some supervised machine learning algorithms can be trained to perform either classification or regression tasks, others only work for one or the other. When choosing a machine learning algorithm, you should pay attention to whether you are attempting a classification or regression task. Our description of common machine learning models in the next chapter clearly states whether each algorithm is applicable to classification, regression, or both.  
+
+**Regression:** Training labels for regression problems are simply encoded as real-value numbers, usually in a floating point type. Regression may be familiar if you have experience fitting lines or curves to existing data in order to interpolate or extrapolate missing values using statistics techniques. Regression problems can also be performed with integer labels, but be aware that most off-the-shelf regression algorithms will return predictions as floating point types. If you want the predictions as integers, you will need to round or truncate them after the fact.
+
+**Binary Classification:** Training labels for binary classification problems are encoded as 1s and 0s. The developer decides which class corresponds to 1 and which class corresponds to 0, making sure to keep this consistent throughout the ML training and deployment process. 
+
+**Multi-class Classification:** Training labels for multi-class classification problems are encoded as discrete values, with at least three different values represented in the vector of training labels y. Note that *multi-class classification* (more than two discrete classes) is distinct from *multi-label classification* (multiple independent classification tasks, each with their own set of discrete classes).
+There are multiple options for encoding training labels in multi-class classification problems. Since most machine learning algorithms require training labels as numeric types (e.g. int, float, double), string class names usually need to be encoded before they can be used for ML training (decision trees are a notable exception to this requirement). For example, if you have labels indicating users' quality of experience on a "poor", "acceptable", "excellent" scale, you will need to convert each response into a number in order to train an algorithm to predict the QoE of new users. One simple way to perform this encoding is to assign each class to a unique integer (*ordinal encoding*). In the example above, this mapping could convert "poor" --> 0, "acceptable" --> 1, and "excellent" --> 2. The fully encoded training labels would then be a vector of integers with one element for each training example. 
+An alternative way to encode multi-class training labels is to perform *one-hot encoding*, which represents each class as a binary vector. If there are N possible classes, the one-hot encoding of the ith class will be an N-element binary vector with a 1 in element N and a 0 in all other elements. In the example above, this mapping could convert "poor" --> [1,0,0], "acceptable" --> [0,1,0], and "excellent" --> [0,0,1].
+
+..
+  Supervised learning can be further divided into *classification* and *regression*. Classification involves assigning discrete *class* labels to examples. Classes can be *ordinal* or *nominal*, but they are always taken from a finite set of possible labels. Ordinal classes have an intrinsic ordering, such as [EX]. Nominal classes do not have an intrinsic ordering, such as [EX].  
+
+  Classification tasks can be further divided based on the number of possible classes. *Binary classification* tasks involve two possible labels. For example, an algorithm that labels traffic flows as either "benign" or "malicious" is performing binary classification. Classification problems involving more than two possible labels are referred to as *multiclass classification* tasks. Multiclass classification may involve any number of classes. For example, a model that predicts the website a user is browsing from network traffic rates (website fingerprinting) is performing multiclass classification. There are many possible websites (a whole Internet worth!), but this set of possible labels is still discrete and finite. 
+
+  Classification may also involve assigning multiple labels to each example. For example, you may wish to predict both the website a user is visting (multiclass classification) *and* whether or not the website is a likely source of malware (binary classification). Predicting two or more labels for each example is generally called *multilabel classification*. A straightforward way to perform multilabel classification is to train one single-label classification algorithms for each set of labels, and apply each algorithm to each example independently. This is convenient, but may suffer in computational performance compared to an algorithm which predicts all labels simultaneously. Fortunately, many off-the-shelf ML libraries 
+
+  In contrast to classification, *regression* involves assigning continuous *real value* labels to examples. For example, predicting improvements in last-mile network throughput (in Mbps) for different possible infrastructure upgrades is a regression problem. Regression may be familiar if you have experience fitting lines or curves to existing data in order to interpolate or extrapolate missing values using statistics techniques. Just as you can perform multi-label classificaton, you can also perform multi-label regression, predicting multiple real-value labels for each example. 
+
+While it is useful to understand these subcategories of supervised learning, it is also wise not to assign excessive importance to their distinctions. Many machine learning algorithms are effective for either classification or regression tasks with minimial modifications. Additionally, it is often possible to translate a classification task into a regression task, or vice versa. Consider the example of predicting improvements in last-mile network throughput for different possible infrastructure upgrades. While it is reasonable to express throughput as a real-valued number in Mbps, you may not care about small distinctions of a few bits per second. Instead, you could reframe the problem as a classification task and categorize potential updates into a few quality of experience classes.
+
+
+Train & Test Sets 
++++++++++++++++++
+The goal of supervised learning is to train a model that takes observations (examples) and predicts labels for these examples that are as close as possible to the actual labels. For instance, a model might take IPFIX records and predict quality of experience labels, with the goal that the predicted labels are as accurate as possible to the actual quality experienced by the customer.  
+
+..
+  Supervised models are trained using examples for which the correct labels are already known.  However, we won't generally know the correct labels for any new examples seen by the model after deployment. This is the entire goal of creating the model in the first place. It's not useful to be able to predict things you already know -- we want to predict labels for new examples that we can then use to improve performance in some system or task.  
+
+However, if you don't know the correct labels for new observations, how do you measure whether the model is succeeding? This is an important question and one that must be considered at the beginning of the ML process. Imagine that you've trained a machine learning algorithm with training examples and training labels, then you deploy it in the wild. The algorithm starts seeing new data and producing predictions for that data. How can you evaluate whether it is working? 
+
+The way to solve this problem is to test the performance of the trained algorithm on additional data that it has never seen, but for which you already know the correct labels. This requires that you train the algorithm using only a portion of the entire labeled dataset (the *training set*) and withold the rest of the labeled data (the *test set*) for testing how well the model generalizes to new information.  
+
+The examples that you reserve for the test set should be randomly selected to avoid bias in most cases. However, some types of data require more care when choosing test set examples.  
+If you have data for which the order of the examples is particularly important, then you should select a random contiguous subset of that data as your test set. That maintains the internal structure that is relevant for understanding the test examples. This is particularly important for chronological data (e.g. packets from a network flow). If you do not select a contiguous subset, you may end up with a nonsensical test set with examples from one day followed by examples from a year later followed by examples from a few months after that. 
+
+This brings us to the golden rule of supervised machine learning: **never train on the test set!** Nothing in the final model or data pre-processing pipeline should be influenced by the examples in the test set. This includes model parameters and hyperparameters (more below). The test set is only for testing and reporting your final performance. This allows the performance evaluation from the test set to be as close of an approximation as possible to the *generalization error* of the model, or how well the model would perform on new data that is independent but identically distributed (i.i.d.) to the test set. For example, when you report that your model performed with 95% accuracy on a test set, this means that you also expect 95% accuracy on new i.i.d. data in the wild. This caveat about i.i.d. matters, because if your training data and/or test set is not representative of the real-world data seen by the model, the model is unlikely to perform as well on the real-world data (imagine a trained Chess player suddenly being asked to play in a Go tournament). 
+
+The best way to avoid breaking the golden rule is to program your training pipeline to ensure that once you separate the test set from the training set, the test set is never used until the final test of the final version of the model. This seems straightforward, but there are many ways to break this rule. 
+
+A common mistake involves performing a pre-processing transformation that is based on all labeled data you've collected, including the test set. A common culprit is *standardization*, which involves normalizing each feature (column) of your dataset such that variance matches a prespecified distribution with mean of zero. This is a very common pre-processing step, but if you compute standardization factors based on the combined training and test set, your test set accuracy will not be a true measure of the generalization error. The correct approach is to compute standardization factors based only on the training set and then use these factors to standardize the test set. 
+
+Another common mistake involves modifying some hyperparameter of the model after computing the test error. Imagine you train your algorithm on the training set, you test it on the test set, and then you think, "Wow, my test accuracy was terrible. Let me go back and tweak some of these parameters and see if I can improve it." That's an admirable goal, but poor machine learning practice, because then you have tuned your model to your particular test set, and its performance on the test set is no longer a good estimate of its error on new data. 
+
+Validation Sets and Cross-Validation
+++++++++++++++++++++++++++++++++++++
+
+The correct way to test generalization error and continue to iterate, while still being able to test the final generalization error of the completed model, involves dividing your labeled data into three parts: 1) a training set, which you use to train the algorithm, 2) A test set, that is used to test the generalization error of the **final** model, and 3) the *validation set*, which is used to test the generalization error of intermediate versions of the model as you tune the hyperparameters. This way you can check the generalization performance of the model while still reserving some completely new data for reporting the final performance on the test set.  
+
+If your final model performs well accross the training, validation, and test sets, you can be quite confident that it will perform well on other new data as well. Alternatively, your final model might perform well on the training and validation sets but poorly on the test set. That would indicate that the model is overly tuned to the specifities of the training and validation sets, causing it to generalize poorly to new data. This phenomenon is called *overfitting* and is a pervasive problem for supervised machine learning. Overfitting has inspired many techniques to avoid and mitigate, several of which we describe below.  
+
+While dividing your labeled data into training, validation, and test sets works well conceptually, it has a practical drawback. The amount of data used to actually train the model (the training set) is significantly reduced. If you apply a 60% training, 20% validation, 20% test split, that leaves only 60% of your data for actual training. This can reduce performance, because supervised ML models generally perform better with more training data.
+
+The solution to this is to use a process called *cross validation*, which allows you to combine the training and validation sets through a series of sequential model trainings called *folds*. In each fold, you pull out a subset of the training data for validation and train the model on the rest. You repeat this process with non-overlapping subsets for each fold, such that every training example has been in a validation fold once.  In a 5-fold cross-validation, each fold would use 20% of the non-test data as a validation set and the remaining 80% for training. This would result in 5 different validation performance measurements (one for each folds) that you can average together for the *average cross-validation performance*. 
+
+Cross-validation provides a more robust measure of generalization performance than fixed training and validation sets. It is so common that supervised machine learning results are often reported in terms of the average performance on an N-fold cross-validation.
+
+So how many folds is enough? Generally, the more folds, the better estimation of model performance. In the extreme case, called *leave-one-out cross-validation*, each fold uses a validation set with just one example, allowing the rest to be used for training. Each fold tests whether the model correctly predicts this one example when trained on all other examples. This provides the best estimate of generalization performance, because you're training with the most data possible. If you have labeled 100 examples in your non-test set, leave-one-out cross-validation involves performing 100 folds and averaging the accuracy across accross all 100. You can then repeat this process while tuning model hyperparameters to check the effects on generalization accuracy.  
+
+Unfortunately, leave-one-out cross-validation has its own drawbacks. Every cross-validation fold involves training a model, and if the training process is resource intensive, leave-one-out cross-validation can take a long time. Some models, especially neural network models, take a long time to train, so doing more than a few folds becomes impractical. 
+For such models, a smaller number of folds (often 5 or 10) are used in practice.
+
+Model Training
+--------------
+Training a supervised machine learning model involves adjusting the model's parameters to improve the model's ability to predicting the training labels from the training examples. This adjustment process takes place automatically, typically using an iterative algorithm (such as gradient descent) to gradually optimize the model's parameters. 
+
+You can choose which error function that you that you want to be minimized. Square error, square difference, or absolute error are good for regression problems, while others [EX] are better for classification problems. We'll define and see equations for once we start looking at training of specific model types. 
+
+If the training process works correctly, it will produce a model that performs as well as possible on the training set. 
+Whether or not this trained model will generalize to new data must be tested using a validation and/or test set. 
+
+Model training is a minimization process. You start off with a training dataset X. The dataset is composed of individual examples or feature vectors x. WWe can think of this as a matrix where each row is an example and each column is a feature. In this book, we notate matrices as [EX], vectors as [EX], functions as [EX], and scalars as [EX]. 
+
+So we start off with training data X and our training labels y. y is a vector where each element of the vector corresponds to the correct label for the corresponding row in the training data. We also have to choose an error function, or how we decide whether the labels that we are predicting for our data are close to the correct values. There are many error functions. Mean-square error and mean absolute error are popular choices. We'll notate that as E, the error function that you chose. 
+
+The goal is to train a model, or a function that goes from a dataset of features (a matrix X) to a predicted label. We'll call the predicted values y_hat. y_hat is a label vector that's the same shape as the true labels. This model function is parameterized with a set of parameters w. Theta is another vector that can have as many parameters as the model requires. We can put them all together in one row vector w. The process of training the model is to find a set of parameters w that minimizes the error between the labels the model predicts and the correct labels.  Hopefully, this will provide us with a model that accurately represents the underlying phenomenon. 
+
+Error Minimization and Gradient Descent
++++++++++++++++++++++++++++++++++++++++
+This function tells what the errors would be for our training data. We said that the goal is to choose parameters w to minimize this error. One thing  we should notice is that we've written the x and the y as if they are variables, but x and y are actually just the training data that we have already collected. They're already fixed, so this function is really just parameterized by theta. It's important to continue to note that this is still specific to linear regression. The fact that we have the theta transponse x in the center here is because we're doing linear regression. If we were doing a different model, we would put a different model's function here for our predicted values. When we do different types of models in the future, we will have that model's formula for producting predicted labels in here to be compared against the true labels. Then once we have this step, the goal is to find what parameters to choose to minimize the mean squareed error, because we ant a model that gices us the closest predicted labels to the actual labels as possible. 
+
+Some functions have closed form solutions for minimization. For some combinations of error functins and machine learninng models, you can just directly solve for those minimia. For linear regresstion, you can just plug the training examples and labels into the closed form equation to solve for the minima. This is one of the benefits of linear models. However, many of the models we want to use in machine learning aren't that convenient. Many of them don't have a closed form solution, or the computation cost of the closed form solution becomes infeasible with large numbers of features or examples So we need to find another approach for doing this minimization problem instead of just doing some algrebra and plugging in the resutl. 
+
+Gradient descent is a mathmatical representation of tha idea that if you can't see the solution all the way to the end, you just just repeatedly take one step in the right direction. We can do that using the gradient operation. We take the gradient of the error E(w), which, given the current values for w and training data x and y, will point in the direction of greatest increase with respect to the current w values. The partial derivatives in the gradient are often easier to calculate thatn the full closed-form minimization. So even if you have a function which you can't just do a closed form minimization, you can often quite easily compute the gradient and then use the gradient to step toward the minimum of the function.
+
+So for linear regression, we can go back to the error function we had before, compute the gradient, and express this as a function. As an exercise, you can go back and see why you get this form of a gradient from the error functions that we had before. One thing to notice here is that the gradient of the error function depends on the parameter values and on the training set data. 
+
+Now that we have the gradient, we do the descent portion. To do this, you randomly choose some parameters w to start with. And then you follow an iterative processto compute the current value of the gradient given the current value of the parameters and the training data. You update the parameters by taking one step down towward the function minimum. The next value of the parameters is equal to the current value of the parameters minus the gradient times a learning rate. The learning rate is a hyperparameter that determines "how big of a step" you take toward the minimum. If you have a high learning rate, you will update your parmaetrs a large amount with every step. If you have a low learning rate, you'll update your parmaters a small amount with every step. You just repeat this process over and over until you get the parameters to what is hopefully the global minimum of the function.  It could be a local mnnimum, but we'll talk abotu that later. You just keep going until the parameters stop changing. To define "stop changing" more precisely, you pick some small value episilon, and say "repeat this until the gradient is below that value". That value is typically termed a "tolerance" and tells you when to stop the training process. Once you've done this and your repeated this until the gradient is small and you've hit your minimum, youve trained your model. You can then use the parameters you found for  predicting new labels for examples you haven't seen before. The idea is that you've minimuzed the error on the training set, so the model "can't do any better" on the training set, so you hope that the new model also generalizes well when you apply it to new data. 
+
+[Graph example of gradient descent] You have a cost function (error), possible values the parameter values can have. Picked a random place to start. At each point, compute the gradient, update parameters, and move closwer to the minimum of the error value. This is a 2D representation. If we have a training dataset with many features, this will be taking place in a high-dimensional space, but the idea is exactly the same. You will be computing gradients and taking steps to reach a miniumum. If all works as intended, you'll be finding the optimum values of those parameters given your training set. 
+
+There are a few variations to gradient descent that gain even more computational efficiency. If you look at the equation for the gradient of the error, it relies on the full training data set (capital X) including all examples and features and labels. In order to compute this gradient for every step of the iterative process, you need to do this compuation for all data that you've collected. So if you have a large dataset, those gradient computations may take a long time. We want to optimize this so intead of needing to use all the data you'ce collected for every step, you use a subset and approximate the gradient you use to take the next step in the iteration while buying some computational time.
+
+There are three three main categories of gradient descent. The first, batch gradient descent, uses the entire training data set to compute the gradient at each step. Basically you use the gradient function as written, feeding in all rows of X to get the gradient, taking a step, doing the same thing, and repeating until you find the monimum. At the other end of the spectrum is stochastic gradient descent (SGD). For each iteration, you pull a single example from your training data, compute the gradient using that example alone, and then you repeat. You cycle theough until you've used all the examples. Once you've done them all once, you just cycle theough them again and keep going until the parameters stop changing and you've reached the minimum. Then there's a "goldilocks' solution" called mini-batch gradient descent. You take a few rows of your data, treat that as a new matrix x, compute the gradient based off of that to do each step. [Pros and cons of approaches - trading off accuracy of gradient for computational efficiency]. 
+
+This leads to another hyperparameter, which is how big of batches do ou use for your training. This depends on your data size, how "friendly" the gradient of your function is, and how much computational power you have for gradient descent. When doing a stochastic gradient descent or a mini-batch, you cycle the examples, you don't just choose completely randomly. You don't just pick a random example, computer the gradient and repeat. You might end up choosing some examples a lots more than others, and those examples would have an outweighted effect on the final result. Instead you cycle through. Every time you go through the entire training dataset, we call that an epoch. You'll often see in descriptions of training ML models, the terms "batches" and "epochs." Batches is whatever subset of the training data that is selected to do a single update, which an epoch is once through the entire dataset. [practice computing the number of updates in an epoch for a given batch size, etc.]
+
+
+Gradient descent is the heart of machine learning, but it isn't without it's problems, usally having to do with how convex the gradients are of the function that you have. Linear regression with mean square error is nice because the gradient is convex. No matter where you start, no matter what initial values you choose for your parameters, you're always going to get to the global minumum (as long as your learning rate is small enough that you don't end up hopping back and forth other the global miniumum). But many other ML models, especially deep learing models, have gradients that are non-convex and are bumpy in weird ways, so rather than converging on the global minium with the best model you can find for your training data, you end up in some local minumum value and then gradient descent can't get you out of that. anywhere you go from there would be going back "up" increasing error, so you are stuck. You need ways to get out of this situation and try to find the galobal minumim. You can also end up in situations where the gradient is mostly flat, so when you compute the gradient for the current batch, it's very close to 0, so the amount that your parameters change is also very small, and you just do update after update without every moving very far in this space. This is caled the "vanishing gradient problem" and it especially plagues deep learning models. You need to apply other methods to get the training process out of one of these plateaus or to choose an error function that reduces the number of these problematic spaces. This is less of an issue for simple shallow models but is a big deal for deep learning models that are big and comples, because the gradients of these error functions are also big an complex. There's been a lot of research done to develop optimization algorithms, such as simulated annealing, that seek to avoid these gradient descent issues.
+
+Many optimization algorithms attempt to solve these problems with gradient descent by adjusting the learning rate. For example, the simulated annealing algorithm starts with a large learning rate and graduate decreases the rate throughout the learning process. 
+
+
+
+Hyperparameter Tuning
++++++++++++++++++++++
+
+We generally divide the things that we can modify in a ML model to improve its performance into *parameters* and *hyperparameters*. Parameters are the elements of the model that the training algorithm automatically modifies when attempting to reduce model error on the training set. 
+
+Hyperparameters are "meta"-parameters that can be tuned manually or automatically, depending on the degree to which the model creation process is automated.  Hyperparameters may include learning rates, threshold values, kernel functions, etc. 
+
+Overfitting
++++++++++++
+Overfitting is a potential problem for most supervised machine learning models. An "overfit" model been overly tuned to idiosyncracies in the training data that don't generalize to the overarching phenomenon that you're trying to model. As a result, the model has worse performance on new data that it's never seen before. [PLOT SHOWING OVERFITTING PARABOLA VS LINE VS SPLINE] ML models can be prone to overtiftting because the gradient descent leanring process incentivizes them to find parameters that fit the training data exactly. 
+
+It's good to be able to detect when your model is overfitting so you can address the problem. One way to do that is to plot a "learning curve". The learning curve on the x axis is the size of the training set. You train the model on a increasing fractions of the training set and test the error at each fraction using both the training and the the validation set. When the performance on the training set is close to the performance on the valudation set, you can be fairly confident that your mdoel isn't overfitting. This is because the model is performing about as well on the training data as it does when generalizing to new data it's never seen. If the model is instead performing much better on the training set than on the validation set, it is likely due to overfitting. 
+
+There are several different ways to deal with overfitting, including regularization and early stopping. 
+
+Regularization model parameters from growing increasingly large as a model increasingly fits the idiosyncracies of the training data during training. 
+In order to keep the model simpler and more likely to generalize to new data, regularization places a penalty on magnitude of the parameters during the learning process. The penalty is added directly to the error function, and you call the combined function a "cost function".  Gradient descent learning then operates with respect to the cost function to balance the fit of the model to the training data and its simplicity. There are many different cost functions and penalties, including ones that are popular enough that the process of doing linear regression with those regularization penalities are given different names.
+
+Another approach to reducing overfitting that is quite different from regularization is early stopping. Plot the error of the model (training and 
+validation) against the number of gradient descent training epochs. As you go through more epochs, the error should decrease as the learning process 
+brings the parameters closer to the optimium. Continue to train until the validation error plateaus or increases. Then roll back the model to the 
+point with the best validtion error for the final version. [PLOT ERROR OVER EPOCHS]
+
+
+
+
+
+
+Model Evaluation
+----------------
+
+Before we can dive into learning about machine learning algorithms, we need to define a few more concepts to help us determine whether these algorithms are meeting their goals. First, we need to define what we mean by "close to the real label."  This is another way of saying "how do we measure the success of the model?"
+
+There are many performance metric functions. In general, they compare predictions that your model produces to the correct labels and prodice a real number indicating the performance of the model.
+
+Regression Metrics
++++++++++++++++++++
+For regression problems, you'll often use an error function like mean squared error or mean absolute error. In this example, we have some data points, we've plotted a linear regression line, we could see the errors of the points off of the line. And you could report the average of those errors are the average of those squared errors as the performance of your model. The training process will attempt to minimize this error to produce a regression model that produces predictions which are as close as possible to all data points on average. 
+
+Classification Metrics
+++++++++++++++++++++++
+For classification, we can't use mean or absolute errors directly, because the class labels are not real-valued and may not be ordinal. For example, [EX]
+
+*Accuracy* is popular performance metric for classification problem because it is intuitive. The accuracy of a model is the ratio of correct predictions to all predictions. For example [EX]. For some problems, this works pretty well. But for others just reporting accuracy is deceptive. 
+
+Imagine you're training a machine learning algorithm to take in packets and classify them as "malicious" or "benign". If you just use the naive algorithm "always predict benign", the accuracy will be high accuracy, because most most packets aren't malicious.  So if you have a problem for which the actual classes aren't evenly balanced among all of the possible classes, your accuracy score isn't going to be as intuitive as it should be. For example, you shouldn't necessarily assume that anything over 50% accuracy is great. 50% only a meaningful metric if you are doing binary classification where you're expecting even numbers of both classes examples. In multi-class problems or tasks where certain classes are rare, accuracy isn't a great way to report your results.
+
+*Precision & Recall*
+TODO: CLEARER DESCRIPTION AND EXAMPLES
+A better way to report classifcation performance accuracy for multi-class and non-balanced clases is with a precision or recall score. These scores are best understood in the context of binary classification tasks. The precision score is the percentage of the elements that you correctly predicted were in a class of interest. A high precision score is good. You want most of the things that you predicted to be in that particular class to actually be in that class. The recall score is the number of things actually in a class of interest that you predicted were in that class. Prediction and recall are often two sides of a coin. You will see that if you make parameter or hyperparameter changes to improve precision, you may end up reducing recall (and vice versa). (ADD TRUE POSITIVES ETC.)
+
+A high precision algorithm may not make many predictions, but when it does, it's right. A high recall algorithm may make a lot of predictions hitting  most of the examples in the class of interest, but also a bunch of exampless ones that we didn't care about. In different real world situations, you might want to tune your algorithm to have a higher precision or a higher recall, depending on your application. [EX]
+
+For example, consider a machine learning system that is detecting malware in a mission critical system. It may not matter if there are some false alarms (low precision), but you want to make sure the system doesn't miss any actual malware events (high recall). In comparison, consider spam detection. You may be okay with your spam detector allowing some spam through to the inbox (low recall), but you don't want the detector to accidentally classify any non-spam messages as spam (high precision). 
+ 
+Since you can tune many algorithms to trade off precision and recall, you'll often plot a precision/recall curve that shows how the tuning of some parameter affects precision and the recall. [EX PLOT] An ideal algorithm will have a curve that looks like [EX]
+
+Now, if you aren't sure where to pick on this curve, you'll often choose the like the Pareto optimal setting where any trade off that you make in one direction is outweighed by the trade off that you'd make in another direction. And if you're familiar with Pareto optimality from economics, it's exactly the same idea.
+
+However, sometimes you want to report a single number that says how well your algorithm performs instead of both precision and recall scores. The standard approach is to report an F1 score, which is the harmonic mean of precision and recall. The harmonic mean causes the F1 score to weigh low values higher. This means thata a high precision won't offset a partularly low recall or vice versa. 
+
+*Receiver Operating Characteristic*
+The receiver operating characteristic (ROC) is another performance measure that uses the *true positive rate* and the *false positive rate*.
+The true positive rate is exactly the same as recall, it's just another name for the same concept. The false positive rate is a little different from precision. The false positive rate is the fraction of examples that we labeled as the class of interest but we were incorrect about. TPR and FPR are often used in terms of epidemiology. 
+
+Just like for precision recall, you can tune hyper parameters to affect the true positive rate and false positive rate. You can plot them on a curve  called an ROC curve. As you change the parameter to increase the true positive rate, you may end up with more false positives, too. If you want a single metric to use for the algorithm performance that incorporates the fact that you can tune these parameters, you can use the area under the ROC curve. Since your algorithm would ideally be able to achieve a high true positive rate with a very low false positive rate, you'd have this curve [EX], which is right along the edge of the graph, the ideal area under the curve is 1.
+
+*Confusion matrices*
+Confusion matrices go beyond a single number or a scalar metric for classification performance and instead provide details about how your model is making mistakes. Confusion matrics are really useful for debugging and iterative improvements. The confusion matrix plots the frequency or the number of examples that were given a particular label versus the correct labelv [EX]. If your model is doing perfectly, you will end up with a diagonal matrix where all of the examples are in the correct class. If your model is sometimes making mistakes, there will be numbers outside of this diagonal. You can then investigate these examples to see why they might be more difficult for the model and focus on these cases to improve your performance. 
+
+Unsupervised Metrics
+++++++++++++++++++++
+
+Supervised Example: nPrintML
+----------------------------
+
+Unsupervised Example: netML
+---------------------------
+
+
+

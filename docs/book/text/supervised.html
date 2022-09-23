@@ -1,0 +1,476 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Chapter 5: Supervised Learning Models &mdash; Applied Machine Learning for Networking Version 0.1-dev documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/bridge.ico"/>
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script src="https://www.googletagmanager.com/gtag/js?id=G-QLSP3FJWGT"></script>
+        <script >
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-QLSP3FJWGT');
+</script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/rtd_theme_mods.css" type="text/css" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Chapter 6: Unsupervised Learning" href="unsupervised.html" />
+    <link rel="prev" title="Chapter 4: Machine Learning Pipeline" href="pipelines.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Applied Machine Learning for Networking
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                Version 0.1-dev
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Table of Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Chapter 1:  Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="motivation.html">Chapter 2: Motivating Problems and Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="measurement.html">Chapter 3: Network Measurement</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipelines.html">Chapter 4: Machine Learning Pipeline</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Chapter 5: Supervised Learning Models</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#non-parametric-models">Non-Parametric Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#k-neighbors">K-Neighbors</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#linear-models">Linear Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#linear-regression">Linear Regression</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ridge-regression">Ridge Regression</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#lasso-regression">Lasso Regression</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#elasticnet">ElasticNet</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#polynomial-regression">Polynomial Regression</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#logistic-regression">Logistic Regression</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#support-vector-machines">Support Vector Machines</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#kernel-methods">Kernel Methods</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#multiclass-svm">Multiclass SVM</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#svm-conclusion">SVM conclusion</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#expectation-maximization">Expectation Maximization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tree-based-models">Tree-Based Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#decision-tree-benefits">Decision Tree Benefits</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#training-decision-trees">Training Decision Trees</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#impurity-metrics">Impurity metrics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dts-and-overfitting">DTs and overfitting</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#ensemble-methods">Ensemble Methods</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#voting">Voting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#bagging-pasting">Bagging &amp; Pasting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#random-forests">Random Forests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#boosting">Boosting</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#deep-learning">Deep Learning</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="unsupervised.html">Chapter 6: Unsupervised Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="automation.html">Chapter 7:  Machine Learning in Network Deployment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="concerns.html">Chapter 8:  Privacy, Legal, &amp; Ethical Concerns</a></li>
+<li class="toctree-l1"><a class="reference internal" href="future.html">Chapter 9:  Looking Ahead</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../README.html">About The Book</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../authors.html">About The Authors</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Applied Machine Learning for Networking</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Chapter 5: Supervised Learning Models</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/text/supervised.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
+      
+        <a href="unsupervised.html" class="btn btn-neutral float-right" title="Chapter 6: Unsupervised Learning" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="pipelines.html" class="btn btn-neutral float-left" title="Chapter 4: Machine Learning Pipeline" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+  </div>
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="chapter-5-supervised-learning-models">
+<h1>Chapter 5: Supervised Learning Models<a class="headerlink" href="#chapter-5-supervised-learning-models" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="non-parametric-models">
+<h2>Non-Parametric Models<a class="headerlink" href="#non-parametric-models" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="k-neighbors">
+<h3>K-Neighbors<a class="headerlink" href="#k-neighbors" title="Permalink to this headline">¶</a></h3>
+<p>K-nearest neighbors is likely hte easiest machine learning algorithm to understand. You have your training data, and when trying to predict a label for a new example, you predict the most common label (classification) or mean (regression) of the K closest examples in the training data. You can choose which distance function to use to define “closest” (and there are many options), but ultimately, k-nearest neighbors is just finding the closest training examples and predicting their mean or their mode.</p>
+<blockquote>
+<div><p>This means that training a k-nearest neigbors model id trivial – there literally is nothing to do other than store the training data in a data structure, such as a KD-tree, that makes it easy to compare distances. All of the work and computational effort occurs during the prediction step.</p>
+<p>The choice of k is a hyperparameter that can be chosen via a line search and a validation set.</p>
+</div></blockquote>
+<p>KNN is often used as a baseline. It’s kind of mindless, it’s relatively easy to train. The computational performance is poor if you have lots of examples, because the model needs to search through the examples to find the k closest. Otherwise, k-neighbors is often used as a low bar or baseline for comparing against other models.</p>
+<p>When you’re doing KNN, you typically want to standardize your features to have mean 0 and variance 1, so the distances used to determine the closest examples are not overwhelmed by one feature that just happens to have values in smaller units.</p>
+<p>Unfortunately, KNN also scales poorly with the number of features in each example. This is because a lot of the functions that we use to compute distance between vectors don’t work as well in high dimensions.
+In higher dimensional spaces, everything starts to be far away from everything else. Even if two examples happen to be close to each other on one dimension, the fact that there’s so many dimensions in the data set means that they’re likely to be far away on others. As you’re adding the distances along each dimension or taking the square of the distances along each dimension, those distances can start to blow up. This phenomenon called the curse of dimensionality.</p>
+<p>You can try to fix this by using some different distance functions that are tailored for different types of data, but generally, this curse of dimensionality is just a problem for geometric models that rely on vector similarity or vector distance.</p>
+</div>
+</div>
+<div class="section" id="linear-models">
+<h2>Linear Models<a class="headerlink" href="#linear-models" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="linear-regression">
+<h3>Linear Regression<a class="headerlink" href="#linear-regression" title="Permalink to this headline">¶</a></h3>
+<p>Linear regression is one of the simplest supervised models.</p>
+<p>Imagine that each data point x has N+1 features</p>
+<p><span class="math notranslate nohighlight">\(\mathbf{x} = [1, x_1, ..., x_N]\)</span></p>
+<p>A linear regression model trained on this data will have N <em>weight</em> parameters w and a single <em>bias</em> parameter b</p>
+<p><span class="math notranslate nohighlight">\(\mathbf{w} = [b, w_1, ..., w_N]\)</span></p>
+<p>The model predicts labels as the linear combination of a data point’s features weighted by the model parameters</p>
+<p><span class="math notranslate nohighlight">\(\hat{y} = b + w_1x_1 + ... + w_Nx_N\)</span></p>
+<p>This can be simplified as the dot product of the data point and the model parameters</p>
+<p><span class="math notranslate nohighlight">\(\hat{y} = \mathbf{x} \cdot \mathbf{w}\)</span></p>
+<p>If predicting labels for an entire dataset X, this can be written as the inner product of the weights with the matrix containing all data points.</p>
+<p><span class="math notranslate nohighlight">\(\mathbf{\hat{y}} = \mathbf{w}^T\mathbf{X}\)</span></p>
+<p>This is essentially the eqeuation for a line (<span class="math notranslate nohighlight">\(y = mx + b\)</span>) generalized to more dimensions, where the “slope” of the line is the weight parameters and the “intercept” of the line is the bias parameter.</p>
+<p>Training a linear regression model involves choosing the weight and bias parameters to minimize the error between the predicted labels and the actual labels for the training set.
+There are many error functions that can be used for this training minimization. A common choice, the mean-square error, is also convenient for training:</p>
+<p><span class="math notranslate nohighlight">\(Error = \frac{1}{m} \sum^{m}_{i=1}(\mathbf{w}^T\mathbf{x} - y)^2\)</span></p>
+<p>We can use either a closed-form solution or gradient descent to find values of w that minimize this error across the examples x in the training set.</p>
+</div>
+<div class="section" id="ridge-regression">
+<h3>Ridge Regression<a class="headerlink" href="#ridge-regression" title="Permalink to this headline">¶</a></h3>
+<p>Ridge Regression is just linear regression with the L2 norm of the parameters added to the error function. This weight of this term is controlled with
+a hyperparameter that allows you to tune the relative emphasis given to the simplicity of the model (L2 penalty) versus the fit of the model. If you
+tune this hyperparameter up quite high, the gradient desceent is really incentivised to keep the parameter values low in magnitude and the model
+simply. If you tune this hyperparameter low, it will incentivize the algorithm to closly fit the training data.</p>
+</div>
+<div class="section" id="lasso-regression">
+<h3>Lasso Regression<a class="headerlink" href="#lasso-regression" title="Permalink to this headline">¶</a></h3>
+<p>Ridge Regression is just linear regression with the L1 norm of the parameters added to the error function.
+Insetad of using the Euclidean magnitude of the parameter vector as the penalty, you use the sum of the absoluate values of the parameters.
+A benefit of using the L1 norm is that it can push the values of the parameters that aren’t particuarly important to 0.
+This means that you could even decide to take out those features altogether and further simplify your model.
+Unfortunately Lasso regression gradients can start to act eratically if there are lots of correlations between features. So you can get inso a
+situation where as you get closer to the minumum using gradient descent, your updates start to bounce around rather than settling into the final value.</p>
+</div>
+<div class="section" id="elasticnet">
+<h3>ElasticNet<a class="headerlink" href="#elasticnet" title="Permalink to this headline">¶</a></h3>
+<p>To get the benefits of both lasso and ridge regression, you can combine them into ElasticNet. The cost function for ElasticNet include the original
+error function for linear regression, the term for L1 penalty (from lasso), the term for L2 penalty (from ridge), and another hyperparamater r that
+determines how to mix the two penalties. The more you turn up r, the more it behaves like lasso. The more you turn down r, the more lit looks like
+ridge. For the most part, if your dataset is simple enough for a model to perform well using any one of these approaches, it will also likely perform
+well using any of the others.  Data is generally either amenable to one of these linear models, or these models just don’t provide enough expressivity
+and it won’t matter which regularization option you choose [CITATION NEEDED].</p>
+</div>
+<div class="section" id="polynomial-regression">
+<h3>Polynomial Regression<a class="headerlink" href="#polynomial-regression" title="Permalink to this headline">¶</a></h3>
+<p>Polynomial regression involves preprocess the features in your dataset to include polynomial combinations of existing features. For example, you might
+add the square of each feature and the all pairwise products of the features. Then when you train a linear regression, it’s effectively the same as
+training a quadratic beause you’re doing linear combinations of second degree combinations of paramters. You could also do this for features that
+include all of the third degree combinations of the original features. This would quickly increase the number of features as you increase the degree
+of the polynomials, but you gain the ability to do the same linear regression trainig task while modeling higher degree patterns between your
+features. This will let you learn curves that arent’y just straight lines [figure]. It will let you learn a polynomial model of any degree the same
+process and gradient descent.</p>
+</div>
+<div class="section" id="logistic-regression">
+<h3>Logistic Regression<a class="headerlink" href="#logistic-regression" title="Permalink to this headline">¶</a></h3>
+<p>Another popular form of regression is logistic regression. Again, this is almost exactly the same process, but with a single minor change to the model. Rather than just doing a linear combination of parameters and features, you wrap the output of that combinationn into a sigmoid function. This has the effect of pushing the output of the linear combination to be either very close to 1 or very close to 0 with a region in the center where that transition happens fairly quickly.
+This is useful for doing classification.
+When performing classification, you want to know whether a data point is an a specific class or not, so by wrapping model output in a sigmoid, you say if the output is &gt;0.5 assume class 1, and if the output is &lt;0.5 assume class 0. In most cases, you’ll already be very close to 1 or 0. Everything else in the training process works the same way, you just compute the gradient of the error function using this as your predictot. When you compute the gradients, you can use the chain rule to computer the partial derivates. The sigmoid function is continuous and differentiable so that’s not a problem. EWverything eles,e all the gradient descent works the same way, just with the exact equation slightly different as a result fo hte sigmoid. The book chaper concludes by taking the logistic regression and generalizing it top the multi-class case. The generalization of logistic regression is called “softmax regression”, which we will not talk about today. We will get to the softmax function later, especially in deep learning, but this is good for today. We will use some of these things in programming practice on Thursday. We’ll also do a bit about nearest neighbors, which won’t take us very long at the start.</p>
+</div>
+<div class="section" id="support-vector-machines">
+<h3>Support Vector Machines<a class="headerlink" href="#support-vector-machines" title="Permalink to this headline">¶</a></h3>
+<p>If you are trying to perfor a binary classification task with linearly separable data, the optimal model will consist of a line or plane that divides the feature space such that all of the examples on one side of the line are in one class and all of the examples on the other side of the line are in the other class (FIGURE). When asked to predict the class of a new example, you make the prediction based on which side of the line the example occurs. EXAMPLE IN FIGURE.</p>
+<p>The question remains, how do we choose which line or plane to use for this model? There might be an infinite number of planes that separate the data, how do you choose the one with the best chance of optimizing prediction accuracy? Remember that prediction accuracy comes down to how well the model generalizes to new data outside the training set. The core intuition behind an SVM is that the best separating line or plane is the one with the most space between training examples of different classes. EXAMPLE IN FIGURE</p>
+<p>Training an SVM involves finding that line that maximizes the margin, i.e. the space separating the line from the training data. The examples end up closest to this optimal line are called the <em>support vectors</em>.  These are the examples which determine the position of a line. If you were to collect a lot more data, but all of that data were to fall on further from the separating line than the existing support vectors, it wouldn’t change the position of the line. This means that support vector machines are also pretty robust to overfitting because the only data that affects the ultimate position of the model are those examples on these margin boundaries.</p>
+<p>Show general linear models formula with weights W and biases b.</p>
+<p>So for a linear SVM, the predicted labels y_hat is a piecewise function based off a linear combination of the features with weights w and biases b. If that linear combination is less than zero, we predict class 0. If this linear combination is greater than or equal to zero, we predict class 1. SHOW FORMULA.
+Show how this combines the algebra and the geometry (sign of dotproduct) to be “above” or “below” the line</p>
+<p>The SVM training process involves finding the separating line with the maximum margin. Of course, real datasets are rarely linearly separable, so we add another variable to the model that allows for some slack, i.e. for some training examples wrong side of the line. The primary goals of training are to find parameters W and b that minimize the error between the predictions and the actual values that also maximize the margin. ADD MORE ABOUT MATH IF NECESSARY</p>
+<p>This process can either be solved with a quadratic programming solver or with gradient descent, either of both of which are typically programmed into the SVM models in machine learning libraries. The higher the value of hyperparameter C, the more importance the model places on getting the classifications right (i.e. all examples on the correct sides of the margins). The lower you make C, the less importance the model places on a few incorrect classifications as it attempts to find the largest marign possible.</p>
+</div>
+<div class="section" id="kernel-methods">
+<h3>Kernel Methods<a class="headerlink" href="#kernel-methods" title="Permalink to this headline">¶</a></h3>
+<p>Of course, not all datasets are linear. If you have a dataset that relies on nonlinear interactions between features, a linear SVM is going to perform poorly. One option, like with polynomial regression, is to take the existing features and compute polynomial combinations of them. However, this can quickly result in too many features for higher degree combinations, causing poor training performance. So instead, you can use the <em>kernel trick</em>. This relies on the fact that data which isn’t linearly seperable in low dimensions may be linearly seperable in high dimensions.  In addition,
+the SVM training algorithm can be reformulated (into the <em>dual</em> format) to involve only similarity metrics between example features, never on the exact values of the features themselves.
+This allows you to use a <em>kernel function</em> in your model, which computes the distance between examples in a higher-dimensional space without every actually having to project those examples to the higher dimensional space. SHOW FORMULA OF SVM WITH KERNEL K. There are many well-studied kernel functions that you can choose, each with their own pros and cons. However, they all allow us to adapt linear SVMs to nonlinear data.</p>
+</div>
+<div class="section" id="multiclass-svm">
+<h3>Multiclass SVM<a class="headerlink" href="#multiclass-svm" title="Permalink to this headline">¶</a></h3>
+<p>So far, we have only discussed binary classification tasks. There are multiple ways to use SVMs to perform multiclass classifcation. A simple approach is one-versus-rest, where if you have N classes, you train N SVM classifiers, each binary. The first classifier predicts whether a example is in class 1 or some different class. The second classifier whether an example is in class 2 or some different class. Each of those classifiers would give you a different decision line and you’d have to do a prediction with all of them and decide which prediction was best for that dataset. Another approach, one-versus-one, MORE IF NECESSARY.</p>
+</div>
+<div class="section" id="svm-conclusion">
+<h3>SVM conclusion<a class="headerlink" href="#svm-conclusion" title="Permalink to this headline">¶</a></h3>
+<p>SVMs are very popular and they’re very good for small data. If you have data that you don’t think is enough to train a neural network, an SVM is a really good place to start, because it can produce predictions that are robust to overfitting and often good at generalizing. You can also use SVMs to perform regression. You just try to fit all the data inside the margin instead of outside the margin so you can use the decision line as a regression line. MORE IF NECESSARY</p>
+</div>
+</div>
+<div class="section" id="expectation-maximization">
+<h2>Expectation Maximization<a class="headerlink" href="#expectation-maximization" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="tree-based-models">
+<h2>Tree-Based Models<a class="headerlink" href="#tree-based-models" title="Permalink to this headline">¶</a></h2>
+<p>Decision trees are generic versions of dichotomous keys, taught in elementary schools as a way to classify objects into a variety of classes. In a dichotomous key, you ask yes or no questions about the object and then follow the this tree from the root node at the top to a leaf node containing the classification at one of the leafs. Of couse, there is no reason to limit this to yes/no questions. YOu could just as easily create a tree with multiple child nodes per node.</p>
+<p>In machine learning, we can automate the construction (training) this type of tree for classification in a way which tries to produce trees which are optimally balanced.</p>
+<p>Once the tree is trained, classification is simple, just start at the root node and follow the links corresponding to the example you wish to classify until you reach a leaf node.</p>
+<div class="section" id="decision-tree-benefits">
+<h3>Decision Tree Benefits<a class="headerlink" href="#decision-tree-benefits" title="Permalink to this headline">¶</a></h3>
+<p>Decision trees require very little data pre-processing. It doesn’t matter whether your features are numeric, binary, or nominal, you can still have conditions in the nodes that work for those classes. For example, one node could split based on a numeric feature, if packets_per_flow &gt; 1 or == 1. Another node could split on a nominal feature, “is there an ACK packet in the flow.o Ypu don’t need to do a one hot encoding, you don’t need to do an ordinal encoding, you can just feed them right into the tree training algorithm. And it’ll work no matter what format your features are.</p>
+<p>You also don’t need to do any standardization or normalization. as there’s no notion of this decision tree being geometric, so we don’t need to ensure that our features are mean zero and variance one.</p>
+<p>Also, decision trees are easily interpretable to humans. You can look at a decision tree and easily understand how it arrived at a particlar prediction.</p>
+<p>Decision trees also provide us with a way to compute feature importance. We often want to know which features of our dataset are particularly important for a particular classification. For example, we might want to know whether the number of packets in a flow is crucially important or peripheral to our problem. In addition to providing a better understanding of the model, this can also provide a better understanding of the underlying phenomenon. For EXAMPLE.</p>
+</div>
+<div class="section" id="training-decision-trees">
+<h3>Training Decision Trees<a class="headerlink" href="#training-decision-trees" title="Permalink to this headline">¶</a></h3>
+<p>The goal is to train a balanced tree that has the minimal training error, i.e. the minimal difference between the predicted classes in the training set and the actual classes. Balancing the tree reduces the computational complexity of the prediction process, because it reduces the maximum number of questions, or splits, that are required to go from the root of the tree to a leaf. Unfortunately, the problem of finding the optimally balanced tree for an arbitrary dataset is NP-complete. In practice, we use iterative algorithms that attempt to optimize for balance at each step, but do not guarantee that the final tree is as balanced as possible.</p>
+<p>One common algorithm, the classification and regression tree algorithm (CART), iteratively selects a feature and finds the boolean comparison or numeric threshold that all of the examples in the training set as evenly as possible by number and as uniformly as possible by class. In other words, the algorithm attempts to choose a feature and a question/threshold that divides the examples into a left child node and a right child node.</p>
+<p>CART is a greedy algorithm that starts at the root of the tree with all of the training examples ands repeats the same process with all of the child nodes. This continues until each leaf node contains examples from a single class only.</p>
+</div>
+<div class="section" id="impurity-metrics">
+<h3>Impurity metrics<a class="headerlink" href="#impurity-metrics" title="Permalink to this headline">¶</a></h3>
+<p>Gini vs. Entropy – probably unnecessary</p>
+</div>
+<div class="section" id="dts-and-overfitting">
+<h3>DTs and overfitting<a class="headerlink" href="#dts-and-overfitting" title="Permalink to this headline">¶</a></h3>
+<p>Unfortunately, decision trees can be prone to overfitting. So just like k-nearest neighbors, decision trees are nonparametric, which means that they can be trained to fit the training data exactly. You just run the training algorithm until every leaf node  has examples from only one class.</p>
+<p>One way to limit overfitting is to set a max depth or a min split hyperparameter, meaning that you cap the depth of the tree. For any remaining nodes with training examples from more than one class, you just use the mode of the classes as the prediction label.</p>
+<p>Another approach is “pruning,” in which you train a whole tree and remove splits that causes relatively small decreases in the cost function.</p>
+</div>
+</div>
+<div class="section" id="ensemble-methods">
+<h2>Ensemble Methods<a class="headerlink" href="#ensemble-methods" title="Permalink to this headline">¶</a></h2>
+<p>If you can train one classifier, why not train more and improve your accuracy by combining their predictions together.  The core idea behind ensemble learning is that if you have a complex phenomenon that you’re trying to understand, you can do a better job of by training a bunch of simpler models with different perspectives instead of a single complex model. This is analogous to the “wisdom of the crowd”.</p>
+<div class="section" id="voting">
+<h3>Voting<a class="headerlink" href="#voting" title="Permalink to this headline">¶</a></h3>
+<p>A “voting classifier” uses several different classes of models (e.g. decision tree, SVM, kNN, etc.) and predicts the majority vote class predicted by each of these models. If the phenomenon is complicated enough, there may not always be one algorithm which does best on new examples. So by having a bunch of algorithms try it, as long as the majority of them do the right thing, you can still give you the right answer in the end.</p>
+<p>You can also use the confidence of these models to weight the votes (soft voting classifier).</p>
+</div>
+<div class="section" id="bagging-pasting">
+<h3>Bagging &amp; Pasting<a class="headerlink" href="#bagging-pasting" title="Permalink to this headline">¶</a></h3>
+<p>The next approach, bagging and pasting, trains different instances of the same algorithm on different subsets of your training set. Bagging and pasting help to reduce classification variance by sampling from the training set with replacement to create N new training sets that are all slightly different. You train a different model on each set and use the majority vote prediction of all these models.</p>
+</div>
+<div class="section" id="random-forests">
+<h3>Random Forests<a class="headerlink" href="#random-forests" title="Permalink to this headline">¶</a></h3>
+<p>Random forests are a particularly important version of bagging, in which you train many small decision trees limited to a maximum depth. (decision trees limited to a single set of child nodes are called decision stumps). Random forests have distinction of being a very, very practical high performance algorithm. Random forests can compete with deep learning algorithms, especially when you’re given datasets that have obvious features. Deep learning really shines when you’re given data that is sort of raw unpasteurised things like images or natural language. But if you’re given a dataset with clear existing features, in many cases a random forest will do as well as a deep learning algorithm on that data. Random forests also have many fewer hyperparameters than a neural network. They are also robust to overfitting.</p>
+<p>Bagging and random forests are really amenable to parallelization, you can do the sampling. And then you can put each training on a different core, in your data center, train up all in models in parallel</p>
+</div>
+<div class="section" id="boosting">
+<h3>Boosting<a class="headerlink" href="#boosting" title="Permalink to this headline">¶</a></h3>
+<p>Another ensemble method callse Boosting has a different motivation than bagging or random forests.  Bagging, pasting, and random forests seek to reduce prediction variance. However, Boosting  attempts to prevent bias errors, which happen when you choose a model that is unable to represent the complexity of the data. In Boosting, you train one algorithm to make a prediction and then you train another algorithm to try to correct the prediction made by the first one. You can repeat this as many times as you like such that by chaining simple models together, you can end up with something which is quite complicated and is able to represent the data very well, even if the data itself is complex. The name comes from the fact that each successive classifier in the sequence is trying to boost the performance of the previous ones.</p>
+<p>In gradient boosting, you start off with your training data, you start by training a model, usually a decision tree. This tree gets some of the training set predictions right, and it gets some of them wrong, allowing you to compute a residual between the actual value predicted and the correct value for each examples. Then you train another decision tree to predict the residual of the first tree.  If that prediction is accurate, you can take the prediction of the first tree, correct for the error predicted vy the second tree, and get the right prediction overall. You can also train a third tree to predict the error of the second tree, etc.</p>
+<p>Because boosting is inherently sequential, it is not that amenable to parallelized training. Typically, you make each individual classifier very simple and fast to train, so the entire boosted classifier is also efficient.</p>
+<p>Another type of boosting, AdaBoost, also uses sequential classifiers that try to improve each other’s performance. The weight given to each example in the training set is increased if the previous classifier got that example incorrect and decreased otherwise. This means that successive classifiers put more effort into correctly predicting examples that were missed by earlier classifiers. Each successive classifier is itself weighted by how well it performs on the entire training set.</p>
+<p>There is a proof that AdaBoost combined with any weak learning algorithm, i.e. any classifier that does better than random guessing, will eventually produce a model which perfectly fits your training data. Empirically, this also improves test error as well.</p>
+</div>
+</div>
+<div class="section" id="deep-learning">
+<h2>Deep Learning<a class="headerlink" href="#deep-learning" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><p>Classification vs. Regression</p></li>
+<li><dl class="simple">
+<dt>Non-Parametric Models</dt><dd><ul>
+<li><p>k-Neighbors</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Linear Models</dt><dd><ul>
+<li><p>Linear Regression (example: packets/bytes)</p></li>
+<li><p>Logistic Regression (example: DNS query/response)</p></li>
+<li><dl class="simple">
+<dt>Support Vector Machines</dt><dd><ul>
+<li><p>Kernel Methods</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>Expectation Maximization / GMM</p></li>
+<li><p>Tree-Based Models (decision trees)</p></li>
+<li><dl class="simple">
+<dt>Ensemble Learning</dt><dd><ul>
+<li><p>Bagging/Bootstrapping (random forest) (example: spam filtering)</p></li>
+<li><p>Boosting (gradient boosted trees / XGBoost)</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>Deep Learning (high-level, commentary, 2nd edition)</p></li>
+</ul>
+</div></blockquote>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="unsupervised.html" class="btn btn-neutral float-right" title="Chapter 6: Unsupervised Learning" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="pipelines.html" class="btn btn-neutral float-left" title="Chapter 4: Machine Learning Pipeline" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2022
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

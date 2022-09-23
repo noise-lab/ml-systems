@@ -1,0 +1,55 @@
+Chapter 8:  Privacy, Legal, & Ethical Concerns
+==============================================
+    
+Background
+----------
+
+* Right to Privacy (Brandeis, 1890)
+* New privacy threats
+    * Computerized records
+    * Cookies and aggregation
+    * Network monitoring (ISPs, etc.)
+    * Inference  
+* Personally Identifiable Information
+    * Any information that distinguishes one person from another can be used for re-identifying data.  
+    * Examples: Netflix recommender system de-anonymization  
+
+Network Data and Inference
+--------------------------
+* Data
+    * Data collection and retention
+    * Data sharing, model sharing
+* Adding compute to data brings a new dimension of threats to privacy
+    * Old principles view data as storage for later retrieval.
+    * No processing of data, other than simple joins
+    * Now, we have computing/complex inference  
+* Realms
+    * Network traffic capture (packet traces)
+    * Fingerprinting: Canvas/Browser, Website, Application  
+    * Cookies and other web tracking mechanisms (tracking pixels) 
+    * DNS privacy and encrypted DNS  
+    * Supercookies (Verizon)  
+    * IP addresses and geolocation
+    * WiFi and Bluetooth triangulation  
+
+Legal Frameworks
+----------------
+
+Focus on examples and cases that have had to do specifically with machine
+learning (and networking). 
+
+* US Privacy Law
+    * Fair Information Principles: Choice, Access and Correction, Security, Minimization, Breach Notification
+    * Fourth Amendment
+    * California Privacy Law (CCPA, CCRA)  
+    * HIPPA
+    * FERPA
+    * COPPA
+    * GLBA  
+    * FTC Act
+* EU Privacy Law
+
+Ethical Frameworks
+------------------
+
+See Salganik's book.

@@ -1,0 +1,94 @@
+Chapter 6: Unsupervised Learning
+================================
+
+    * Goals: 
+        * Anomaly Detection
+        * Dimensionality Reduction
+        * Visualization
+    * Principal Components Analysis (application: outlier detection on network traffic)
+    * NetML outlier detection python framework (https://pypi.org/project/netml/)
+
+
+Most of the data in the world is unlabeled. 
+This is often the case for networks data as well. 
+EXAMPLES
+
+The goal of unsupervisd learning is to identify patterns in unlabeled data that are useful for understanding the data or processing the data further.
+The two main types of unsupervised learning relevant for networks problems are *dimensionality reduction*, *clustering*, and *semi-supervised learning*. 
+
+Dimensionality Reduction
+------------------------
+Real world data sets are often high dimensional. 
+They have many features and can't be easily plotted on a 2D or 3D graph. Producing useful visualizations of high dimensional data requires reducing the number of features while preserving important relationships within the data.   
+
+The training time of most supervised ML models also increases with the number of features. 
+For especially high dimensional data, it may be desirable to reduce the number of features as a preprocessing step to make training computationally feasible. Unsupervised dimensionality reduction algorithms will perform this preprocessing step by removing or combining less predictive features. 
+
+Both visualization and preprocessing for computational performance motivate dimensionality reduction in practice.
+
+Principle Component Analysis
+++++++++++++++++++++++++++++
+
+The goal of principal component analysis is to find a new basis in the target dimensionality such that projecting the data into this new basis minimizes the distance from the projected points to the original points and maximizes the variance of the projected points. 
+The axes in the new basis space are called the *principle components*.
+Vanilla PCA is limited to linear transformations, but alternatives, such as *kernel PCA* can also account for non-linear relationships in the data. 
+
+T-Distributed Stochastic Neighbor Embedding
++++++++++++++++++++++++++++++++++++++++++++
+T-distributed stochastic neighbor embedding is a dimensionality reduction algorithm that typically produces much cleaner visualizations than PCA. 
+T-SNE works by (1) fitting a Gaussian distribution to the distances between pairs of points in the original high-dimensional space, (2) Use gradient descent to find a mapping between that Gaussian to a T-distribution in the target dimensional space that minimizes the divergence between the distributions, (3) choosing locations of points by drawing from this T-distribution. This has the effect of keeping similar points in the original space closer together in the target space while spreading dissimilar points further apart in the target space (because the T-distribution has more probility density in the tails than the Gaussian)
+
+Autoencoders
+++++++++++++
+Autoencoders are unsupervised neural network models that perform dimensionality reductions. 
+The idea is that you have a network with an input layer and output layer that are the same size as your high-dimensional data. The intermediate hidden layers of the network have an "hourglass" shape, with a layer with an output size of the target dimension in the middle. 
+The network is trained to recreate the output from the input, however, the reduction in size in the hidden layers forces the network to lose information (it can't just pass a full representation of all features through every layer).
+The training forces te network to find parameters such that the output of the encoding layer provides the most information about all input features as possible so the data can be reproduced with the highest fidelity. 
+
+Clustering
+----------
+Clustering algorithms group data points by similarity, identifying latent structure in the dataset.  
+
+K-Means
++++++++
+K-means is a fairly simple algorithm, it can be defined in four steps. 
+(1) choose a target number of clusters K. (2) Choose K random points as starting centroids. (3) Assign all of the other points in the data set to the closest one of those centroids. (4) Update the centroids to the mean locations of each of the K clusters. (5) Repeat steps 3 and 4 until the centroid locations stop changing. 
+
+This algorithm is fast and always converges but has some drawbacks. 
+You have to choose the number of clusters. In some problems this is easy. If you're collecting data about handwritten digits, you know that there's going to be nine digits, so you just pick nine clusters. 
+If you don't know the number of clusters, you can run K-means with increasing cluster numbers to see which produces the cleanest clustering, but you might be better off choosing a different algorithm. 
+K-means also performs poorly for non-spherical clusters or clusters of varying density - other reasons to choose another clustering algorithm. 
+
+Gaussian Mixture Models
++++++++++++++++++++++++
+
+This alternative to K-means defined clusters not just by their center point (centroid) but also by their variance.
+This assumes that the underlying clusters in the data follow normal distributions, with each cluster having a mean and variance. While this may not be strictly true for some data, it is often a good approximation due to the central limit theorem. 
+
+The process of applying GMM is fairly similar to K-means. You must choose a number of centroids (or repeat the model iteratively with different number of centroids), and the model will find the centroid means and variances that best fit your data. 
+
+A Gaussian Mixture Model is also a generative model, because you can draw new data points from the underlying distributions. This allows you to create new data with similar characteristics as your training data, useful for many applications (e.g. training set augmentation)
+
+
+Density-Based Spatial Clustering of Applications with Noise (DBSCAN)
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+DBSCAN uses datapoint density to identify clusters similarly to how humans identify groups of points visually on a plot. 
+High-density groups of points (groups with relatively many points a relatively small distance from each other) become clusters. These clusters are defined by a core example and a neighborhood distance. 
+
+DBSCAN has a lot of advantages. This does not force you to choose the number of clusters beforehand, it will just find as many groups of nearby dense points as it can. It works for datasets that aren't spherical. 
+DBSCAN is frequently used for anomaly detection, because it can automatically identify points that don't fit in to an existing cluster. 
+This is very useful in networks problems where identifying unusual examples is valuable. 
+
+DBSCAN has some disadvantages due to its dependency on data density. If you have some clusters that are tightly packed and other clusters that are a lot more spread out, it may be difficult or impossible to tune the hyperparameters to achieve the desired clustering. DBSCAN can also struggle with high dimensional data because the ''curse of dimensionality'' means that all data points appear far apart in high dimensional space. 
+
+Hierarchical Clustering
++++++++++++++++++++++++
+Hierarchical clustering approaches contruct a ''dendrogram'', or tree diagram, that illustrates how examples can be progressively grouped by an arbitrary similarity metric. This provides a really nice visual representation of your dataset including which points are more closely related than others.
+
+If you want to create a specific clustering from a hierarchical dendrogram, you can draw a horizontal line to divide the tree, and all examples grouped at that position in the tree become clusters. 
+
+Semi-Supervised Learning
+------------------------
+
+Semi-supervised learning leverages unsupervised learning to speed up the process of providing ground-truth labels for eventual supervised ML. In nearly all fields of ML, manual labeling is tedious. This is especially true for networks. 
+The idea behind semi-supervised learning is that you combine a small number of manual labels with a clustering algorithm. Hopefully, the clustering algorithm will group the data into clusters with a few manually labeled examples per cluster. You can then propagate the manual labels to the other points in the cluster. This gives you a fully labeled data set even though you only had to manually label a couple of points.
