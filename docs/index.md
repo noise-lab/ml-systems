@@ -70,8 +70,11 @@ quiz to track your knowledge of the material.
 
 ## Other Background Videos and Readings
 
-* [Networking videos](https://www.youtube.com/playlist?list=PLpherdrLyny-zJw95jcE-uJkcsIAG1MEn) will provide networking background.
-* Videos on machine learning topics will also be posted.
+* [Networking
+  videos](https://www.youtube.com/playlist?list=PLpherdrLyny-zJw95jcE-uJkcsIAG1MEn)
+  provide additional networking background, which may help explain some
+  concepts.
+* [Videos and tips on practical machine learning](ml.md)
 
 
 
