@@ -2,8 +2,9 @@
 
 #### Background Readings and Videos
 
-* [ML for Networking](https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=8121867&tag=1) 
-* [ML for Networking (long)](https://jisajournal.springeropen.com/counter/pdf/10.1186/s13174-018-0087-2.pdf)
+* [Survey 1](https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=8121867&tag=1) 
+* [Survey 2](https://jisajournal.springeropen.com/counter/pdf/10.1186/s13174-018-0087-2.pdf)
+* [Graduate Course](https://people.cs.uchicago.edu/~junchenj/34702-fall21/syllabus.html)
 * [Networking videos](https://www.youtube.com/playlist?list=PLpherdrLyny-zJw95jcE-uJkcsIAG1MEn)
 
 #### Datasets
