@@ -19,6 +19,7 @@ All material will be available from the Github repository.
 
 ## Course Components and Grading
 
+| Component     | Amount |
 | --------      | ------ |
 | Exams         | 30%    |
 | Assignments   | 40%    |
