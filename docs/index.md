@@ -36,32 +36,32 @@ concrete.
 
 ## Schedule 
 
-| Lecture                            | Topic                                   | Reading                                                          | Assignment             |
-| ---------------------------------- | -------------------------------------   | -----------------------------                                    | ----------             |
-| 1                                  | Introduction                            | [Ch. 1](book/text/intro.html)                                    |                        |
-| **Use Cases**                      |                                         |                                                                  |                        |
-| 2                                  | Security                                | [Ch. 2.1](book/text/motivation.html#applications-to-security)    |                        |
-| 3                                  | Performance                             | [Ch. 2.2](book/text/motivation.html#applications-to-performance) |                        |
-| **Data From Computer Systems**     |                                         |                                                                  |                        |
-| 4                                  | Networked Systems                       |                                                                  |                        |
-| 5                                  | Measurement                             | Ch. 3.2-3.3                                                      | Measurement            |
-| 6                                  | From Data to Analysis                   | Ch. 3.4                                                          |                        |
-| **Machine Learning Pipeline**      |                                         |                                                                  |                        |
-| 7                                  | Data Preparation and Representation     | Ch. 4.1                                                          | nprint/pcapML          |
-| 8                                  | Model Training and Evaluation           | Ch. 4.2                                                          |                        |
-| **Supervised Learning**            |                                         |                                                                  |                        |
-| 9                                  | Non-Parametric and Probabilistic Models | [Ch. 5](book/text/supervised.html)                               |                        |
-| 10                                 | Linear and Logistic Regression          |                                                                  |                        |
-| 11                                 | Support Vector Machines                 |                                                                  |                        |
-| 12                                 | Trees and Ensembles                     |                                                                  | Traffic Classification |
-| **Unsupervised Learning**          |                                         | [Ch. 6](book/text/unsupervised.html)                             |                        |
-| 13                                 | Dimensionality Reduction                |                                                                  |                        |
-| 14                                 | Clustering                              |                                                                  |                        |
-| 15                                 | Semi-Supervised Learning                |                                                                  | Anomaly Detection      |
-| **Deployment Challenges**          |                                         |                                                                  |                        |
-| 16                                 | Programmability and Automation          | Ch. 7.1                                                          |                        |
-| 17                                 | Systems and Deployment Costs            | Ch. 7.2                                                          |                        |
-| 18                                 | Privacy, Ethics, and the Law            | Ch. 7.3                                                          |                        |
+| Lecture                            | Topic                                   | Reading                                                                                                                                 | Assignment             |
+| ---------------------------------- | -------------------------------------   | -----------------------------                                                                                                           | ----------             |
+| 1                                  | Introduction                            | [Ch. 1](book/text/intro.html)                                                                                                           |                        |
+| **Use Cases**                      |                                         |                                                                                                                                         |                        |
+| 2                                  | Security                                | [Ch. 2.1](book/text/motivation.html#applications-to-security)<br>[Survey](https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=8121867) |                        |
+| 3                                  | Performance                             | [Ch. 2.2](book/text/motivation.html#applications-to-performance)                                                                        |                        |
+| **Data From Computer Systems**     |                                         |                                                                                                                                         |                        |
+| 4                                  | Networked Systems                       |                                                                                                                                         |                        |
+| 5                                  | Measurement                             | Ch. 3.2-3.3                                                                                                                             | Measurement            |
+| 6                                  | From Data to Analysis                   | Ch. 3.4                                                                                                                                 |                        |
+| **Machine Learning Pipeline**      |                                         |                                                                                                                                         |                        |
+| 7                                  | Data Preparation and Representation     | Ch. 4.1                                                                                                                                 | nprint/pcapML          |
+| 8                                  | Model Training and Evaluation           | Ch. 4.2                                                                                                                                 |                        |
+| **Supervised Learning**            |                                         |                                                                                                                                         |                        |
+| 9                                  | Non-Parametric and Probabilistic Models | [Ch. 5](book/text/supervised.html)                                                                                                      |                        |
+| 10                                 | Linear and Logistic Regression          |                                                                                                                                         |                        |
+| 11                                 | Support Vector Machines                 |                                                                                                                                         |                        |
+| 12                                 | Trees and Ensembles                     |                                                                                                                                         | Traffic Classification |
+| **Unsupervised Learning**          |                                         | [Ch. 6](book/text/unsupervised.html)                                                                                                    |                        |
+| 13                                 | Dimensionality Reduction                |                                                                                                                                         |                        |
+| 14                                 | Clustering                              |                                                                                                                                         |                        |
+| 15                                 | Semi-Supervised Learning                |                                                                                                                                         | Anomaly Detection      |
+| **Deployment Challenges**          |                                         |                                                                                                                                         |                        |
+| 16                                 | Programmability and Automation          | Ch. 7.1                                                                                                                                 |                        |
+| 17                                 | Systems and Deployment Costs            | Ch. 7.2                                                                                                                                 |                        |
+| 18                                 | Privacy, Ethics, and the Law            | Ch. 7.3                                                                                                                                 |                        |
 
 Please come to class having done the reading. 
 
@@ -70,10 +70,10 @@ quiz to track your knowledge of the material.
 
 ## Other Background Videos and Readings
 
-* [Networking
-  videos](https://www.youtube.com/playlist?list=PLpherdrLyny-zJw95jcE-uJkcsIAG1MEn)
-  provide additional networking background, which may help explain some
-  concepts.
+* Survey Readings
+    * [ML for Networking](https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=8121867&tag=1) 
+    * [ML for Networking (long)](https://jisajournal.springeropen.com/counter/pdf/10.1186/s13174-018-0087-2.pdf)
+* [Networking videos](https://www.youtube.com/playlist?list=PLpherdrLyny-zJw95jcE-uJkcsIAG1MEn)
 * [Videos and tips on practical machine learning](ml.md)
 
 
