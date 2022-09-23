@@ -30,7 +30,7 @@ All material will be available from the Github repository.
 will be to test your knowledge of concepts covered in class. The format and
 administration of these examinations will be announced in class.
 
-**Assignments.** The course will have approximately 3-4 programming
+**Assignments.** The course will have approximately 3-5 hands-on programming
 assignments (one every other week). These assignments will be logical
 extensions of hands-on assignments in class. If you have a laptop, you should
 be able to complete these assignments on personal computing equipment. If you
