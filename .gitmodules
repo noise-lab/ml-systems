@@ -1,3 +1,0 @@
-[submodule "ml"]
-	path = ml
-	url = git@github.com:SystemsApproach/ml.git
