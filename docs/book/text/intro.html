@@ -13,20 +13,20 @@
 
   
   
-    <link rel="shortcut icon" href="../static/bridge.ico"/>
+    <link rel="shortcut icon" href="../_static/bridge.ico"/>
   
   
   
 
   
-  <script type="text/javascript" src="../static/js/modernizr.min.js"></script>
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
   
     
-      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../static/documentation_options.js"></script>
-        <script src="../static/jquery.js"></script>
-        <script src="../static/underscore.js"></script>
-        <script src="../static/doctools.js"></script>
-        <script src="../static/language_data.js"></script>
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
         <script src="https://www.googletagmanager.com/gtag/js?id=G-QLSP3FJWGT"></script>
         <script >
   window.dataLayer = window.dataLayer || [];
@@ -37,15 +37,15 @@
 </script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
-    <script type="text/javascript" src="../static/js/theme.js"></script>
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
 
     
 
   
-  <link rel="stylesheet" href="../static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../static/graphviz.css" type="text/css" />
-  <link rel="stylesheet" href="../static/css/rtd_theme_mods.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/rtd_theme_mods.css" type="text/css" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Chapter 2: Motivating Problems and Examples" href="motivation.html" />
     <link rel="prev" title="Applied Machine Learning for Networking" href="../index.html" /> 
@@ -256,7 +256,7 @@ machine learning algorithms, but some of the more common themes include
 recognizing patterns in data, making predictions based on past data or
 observations, inferring properties that cannot be directly measured, and
 automatic generation of synthetic data.</p>
-<a class="reference internal image-reference" href="../images/ml-loop.png"><img alt="../images/ml-loop.png" class="align-center" src="../images/ml-loop.png" style="width: 500px;" /></a>
+<a class="reference internal image-reference" href="../_images/ml-loop.png"><img alt="../_images/ml-loop.png" class="align-center" src="../_images/ml-loop.png" style="width: 500px;" /></a>
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
@@ -325,8 +325,37 @@ of that traffic—from the network, often in real-time. The combination of
 these two developments has created vast possibilities for how machine learning
 can be applied to networking, from long-term prediction and forecasting, to
 short-term diagnosis, to real-time adaptation to changing conditions.</p>
-<p>This book offers a practical introduction to network measuement,
-machine learning methods and models, and ap</p>
+<p>This book offers a practical introduction to network measurement, machine
+learning methods and models, and applications. We will explore the details of
+network measurement, in particular the different types of network data that
+are available given current network devices, from routers to middleboxes,
+including the techniques for gathering and acquiring network data; what is possible to
+learn and infer from different types of network data; and new directions in
+network measurement and data representation, from advances in network
+telemetry to existing and emerging ways of representing network data for input
+to models.</p>
+<p>Equipped with a better understanding of how various data is acquired from the
+network, we will then turn to an overview of machine learning methods. This
+book is not designed to give you a detailed overview or mathematical
+foundations behind each of the models—there are plenty of books out there
+for that already. Our goal in this book, rather, is to give you exposure to a
+variety of methods, show examples of how these models and methods can be
+applied in practice, provide an understanding of how these methods work, as
+well as when a particular model might be appropriate or not to apply for a
+particular dataset. A large focus of the book is also on how to <em>apply</em> these
+models in practice; as a result, we will focus significant attention on data
+acquisition, and representation—as we will see, the choice of how to
+represent the data to a model is often as important as the choice of model
+itself.</p>
+<p>This practical view of machine learning for networking necessitates a focus on
+the entire machine learning pipeline, from data acquisition to model
+maintenance. Whereas most machine learning courses and textbooks focus on the
+modeling aspects of machine learning in isolation, in practice, the machine
+learning models themselves are but a small contributor to the overall
+effectiveness of prediction and inference. As such, we will explore all
+aspects of the machine learning and data science pipeline, from data
+acquisition to model deployment and maintenance, to the ethical and legal
+concerns surrounding applications of machine learning for networking.</p>
 </div>
 
 
