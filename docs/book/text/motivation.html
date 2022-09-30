@@ -112,6 +112,11 @@
 <li class="toctree-l3"><a class="reference internal" href="#application-service-and-device-identification">Application, Service, and Device Identification</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#applications-to-resource-allocation">Applications to Resource Allocation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#network-provisioning">Network Provisioning</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#coding-and-rate-control">Coding and Rate Control</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="measurement.html">Chapter 3: Network Measurement</a></li>
@@ -310,7 +315,7 @@ machine learning-based attack detection methods based on DNS traffic. Many
 companies, for example, could sell security appliances to Internet service
 providers, enterprise networks, or other institutions that would simply
 “listen” to DNS traffic and detect unusual behavior. More recent
-trends—notably the evolution of DNS to rely on encrpyted transport and
+trends—notably the evolution of DNS to rely on encrypted transport and
 application protocols (i.e., DNS-over-TLS, and its more popular variant
 DNS-over-HTTPS), and the deployment of these technologies in increasingly more
 (and popular) operating systems and browsers means that DNS traffic is
@@ -362,7 +367,7 @@ Machine learning has proved effective in detecting account compromise in this
 environment, adapting to adversaries with limited human intervention, as well
 as capturing non-linear correlations between features and labels (in this
 case, predicting whether an attack has taken place). These models must take
-into accounta variety of inputs, including authentication logs, threat data,
+into account a variety of inputs, including authentication logs, threat data,
 the login behavior on accounts, and so forth. Input features to these models
 include aspects such as whether the login occurs at a normal or abnormal time
 of day, whether the login is coming from a known device, application, IP
@@ -374,7 +379,7 @@ process of engineering and representing features to models.</p>
 </div>
 <div class="section" id="anomaly-detection">
 <h3>Anomaly Detection<a class="headerlink" href="#anomaly-detection" title="Permalink to this headline">¶</a></h3>
-<p>Anomaly detection—sometiems also referred to as <em>novelty detection</em>—
+<p>Anomaly detection—sometimes also referred to as <em>novelty detection</em>—
 describes a broad class of problems that involve attempts to detect anything
 “unusual”. Typically, anomaly detection problems involve the application of
 unsupervised machine learning techniques.</p>
@@ -399,8 +404,8 @@ or a new version of World of Warcraft is released, large numbers of Internet
 users may attempt to download software updates at the same time. Because these
 updates can be quite large, users who download these updates can generate a
 massive volume of traffic in a short period of time. Historically, these
-events have been referred to as <em>flash crowds</em>. Early work in statsitical
-anomaly detection for networks has attempted to distingiush flash crowds from
+events have been referred to as <em>flash crowds</em>. Early work in statistical
+anomaly detection for networks has attempted to distinguish flash crowds from
 malicious activities such as denial of service attacks. However, regardless of
 intent, the anomalies themselves can pose operational challenges for network
 operators.</p>
@@ -492,7 +497,7 @@ of machine learning whereby a model takes features from network traffic as
 input and attempts to identify the website—or even the specific
 webpage—that a user is visiting. Because individual websites tend to have a
 unique number of objects, and each of those objects tend to have unique sizes,
-the combination of the number and size of objects being transfered can often
+the combination of the number and size of objects being transferred can often
 uniquely identify a website or webpage. Other work has observed that
 sets of queries from the Internet’s domain name system (DNS) can also uniquely
 identify websites.</p>
@@ -507,6 +512,79 @@ interarrival times, the number of traffic flows, the duration of each flow,
 and so forth, have made it possible to uniquely identify applications,
 devices, websites, and services even if the underlying traffic itself is
 encrypted.</p>
+</div>
+</div>
+<div class="section" id="applications-to-resource-allocation">
+<h2>Applications to Resource Allocation<a class="headerlink" href="#applications-to-resource-allocation" title="Permalink to this headline">¶</a></h2>
+<p>Machine learning has also begun to be used in contexts of network resource
+allocation and optimization. Resource allocation—the problem of deciding how
+much resources should be devoted to a particular traffic flow, application, or
+process—can be performed over both
+short and long timescales.</p>
+<ul class="simple">
+<li><p>Over longer timescales, machine learning can be used to predict and forecast
+how demand might change over time, allowing network operators to better
+provision network resources.</p></li>
+<li><p>Over shorter timescales, machine learning can be used to determine how fast
+and application should send, how data should be compressed and encoded, and
+even the paths that traffic should take through the network.</p></li>
+</ul>
+<p>In these areas in particular, specific types of machine learning, including
+both deep learning and reinforcement learning, are especially applicable.
+Below, we discuss some of these applications, and how machine learning is
+being applied in these contexts.</p>
+<div class="section" id="network-provisioning">
+<h3>Network Provisioning<a class="headerlink" href="#network-provisioning" title="Permalink to this headline">¶</a></h3>
+<p>Large service provider networks routinely face questions about when, how, and
+where to provision capacity in their networks. Typically, these problems may
+entail gathering data about past and present levels of traffic on the network
+and making predictions about how traffic patterns will evolve over time. Based
+on those predictions, network operators may then make changes to network
+configuration that result in additional network capacity, traffic taking
+different routes through the network, and so forth.</p>
+<p>In this part of the process, where operators make changes to affect
+provisioning and topology, machine learning can also play a role, helping
+network operators answer “what if” questions about how changes to network
+configuration ultimately affect other facets, such as traffic volumes along
+different paths, and even application performance. For example, large content
+distribution networks such as Google have used machine learning to help
+predict how search response time might be affected by the deployment of
+additional web caches.</p>
+</div>
+<div class="section" id="coding-and-rate-control">
+<h3>Coding and Rate Control<a class="headerlink" href="#coding-and-rate-control" title="Permalink to this headline">¶</a></h3>
+<p>A very active area in networked systems and applications today is the
+development of data encoding schemes that measure network conditions and adapt
+encoding in real time, to deliver content efficiently.  Network conditions
+such as packet loss and latency can vary over time for many reasons, such as
+variable traffic loads that may introduce congestion. In such scenarios, when
+conditions change, the senders and receivers of traffic may want to adapt how
+data is coded, to maximize the likelihood that the data is delivered with low
+latency, at the highest possible quality.</p>
+<p>Common applications where this problem arises include both on-demand and
+real-time video streaming. In both cases, users want to receive a high quality
+video. Yet, the network may delay or lose packets, and the receiving client
+must then either decode the video with the data it receives or wait for the
+lost data to be retransmitted (which may not be an option if retransmission
+takes too long). In the past, common encoding schemes would measure network
+conditions such as loss rate and compute a level of redundancy to include with
+the transmission, in advance. Yet, if that encoding was done ahead of time and
+the network conditions change again, then inefficiencies can arise—with
+either excess data being sent (if the loss rate is less than planned) or the
+client receiving a poor quality stream (if the loss rate is higher than
+planned).</p>
+<p>Emerging machine-learning based approaches use techniques like reinforcement
+learning to determine how to encode a video stream so that the client can
+receive a high-quality stream with low latency, even as network conditions
+change.  In addition to encoding content according to changing network
+conditions, a sender can also adapt its sending rate in response to changing
+network conditions (a process known as <em>congestion control</em>). Research has
+shown that, in some circumstances, a sender can adjust its sending rate in
+ways that optimize a pre-defined objective function in response to changing
+network conditions. While the early incarnations have applied game theory to
+achieve this optimization, the fundamental questions involve the learnabiity
+of congestion control algorithms, and to what extent they can out-perform
+manually designed ones.</p>
 </div>
 </div>
 </div>
