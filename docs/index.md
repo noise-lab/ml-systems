@@ -65,6 +65,7 @@ Please come to class having done the reading.
 The material below is strictly optional unless otherwise noted, although you
 may find it useful.
 
+* [Board Notes](https://www.dropbox.com/s/k49n99jzdkw68wi/ML%20for%20Systems.pdf?dl=0)
 * [Resource List](ml.md)
 
 
