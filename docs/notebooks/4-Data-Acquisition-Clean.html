@@ -14624,7 +14624,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[18]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[1]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
@@ -14646,7 +14646,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
     
-    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[18]:</div>
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[1]:</div>
 
 
 
@@ -14923,7 +14923,8 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h3 id="Number-of-Bytes">Number of Bytes<a class="anchor-link" href="#Number-of-Bytes">&#182;</a></h3>
+<h3 id="Total-Number-of-Flows">Total Number of Flows<a class="anchor-link" href="#Total-Number-of-Flows">&#182;</a></h3><p>Count the total number of flows in this trace.</p>
+
 </div>
 </div>
 </div>
@@ -14934,7 +14935,23 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h3 id="Number-of-Packets">Number of Packets<a class="anchor-link" href="#Number-of-Packets">&#182;</a></h3>
+<h3 id="Number-of-Bytes">Number of Bytes<a class="anchor-link" href="#Number-of-Bytes">&#182;</a></h3><p>Count the total number of bytes for each flow in the trace.</p>
+<p>Then, sort the flows by size, in bytes.</p>
+<p>What do you notice about the large flows? What do they look like?</p>
+
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h3 id="Number-of-Packets">Number of Packets<a class="anchor-link" href="#Number-of-Packets">&#182;</a></h3><p>Count the number of packets in each flow.</p>
+<p>What do you notice about these flows? Are they similar to the largest flows by bytes? Which differ?</p>
+
 </div>
 </div>
 </div>
@@ -14946,6 +14963,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <h3 id="Duration">Duration<a class="anchor-link" href="#Duration">&#182;</a></h3><p>Compute the duration of each flow, by taking the time of the last packet and subtracting the time of the first, for each flow.</p>
+<p>What are the longest flows in the trace?</p>
 
 </div>
 </div>
@@ -14958,6 +14976,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <h2 id="Bytes-and-Packets-Per-Second">Bytes and Packets Per Second<a class="anchor-link" href="#Bytes-and-Packets-Per-Second">&#182;</a></h2><p>Compute the bytes per second and packets per second for each flow.</p>
+<p>For a simple feature computation, compute the average bytes and packets per second for each flow, for the entire duration of the flow.  If you want to get more clever or fancy, you can do &quot;windowed averages&quot;, computing bytes or packets per second for shorter time intervals.</p>
 
 </div>
 </div>
