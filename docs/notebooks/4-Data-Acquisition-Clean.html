@@ -14624,14 +14624,13 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[17]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[18]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
 <span class="n">ndf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">"data/netflix.csv.gz"</span><span class="p">)</span>
 <span class="n">ndf</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span>
-<span class="n">ndf</span><span class="o">.</span><span class="n">shape</span>
 </pre></div>
 
      </div>
@@ -14647,13 +14646,242 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
     
-    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[17]:</div>
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[18]:</div>
 
 
 
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
 
-<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
-<pre>(141471, 7)</pre>
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>No.</th>
+      <th>Time</th>
+      <th>Source</th>
+      <th>Destination</th>
+      <th>Protocol</th>
+      <th>Length</th>
+      <th>Info</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1</td>
+      <td>2018-02-11 08:10:00.534682</td>
+      <td>192.168.43.72</td>
+      <td>ns-vip-pro.paris.inria.fr</td>
+      <td>DNS</td>
+      <td>77</td>
+      <td>Standard query 0xed0c A fonts.gstatic.com</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2</td>
+      <td>2018-02-11 08:10:00.534832</td>
+      <td>192.168.43.72</td>
+      <td>ns-vip-pro.paris.inria.fr</td>
+      <td>DNS</td>
+      <td>77</td>
+      <td>Standard query 0x301a AAAA fonts.gstatic.com</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>3</td>
+      <td>2018-02-11 08:10:00.539408</td>
+      <td>192.168.43.72</td>
+      <td>ns-vip-pro.paris.inria.fr</td>
+      <td>DNS</td>
+      <td>87</td>
+      <td>Standard query 0x11d3 A googleads.g.doubleclic...</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>4</td>
+      <td>2018-02-11 08:10:00.541204</td>
+      <td>192.168.43.72</td>
+      <td>ns-vip-pro.paris.inria.fr</td>
+      <td>DNS</td>
+      <td>87</td>
+      <td>Standard query 0x1284 AAAA googleads.g.doublec...</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>5</td>
+      <td>2018-02-11 08:10:00.545785</td>
+      <td>192.168.43.72</td>
+      <td>ns-vip-pro.paris.inria.fr</td>
+      <td>DNS</td>
+      <td>78</td>
+      <td>Standard query 0x3432 AAAA ytimg.l.google.com</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>6</td>
+      <td>2018-02-11 08:10:00.547036</td>
+      <td>192.168.43.72</td>
+      <td>ns-vip-pro.paris.inria.fr</td>
+      <td>DNS</td>
+      <td>96</td>
+      <td>Standard query 0xb756 A r4---sn-gxo5uxg-jqbe.g...</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>7</td>
+      <td>2018-02-11 08:10:00.547156</td>
+      <td>192.168.43.72</td>
+      <td>ns-vip-pro.paris.inria.fr</td>
+      <td>DNS</td>
+      <td>75</td>
+      <td>Standard query 0x62ab A ssl.gstatic.com</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>8</td>
+      <td>2018-02-11 08:10:00.547249</td>
+      <td>192.168.43.72</td>
+      <td>ns-vip-pro.paris.inria.fr</td>
+      <td>DNS</td>
+      <td>74</td>
+      <td>Standard query 0x42fb A www.google.com</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>9</td>
+      <td>2018-02-11 08:10:00.853950</td>
+      <td>ns-vip-pro.paris.inria.fr</td>
+      <td>192.168.43.72</td>
+      <td>DNS</td>
+      <td>386</td>
+      <td>Standard query response 0x11d3 A 216.58.213.162</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>10</td>
+      <td>2018-02-11 08:10:00.853970</td>
+      <td>192.168.43.72</td>
+      <td>ns-vip-pro.paris.inria.fr</td>
+      <td>DNS</td>
+      <td>75</td>
+      <td>Standard query 0x8756 A www.gstatic.com</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>11</td>
+      <td>2018-02-11 08:10:00.854433</td>
+      <td>ns-vip-pro.paris.inria.fr</td>
+      <td>192.168.43.72</td>
+      <td>DNS</td>
+      <td>389</td>
+      <td>Standard query response 0x301a AAAA 2a00:1450:...</td>
+    </tr>
+    <tr>
+      <th>11</th>
+      <td>12</td>
+      <td>2018-02-11 08:10:00.854620</td>
+      <td>ns-vip-pro.paris.inria.fr</td>
+      <td>192.168.43.72</td>
+      <td>DNS</td>
+      <td>346</td>
+      <td>Standard query response 0x62ab A 172.217.18.195</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td>13</td>
+      <td>2018-02-11 08:10:00.854641</td>
+      <td>ns-vip-pro.paris.inria.fr</td>
+      <td>192.168.43.72</td>
+      <td>DNS</td>
+      <td>400</td>
+      <td>Standard query response 0xb756 A 193.51.224.143</td>
+    </tr>
+    <tr>
+      <th>13</th>
+      <td>14</td>
+      <td>2018-02-11 08:10:00.854676</td>
+      <td>ns-vip-pro.paris.inria.fr</td>
+      <td>192.168.43.72</td>
+      <td>DNS</td>
+      <td>398</td>
+      <td>Standard query response 0x1284 AAAA 2a00:1450:...</td>
+    </tr>
+    <tr>
+      <th>14</th>
+      <td>15</td>
+      <td>2018-02-11 08:10:00.859945</td>
+      <td>192.168.43.72</td>
+      <td>ns-vip-pro.paris.inria.fr</td>
+      <td>DNS</td>
+      <td>84</td>
+      <td>Standard query 0xdd32 A www.googleadservices.com</td>
+    </tr>
+    <tr>
+      <th>15</th>
+      <td>16</td>
+      <td>2018-02-11 08:10:00.861944</td>
+      <td>192.168.43.72</td>
+      <td>par10s38-in-f3.1e100.net</td>
+      <td>TCP</td>
+      <td>78</td>
+      <td>58443 &gt; 443 [SYN] Seq=0 Win=65535 Len=0 MSS=14...</td>
+    </tr>
+    <tr>
+      <th>16</th>
+      <td>17</td>
+      <td>2018-02-11 08:10:00.876320</td>
+      <td>ns-vip-pro.paris.inria.fr</td>
+      <td>192.168.43.72</td>
+      <td>DNS</td>
+      <td>377</td>
+      <td>Standard query response 0xed0c A 216.58.209.227</td>
+    </tr>
+    <tr>
+      <th>17</th>
+      <td>18</td>
+      <td>2018-02-11 08:10:00.883409</td>
+      <td>ns-vip-pro.paris.inria.fr</td>
+      <td>192.168.43.72</td>
+      <td>DNS</td>
+      <td>354</td>
+      <td>Standard query response 0x3432 AAAA 2a00:1450:...</td>
+    </tr>
+    <tr>
+      <th>18</th>
+      <td>19</td>
+      <td>2018-02-11 08:10:00.890223</td>
+      <td>ns-vip-pro.paris.inria.fr</td>
+      <td>192.168.43.72</td>
+      <td>DNS</td>
+      <td>338</td>
+      <td>Standard query response 0x42fb A 216.58.209.228</td>
+    </tr>
+    <tr>
+      <th>19</th>
+      <td>20</td>
+      <td>2018-02-11 08:10:00.890679</td>
+      <td>192.168.43.72</td>
+      <td>ns-vip-pro.paris.inria.fr</td>
+      <td>DNS</td>
+      <td>75</td>
+      <td>Standard query 0xf38d A www.youtube.com</td>
+    </tr>
+  </tbody>
+</table>
+</div>
 </div>
 
 </div>
@@ -14717,7 +14945,8 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h3 id="Duration">Duration<a class="anchor-link" href="#Duration">&#182;</a></h3>
+<h3 id="Duration">Duration<a class="anchor-link" href="#Duration">&#182;</a></h3><p>Compute the duration of each flow, by taking the time of the last packet and subtracting the time of the first, for each flow.</p>
+
 </div>
 </div>
 </div>
@@ -14728,6 +14957,19 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h2 id="Bytes-and-Packets-Per-Second">Bytes and Packets Per Second<a class="anchor-link" href="#Bytes-and-Packets-Per-Second">&#182;</a></h2><p>Compute the bytes per second and packets per second for each flow.</p>
+
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h2 id="Note">Note<a class="anchor-link" href="#Note">&#182;</a></h2><p>Some of the libraries that we will use in this class, including the <code>netml</code> library from the University of Chicago, will compute these and other statistics automatically.</p>
 <h2 id="Thought-Questions">Thought Questions<a class="anchor-link" href="#Thought-Questions">&#182;</a></h2><ol>
 <li><p>What are the largest flows in terms of: Number of bytes? Number of packets?</p>
 </li>
