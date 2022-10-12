@@ -13,20 +13,20 @@
 
   
   
-    <link rel="shortcut icon" href="../static/bridge.ico"/>
+    <link rel="shortcut icon" href="_static/bridge.ico"/>
   
   
   
 
   
-  <script type="text/javascript" src="../static/js/modernizr.min.js"></script>
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
   
     
-      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../static/documentation_options.js"></script>
-        <script src="../static/jquery.js"></script>
-        <script src="../static/underscore.js"></script>
-        <script src="../static/doctools.js"></script>
-        <script src="../static/language_data.js"></script>
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
         <script src="https://www.googletagmanager.com/gtag/js?id=G-QLSP3FJWGT"></script>
         <script >
   window.dataLayer = window.dataLayer || [];
@@ -37,15 +37,15 @@
 </script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
-    <script type="text/javascript" src="../static/js/theme.js"></script>
+    <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
 
   
-  <link rel="stylesheet" href="../static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../static/graphviz.css" type="text/css" />
-  <link rel="stylesheet" href="../static/css/rtd_theme_mods.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/rtd_theme_mods.css" type="text/css" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Chapter 4: Machine Learning Pipeline" href="pipelines.html" />
     <link rel="prev" title="Chapter 2: Motivating Problems and Examples" href="motivation.html" /> 
@@ -104,7 +104,10 @@
 <li class="toctree-l2"><a class="reference internal" href="#metrics-what-to-measure">Metrics: What to Measure</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#active-measurement">Active Measurement</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#passive-measurement">Passive Measurement</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#from-data-to-analysis">From Data to Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#data-from-acquisition-to-analysis">Data: From Acquisition to Analysis</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#acquisition-tools">Acquisition Tools</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="pipelines.html">Chapter 4: Machine Learning Pipeline</a></li>
@@ -481,13 +484,14 @@ are making it possible to capture raw data at very high rates—and causing us
 to rethink what the “best” representations might be for a wide array of
 networking tasks that might rely on machine learning.</p>
 </div>
-<div class="section" id="from-data-to-analysis">
-<h2>From Data to Analysis<a class="headerlink" href="#from-data-to-analysis" title="Permalink to this headline">¶</a></h2>
-<p>Now that we understand the different forms that network traffic capture can
-take, we can turn to understanding the tools that enable the capture of
-network traffic data, and how we can use the data captured using those tools
-to ultimately perform analysis and prediction.</p>
-<p>We will defer specific discussion of machine learning pipelines to the next
+<div class="section" id="data-from-acquisition-to-analysis">
+<h2>Data: From Acquisition to Analysis<a class="headerlink" href="#data-from-acquisition-to-analysis" title="Permalink to this headline">¶</a></h2>
+<p>Now that we understand the different forms that network data (and, in
+particular, network traffic measurements) can take, we turn to understanding
+some of the tools that enable the capture of network traffic data, as well as
+the complementary libraries how we can use the data captured using those tools
+to perform analysis and prediction.</p>
+<p>We defer specific discussion of machine learning pipelines to the next
 chapter, since the application of machine learning models to data presents its
 own set of challenges. Rather, we will focus on common ways to analyze network
 traffic using familiar software tools. In this book, we will focus on the use
@@ -495,6 +499,8 @@ of Python to perform this type of data analysis. Although similar analysis is
 possible in other frameworks and languages, some of the more cutting-edge
 tools that we will explore in this book are primarily available through Python
 APIs, so Python is a good place to start.</p>
+<div class="section" id="acquisition-tools">
+<h3>Acquisition Tools<a class="headerlink" href="#acquisition-tools" title="Permalink to this headline">¶</a></h3>
 <p><em>Passive Measurement.</em>
 A common tool to analyze passive traffic measurements is Wireshark. Wireshark
 is an application that can be installed on many common operating systems,
@@ -529,15 +535,26 @@ across the packet header, sometimes called a 5-tuple: Source and destination
 IP address, source and destination port, and protocol. Deriving the
 aforementioned statistics according to packets that belong to the same “flow”
 (i.e., share a common 5-tuple) also makes it possible to generate (and analyze
-statistics) across flows, or even groups of related flows.</p>
-<p>While Wireshark is a useful tool for perusing network traffic, ultimately
-analyzing packet captures programmatically may require more sophisticated
-libraries and APIs. A good place to start for low-level packet capture is
-Python’s scapy library; scapy will get you going quickly, but its performance
-may leave something to be desired if you wish to conduct real-time
-measurements, parsing, and analysis; other options include dpkt and PF_RING.
-We have built on these libraries in a tool and accompanying Python library,
-netml, which you can use for conducting many of the exercises in this book.</p>
+statistics) across flows, or even groups of related flows. The types of tools
+that generate this type of flow statistics generally operate on network
+devices, such as routers and switches. For example, on Cisco routers, the
+software that is used to produce flow records is commonly referred to as
+NetFlow. A standard version of this software and format is called IPFIX.</p>
+<p>Ultimately analyzing packet captures programmatically can require more
+sophisticated libraries and APIs. While many of these programmatic options are
+typically restricted to running on general-purpose computing devices (e.g.,
+servers, middleboxes), as opposed to network-specific hardware, software-based
+options provide significant flexibility in manipulating and analyzing packet
+capture—including generating features that can be used for machine learning
+models.</p>
+<p>A good place to become familiar with low-level software packet capture
+libraries, particularly if you are new to the area, is Python’s scapy library;
+scapy will get you going quickly, but its performance may leave something to
+be desired if you wish to conduct real-time measurements, parsing, and
+analysis.  Other options have a steeper learning curve; these include eBPF,
+dpkt, and PF_RING.  We have built on these libraries in a tool and
+accompanying Python library, netml, which you can use for conducting many of
+the exercises in this book.</p>
 <p><em>Active Measurement.</em>
 Another approach for gathering network traffic data is to perform active
 measurements that yield information about the network. Active measurements can
@@ -586,6 +603,7 @@ operations or conditions (e.g., buffering); (2) determine the underlying cause
 of the latency problem (and, in particular, whether the source of that latency
 aberration is due to a problem within the ISP network, the user’s home
 network, an endpoint device, or some other cause).</p>
+</div>
 </div>
 </div>
 
