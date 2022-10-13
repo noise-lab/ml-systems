@@ -14594,7 +14594,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <h1 id="Feature-Extraction">Feature Extraction<a class="anchor-link" href="#Feature-Extraction">&#182;</a></h1><p>Data representation plays a critical role in the performance of many machine learning methods in machine learning. The data representation of network traffic often determines the effectiveness of these models as much as the model itself. The wide range of novel events that network operators need to detect (e.g., attacks, malware, new applications, changes in traffic demands) introduces the possibility for a broad range of possible models and data representations.</p>
-<p>NetML is an open-source tool and end-to-end pipeline for anomaly detection in network traffic. This notebook walks through the use of that library.</p>
+<p><a href="https://pypi.org/project/netml/">NetML</a> is an open-source tool and end-to-end pipeline for anomaly detection in network traffic. This notebook walks through the use of that library.</p>
 <p>First, let us load the library.</p>
 
 </div>
@@ -14608,10 +14608,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[1]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">warnings</span>
-<span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">'ignore'</span><span class="p">)</span>
-
-<span class="kn">from</span> <span class="nn">netml.pparser.parser</span> <span class="kn">import</span> <span class="n">PCAP</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">netml.pparser.parser</span> <span class="kn">import</span> <span class="n">PCAP</span>
 <span class="kn">from</span> <span class="nn">netml.utils.tool</span> <span class="kn">import</span> <span class="n">dump_data</span><span class="p">,</span> <span class="n">load_data</span>
 </pre></div>
 
@@ -14650,7 +14647,7 @@ WARNING: more No IPv4 address found on en3 !
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="Specify-a-Packet-Capture-File">Specify a Packet Capture File<a class="anchor-link" href="#Specify-a-Packet-Capture-File">&#182;</a></h2><p>Create a pcap data structure for which we would like to extract features.</p>
+<h2 id="Specify-a-Packet-Capture-File">Specify a Packet Capture File<a class="anchor-link" href="#Specify-a-Packet-Capture-File">&#182;</a></h2><p>Create a pcap data structure for which we would like to extract features. You can define the minumum number of packets that you want to include in each flow.</p>
 
 </div>
 </div>
@@ -14674,7 +14671,7 @@ WARNING: more No IPv4 address found on en3 !
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>How many flows are in the data structure?</p>
+<h3 id="Count-the-Flows">Count the Flows<a class="anchor-link" href="#Count-the-Flows">&#182;</a></h3><p>How many flows are in your data structure?</p>
 
 </div>
 </div>
@@ -14686,8 +14683,8 @@ WARNING: more No IPv4 address found on en3 !
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="Extract-Features-from-Each-Flow">Extract Features from Each Flow<a class="anchor-link" href="#Extract-Features-from-Each-Flow">&#182;</a></h2><p>Use the <code>netml</code> library to extract features from each flow. The documentation and <a href="https://arxiv.org/pdf/2006.16993.pdf">accompanying paper</a> provide examples of features that you can try to extract.</p>
-
+<h2 id="Extract-Features-from-Each-Flow">Extract Features from Each Flow<a class="anchor-link" href="#Extract-Features-from-Each-Flow">&#182;</a></h2><p>Use the <code>netml</code> library to extract features from each flow. The documentation and <a href="https://arxiv.org/pdf/2006.16993.pdf">accompanying paper</a> provide examples of features that you can try to extract. First try to extract the inter-arrival times for each flow.</p>
+<h3 id="Interarrival-Times">Interarrival Times<a class="anchor-link" href="#Interarrival-Times">&#182;</a></h3>
 </div>
 </div>
 </div>
@@ -14698,7 +14695,70 @@ WARNING: more No IPv4 address found on en3 !
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="Thought-Questions">Thought Questions<a class="anchor-link" href="#Thought-Questions">&#182;</a></h2><p>What other features might you</p>
+<h3 id="Print-the-Features">Print the Features<a class="anchor-link" href="#Print-the-Features">&#182;</a></h3><p>Inspect the features for each flow.</p>
+
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[7]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">iat_features</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[7]:</div>
+
+
+
+
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
+<pre>array([[3.47244024e-01, 7.56025314e-04, 4.64078903e-01, ...,
+        0.00000000e+00, 0.00000000e+00, 0.00000000e+00],
+       [3.50138903e-01, 2.55107880e-04, 4.32914972e-01, ...,
+        0.00000000e+00, 0.00000000e+00, 0.00000000e+00],
+       [5.70064783e-01, 2.50234127e-01, 1.03995309e+01, ...,
+        0.00000000e+00, 0.00000000e+00, 0.00000000e+00],
+       ...,
+       [1.32479668e-02, 1.62124634e-04, 3.94445896e-01, ...,
+        0.00000000e+00, 0.00000000e+00, 0.00000000e+00],
+       [1.27911568e-02, 6.77895546e-03, 1.35493279e-03, ...,
+        0.00000000e+00, 0.00000000e+00, 0.00000000e+00],
+       [1.31859779e-02, 3.81400824e-01, 2.24113464e-04, ...,
+        0.00000000e+00, 0.00000000e+00, 0.00000000e+00]])</pre>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h2 id="Thought-Questions">Thought Questions<a class="anchor-link" href="#Thought-Questions">&#182;</a></h2><p>What other features might you want to extract from packet captures that are not provided by the <code>netml</code> library?</p>
 
 </div>
 </div>
