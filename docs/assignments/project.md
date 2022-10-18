@@ -1,13 +1,14 @@
 # Class Project
 
-## Your Assignment
-
 **Project.** The course will have a small project. You will have the following options
 for completing the project: 
 
 1. **ML/Net Leaderboard.** nPrint/pcapML; your goal will be to re-produce or extend some of the
    best-known machine learning results for various applications of machine
-   learning in computer networking.
+   learning in computer networking. The nprint project has a
+   [leaderboard](https://nprint.github.io/benchmarks/) with
+   links to datasets and the best-known results for each of these problems.
+   You are encouraged to follow the directions on that page.
 
 2. **Extensions to Existing Libraries.** We have learned about various
    libraries in class, in particular the NetML and nPrint/pcapML libraries.
@@ -48,13 +49,13 @@ for completing the project:
   * Evaluation: How will you evaluate your models?
   * Learning objective: What are you expecting to learn from your project?
 
-## Final Deliverables
+## Deliverables
 
 I expect each project to be turned in as follows:
 
 1. **Clean** Jupyter notebook, that I can run, end-to-end, with your analysis
    and code inline.
-2. A project report, formatted in Sphynx, that I can read, end-to-end, with
+2. A project report, formatted in Sphinx, that I can read, end-to-end, with
    the relevant parts of your code inline. ([How To](https://docs.readthedocs.io/en/stable/guides/jupyter.html))
 
 The notebook must run, and it needs to be clean. Presentation of your results
