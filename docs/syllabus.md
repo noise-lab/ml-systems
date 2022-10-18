@@ -36,7 +36,7 @@ extensions of hands-on assignments in class. If you have a laptop, you should
 be able to complete these assignments on personal computing equipment. If you
 need computing resources, please ask.
 
-**Project.** The course will have a small project. You will have two options
+**[Project.](assignments/project.md)** The course will have a small project. You will have two options
 for completing the project. 
 
 1. **ML/Net Leaderboard.** nPrint/pcapML; your goal will be to re-produce or extend some of the
