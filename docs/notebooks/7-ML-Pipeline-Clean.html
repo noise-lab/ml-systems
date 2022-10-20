@@ -14693,8 +14693,33 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h3 id="Test-Your-Trained-Model">Test Your Trained Model<a class="anchor-link" href="#Test-Your-Trained-Model">&#182;</a></h3><p>You can now evaluate how well your trained model works.</p>
+<h3 id="Test-Your-Trained-Model">Test Your Trained Model<a class="anchor-link" href="#Test-Your-Trained-Model">&#182;</a></h3><p>You can now evaluate how well your trained model works.  There are several valuable ways to visualize your results. You might use techniques such as a confusion matrix, or a receiver operating characteristic (ROC) curve. Below we will gain some experience plotting both of those.  This <a href="https://scikit-learn.org/stable/auto_examples/miscellaneous/plot_display_object_visualization.html">documentation</a> may help you with plotting these results.</p>
 <h4 id="Confusion-Matrix">Confusion Matrix<a class="anchor-link" href="#Confusion-Matrix">&#182;</a></h4><p>A confusion matrix is a one way to understand errors of different types. We can see a lot of examples off diagonal, suggesting a fair number of incorrect answers.</p>
+
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h3 id="Receiver-Operating-Characteristic">Receiver Operating Characteristic<a class="anchor-link" href="#Receiver-Operating-Characteristic">&#182;</a></h3><p>Some models can output different classes based on a threshold that is set for the decision.</p>
+
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h3 id="Area-Under-the-Curve-(AUC)">Area Under the Curve (AUC)<a class="anchor-link" href="#Area-Under-the-Curve-(AUC)">&#182;</a></h3><p>From the ROC above, you can also compute a metric called the area under the curve (AUC). Visually, this is the area under the curve that you just plotted. You could see, intuitively, that the &quot;best&quot; performance should yield an AUC of 1, and the worst performance would yield an AUC closer to 0.5.</p>
+<p>Scikit learn also has a function for computing AUC.  Compute the area under the curve.</p>
 
 </div>
 </div>
