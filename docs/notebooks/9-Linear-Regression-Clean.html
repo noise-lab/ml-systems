@@ -14636,7 +14636,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="Group-Traffic-Info-Flows">Group Traffic Info Flows<a class="anchor-link" href="#Group-Traffic-Info-Flows">&#182;</a></h2><p>This example below uses a packet capture that is provided in the repository. You are also welcome (and encouraged!) to capture your own traffic.</p>
+<h2 id="Part-1:-Simple-Linear-Regression.">Part 1: Simple Linear Regression.<a class="anchor-link" href="#Part-1:-Simple-Linear-Regression.">&#182;</a></h2><h3 id="Group-Traffic-Info-Flows">Group Traffic Info Flows<a class="anchor-link" href="#Group-Traffic-Info-Flows">&#182;</a></h3><p>This example below uses a packet capture that is provided in the repository. You are also welcome (and encouraged!) to capture your own traffic.</p>
 <p>Use <code>netml</code> to load the pcap and convert packets to flows, using pcap2flows.</p>
 
 </div>
@@ -14672,7 +14672,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 
 
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>&#39;_pcap2flows()&#39; starts at 2022-10-27 10:47:35
+<pre>&#39;_pcap2flows()&#39; starts at 2022-10-27 13:37:19
 pcap_file: data/http.pcap
 ith_packets: 0
 ith_packets: 10000
@@ -14701,7 +14701,7 @@ memory usage: 2.4 KB
 None
 0th_flow: len(pkts): 4
 After splitting flows, the number of subflows: 291 and each of them has at least 2 packets.
-&#39;_pcap2flows()&#39; ends at 2022-10-27 10:47:40 and takes 0.0831 mins.
+&#39;_pcap2flows()&#39; ends at 2022-10-27 13:37:24 and takes 0.0828 mins.
 </pre>
 </div>
 </div>
@@ -14729,14 +14729,14 @@ After splitting flows, the number of subflows: 291 and each of them has at least
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="Generate-Features">Generate Features<a class="anchor-link" href="#Generate-Features">&#182;</a></h2><p>Use the <code>netml</code> &quot;STATS&quot; option to generate features for each flow, which will provide the following features for each flow:</p>
+<h3 id="Generate-Features">Generate Features<a class="anchor-link" href="#Generate-Features">&#182;</a></h3><p>Use the <code>netml</code> &quot;STATS&quot; option to generate features for each flow, which will provide the following features for each flow:</p>
 <ol start="0">
 <li>Duration</li>
 <li>Packets per second</li>
 <li>Bytes per second</li>
 <li>Mean packet size</li>
 <li>Standard deviation of packet sizes</li>
-<li>min, 25th, median, 75th, max packet sizes</li>
+<li>25th, median, 75th, min, max packet sizes</li>
 </ol>
 <p>The exercise below requires a <a href="https://github.com/chicago-cdac/netml/pull/16/commits/79c0f930f2882c7bf042a9eb45e2a6ac413a695d">slight modification</a> to the <code>netml</code> library (for versions &lt;= 0.2.1) to add two additional features:</p>
 <ul>
@@ -14755,7 +14755,7 @@ After splitting flows, the number of subflows: 291 and each of them has at least
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="Train-Model">Train Model<a class="anchor-link" href="#Train-Model">&#182;</a></h2><p>Explore the relationship between some of these features. A natural one to explore is the relationship between the number of bytes in a flow and the number of packets in a flow.</p>
+<h3 id="Train-Model">Train Model<a class="anchor-link" href="#Train-Model">&#182;</a></h3><p>Explore the relationship between some of these features. A natural one to explore is the relationship between the number of bytes in a flow and the number of packets in a flow.</p>
 
 </div>
 </div>
@@ -14779,7 +14779,7 @@ After splitting flows, the number of subflows: 291 and each of them has at least
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="Visualize-Your-Model">Visualize Your Model<a class="anchor-link" href="#Visualize-Your-Model">&#182;</a></h2><p>Plot the relationship that your model has learned, by plotting the learned model (which should be a line), along with the points.  Label your axes!</p>
+<h3 id="Visualize-Your-Model">Visualize Your Model<a class="anchor-link" href="#Visualize-Your-Model">&#182;</a></h3><p>Plot the relationship that your model has learned, by plotting the learned model (which should be a line), along with the points.  Label your axes!</p>
 <p>What do you notice about the relationship, and how it relates to the original points?</p>
 
 </div>
@@ -14804,7 +14804,7 @@ After splitting flows, the number of subflows: 291 and each of them has at least
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="Polynomial-Basis-Expansion">Polynomial Basis Expansion<a class="anchor-link" href="#Polynomial-Basis-Expansion">&#182;</a></h2><p>Recall that one of the benefits of a polynomial feature expansion is that it is possible to fit a linear model to a resulting polynomial expansion of the features.</p>
+<h2 id="Part-2:-Polynomial-Basis-Expansion">Part 2: Polynomial Basis Expansion<a class="anchor-link" href="#Part-2:-Polynomial-Basis-Expansion">&#182;</a></h2><p>Recall that one of the benefits of a polynomial feature expansion is that it is possible to fit a linear model to a resulting polynomial expansion of the features.</p>
 <p>We will do that below.  Let's first create the regular features and then the polynomial expansion. You will need the <code>PolynomialFeatures</code> library from <code>sklearn.preprocessing</code>, as well as the <code>fit_transform</code> function to generate your feature expansion.</p>
 
 </div>
@@ -14853,7 +14853,19 @@ After splitting flows, the number of subflows: 291 and each of them has at least
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="Reducing-Error-on-Test-Set">Reducing Error on Test Set<a class="anchor-link" href="#Reducing-Error-on-Test-Set">&#182;</a></h2><p>In the above example, we used a polynomial basis expansion to reduce the error on the training set. But, we have no test set, so it is difficult to tell whether the model above is overfit to the training data.</p>
+<h2 id="Part-3:-Exploring-Relationships-between-Other-Features">Part 3: Exploring Relationships between Other Features<a class="anchor-link" href="#Part-3:-Exploring-Relationships-between-Other-Features">&#182;</a></h2><p>In the earlier parts of this hands-on, we explored simple relationship between features and outcome variables. You can extend your analysis by exploring other relationships, such as the relationships between one or more of the features already output from <code>netml</code>.</p>
+
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h2 id="Bonus:-Reducing-Error-on-Test-Set">Bonus: Reducing Error on Test Set<a class="anchor-link" href="#Bonus:-Reducing-Error-on-Test-Set">&#182;</a></h2><p>In the above example, we used a polynomial basis expansion to reduce the error on the training set. But, we have no test set, so it is difficult to tell whether the model above is overfit to the training data.</p>
 <p>In order for us to tell whether this model is a good fit, we need to test it on data that the model has not yet seen. This requires splitting the data into a training set and a test set.</p>
 <p>A typical split between training data and test data might be 80% training data, 20% test data. You can also perform this process repeatedly and average the results. This process is called <strong>cross-validation</strong>.</p>
 <h3 id="Part-1">Part 1<a class="anchor-link" href="#Part-1">&#182;</a></h3><ol>
