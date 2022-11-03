@@ -1,0 +1,10 @@
+16:10:00, livestream
+16:12:20, motion
+16:14:00, livestream
+16:16:20, motion
+16:18:00, livestream
+16:20:45, motion
+16:22:00, livestream
+16:24:15, motion
+16:26:00, livestream
+16:28:20, motion
