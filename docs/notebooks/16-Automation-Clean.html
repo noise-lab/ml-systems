@@ -14900,6 +14900,53 @@ Index([&#39;tcp_sprt_0&#39;, &#39;tcp_sprt_1&#39;, &#39;tcp_sprt_2&#39;, &#39;tc
 </div>
 </div>
 </div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[16]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Initialize Classifier, Train, and Predict</span>
+<span class="n">rf</span> <span class="o">=</span> <span class="n">eval_nprint</span><span class="p">((</span><span class="n">cmd_80</span><span class="p">,</span><span class="s1">'unencrypted'</span><span class="p">),</span> <span class="p">(</span><span class="n">cmd_443</span><span class="p">,</span> <span class="s1">'encrypted'</span><span class="p">))</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>              precision    recall  f1-score   support
+
+   encrypted       1.00      1.00      1.00       634
+ unencrypted       1.00      1.00      1.00       597
+
+    accuracy                           1.00      1231
+   macro avg       1.00      1.00      1.00      1231
+weighted avg       1.00      1.00      1.00      1231
+
+ROC AUC Score: 1.0
+</pre>
+</div>
+</div>
+
+</div>
+
+</div>
+
 </div>
 <div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
 <div class="jp-Cell-inputWrapper">
@@ -14925,6 +14972,52 @@ Index([&#39;tcp_sprt_0&#39;, &#39;tcp_sprt_1&#39;, &#39;tcp_sprt_2&#39;, &#39;tc
 </div>
 </div>
 </div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[19]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">rf</span> <span class="o">=</span> <span class="n">eval_nprint</span><span class="p">((</span><span class="n">cmd_80</span><span class="p">,</span><span class="s1">'unencrypted'</span><span class="p">),</span> <span class="p">(</span><span class="n">cmd_443</span><span class="p">,</span> <span class="s1">'encrypted'</span><span class="p">))</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>              precision    recall  f1-score   support
+
+   encrypted       1.00      1.00      1.00       623
+ unencrypted       1.00      1.00      1.00       608
+
+    accuracy                           1.00      1231
+   macro avg       1.00      1.00      1.00      1231
+weighted avg       1.00      1.00      1.00      1231
+
+ROC AUC Score: 1.0
+</pre>
+</div>
+</div>
+
+</div>
+
+</div>
+
 </div>
 <div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
 <div class="jp-Cell-inputWrapper">
@@ -14937,6 +15030,55 @@ Index([&#39;tcp_sprt_0&#39;, &#39;tcp_sprt_1&#39;, &#39;tcp_sprt_2&#39;, &#39;tc
 </div>
 </div>
 </div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[20]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">cmd_80</span> <span class="o">=</span> <span class="s1">'</span><span class="si">{}</span><span class="s1"> -P </span><span class="si">{}</span><span class="s1">/port80.pcap -p 30 -W </span><span class="si">{}</span><span class="s1">/port80.npt'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nprint</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+<span class="n">cmd_443</span> <span class="o">=</span> <span class="s1">'</span><span class="si">{}</span><span class="s1"> -P </span><span class="si">{}</span><span class="s1">/port443.pcap -p 30 -W </span><span class="si">{}</span><span class="s1">/port443.npt'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nprint</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+
+<span class="n">rf</span> <span class="o">=</span> <span class="n">eval_nprint</span><span class="p">((</span><span class="n">cmd_80</span><span class="p">,</span><span class="s1">'unencrypted'</span><span class="p">),</span> <span class="p">(</span><span class="n">cmd_443</span><span class="p">,</span> <span class="s1">'encrypted'</span><span class="p">))</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>              precision    recall  f1-score   support
+
+   encrypted       0.67      0.68      0.67       635
+ unencrypted       0.65      0.64      0.65       596
+
+    accuracy                           0.66      1231
+   macro avg       0.66      0.66      0.66      1231
+weighted avg       0.66      0.66      0.66      1231
+
+ROC AUC Score: 0.6959493737779421
+</pre>
+</div>
+</div>
+
+</div>
+
+</div>
+
 </div>
 <div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
 <div class="jp-Cell-inputWrapper">
