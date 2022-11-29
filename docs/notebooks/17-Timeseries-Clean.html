@@ -14774,6 +14774,218 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 </div>
 </div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[48]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">split</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
+    <span class="n">gb</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">'Destination'</span><span class="p">])</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">gb</span><span class="o">.</span><span class="n">get_group</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">gb</span><span class="o">.</span><span class="n">groups</span><span class="p">]</span>
+
+<span class="n">df_split</span> <span class="o">=</span> <span class="n">split</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+<span class="n">df_split_clean</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">df_split</span><span class="p">)):</span>
+    <span class="n">df_split_clean</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">df_split</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">'Time_clean'</span><span class="p">)</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="s1">'H'</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">numeric_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">limit</span> <span class="o">=</span> <span class="mi">300</span><span class="p">,</span> <span class="n">direction</span> <span class="o">=</span> <span class="s2">"forward"</span><span class="p">,</span> <span class="n">method</span> <span class="o">=</span> <span class="s2">"linear"</span><span class="p">)</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s1">'linear'</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">ffill</span><span class="p">()</span><span class="o">.</span><span class="n">bfill</span><span class="p">())</span>
+    
+<span class="n">df_split_clean</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[48]:</div>
+
+
+
+
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
+<pre>[                           RTT
+ Time_clean                    
+ 2021-09-30 19:00:00  34.275405
+ 2021-09-30 20:00:00  34.631601
+ 2021-09-30 21:00:00  34.432748
+ 2021-09-30 22:00:00  35.768035
+ 2021-09-30 23:00:00  36.075542
+ ...                        ...
+ 2022-02-28 13:00:00  38.242081
+ 2022-02-28 14:00:00  39.605813
+ 2022-02-28 15:00:00  39.191060
+ 2022-02-28 16:00:00  43.936399
+ 2022-02-28 17:00:00  41.158659
+ 
+ [3623 rows x 1 columns],
+                            RTT
+ Time_clean                    
+ 2021-09-30 19:00:00  34.802956
+ 2021-09-30 20:00:00  35.417021
+ 2021-09-30 21:00:00  35.777643
+ 2021-09-30 22:00:00  36.562641
+ 2021-09-30 23:00:00  37.100275
+ ...                        ...
+ 2022-02-28 13:00:00  38.889235
+ 2022-02-28 14:00:00  39.203723
+ 2022-02-28 15:00:00  39.830655
+ 2022-02-28 16:00:00  45.174415
+ 2022-02-28 17:00:00  41.694703
+ 
+ [3623 rows x 1 columns],
+                            RTT
+ Time_clean                    
+ 2021-09-30 19:00:00  26.132487
+ 2021-09-30 20:00:00  27.109839
+ 2021-09-30 21:00:00  26.890154
+ 2021-09-30 22:00:00  28.306056
+ 2021-09-30 23:00:00  28.859042
+ ...                        ...
+ 2022-02-28 13:00:00  30.168679
+ 2022-02-28 14:00:00  31.661348
+ 2022-02-28 15:00:00  31.664851
+ 2022-02-28 16:00:00  39.208561
+ 2022-02-28 17:00:00  33.262585
+ 
+ [3623 rows x 1 columns],
+                            RTT
+ Time_clean                    
+ 2021-09-30 19:00:00  10.662082
+ 2021-09-30 20:00:00  11.861280
+ 2021-09-30 21:00:00  12.066776
+ 2021-09-30 22:00:00  13.008655
+ 2021-09-30 23:00:00  12.227444
+ ...                        ...
+ 2022-02-28 13:00:00  12.590375
+ 2022-02-28 14:00:00  13.207759
+ 2022-02-28 15:00:00  14.037368
+ 2022-02-28 16:00:00  20.439953
+ 2022-02-28 17:00:00  15.960016
+ 
+ [3623 rows x 1 columns],
+                            RTT
+ Time_clean                    
+ 2021-09-30 19:00:00   9.071586
+ 2021-09-30 20:00:00  10.307427
+ 2021-09-30 21:00:00   7.937359
+ 2021-09-30 22:00:00   9.504431
+ 2021-09-30 23:00:00  11.833100
+ ...                        ...
+ 2022-02-28 13:00:00  12.578887
+ 2022-02-28 14:00:00  14.300915
+ 2022-02-28 15:00:00  13.528169
+ 2022-02-28 16:00:00  20.140555
+ 2022-02-28 17:00:00  16.066531
+ 
+ [3623 rows x 1 columns],
+                            RTT
+ Time_clean                    
+ 2021-09-30 19:00:00   8.486978
+ 2021-09-30 20:00:00   8.487558
+ 2021-09-30 21:00:00   8.707344
+ 2021-09-30 22:00:00  11.370707
+ 2021-09-30 23:00:00   9.904454
+ ...                        ...
+ 2022-02-28 13:00:00  12.727393
+ 2022-02-28 14:00:00  13.166132
+ 2022-02-28 15:00:00  14.130768
+ 2022-02-28 16:00:00  23.193074
+ 2022-02-28 17:00:00  16.203313
+ 
+ [3623 rows x 1 columns],
+                            RTT
+ Time_clean                    
+ 2021-09-30 19:00:00   8.867304
+ 2021-09-30 20:00:00   8.332049
+ 2021-09-30 21:00:00   9.048469
+ 2021-09-30 22:00:00  10.902218
+ 2021-09-30 23:00:00  11.669923
+ ...                        ...
+ 2022-02-28 13:00:00  12.163240
+ 2022-02-28 14:00:00  13.047743
+ 2022-02-28 15:00:00  12.813666
+ 2022-02-28 16:00:00  16.323061
+ 2022-02-28 17:00:00  15.214958
+ 
+ [3623 rows x 1 columns],
+                            RTT
+ Time_clean                    
+ 2021-09-30 19:00:00  11.843677
+ 2021-09-30 20:00:00  12.655091
+ 2021-09-30 21:00:00  13.644007
+ 2021-09-30 22:00:00  12.787838
+ 2021-09-30 23:00:00  12.416958
+ ...                        ...
+ 2022-02-28 13:00:00  12.564133
+ 2022-02-28 14:00:00  14.010658
+ 2022-02-28 15:00:00  13.559028
+ 2022-02-28 16:00:00  17.598709
+ 2022-02-28 17:00:00  16.040162
+ 
+ [3623 rows x 1 columns],
+                            RTT
+ Time_clean                    
+ 2021-09-30 19:00:00  18.355639
+ 2021-09-30 20:00:00  28.862259
+ 2021-09-30 21:00:00  25.952895
+ 2021-09-30 22:00:00  20.599838
+ 2021-09-30 23:00:00  14.535092
+ ...                        ...
+ 2022-02-28 13:00:00  13.455604
+ 2022-02-28 14:00:00  14.706076
+ 2022-02-28 15:00:00  15.228845
+ 2022-02-28 16:00:00  21.131463
+ 2022-02-28 17:00:00  16.582371
+ 
+ [3623 rows x 1 columns],
+                            RTT
+ Time_clean                    
+ 2021-09-30 19:00:00  28.298308
+ 2021-09-30 20:00:00  29.271809
+ 2021-09-30 21:00:00  29.655916
+ 2021-09-30 22:00:00  30.600200
+ 2021-09-30 23:00:00  30.250808
+ ...                        ...
+ 2022-02-28 13:00:00  33.059379
+ 2022-02-28 14:00:00  33.396985
+ 2022-02-28 15:00:00  34.415056
+ 2022-02-28 16:00:00  41.848794
+ 2022-02-28 17:00:00  36.197371
+ 
+ [3623 rows x 1 columns],
+                            RTT
+ Time_clean                    
+ 2021-09-30 19:00:00   8.692370
+ 2021-09-30 20:00:00   8.741290
+ 2021-09-30 21:00:00   8.531924
+ 2021-09-30 22:00:00  11.173869
+ 2021-09-30 23:00:00   9.863508
+ ...                        ...
+ 2022-02-28 13:00:00  12.747330
+ 2022-02-28 14:00:00  13.564087
+ 2022-02-28 15:00:00  13.848568
+ 2022-02-28 16:00:00  22.951587
+ 2022-02-28 17:00:00  15.585128
+ 
+ [3623 rows x 1 columns]]</pre>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
 </div>
 <div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
 <div class="jp-Cell-inputWrapper">
