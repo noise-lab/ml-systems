@@ -1,13 +1,13 @@
-# Midterm Logistics
+# Midterm and Final Exam Logistics
 
-The midterm will have two parts: (1) a short, in-class portion, consisting
-mostly of short answers (perhaps a few multiple-choice); (2) a take-home
-portion, consisting of an add-on, extension of some of the hands-on activities
-that we have worked on in class.
+The midterm and final exam will each have two parts: (1) a short, in-class
+portion, consisting mostly of short answers (perhaps a few multiple-choice);
+(2) a take-home portion, consisting of an add-on, extension of some of the
+hands-on activities that we have worked on in class.
 
 ## In-Class (25%)
 
-I will design the in-class version of the midterm to ask you largely factual
+I will design the in-class version of the exam to ask you largely factual
 questions about the material that we have learned in class. I will design it
 to be completed in about 30 minutes, but I will give you the whole class
 period to do it.  We will resume our "regularly scheduled programming" when
@@ -20,7 +20,7 @@ that we're just having a slightly longer version of that.
 Topics and coverage: All topics through Lecture 8 (Week 4) will be covered for
 the in-class portion.
 
-Notes: This portion of the midterm will be closed notes, books, etc., except
+Notes: This portion of the exam will be closed notes, books, etc., except
 you are permitted to bring one single-sided sheet of paper of notes. The point
 of this exercise is largely to help you study. You probably won't need too
 much of it, and relying on it too much may cost you time. Therefore, feel free
@@ -41,7 +41,7 @@ about the assignments). Therefore, expect the take-home to be:
   which the existing notebooks don't have the exact code example.
  
 Notes: You can use *anything*. Stackoverflow, fine. But you *must* work
-independently on this part of the midterm.
+independently on this part of the exam.
 
 Deliverable: The deliverable will be a well-documented Jupyter notebook that
 the course staff can (1) run; (2) understand.
