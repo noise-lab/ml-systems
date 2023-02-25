@@ -88,7 +88,8 @@ assignments according to the following policy:
     example, if you turn in your assignment at 6:02 p.m. on the due date, we will
     count this as two hours against your grace period.
 * As long as your grace period balance is positive, you can turn in any
-    assignment late without penalty.
+    assignment late without penalty. The grace period balance is recalculated 
+    on every last submission.
 * Once your grace period balance reaches zero, you will receive half credit for
     any assignment that you turn in, as long as you turn it in within one week of
     the due date. If your grace period balance is zero and you turn in an
