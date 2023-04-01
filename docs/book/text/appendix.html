@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Appendix: Activities &mdash; Machine Learning for Networking Version 0.1 documentation</title><link rel="stylesheet" href="../static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../static/css/rtd_theme_mods.css" type="text/css" />
+    <link rel="shortcut icon" href="../static/bridge.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  <script id="documentation_options" data-url_root="../" src="../static/documentation_options.js"></script>
+        <script src="../static/jquery.js"></script>
+        <script src="../static/underscore.js"></script>
+        <script src="../static/doctools.js"></script>
+        <script src="../static/language_data.js"></script>
+        <script src="https://www.googletagmanager.com/gtag/js?id=G-QLSP3FJWGT"></script>
+        <script >
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-QLSP3FJWGT');
+</script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "tex2jax_ignore|mathjax_ignore|document", "processClass": "tex2jax_process|mathjax_process|math|output_area"}})</script>
+    <script src="../static/js/theme.js"></script>
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Packet Capture and Analysis" href="examples/notebooks/01-Packet-Capture-Basics.html" />
+    <link rel="prev" title="Chapter 8: Looking Ahead" href="future.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Machine Learning for Networking
+          </a>
+              <div class="version">
+                Version 0.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption"><span class="caption-text">Table of Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Chapter 1:  Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="motivation.html">Chapter 2: Motivating Problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="measurement.html">Chapter 3: Data Acquisition</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.html">Chapter 4: Machine Learning Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="supervised.html">Chapter 5: Supervised Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="unsupervised.html">Chapter 6: Unsupervised Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="automation.html">Chapter 7:  Deployment Considarations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="future.html">Chapter 8:  Looking Ahead</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Appendix: Activities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#packet-capture">Packet Capture</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/01-Packet-Capture-Basics.html">Packet Capture and Analysis</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#security">Security</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/02-Motivation-Security.html">Motivation: Network Security</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#network-performance">Network Performance</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/03-Performance-Service.html">Video Streaming: Feature Extraction from Video Streams</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#data-acquisition">Data Acquisition</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/05-Data-Acquisition.html">Data Acquisition</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#feature-extraction">Feature Extraction</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#training-a-model">Training a Model</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/07-Data-Preparation.html">Data Preparation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#machine-learning-pipeline">Machine Learning Pipeline</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/08-ML-Pipeline.html">Machine Learning Pipeline</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#naive-bayes">Naive Bayes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/09-Naive-Bayes.html">Naïve Bayes Spam Classifier</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#linear-regression">Linear Regression</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/10-Linear-Regression.html">Linear Regression on Network Traffic</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#logistic-regression">Logistic Regression</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/11-Logistic-Regression.html">Logistic Regression</a></li>
+<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/11-Logistic-Regression.html#Model-Selection/Cross-Validation">Model Selection/Cross Validation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#trees-and-ensembles">Trees and Ensembles</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/12-Trees-Ensembles.html">Trees and Ensembles</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#deep-learning">Deep Learning</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/13-Deep-Learning.html">Deep Learning</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#dimensionality-reduction">Dimensionality Reduction</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/14-Dimensionality-Reduction.html">Dimensionality Reduction</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#clustering">Clustering</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/15-Clustering.html">Clustering</a></li>
+<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/15-Clustering.html#K-means-Clustering">K-means Clustering</a></li>
+<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/15-Clustering.html#Dimensionality-Reduction-for-Visualization">Dimensionality Reduction for Visualization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/15-Clustering.html#id1">Clustering</a></li>
+<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/15-Clustering.html#Density-Based-Clustering">Density-Based Clustering</a></li>
+<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/15-Clustering.html#Distribution-Based-Clustering">Distribution-Based Clustering</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#automation">Automation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/16-Automation.html">Automating Machine Learning for Networking</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../README.html">About The Book</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../authors.html">About The Authors</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Machine Learning for Networking</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Appendix: Activities</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/text/appendix.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="future.html" class="btn btn-neutral float-left" title="Chapter 8: Looking Ahead" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="examples/notebooks/01-Packet-Capture-Basics.html" class="btn btn-neutral float-right" title="Packet Capture and Analysis" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="appendix-activities">
+<span id="appendix"></span><h1>Appendix: Activities<a class="headerlink" href="#appendix-activities" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="packet-capture">
+<span id="appendix-basics"></span><h2>Packet Capture<a class="headerlink" href="#packet-capture" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="examples/notebooks/01-Packet-Capture-Basics.html">Packet Capture and Analysis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples/notebooks/01-Packet-Capture-Basics.html#Learning-Objective">Learning Objective</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/notebooks/01-Packet-Capture-Basics.html#Step-1:-Packet-Capture">Step 1: Packet Capture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/notebooks/01-Packet-Capture-Basics.html#Step-2:-Basic-Analysis-of-the-Trace">Step 2: Basic Analysis of the Trace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/notebooks/01-Packet-Capture-Basics.html#Step-3:-Loading-and-Inspecting-the-Data">Step 3: Loading and Inspecting the Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/notebooks/01-Packet-Capture-Basics.html#Step-3:-Basic-Analysis">Step 3: Basic Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/notebooks/01-Packet-Capture-Basics.html#Step-4:-Visualization">Step 4: Visualization</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="security">
+<span id="appendix-security"></span><h2>Security<a class="headerlink" href="#security" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="examples/notebooks/02-Motivation-Security.html">Motivation: Network Security</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples/notebooks/02-Motivation-Security.html#Learning-Objectives">Learning Objectives</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/notebooks/02-Motivation-Security.html#Background:-Log4j-Vulnerability">Background: Log4j Vulnerability</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/notebooks/02-Motivation-Security.html#Part-1:-Load-and-Explore-the-Traffic-Traces">Part 1: Load and Explore the Traffic Traces</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/02-Motivation-Security.html#Sanity-Checks">Sanity Checks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/02-Motivation-Security.html#Basic-Exploration">Basic Exploration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/02-Motivation-Security.html#Feature-Exploration">Feature Exploration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/02-Motivation-Security.html#Thought-Question">Thought Question</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="network-performance">
+<span id="appendix-network-performance"></span><h2>Network Performance<a class="headerlink" href="#network-performance" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="examples/notebooks/03-Performance-Service.html">Video Streaming: Feature Extraction from Video Streams</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples/notebooks/03-Performance-Service.html#Learning-Objectives">Learning Objectives</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/notebooks/03-Performance-Service.html#Step-1:-Identifying-Netflix-Traffic-from-DNS">Step 1: Identifying Netflix Traffic from DNS</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/03-Performance-Service.html#Load-the-Packet-Capture-and-Identify-Netflix-Traffic">Load the Packet Capture and Identify Netflix Traffic</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="examples/notebooks/03-Performance-Service.html#Filter-for-DNS-Traffic">Filter for DNS Traffic</a></li>
+<li class="toctree-l4"><a class="reference internal" href="examples/notebooks/03-Performance-Service.html#Filter-for-Netflix-DNS-Query-IDs">Filter for Netflix DNS Query IDs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="examples/notebooks/03-Performance-Service.html#Find-the-Associated-Netflix-IP-Addresses">Find the Associated Netflix IP Addresses</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/03-Performance-Service.html#Step-2:-Counting-Traffic-to-Each-Netflix-Destination">Step 2: Counting Traffic to Each Netflix Destination</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="examples/notebooks/03-Performance-Service.html#Count-the-Number-of-Downstream-Bytes-and-Packets">Count the Number of Downstream Bytes and Packets</a></li>
+<li class="toctree-l4"><a class="reference internal" href="examples/notebooks/03-Performance-Service.html#Count-the-Number-of-Upstream-Bytes-and-Packets">Count the Number of Upstream Bytes and Packets</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/03-Performance-Service.html#Step-3:-Inferring-Segment-Downloads">Step 3: Inferring Segment Downloads</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="examples/notebooks/03-Performance-Service.html#Thought-Question">Thought Question</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="data-acquisition">
+<span id="appendix-data-acquisition"></span><h2>Data Acquisition<a class="headerlink" href="#data-acquisition" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="examples/notebooks/05-Data-Acquisition.html">Data Acquisition</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples/notebooks/05-Data-Acquisition.html#Background">Background</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/notebooks/05-Data-Acquisition.html#Step-1:-Load-a-Packet-Trace">Step 1: Load a Packet Trace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/notebooks/05-Data-Acquisition.html#Step-2:-Generate-Statistics-for-Each-Flow">Step 2: Generate Statistics for Each Flow</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/05-Data-Acquisition.html#Total-Number-of-Flows">Total Number of Flows</a></li>
+<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/05-Data-Acquisition.html#Number-of-Bytes">Number of Bytes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/05-Data-Acquisition.html#Number-of-Packets">Number of Packets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/05-Data-Acquisition.html#Duration">Duration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="examples/notebooks/05-Data-Acquisition.html#Bytes-and-Packets-Per-Second">Bytes and Packets Per Second</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/notebooks/05-Data-Acquisition.html#Note">Note</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/notebooks/05-Data-Acquisition.html#Thought-Questions">Thought Questions</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="feature-extraction">
+<span id="appendix-feature-extraction"></span><h2>Feature Extraction<a class="headerlink" href="#feature-extraction" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+</div>
+</div>
+<div class="section" id="training-a-model">
+<span id="appendix-data-preparation"></span><h2>Training a Model<a class="headerlink" href="#training-a-model" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="examples/notebooks/07-Data-Preparation.html">Data Preparation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples/notebooks/07-Data-Preparation.html#Load-the-Packet-Capture-Files">Load the Packet Capture Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/notebooks/07-Data-Preparation.html#Convert-the-Packet-Capture-Into-Flows">Convert the Packet Capture Into Flows</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/notebooks/07-Data-Preparation.html#Explore-the-Flows">Explore the Flows</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/notebooks/07-Data-Preparation.html#Extract-Features-for-Each-Dataset">Extract Features for Each Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/notebooks/07-Data-Preparation.html#Normalize-the-Shapes-of-Each-Feature-Set">Normalize the Shapes of Each Feature Set</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/notebooks/07-Data-Preparation.html#Try-Your-Data-on-a-Model">Try Your Data on a Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/notebooks/07-Data-Preparation.html#Test-Your-Trained-Model">Test Your Trained Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/notebooks/07-Data-Preparation.html#Bonus">Bonus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/notebooks/07-Data-Preparation.html#Looking-Ahead">Looking Ahead</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="machine-learning-pipeline">
+<span id="appendix-ml-pipeline"></span><h2>Machine Learning Pipeline<a class="headerlink" href="#machine-learning-pipeline" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="examples/notebooks/08-ML-Pipeline.html">Machine Learning Pipeline</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples/notebooks/08-ML-Pipeline.html#Convert-the-Packet-Capture-Into-Flows">Convert the Packet Capture Into Flows</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/notebooks/08-ML-Pipeline.html#Evaluating-a-Machine-Learning-Model">Evaluating a Machine Learning Model</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/08-ML-Pipeline.html#Split-into-Training-and-Test-Sets">Split into Training and Test Sets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/08-ML-Pipeline.html#Training-Your-Model">Training Your Model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/08-ML-Pipeline.html#Test-Your-Trained-Model">Test Your Trained Model</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="examples/notebooks/08-ML-Pipeline.html#Confusion-Matrix">Confusion Matrix</a></li>
+<li class="toctree-l4"><a class="reference internal" href="examples/notebooks/08-ML-Pipeline.html#Receiver-Operating-Characteristic">Receiver Operating Characteristic</a></li>
+<li class="toctree-l4"><a class="reference internal" href="examples/notebooks/08-ML-Pipeline.html#Area-Under-the-Curve-(AUC)">Area Under the Curve (AUC)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="examples/notebooks/08-ML-Pipeline.html#Thought-Question">Thought Question</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="naive-bayes">
+<span id="appendix-naive-bayes"></span><h2>Naive Bayes<a class="headerlink" href="#naive-bayes" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="examples/notebooks/09-Naive-Bayes.html">Naïve Bayes Spam Classifier</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples/notebooks/09-Naive-Bayes.html#Part-1:-Data-Preparation">Part 1: Data Preparation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/09-Naive-Bayes.html#Basic-Data-Statistics">Basic Data Statistics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/09-Naive-Bayes.html#Data-Cleaning">Data Cleaning</a></li>
+<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/09-Naive-Bayes.html#Splitting-Training-and-Testing-Data">Splitting Training and Testing Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/09-Naive-Bayes.html#Sanity-Check-the-Split">Sanity Check the Split</a></li>
+<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/09-Naive-Bayes.html#Build-the-Vocabulary">Build the Vocabulary</a></li>
+<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/09-Naive-Bayes.html#Word-Counts-for-Each-Message">Word Counts for Each Message</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="examples/notebooks/09-Naive-Bayes.html#Part-2:-Naïve-Bayes-Classifier-with-sklearn">Part 2: Naïve Bayes Classifier with sklearn</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/notebooks/09-Naive-Bayes.html#Part-3:-Naïve-Bayes-Classifier-from-Scratch">Part 3: Naïve Bayes Classifier from Scratch</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/09-Naive-Bayes.html#Count-the-Occurrences-of-Each-Word">Count the Occurrences of Each Word</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="examples/notebooks/09-Naive-Bayes.html#Training-the-Model">Training the Model</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/09-Naive-Bayes.html#Classifier">Classifier</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="examples/notebooks/09-Naive-Bayes.html#Testing-the-Model">Testing the Model</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/09-Naive-Bayes.html#Example-Messages">Example Messages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/09-Naive-Bayes.html#Accuracy-on-Test-Set">Accuracy on Test Set</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="linear-regression">
+<span id="appendix-linear-regression"></span><h2>Linear Regression<a class="headerlink" href="#linear-regression" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="examples/notebooks/10-Linear-Regression.html">Linear Regression on Network Traffic</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples/notebooks/10-Linear-Regression.html#Part-1:-Simple-Linear-Regression.">Part 1: Simple Linear Regression.</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/10-Linear-Regression.html#Group-Traffic-Info-Flows">Group Traffic Info Flows</a></li>
+<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/10-Linear-Regression.html#Generate-Features">Generate Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/10-Linear-Regression.html#Train-Model">Train Model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/10-Linear-Regression.html#Visualize-Your-Model">Visualize Your Model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/10-Linear-Regression.html#Evaluation:-Error-Computation">Evaluation: Error Computation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="examples/notebooks/10-Linear-Regression.html#Part-2:-Polynomial-Basis-Expansion">Part 2: Polynomial Basis Expansion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/notebooks/10-Linear-Regression.html#Part-3:-Exploring-Relationships-between-Other-Features">Part 3: Exploring Relationships between Other Features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/notebooks/10-Linear-Regression.html#Bonus:-Reducing-Error-on-Test-Set">Bonus: Reducing Error on Test Set</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/10-Linear-Regression.html#Part-1">Part 1</a></li>
+<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/10-Linear-Regression.html#Part-2">Part 2</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="logistic-regression">
+<span id="appendix-logistic-regression"></span><h2>Logistic Regression<a class="headerlink" href="#logistic-regression" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="examples/notebooks/11-Logistic-Regression.html">Logistic Regression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/notebooks/11-Logistic-Regression.html#Model-Selection/Cross-Validation">Model Selection/Cross Validation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples/notebooks/11-Logistic-Regression.html#Hyper-Parameter-Tuning:-Grid-Search">Hyper-Parameter Tuning: Grid Search</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="trees-and-ensembles">
+<span id="appendix-trees-ensembles"></span><h2>Trees and Ensembles<a class="headerlink" href="#trees-and-ensembles" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="examples/notebooks/12-Trees-Ensembles.html">Trees and Ensembles</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples/notebooks/12-Trees-Ensembles.html#Application-to-IoT-Privacy">Application to IoT Privacy</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/12-Trees-Ensembles.html#1.-Import-data-and-convert-to-points">1. Import data and convert to points</a></li>
+<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/12-Trees-Ensembles.html#2.-Data-cleaning">2. Data cleaning</a></li>
+<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/12-Trees-Ensembles.html#3.-Convert-to-datetime-format-(optional).">3. Convert to datetime format (optional).</a></li>
+<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/12-Trees-Ensembles.html#4.-Explore-data-representations">4. Explore data representations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/12-Trees-Ensembles.html#5.-Represent-rates-as-n-dimensional-points">5. Represent rates as n-dimensional points</a></li>
+<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/12-Trees-Ensembles.html#7.-Associate-k-dimensional-points-with-activity-labels.">7. Associate k-dimensional points with activity labels.</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="examples/notebooks/12-Trees-Ensembles.html#Random-Forest">Random Forest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/notebooks/12-Trees-Ensembles.html#Discussion-Questions">Discussion Questions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/12-Trees-Ensembles.html#1.-Why-is-this-attack-a-privacy-risk?">1. Why is this attack a privacy risk?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/12-Trees-Ensembles.html#2.-How-could-we-(IoT-device-programmers,-network-operators,-etc.)-protect-people-from-this-attack?">2. How could we (IoT device programmers, network operators, etc.) protect people from this attack?</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="examples/notebooks/12-Trees-Ensembles.html#Additional-Exercises">Additional Exercises</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/12-Trees-Ensembles.html#1.-Adjust-parameters-to-improve-accuracy.">1. Adjust parameters to improve accuracy.</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="deep-learning">
+<span id="appendix-deep-learning"></span><h2>Deep Learning<a class="headerlink" href="#deep-learning" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="examples/notebooks/13-Deep-Learning.html">Deep Learning</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples/notebooks/13-Deep-Learning.html#Part-1:-Data-Preparation">Part 1: Data Preparation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/13-Deep-Learning.html#Normal-Traffic">Normal Traffic</a></li>
+<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/13-Deep-Learning.html#Attack-Traffic">Attack Traffic</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="examples/notebooks/13-Deep-Learning.html#Device-1-(WeMo-Smart-Switch)-Attack-Profile">Device 1 (WeMo Smart Switch) Attack Profile</a></li>
+<li class="toctree-l4"><a class="reference internal" href="examples/notebooks/13-Deep-Learning.html#Device-2-(YI-Home-Camera)-Attack-Profile">Device 2 (YI Home Camera) Attack Profile</a></li>
+<li class="toctree-l4"><a class="reference internal" href="examples/notebooks/13-Deep-Learning.html#Device-3-(Android-Phone)-Attack-Profile">Device 3 (Android Phone) Attack Profile</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="examples/notebooks/13-Deep-Learning.html#Step-2:-Generate-Features-and-Labels">Step 2: Generate Features and Labels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/notebooks/13-Deep-Learning.html#Step-3:-Normalize-Data">Step 3: Normalize Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/notebooks/13-Deep-Learning.html#Step-4:-Train-and-Test-Neural-Net">Step 4: Train and Test Neural Net</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/notebooks/13-Deep-Learning.html#Step-5:-Compare-Against-Other-Machine-Learning-Models">Step 5: Compare Against Other Machine Learning Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/notebooks/13-Deep-Learning.html#Thought-Questions">Thought Questions</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="dimensionality-reduction">
+<span id="appendix-dimensionality-reduction"></span><h2>Dimensionality Reduction<a class="headerlink" href="#dimensionality-reduction" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="examples/notebooks/14-Dimensionality-Reduction.html">Dimensionality Reduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples/notebooks/14-Dimensionality-Reduction.html#Load-the-Packet-Capture-Files">Load the Packet Capture Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/notebooks/14-Dimensionality-Reduction.html#Convert-the-Packet-Capture-Into-Flows">Convert the Packet Capture Into Flows</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/notebooks/14-Dimensionality-Reduction.html#Explore-the-Flows">Explore the Flows</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/notebooks/14-Dimensionality-Reduction.html#Extract-Features-for-Each-Dataset">Extract Features for Each Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/notebooks/14-Dimensionality-Reduction.html#Try-Your-Data-on-a-Tree-Based-Model">Try Your Data on a Tree-Based Model</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/14-Dimensionality-Reduction.html#Decision-Tree">Decision Tree</a></li>
+<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/14-Dimensionality-Reduction.html#Visualize-the-Resulting-Model">Visualize the Resulting Model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/14-Dimensionality-Reduction.html#Evaluate-the-Model">Evaluate the Model</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="examples/notebooks/14-Dimensionality-Reduction.html#Random-Forest-Classifiers">Random Forest Classifiers</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/14-Dimensionality-Reduction.html#Train-a-Random-Forest-Classifier">Train a Random Forest Classifier</a></li>
+<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/14-Dimensionality-Reduction.html#Evaluate-Your-Classifier">Evaluate Your Classifier</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="examples/notebooks/14-Dimensionality-Reduction.html#Feature-Importance">Feature Importance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/notebooks/14-Dimensionality-Reduction.html#id1">Dimensionality Reduction</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/14-Dimensionality-Reduction.html#Understanding-Explained-Variance">Understanding Explained Variance</a></li>
+<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/14-Dimensionality-Reduction.html#Understanding-the-Top-Principal-Components">Understanding the Top Principal Components</a></li>
+<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/14-Dimensionality-Reduction.html#Evaluate-the-Lower-Dimension-Model">Evaluate the Lower Dimension Model</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="clustering">
+<span id="appendix-clustering"></span><h2>Clustering<a class="headerlink" href="#clustering" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="examples/notebooks/15-Clustering.html">Clustering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/notebooks/15-Clustering.html#K-means-Clustering">K-means Clustering</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples/notebooks/15-Clustering.html#k-Means-Clustering:-Example">k-Means Clustering: Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/notebooks/15-Clustering.html#Tuning-K-in-K-Means-Clustering">Tuning K in K-Means Clustering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/notebooks/15-Clustering.html#Load-Datasets">Load Datasets</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="examples/notebooks/15-Clustering.html#Dimensionality-Reduction-for-Visualization">Dimensionality Reduction for Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/notebooks/15-Clustering.html#id1">Clustering</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples/notebooks/15-Clustering.html#K-Means-Clustering">K-Means Clustering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/notebooks/15-Clustering.html#K-Means-Failure-Scenarios">K-Means Failure Scenarios</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/notebooks/15-Clustering.html#Evaluation">Evaluation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="examples/notebooks/15-Clustering.html#Density-Based-Clustering">Density-Based Clustering</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples/notebooks/15-Clustering.html#DBSCAN">DBSCAN</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="examples/notebooks/15-Clustering.html#Distribution-Based-Clustering">Distribution-Based Clustering</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples/notebooks/15-Clustering.html#Gaussian-Mixture-Models">Gaussian Mixture Models</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="automation">
+<span id="appendix-automation"></span><h2>Automation<a class="headerlink" href="#automation" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="examples/notebooks/16-Automation.html">Automating Machine Learning for Networking</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples/notebooks/16-Automation.html#Learning-Objectives">Learning Objectives</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/notebooks/16-Automation.html#Tasks">Tasks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/notebooks/16-Automation.html#Requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/notebooks/16-Automation.html#Part-1:-Generating-nPrints-from-Traffic">Part 1: Generating nPrints from Traffic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/notebooks/16-Automation.html#Part-2:-nPrint-to-Machine-Learning-Samples">Part 2: nPrint to Machine Learning Samples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/notebooks/16-Automation.html#Part-3:-Training-a-Classifier">Part 3: Training a Classifier</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/16-Automation.html#Understanding-the-Model">Understanding the Model</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="examples/notebooks/16-Automation.html#Part-4:-Exploring-Different-Representations">Part 4: Exploring Different Representations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/16-Automation.html#Summary">Summary</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="examples/notebooks/16-Automation.html#Part-5:-pcapML">Part 5: pcapML</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="future.html" class="btn btn-neutral float-left" title="Chapter 8: Looking Ahead" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="examples/notebooks/01-Packet-Capture-Basics.html" class="btn btn-neutral float-right" title="Packet Capture and Analysis" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
