@@ -1,28 +1,17 @@
-
-
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <title>Chapter 2: Motivating Problems and Examples &mdash; Applied Machine Learning for Networking Version 0.1-dev documentation</title>
-  
-
-  
-  
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chapter 2: Motivating Problems &mdash; Machine Learning for Networking Version 0.1 documentation</title><link rel="stylesheet" href="../static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../static/css/rtd_theme_mods.css" type="text/css" />
     <link rel="shortcut icon" href="../static/bridge.ico"/>
-  
-  
-  
-
-  
-  <script type="text/javascript" src="../static/js/modernizr.min.js"></script>
-  
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../static/documentation_options.js"></script>
+  <!--[if lt IE 9]>
+    <script src="../static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  <script id="documentation_options" data-url_root="../" src="../static/documentation_options.js"></script>
         <script src="../static/jquery.js"></script>
         <script src="../static/underscore.js"></script>
         <script src="../static/doctools.js"></script>
@@ -35,174 +24,124 @@
 
   gtag('config', 'G-QLSP3FJWGT');
 </script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-    <script type="text/javascript" src="../static/js/theme.js"></script>
-
-    
-
-  
-  <link rel="stylesheet" href="../static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../static/graphviz.css" type="text/css" />
-  <link rel="stylesheet" href="../static/css/rtd_theme_mods.css" type="text/css" />
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "tex2jax_ignore|mathjax_ignore|document", "processClass": "tex2jax_process|mathjax_process|math|output_area"}})</script>
+    <script src="../static/js/theme.js"></script>
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Chapter 3: Network Measurement" href="measurement.html" />
+    <link rel="next" title="Chapter 3: Data Acquisition" href="measurement.html" />
     <link rel="prev" title="Chapter 1: Introduction" href="intro.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
 
           
-            <a href="../index.html" class="icon icon-home"> Applied Machine Learning for Networking
           
-
-          
+          <a href="../index.html" class="icon icon-home">
+            Machine Learning for Networking
           </a>
-
-          
-            
-            
               <div class="version">
-                Version 0.1-dev
+                Version 0.1
               </div>
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption"><span class="caption-text">Table of Contents</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="intro.html">Chapter 1:  Introduction</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Chapter 2: Motivating Problems and Examples</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#applications-to-security">Applications to Security</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Chapter 2: Motivating Problems</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#security">Security</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#botnets-spam-and-malware">Botnets, Spam, and Malware</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#account-compromise">Account Compromise</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#anomaly-detection">Anomaly Detection</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#applications-to-performance">Applications to Performance</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#performance">Performance</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#quality-of-experience-inference">Quality of Experience Inference</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#performance-prediction">Performance Prediction</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#application-service-and-device-identification">Application, Service, and Device Identification</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#performance-prediction">Performance Prediction</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#applications-to-resource-allocation">Applications to Resource Allocation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#resource-allocation">Resource Allocation</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#network-provisioning">Network Provisioning</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#coding-and-rate-control">Coding and Rate Control</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="measurement.html">Chapter 3: Network Measurement</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipelines.html">Chapter 4: Machine Learning Pipeline</a></li>
-<li class="toctree-l1"><a class="reference internal" href="supervised.html">Chapter 5: Supervised Learning Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="measurement.html">Chapter 3: Data Acquisition</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.html">Chapter 4: Machine Learning Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="supervised.html">Chapter 5: Supervised Learning</a></li>
 <li class="toctree-l1"><a class="reference internal" href="unsupervised.html">Chapter 6: Unsupervised Learning</a></li>
-<li class="toctree-l1"><a class="reference internal" href="automation.html">Chapter 7:  Machine Learning in Network Deployment</a></li>
-<li class="toctree-l1"><a class="reference internal" href="concerns.html">Chapter 8:  Privacy, Legal, &amp; Ethical Concerns</a></li>
-<li class="toctree-l1"><a class="reference internal" href="future.html">Chapter 9:  Looking Ahead</a></li>
+<li class="toctree-l1"><a class="reference internal" href="automation.html">Chapter 7:  Deployment Considarations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="future.html">Chapter 8:  Looking Ahead</a></li>
+<li class="toctree-l1"><a class="reference internal" href="appendix.html">Appendix: Activities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../README.html">About The Book</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../authors.html">About The Authors</a></li>
 </ul>
 
-            
-          
         </div>
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../index.html">Applied Machine Learning for Networking</a>
-        
+          <a href="../index.html">Machine Learning for Networking</a>
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="../index.html">Docs</a> &raquo;</li>
-        
-      <li>Chapter 2: Motivating Problems and Examples</li>
-    
-    
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Chapter 2: Motivating Problems</li>
       <li class="wy-breadcrumbs-aside">
-        
-            
             <a href="../_sources/text/motivation.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
-  </ul>
-
-  
-  <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
-      
-        <a href="measurement.html" class="btn btn-neutral float-right" title="Chapter 3: Network Measurement" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="intro.html" class="btn btn-neutral float-left" title="Chapter 1: Introduction" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="intro.html" class="btn btn-neutral float-left" title="Chapter 1: Introduction" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="measurement.html" class="btn btn-neutral float-right" title="Chapter 3: Data Acquisition" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
   </div>
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <div class="section" id="chapter-2-motivating-problems-and-examples">
-<h1>Chapter 2: Motivating Problems and Examples<a class="headerlink" href="#chapter-2-motivating-problems-and-examples" title="Permalink to this headline">¶</a></h1>
+             
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="chapter-2-motivating-problems">
+<h1>Chapter 2: Motivating Problems<a class="headerlink" href="#chapter-2-motivating-problems" title="Permalink to this headline">¶</a></h1>
 <p>Various tasks in computer networking rely on drawing inferences from data
 gathered from networks. Generally speaking, these networking tasks fall one of
 the following categories:</p>
@@ -247,8 +186,8 @@ broader than attack detection—for example.  Anomaly detection could
 entail detecting a misconfiguration or component failure. The rest of this
 chapter explores each of these classes of application in more detail and also
 introduces methods that are commonly used to address problems in each area.</p>
-<div class="section" id="applications-to-security">
-<h2>Applications to Security<a class="headerlink" href="#applications-to-security" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="security">
+<h2>Security<a class="headerlink" href="#security" title="Permalink to this headline">¶</a></h2>
 <p>One of the earliest applications of machine learning to networking was in the
 area of network security; specifically, the problem of detecting email spam
 based on the contents of the message was one of the earliest applications of
@@ -258,6 +197,12 @@ including the detection of denial of service attacks, phishing, botnets, and
 other attacks.  In many cases, machine learning has been applied to <em>detect</em> a
 network-based attack <em>post hoc</em>, but in some cases machine learning has even
 been used to <em>predict</em> attacks before they happen, as we discuss below.</p>
+<div class="sidebar">
+<p class="sidebar-title">Activity: Security</p>
+<p>The <a class="reference internal" href="appendix.html#appendix-security"><span class="std std-ref">Appendix</span></a> provides an opportunity to explore a security
+application in the context of network traffic analysis, exploring how
+features of attack traffic differ from normal web browsing activities.</p>
+</div>
 <div class="section" id="botnets-spam-and-malware">
 <h3>Botnets, Spam, and Malware<a class="headerlink" href="#botnets-spam-and-malware" title="Permalink to this headline">¶</a></h3>
 <p>One of the earliest forms of messaging on the Internet was electronic mail
@@ -411,8 +356,8 @@ intent, the anomalies themselves can pose operational challenges for network
 operators.</p>
 </div>
 </div>
-<div class="section" id="applications-to-performance">
-<h2>Applications to Performance<a class="headerlink" href="#applications-to-performance" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="performance">
+<h2>Performance<a class="headerlink" href="#performance" title="Permalink to this headline">¶</a></h2>
 <p>When network transport and application protocols were simpler, it was possible
 to model the behavior of protocols as a function of network conditions (e.g.,
 available bandwidth, packet loss rate) in terms of closed-form equations. As
@@ -423,6 +368,13 @@ form. The rise of encrypted traffic has also made it difficult to perform
 certain types of analysis directly, making it necessary to develop models that
 can infer properties of transport protocols or applications indirectly from
 various features of the network traffic.</p>
+<div class="sidebar">
+<p class="sidebar-title">Activity: Performance</p>
+<p>The <a class="reference internal" href="appendix.html#appendix-network-performance"><span class="std std-ref">Appendix</span></a> provides an opportunity to
+explore a network performance application in the context of network traffic
+analysis, exploring how application performance is evident in network
+traffic.</p>
+</div>
 <div class="section" id="quality-of-experience-inference">
 <h3>Quality of Experience Inference<a class="headerlink" href="#quality-of-experience-inference" title="Permalink to this headline">¶</a></h3>
 <p>An increasingly active area for machine learning inference is <em>application
@@ -450,6 +402,32 @@ As a result, it is often necessary to develop new models and algorithms to
 infer the quality of these streams from features in encrypted traffic. These
 models typically rely on features such as the rate of arrival of individual
 video segments, the size of these segments, and so forth.</p>
+</div>
+<div class="section" id="application-service-and-device-identification">
+<h3>Application, Service, and Device Identification<a class="headerlink" href="#application-service-and-device-identification" title="Permalink to this headline">¶</a></h3>
+<p>Machine learning models are sometimes used to identify specific network
+elements and applications—a process sometimes referred to as
+“fingerprinting”. This process can be used to identify applications, devices,
+websites, and other services. <em>Website fingeprinting</em> is a common application
+of machine learning whereby a model takes features from network traffic as
+input and attempts to identify the website—or even the specific
+webpage—that a user is visiting. Because individual websites tend to have a
+unique number of objects, and each of those objects tend to have unique sizes,
+the combination of the number and size of objects being transferred can often
+uniquely identify a website or webpage. Other work has observed that
+sets of queries from the Internet’s domain name system (DNS) can also uniquely
+identify websites.</p>
+<p>Similar sets of features can also be used to identify network endpoints (e.g.,
+the type of device that is connecting to the network), the type of service
+(e.g., video, web, gaming), and even the specific service (e.g., Netflix,
+YouTube), without the benefits of direct traffic inspection. As with QoE
+estimation, fingerprinting tasks have become more challenging as a result
+of increasing levels of traffic encryption. Yet, the features that are
+available as metadata in network traffic, such as packet sizes and
+interarrival times, the number of traffic flows, the duration of each flow,
+and so forth, have made it possible to uniquely identify applications,
+devices, websites, and services even if the underlying traffic itself is
+encrypted.</p>
 </div>
 <div class="section" id="performance-prediction">
 <h3>Performance Prediction<a class="headerlink" href="#performance-prediction" title="Permalink to this headline">¶</a></h3>
@@ -487,35 +465,9 @@ predict how traffic demands will grow among a particular group of subscribers
 (or households), and thus when it may be necessary to perform additional
 provisioning (a so-called “node split”).</p>
 </div>
-<div class="section" id="application-service-and-device-identification">
-<h3>Application, Service, and Device Identification<a class="headerlink" href="#application-service-and-device-identification" title="Permalink to this headline">¶</a></h3>
-<p>Machine learning models are sometimes used to identify specific network
-elements and applications—a process sometimes referred to as
-“fingerprinting”. This process can be used to identify applications, devices,
-websites, and other services. <em>Website fingeprinting</em> is a common application
-of machine learning whereby a model takes features from network traffic as
-input and attempts to identify the website—or even the specific
-webpage—that a user is visiting. Because individual websites tend to have a
-unique number of objects, and each of those objects tend to have unique sizes,
-the combination of the number and size of objects being transferred can often
-uniquely identify a website or webpage. Other work has observed that
-sets of queries from the Internet’s domain name system (DNS) can also uniquely
-identify websites.</p>
-<p>Similar sets of features can also be used to identify network endpoints (e.g.,
-the type of device that is connecting to the network), the type of service
-(e.g., video, web, gaming), and even the specific service (e.g., Netflix,
-YouTube), without the benefits of direct traffic inspection. As with QoE
-estimation, fingerprinting tasks have become more challenging as a result
-of increasing levels of traffic encryption. Yet, the features that are
-available as metadata in network traffic, such as packet sizes and
-interarrival times, the number of traffic flows, the duration of each flow,
-and so forth, have made it possible to uniquely identify applications,
-devices, websites, and services even if the underlying traffic itself is
-encrypted.</p>
 </div>
-</div>
-<div class="section" id="applications-to-resource-allocation">
-<h2>Applications to Resource Allocation<a class="headerlink" href="#applications-to-resource-allocation" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="resource-allocation">
+<h2>Resource Allocation<a class="headerlink" href="#resource-allocation" title="Permalink to this headline">¶</a></h2>
 <p>Machine learning has also begun to be used in contexts of network resource
 allocation and optimization. Resource allocation—the problem of deciding how
 much resources should be devoted to a particular traffic flow, application, or
@@ -591,51 +543,33 @@ manually designed ones.</p>
 
 
            </div>
-           
           </div>
-          <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="measurement.html" class="btn btn-neutral float-right" title="Chapter 3: Network Measurement" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="intro.html" class="btn btn-neutral float-left" title="Chapter 1: Introduction" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="intro.html" class="btn btn-neutral float-left" title="Chapter 1: Introduction" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="measurement.html" class="btn btn-neutral float-right" title="Chapter 3: Data Acquisition" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &copy; Copyright 2022
-
-    </p>
+    <p>&#169; Copyright 2023.</p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

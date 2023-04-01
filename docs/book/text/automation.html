@@ -1,28 +1,17 @@
-
-
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <title>Chapter 7: Machine Learning in Network Deployment &mdash; Applied Machine Learning for Networking Version 0.1-dev documentation</title>
-  
-
-  
-  
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chapter 7: Deployment Considarations &mdash; Machine Learning for Networking Version 0.1 documentation</title><link rel="stylesheet" href="../static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../static/css/rtd_theme_mods.css" type="text/css" />
     <link rel="shortcut icon" href="../static/bridge.ico"/>
-  
-  
-  
-
-  
-  <script type="text/javascript" src="../static/js/modernizr.min.js"></script>
-  
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../static/documentation_options.js"></script>
+  <!--[if lt IE 9]>
+    <script src="../static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  <script id="documentation_options" data-url_root="../" src="../static/documentation_options.js"></script>
         <script src="../static/jquery.js"></script>
         <script src="../static/underscore.js"></script>
         <script src="../static/doctools.js"></script>
@@ -35,168 +24,112 @@
 
   gtag('config', 'G-QLSP3FJWGT');
 </script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-    <script type="text/javascript" src="../static/js/theme.js"></script>
-
-    
-
-  
-  <link rel="stylesheet" href="../static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../static/graphviz.css" type="text/css" />
-  <link rel="stylesheet" href="../static/css/rtd_theme_mods.css" type="text/css" />
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "tex2jax_ignore|mathjax_ignore|document", "processClass": "tex2jax_process|mathjax_process|math|output_area"}})</script>
+    <script src="../static/js/theme.js"></script>
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Chapter 8: Privacy, Legal, &amp; Ethical Concerns" href="concerns.html" />
+    <link rel="next" title="Chapter 8: Looking Ahead" href="future.html" />
     <link rel="prev" title="Chapter 6: Unsupervised Learning" href="unsupervised.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
 
           
-            <a href="../index.html" class="icon icon-home"> Applied Machine Learning for Networking
           
-
-          
+          <a href="../index.html" class="icon icon-home">
+            Machine Learning for Networking
           </a>
-
-          
-            
-            
               <div class="version">
-                Version 0.1-dev
+                Version 0.1
               </div>
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption"><span class="caption-text">Table of Contents</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="intro.html">Chapter 1:  Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="motivation.html">Chapter 2: Motivating Problems and Examples</a></li>
-<li class="toctree-l1"><a class="reference internal" href="measurement.html">Chapter 3: Network Measurement</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipelines.html">Chapter 4: Machine Learning Pipeline</a></li>
-<li class="toctree-l1"><a class="reference internal" href="supervised.html">Chapter 5: Supervised Learning Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="motivation.html">Chapter 2: Motivating Problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="measurement.html">Chapter 3: Data Acquisition</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.html">Chapter 4: Machine Learning Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="supervised.html">Chapter 5: Supervised Learning</a></li>
 <li class="toctree-l1"><a class="reference internal" href="unsupervised.html">Chapter 6: Unsupervised Learning</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Chapter 7:  Machine Learning in Network Deployment</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#programmable-telemetry">Programmable Telemetry</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#automated-ml-pipelines">Automated ML Pipelines</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Chapter 7:  Deployment Considarations</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#automation">Automation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#model-drift">Model Drift</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#explainability">Explainability</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="concerns.html">Chapter 8:  Privacy, Legal, &amp; Ethical Concerns</a></li>
-<li class="toctree-l1"><a class="reference internal" href="future.html">Chapter 9:  Looking Ahead</a></li>
+<li class="toctree-l1"><a class="reference internal" href="future.html">Chapter 8:  Looking Ahead</a></li>
+<li class="toctree-l1"><a class="reference internal" href="appendix.html">Appendix: Activities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../README.html">About The Book</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../authors.html">About The Authors</a></li>
 </ul>
 
-            
-          
         </div>
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../index.html">Applied Machine Learning for Networking</a>
-        
+          <a href="../index.html">Machine Learning for Networking</a>
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="../index.html">Docs</a> &raquo;</li>
-        
-      <li>Chapter 7:  Machine Learning in Network Deployment</li>
-    
-    
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Chapter 7:  Deployment Considarations</li>
       <li class="wy-breadcrumbs-aside">
-        
-            
             <a href="../_sources/text/automation.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
-  </ul>
-
-  
-  <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
-      
-        <a href="concerns.html" class="btn btn-neutral float-right" title="Chapter 8: Privacy, Legal, &amp; Ethical Concerns" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="unsupervised.html" class="btn btn-neutral float-left" title="Chapter 6: Unsupervised Learning" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="unsupervised.html" class="btn btn-neutral float-left" title="Chapter 6: Unsupervised Learning" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="future.html" class="btn btn-neutral float-right" title="Chapter 8: Looking Ahead" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
   </div>
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <div class="section" id="chapter-7-machine-learning-in-network-deployment">
-<h1>Chapter 7:  Machine Learning in Network Deployment<a class="headerlink" href="#chapter-7-machine-learning-in-network-deployment" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="programmable-telemetry">
-<h2>Programmable Telemetry<a class="headerlink" href="#programmable-telemetry" title="Permalink to this headline">¶</a></h2>
-<ul class="simple">
-<li><p>Taurus</p></li>
-<li><p>…</p></li>
-</ul>
-</div>
-<div class="section" id="automated-ml-pipelines">
-<h2>Automated ML Pipelines<a class="headerlink" href="#automated-ml-pipelines" title="Permalink to this headline">¶</a></h2>
+             
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="chapter-7-deployment-considarations">
+<h1>Chapter 7:  Deployment Considarations<a class="headerlink" href="#chapter-7-deployment-considarations" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="automation">
+<h2>Automation<a class="headerlink" href="#automation" title="Permalink to this headline">¶</a></h2>
 <p>While the use of deep learning techniques can help automate feature
 engineering, a separate line of research has examined how to perform automated
 machine learning (AutoML). The work examines the use of optimization techniques
@@ -213,6 +146,12 @@ neighbors, and gradient boosted tree methods. Beyond searching the singular
 models, AutoGluon-Tabular creates weighted ensemble models out of the base
 models to achieve higher performance than other AutoML tools in less overall
 training time.</p>
+<div class="sidebar">
+<p class="sidebar-title">Activity: AutoML</p>
+<p>The <a class="reference internal" href="appendix.html#appendix-automation"><span class="std std-ref">Appendix</span></a> provides an activity to perform
+automated machine learning using <cite>nprintML</cite> on various classification
+problems using network traffic.</p>
+</div>
 <p>AutoGluon-Tabular can perform feature selection, model search, and
 hyperparameter optimization for all eight problems we evaluate.  AutoGluon has
 been shown to outperform many other public AutoML tools given the same data,
@@ -230,55 +169,47 @@ important metric.  The preset parameter for an AutoML tool does not represent
 the training of a single model, but an optimization of a set of models for a
 given task.</p>
 </div>
+<div class="section" id="model-drift">
+<h2>Model Drift<a class="headerlink" href="#model-drift" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Taurus</p></li>
+<li><p>…</p></li>
+</ul>
+</div>
+<div class="section" id="explainability">
+<h2>Explainability<a class="headerlink" href="#explainability" title="Permalink to this headline">¶</a></h2>
+</div>
 </div>
 
 
            </div>
-           
           </div>
-          <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="concerns.html" class="btn btn-neutral float-right" title="Chapter 8: Privacy, Legal, &amp; Ethical Concerns" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="unsupervised.html" class="btn btn-neutral float-left" title="Chapter 6: Unsupervised Learning" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="unsupervised.html" class="btn btn-neutral float-left" title="Chapter 6: Unsupervised Learning" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="future.html" class="btn btn-neutral float-right" title="Chapter 8: Looking Ahead" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &copy; Copyright 2022
-
-    </p>
+    <p>&#169; Copyright 2023.</p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

@@ -40,19 +40,36 @@ This process of *network management* involves monitoring the network for
 aberrations and fixing problems as (or before) they arise, so that the network
 can continue to run well.
 
-Once again, the COVID-19 pandemic was a testament to the importance of network
-management. As much of society shifted to working from home, Internet traffic
-patterns changed dramatically. Traffic that previously was exchanged on
-enterprise, corporate, and university networks suddenly shifted to home
-networks; video conference traffic from home networks skyrocketed, placing
-unprecedented load and strain on home networks. And yet, despite predictions
-of its demise, the Internet actually handled these dramatic shifts quite well.
+How Networks Run
+++++++++++++++++
 
-The process of adapting to thse changes, however, was not automatic. Network
+To maintain good performance for the applications they must support, networks
+must continually adapt to changing conditions. For example, when a component
+of the network fails, either due to misconfiguration or a hardware failure,
+the network must be able to detect the failure and reroute traffic around the
+failed component. Similarly, when the network is congested or traffic demands
+change, the network must reroute traffic around the link or provision
+additional capacity. Finally, when a new application is deployed, the
+network must be configured to support the application's requirements. These
+tasks are often referred to as *network management*.
+
+In 2020, the COVID-19 pandemic was a testament to the importance of network
+management---and the fact that networks don't just automatically adapt to
+these changes (yet), but rather than human network engineers and operators
+needed to respond to the changing conditions that resulted from sudden and
+dramatic changes to traffic patterns. Specifically, as much of society shifted
+to working from home, Internet traffic patterns changed dramatically. Traffic
+that previously was exchanged on enterprise, corporate, and university
+networks suddenly shifted to home networks; video conference traffic from home
+networks skyrocketed, placing unprecedented load and strain on home networks.
+And yet, despite predictions of its demise, the Internet actually handled
+these dramatic shifts quite well.
+
+The process of adapting to these changes, however, was not automatic. Network
 management tasks on both short and long timescales ensured that the Internet
 continued to operate well in spite of these dramatic shifts. In the short
 term, network operators needed to detect and respond to various performance
-issues, as sudden shifts in traffic placed unprecendented strain on parts of
+issues, as sudden shifts in traffic placed unprecedented strain on parts of
 the network: For example, as more traffic shifted to video conferencing, the
 traffic volumes between access Internet service providers and the cloud
 service providers hosting Zoom, WebEx, Teams, and other video conference
@@ -69,18 +86,21 @@ changes in traffic load, and attacks. Long-term tasks involve provisioning
 capacity, establishing and satisfying service-level agreements, or making
 other more substantial changes to infrastructure. All of these tasks typically
 require a careful process, sometimes involving simulations or models to help
-predict hwo a particular change to network configuration or infrastructure
+predict how a particular change to network configuration or infrastructure
 might ultimately affect how traffic flows through the network and, ultimately,
 user experience. 
 
 For a long time, these network management tasks tasks have typically relied on
 extensive domain knowledge---and a lot of trial and error. These tasks have
-also become more difficult and error-prone as networked systems have become
-more complex. The need to predict the outcomes of these tasks---and automate
-them---has become particularly challenging. Whereas several decades ago, the
-networking industry had some success in creating closed-form models and
-simulations of protocols, applications and systems, today these systems are
-far too complex for closed-form analysis.
+also become more difficult and error-prone, even as the systems themselves
+have become more complex. The need to predict the outcomes of these
+tasks---and automate them---has become particularly challenging. Whereas
+several decades ago, the networking industry had some success in creating
+closed-form models and simulations of protocols, applications and systems,
+today these systems are far too complex for closed-form analysis.
+
+The Role of Machine Learning
+++++++++++++++++++++++++++++
 
 ..
     * What is ML?
@@ -113,13 +133,16 @@ recognizing patterns in data, making predictions based on past data or
 observations, inferring properties that cannot be directly measured, and
 automatic generation of synthetic data.
 
-.. image:: ../figures/ml-loop.png
+.. _fig-ml-loop:
+.. figure:: ../figures/ml-loop.png
    :width: 500px
    :align: center
 
+   Machine learning control loop.
+
 |
 
-The figure above illustrates the potential role of machine learning in the
+:numref:`Figure %s <fig-ml-loop>` illustrates the potential role of machine learning in the
 network ecosystem. The network produces much information for a network
 operator to make sense of, including raw traffic flow records, summary
 statistics, and even user feedback. *Measurement*, which we will discuss in
@@ -153,6 +176,8 @@ us forwarded. Knowing what changes to make in the first place, however,
 requires the ability to infer, forecast, and predict, so that the appropriate
 changes can be made in the first place. 
 
+Why Now?
+++++++++
 ..       
     * What's the history? and Why now?
         * History
@@ -167,7 +192,7 @@ Machine learning has been applied to networking since the mid-1990s, dating
 back to the design of early email spam filters, as well as early anomaly and
 malware detection systems on closed datasets (e.g., the DARPA 1999 KDD
 challenge). In the mid-2000s, machine learning applications to networking
-experienced a rennaissance, with applications to both network security and
+experienced a renaissance, with applications to both network security and
 performance. In the security realm, researchers devised techniques to use
 network traffic as inputs for machine learning models that detect "botnets",
 large armies of compromised hosts that launch large-scale Internet attacks.
@@ -207,6 +232,9 @@ these two developments has created vast possibilities for how machine learning
 can be applied to networking, from long-term prediction and forecasting, to
 short-term diagnosis, to real-time adaptation to changing conditions.
 
+What You Will Learn in This Book
+++++++++++++++++++++++++++++++++
+
 ..
     * What you will learn from this book
         * Network measurement
@@ -226,5 +254,47 @@ short-term diagnosis, to real-time adaptation to changing conditions.
         * Privacy, legal, and ethical concerns    
         * Looking ahead
 
-This book offers a practical introduction to network measuement,
-machine learning methods and models, and ap
+This book offers a practical introduction to network measurement, machine
+learning methods and models, and applications. We will explore the details of
+network measurement, in particular the different types of network data that
+are available given current network devices, from routers to middleboxes,
+including the techniques for gathering and acquiring network data; what is possible to
+learn and infer from different types of network data; and new directions in
+network measurement and data representation, from advances in network
+telemetry to existing and emerging ways of representing network data for input
+to models.
+
+.. sidebar:: Activity: Packet Capture Basics
+
+    Many of the concepts in this book will be introduced through examples and
+    exercises.  The :ref:`Appendix <appendix-basics>` includes an activity for
+    performing simple analysis of a packet capture.  We will get into more of the
+    details of network data in subsequent chapters. This example will give you a
+    chance to get familiar with basic network data and how to load this type of
+    data into a Jupyter notebook. 
+
+Equipped with a better understanding of how various data is acquired from the
+network, we will then turn to an overview of machine learning methods. This
+book is not designed to give you a detailed overview or mathematical
+foundations behind each of the models---there are plenty of books out there
+for that already. Our goal in this book, rather, is to give you exposure to a
+variety of methods, show examples of how these models and methods can be
+applied in practice, provide an understanding of how these methods work, as
+well as when a particular model might be appropriate or not to apply for a
+particular dataset. A large focus of the book is also on how to *apply* these
+models in practice; as a result, we will focus significant attention on data
+acquisition, and representation---as we will see, the choice of how to
+represent the data to a model is often as important as the choice of model
+itself.
+
+This practical view of machine learning for networking necessitates a focus on
+the entire *machine learning pipeline*, from data acquisition to model
+maintenance. Whereas most machine learning courses and textbooks focus on the
+modeling aspects of machine learning in isolation, in practice, the machine
+learning models themselves are but a small contributor to the overall
+effectiveness of prediction and inference. As such, we will explore all
+aspects of the machine learning and data science pipeline, from data
+acquisition to model deployment and maintenance, to the ethical and legal
+concerns surrounding applications of machine learning for networking.
+
+

@@ -1,28 +1,17 @@
-
-
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <title>Chapter 3: Network Measurement &mdash; Applied Machine Learning for Networking Version 0.1-dev documentation</title>
-  
-
-  
-  
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chapter 3: Data Acquisition &mdash; Machine Learning for Networking Version 0.1 documentation</title><link rel="stylesheet" href="../static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../static/css/rtd_theme_mods.css" type="text/css" />
     <link rel="shortcut icon" href="../static/bridge.ico"/>
-  
-  
-  
-
-  
-  <script type="text/javascript" src="../static/js/modernizr.min.js"></script>
-  
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../static/documentation_options.js"></script>
+  <!--[if lt IE 9]>
+    <script src="../static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  <script id="documentation_options" data-url_root="../" src="../static/documentation_options.js"></script>
         <script src="../static/jquery.js"></script>
         <script src="../static/underscore.js"></script>
         <script src="../static/doctools.js"></script>
@@ -35,177 +24,146 @@
 
   gtag('config', 'G-QLSP3FJWGT');
 </script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-    <script type="text/javascript" src="../static/js/theme.js"></script>
-
-    
-
-  
-  <link rel="stylesheet" href="../static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../static/graphviz.css" type="text/css" />
-  <link rel="stylesheet" href="../static/css/rtd_theme_mods.css" type="text/css" />
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "tex2jax_ignore|mathjax_ignore|document", "processClass": "tex2jax_process|mathjax_process|math|output_area"}})</script>
+    <script src="../static/js/theme.js"></script>
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Chapter 4: Machine Learning Pipeline" href="pipelines.html" />
-    <link rel="prev" title="Chapter 2: Motivating Problems and Examples" href="motivation.html" /> 
+    <link rel="next" title="Chapter 4: Machine Learning Pipeline" href="pipeline.html" />
+    <link rel="prev" title="Chapter 2: Motivating Problems" href="motivation.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
 
           
-            <a href="../index.html" class="icon icon-home"> Applied Machine Learning for Networking
           
-
-          
+          <a href="../index.html" class="icon icon-home">
+            Machine Learning for Networking
           </a>
-
-          
-            
-            
               <div class="version">
-                Version 0.1-dev
+                Version 0.1
               </div>
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption"><span class="caption-text">Table of Contents</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="intro.html">Chapter 1:  Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="motivation.html">Chapter 2: Motivating Problems and Examples</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Chapter 3: Network Measurement</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#metrics-what-to-measure">Metrics: What to Measure</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#active-measurement">Active Measurement</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#passive-measurement">Passive Measurement</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#data-from-acquisition-to-analysis">Data: From Acquisition to Analysis</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#acquisition-tools">Acquisition Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="motivation.html">Chapter 2: Motivating Problems</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Chapter 3: Data Acquisition</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#what-to-measure">What to Measure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#how-to-measure">How to Measure</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#active-measurement">Active Measurement</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#passive-measurement">Passive Measurement</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tradeoffs-active-vs-passive-measurement">Tradeoffs: Active vs. Passive Measurement</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#from-acquisition-to-model-input">From Acquisition to Model Input</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#from-packets-to-flows">From Packets to Flows</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#from-flows-to-features">From Flows to Features</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="pipelines.html">Chapter 4: Machine Learning Pipeline</a></li>
-<li class="toctree-l1"><a class="reference internal" href="supervised.html">Chapter 5: Supervised Learning Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.html">Chapter 4: Machine Learning Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="supervised.html">Chapter 5: Supervised Learning</a></li>
 <li class="toctree-l1"><a class="reference internal" href="unsupervised.html">Chapter 6: Unsupervised Learning</a></li>
-<li class="toctree-l1"><a class="reference internal" href="automation.html">Chapter 7:  Machine Learning in Network Deployment</a></li>
-<li class="toctree-l1"><a class="reference internal" href="concerns.html">Chapter 8:  Privacy, Legal, &amp; Ethical Concerns</a></li>
-<li class="toctree-l1"><a class="reference internal" href="future.html">Chapter 9:  Looking Ahead</a></li>
+<li class="toctree-l1"><a class="reference internal" href="automation.html">Chapter 7:  Deployment Considarations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="future.html">Chapter 8:  Looking Ahead</a></li>
+<li class="toctree-l1"><a class="reference internal" href="appendix.html">Appendix: Activities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../README.html">About The Book</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../authors.html">About The Authors</a></li>
 </ul>
 
-            
-          
         </div>
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../index.html">Applied Machine Learning for Networking</a>
-        
+          <a href="../index.html">Machine Learning for Networking</a>
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="../index.html">Docs</a> &raquo;</li>
-        
-      <li>Chapter 3: Network Measurement</li>
-    
-    
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Chapter 3: Data Acquisition</li>
       <li class="wy-breadcrumbs-aside">
-        
-            
             <a href="../_sources/text/measurement.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
-  </ul>
-
-  
-  <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
-      
-        <a href="pipelines.html" class="btn btn-neutral float-right" title="Chapter 4: Machine Learning Pipeline" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="motivation.html" class="btn btn-neutral float-left" title="Chapter 2: Motivating Problems and Examples" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="motivation.html" class="btn btn-neutral float-left" title="Chapter 2: Motivating Problems" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipeline.html" class="btn btn-neutral float-right" title="Chapter 4: Machine Learning Pipeline" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
   </div>
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <div class="section" id="chapter-3-network-measurement">
-<h1>Chapter 3: Network Measurement<a class="headerlink" href="#chapter-3-network-measurement" title="Permalink to this headline">¶</a></h1>
-<p>Measuring networks first requires measuring them. There are many reasons to
-measure networks and many ways of gathering these measurements. As we
-discussed in the previous chapter, for example, networks can be measured to
-for performance diagnosis and troubleshooting, security, forecasting, and many
-other use cases. Before we can talk about models, we first need to discuss the
-different ways that network data can be collected. Internet measurement itself
-is rapidly evolving, as new tools and capabilities emerge. In this chapter, we
-will explore both convenventional techniques for Internet measurement, as well
-as emerging techniques to measure and gather data from networks. We will also
-explore how emerging technologies are both expanding the types of measurements
-that can be gathered from networks and making it possible to gather new types
-of measurements.</p>
-<p>We will explore network meausurement in the context of two different types of
+             
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="chapter-3-data-acquisition">
+<h1>Chapter 3: Data Acquisition<a class="headerlink" href="#chapter-3-data-acquisition" title="Permalink to this headline">¶</a></h1>
+<p>Managing networks requires gathering information that can be used to drive
+decisions about how to adapt to changing conditions. Doing so requires
+gathering information that can be used as input to the decision-making
+process, which includes models that perform prediction and inference about the
+state of the network and the applications running on it. This process, often
+referred to as <em>data acquisition</em> in machine learning, has a longstanding
+tradition in networking, and is often referred to as simply <em>network
+measurement</em>. There are many ways to gather information about the network,
+which we will discuss in this chapter. Ultimately, however, gathering data
+with the intent of providing input to machine learning models can be a more
+involved process, since the data must be collected in a way that both results
+in effective training for the models, and in an efficient manner.</p>
+<p>There are many reasons to measure networks and many ways of gathering these
+measurements. As we discussed in the previous chapter, for example, networks
+can be measured to for performance diagnosis and troubleshooting, security,
+forecasting, and many other use cases. Before we can talk about models, we
+first need to discuss the different ways that network data can be collected.
+Internet measurement itself is rapidly evolving, as new tools and capabilities
+emerge. In this chapter, we will explore both conventional techniques for
+Internet measurement, as well as emerging techniques to measure and gather
+data from networks. We will also explore how emerging technologies are both
+expanding the types of measurements that can be gathered from networks and
+making it possible to gather new types of measurements. We will also talk
+about the process of transforming the raw data into a form that can be used
+for training machine learning models—in other words, going from raw
+measurement data to aggregate statistics and ultimately to features.</p>
+<p>We will explore network measurement in the context of two different types of
 measurement: (1) active measurement, which introduces new traffic into the
 network to measure various network properties (from performance to topology);
 and (2) passive measurement, which captures existing traffic on the network to
@@ -213,73 +171,94 @@ infer information about traffic that is already being sent across the network
 by existing applications and services.  Each of these types of measurements
 have various classes of tools to measure certain properties, as well as
 various considerations. A simple way to think about these two classes of
-meausrement is that active measurements can directly measure certain
+measurement is that active measurements can directly measure certain
 properties of a specific network path (e.g., its capacity, latency,
 application properties in some cases, or even the path itself) but cannot
 provide direct insight into the circumstances that a particular user or
 application may be experiencing.</p>
-<p>In this chapter, we’ll explore these two types of measurement in more detail,
-explaining how each technique works, and what it can (and cannot) measure.
-Before getting into specific measurement techniques, however, let’s talk a
-little bit about what metrics are worth measuring in the first place.</p>
-<div class="section" id="metrics-what-to-measure">
-<h2>Metrics: What to Measure<a class="headerlink" href="#metrics-what-to-measure" title="Permalink to this headline">¶</a></h2>
-<p><em>Throughput</em> concerns the amount of time it takes to transfer a certain
-quantity of data. It is typically measured in bits per second (or some multiple
-of bits per second, such as gigabits per second). Measuring throughput is
-important because it indicates how much data a network is capable of moving
-between two network endpoints within a fixed time window. When networks
-delivered relatively low throughput, it was the predominant determining factor
-for a user’s experience. As a result, it is the dimension of performance that
-is most commonly referred to and benchmarked against when considering things
-like the performance of consumer broadband Internet access. For example, you
-might buy a “1 Gigabit” service plance from your ISP, which typically indicates
-that you can expect a downstream (i.e., from a server somewhere on the Internet
-to your home) throughput of approximately 1 gigabit per second (1 Gbps).</p>
-<p><em>Latency</em> concerns the amount of time it takes a unit of data (e.g., a packet)
-to reach an Internet destination. Latency is measured in seconds. A
-fundamental contributor to latency is the speed of light, but because Internet
-traffic is multiplexed in queues, when traffic congestion occurs, packets in
-buffers can also introduce additional latency. Latency is becoming
-increasingly important, and can be a differentiator in performance between
-networks, particularly for networks that have network equipment with large
-buffers that can introduce delays when those parts of the network become
-bottlenecks. The metric is also becoming increasingly important and relevant
-in the context of interactive applications, such as video conferencing,
-gaming, and even the web. A related important metric is latency under load,
-which is the latency experienced by packets when the network is carrying other
-traffic that saturates the capacity of the link, even if briefly (e.g.,
-starting a streaming video, uploading a photo, sending an email, browsing the
-web).</p>
-<p><em>Jitter</em> reflects the change in latency over time—it is effectively the first
-derivative of latency, or the change in packet inter-arrival time. As with
-latency, it is measured in seconds (or, more commonly, milliseconds). Many
-applciations, especially interactive ones like voice, video, and gaming,
-expect network traffic to arrive at regular, fixed intervals. When traffic
-does not arrive at such fixed intervals either user experience is degraded, or
-the application must introduce a larger buffer to smooth out variation in
-packet inter-arrival.</p>
-<p><em>Packet loss</em> concerns the fraction of packets that fail to reach their intended
-destination. Packet loss can be detrimental to performance because certain
-transport protocols like the Transmission Control Protocol (TCP) interpret
-loss as congestion and slow down as a result of observing packet loss. Packet
-loss is of course also inherently detrimental to user experience, as lost
-packets represent lost data—which could correspond to frames in a video,
-words in a voice call, and so forth.</p>
-<p>There is also an increased desire to measure what is known as <strong>quality of
-experience</strong>, or <strong>QoE</strong>.  QoE has several connotations—it can be used to refer to
-either applciation quality metrics, for example, video resolution, startup
-delay, or rebuffering in the case of streaming video.  More generally, it can
-also refer to a user’s general satisfaction level or, rather, quality of
-experience, when interacting with a particular application; a common metric for
-this type of QoE is a mean opinion score (MOS). Sometimes, people use the term
-“applciation QoE” to differentiate applciation quality metrics from general
-user experience.</p>
-<p>All of these metrics can be measured with both passive and active measurement
-techniques, which we discuss next.</p>
+<p>We’ll then explore these two types of measurement in more detail, explaining
+how each technique works, and what it can (and cannot) measure.  Along the
+way, we’ll dive into the details with a few examples and hands-on activities,
+introducing both techniques for processing raw network data into more
+aggregate statistics, as well as software libraries that can perform some of
+these transformations.  Before getting into specific measurement techniques,
+let’s talk a little bit about what metrics can be measured in the first place.</p>
+<div class="section" id="what-to-measure">
+<h2>What to Measure<a class="headerlink" href="#what-to-measure" title="Permalink to this headline">¶</a></h2>
+<p>There are a wide variety of metrics that can be measured from network data.
+We highlight some of the common metrics below. Typically, these metrics
+can be measured directly, either by injecting traffic into the network and
+observing behavior (<em>active measurement</em>) or by collecting existing network
+traffic and computing statistics about what is being observed (<em>passive
+measurement</em>).</p>
+<p>Of course, in machine learning, the goal is <em>inference</em>, which means that
+the metrics that can be measured directly, which we discuss below, are often
+used as inputs (or “features”) to a machine learning model to predict or infer
+higher-level phenomena or events, from application quality of experience to
+attacks. Below, we highlight some of these metrics, and discuss which of these
+metrics can be measured with active measurement, passive measurement, or both.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>Throughput</strong> concerns the amount of time it takes to transfer a
+certain quantity of data. It is typically measured in bits per second
+(or some multiple of bits per second, such as gigabits per second).
+Measuring throughput is important because it indicates how much data a
+network is capable of moving between two network endpoints within a
+fixed time window. When networks delivered relatively low throughput, it
+was the predominant determining factor for a user’s experience. As a
+result, it is the dimension of performance that is most commonly
+referred to and benchmarked against when considering things like the
+performance of consumer broadband Internet access. For example, you
+might buy a “1 Gigabit” service plan from your ISP, which typically
+indicates that you can expect a downstream (i.e., from a server
+somewhere on the Internet to your home) throughput of approximately 1
+gigabit per second (1 Gbps).</p></li>
+<li><p><strong>Latency</strong> concerns the amount of time it takes a unit of data (e.g., a
+packet) to reach an Internet destination. Latency is measured in
+seconds. A fundamental contributor to latency is the speed of light, but
+because Internet traffic is multiplexed in queues, when traffic
+congestion occurs, packets in buffers can also introduce additional
+latency. Latency is becoming increasingly important, and can be a
+differentiator in performance between networks, particularly for
+networks that have network equipment with large buffers that can
+introduce delays when those parts of the network become bottlenecks. The
+metric is also becoming increasingly important and relevant in the
+context of interactive applications, such as video conferencing, gaming,
+and even the web. A related important metric is latency under load,
+which is the latency experienced by packets when the network is carrying
+other traffic that saturates the capacity of the link, even if briefly
+(e.g., starting a streaming video, uploading a photo, sending an email,
+browsing the web).</p></li>
+<li><p><strong>Jitter</strong> reflects the change in latency over time—it is effectively
+the first derivative of latency, or the change in packet inter-arrival
+time. As with latency, it is measured in seconds (or, more commonly,
+milliseconds). Many applications, especially interactive ones like
+voice, video, and gaming, expect network traffic to arrive at regular,
+fixed intervals. When traffic does not arrive at such fixed intervals
+either user experience is degraded, or the application must introduce a
+larger buffer to smooth out variation in packet inter-arrival.</p></li>
+<li><p><strong>Packet loss</strong> concerns the fraction of packets that fail to reach
+their intended destination. Packet loss can be detrimental to
+performance because certain transport protocols like the Transmission
+Control Protocol (TCP) interpret loss as congestion and slow down as a
+result of observing packet loss. Packet loss is of course also
+inherently detrimental to user experience, as lost packets represent
+lost data—which could correspond to frames in a video, words in a
+voice call, and so forth.</p></li>
+</ul>
+</div></blockquote>
 </div>
+<div class="section" id="how-to-measure">
+<h2>How to Measure<a class="headerlink" href="#how-to-measure" title="Permalink to this headline">¶</a></h2>
+<p>There are two primary ways to measure networks: active measurement and passive
+measurement. Active measurement involves injecting traffic into the network
+and observing the behavior of the network. Passive measurement involves
+capturing existing traffic on the network and observing the behavior of the
+network. In this section, we will discuss the two types of measurement in
+more detail, and explore the different ways that each type of measurement can
+be used to gather data.</p>
 <div class="section" id="active-measurement">
-<h2>Active Measurement<a class="headerlink" href="#active-measurement" title="Permalink to this headline">¶</a></h2>
+<h3>Active Measurement<a class="headerlink" href="#active-measurement" title="Permalink to this headline">¶</a></h3>
 <p>One way to measure the characteristics of a network is to send traffic across
 the network towards a particular endpoint and observe the characteristics of
 those measurements in terms of the metrics that we discussed in the previous
@@ -307,6 +286,7 @@ classes of active measurements are not exhaustive, but they do capture many
 cases of active measurement research and practice. We give a brief overview of
 each in this chapter and offer pointers to more detailed treatment of this
 material elsewhere.</p>
+<p><strong>Types of Active Measurement</strong></p>
 <p><em>Internet speed tests.</em> Perhaps one of the most canonical application
 performance measurements is the Internet “speed test”, which typically refers
 as a test of application throughput.  Users commonly measure throughput with a
@@ -389,39 +369,56 @@ characterizing certain aspects of DNS across the Internet. While the most
 common tools for scanning the Internet are “ping” and “traceroute”, a wide
 array of scanning tools has been developed, including nmap and more recently
 zmap.</p>
-<p><em>Challenges and Limitations.</em> Active measurements may be convenient to
-implement but have their own drawbacks: (1) they require measuring to a
-particular network endpoint, which in certain cases (e.g., a speed test, an
-active measurement of network performance) requires setting up a server on the
-other end of the measurement; (2) they involve introducing additional traffic
-into the network, which in some cases may introduce prohibitive network load;
-(3) because the measurements themselves are synthetic, the measurements
-themselves may not be representative of what a user actually experiences.</p>
-<p>As previously discussed, there is also an increasing desire to measure the
-quality of specific applications, in particular applications such as web
-browsing, video streaming, real-time video conferencing, and so forth. One way
-of assessing the quality of these applications is using active measurements
-that emulate the behavior of these specific applications. For example, the
-Federal Communications Commission (FCC) incorporates active measurements for
-web performance and video streaming performance for specific services into
-their Measuring Broadband America (MBA) test suite.</p>
-<p>There are several challenges with using application-specific measurements to
-assess application performance. First, application probes must be designed for
-each specific application, and the probes themselves must mimic the behavior
-of that application. Accordingly, different applications must have custom
-probes to accurately measure the performance of the respective application.
-Furthermore, accurate performance measurement of each application also
-requires the appropriate measurement infrastructure, such as servers, located
-in the appropriate locations (e.g., content delivery networks).  As a result
-of these complications, a preferred method for measuring application
-performance is to <em>passively</em> measure the traffic of the respective
-applications and <em>infer</em> the application quality. This endeavor turns out to
-be both a measurement problem and a machine learning problem! We will discuss
-passive measurement in the next section and applications of machine learning
-to passively collected network traffic in subsequent sections.</p>
+<p><strong>Applications of Active Measurement</strong></p>
+<p>Active measurements can yield information about network endpoints, or about
+paths between endpoints.  As previously mentioned, one common approach to
+gathering data through active network measurements is through what is called a
+<em>scan</em>, whereby a single (or small number) of machines on the network send
+traffic to other network endpoints in an attempt to elicit a response from
+those endpoints. That response is typically a response that corresponds to the
+protocol traffic that was sent to the device (e.g., a reply to an ICMP ping, a
+response to a TCP SYN packet, a response to an HTTP(S) request, a response to a
+TLS handshake request). Based on those response packets, the measurement device
+that initiated the active measurement can collect responses. The existence (or
+lack thereof), format, structure, or content of those responses can then
+subsequently be used as features in supervised or unsupervised machine learning
+algorithms for a variety of tasks.</p>
+<p>A common application of machine learning to network data gathered from
+active measurements is <em>fingerprinting</em>. Just about anything in the
+network can be fingerprinted, or identified—things that can be
+fingerprinted include network infrastructure (e.g., routers, middleboxes),
+device types (e.g., laptop, desktop, mobile), operating system, TLS version,
+and so forth. One classical network fingerprinting tool is called nmap; the tool
+would scan another network endpoint and, based on the format of reply packets,
+could then determine with reasonable accuracy the operating system (and
+OS version) of the endpoint. The conventional version of nmap used a static
+set of rules to determine the likely operating system using features that were
+discovered and encoded by hand (e.g., TCP options, congestion control
+parameters). More recently, research has demonstrated that, given operating
+system labels and TCP SYN-ACK packets (i.e., responses to the initial part of
+the TCP three-way handshake), it is possible to train machine
+learning models that can automatically discover the operating system of a
+network endpoint, to a much greater degree of accuracy than nmap.</p>
+<p>Network measurement has other forms of active measurement that could
+ultimately be amenable to machine learning, although these areas are somewhat
+less explored. One particular possible application area is <em>anomaly
+detection</em>, specifically unsupervised learning techniques to detect unusual,
+actionable changes in network performance. For example, network operators
+commonly perform active measurements to measure network characteristics like
+availability (i.e., uptime), round-trip latency, and so forth. Due to the
+packet-switched nature of traffic delivery on the Internet, some amount of
+latency variation and packet loss is normal, and to be expected. On the other
+hand, more unusual or severe latency aberrations might warrant operator
+attention. To date, it is less well-understood how to automatically examine
+longitudinal latency performance measurements and (1) reliably determine when
+an aberration requires operator attention vs. being part of normal network
+operations or conditions (e.g., buffering); (2) determine the underlying cause
+of the latency problem (and, in particular, whether the source of that latency
+aberration is due to a problem within the ISP network, the user’s home
+network, an endpoint device, or some other cause).</p>
 </div>
 <div class="section" id="passive-measurement">
-<h2>Passive Measurement<a class="headerlink" href="#passive-measurement" title="Permalink to this headline">¶</a></h2>
+<h3>Passive Measurement<a class="headerlink" href="#passive-measurement" title="Permalink to this headline">¶</a></h3>
 <p>In contrast to active measurement, which introduces new traffic into the
 network to measure the performance of the network, <em>passive measurement</em>
 monitors existing traffic in the network and infers properties about the
@@ -431,6 +428,7 @@ actual traffic that is traversing the network (e.g., a user’s actual web
 browsing or streaming video session) and thus the traffic that is captured may
 more accurately reflect the properties, behavior, and performance of
 application performance or user experience.</p>
+<p><strong>Types of Passive Measurement</strong></p>
 <p><em>Packet-level monitoring.</em> The most universal form of passive measurement is
 <em>packet capture</em>, sometimes also called <em>pcap</em> for short. Packet capture is
 essentially the equivalent of “listening in” on a network conversation, akin
@@ -449,6 +447,14 @@ packets as they traverse the network, but also to store, transfer, and later
 process the data.  For this reason, packet captures are sometimes
 truncated—capturing only the packet headers, as opposed to the complete
 “payload”.</p>
+<div class="sidebar">
+<p class="sidebar-title">Activity: Data Acquisition from Passive Measurement</p>
+<p>The <a class="reference internal" href="appendix.html#appendix-data-acquisition"><span class="std std-ref">Appendix</span></a> provides an activity that
+allows you to explore the information that can be derived from passive
+measurement of network traffic, specifically packets captured from the
+network.  You will load the data into a Pandas dataframe, and then explore
+the data to answer a number of high-level questions about the data.</p>
+</div>
 <p><em>Flow-level monitoring.</em> Other aggregated representations of packet captures
 are often used to reduce volume, storage, or processing overhead. One common
 example of aggregation is IPFIX (sometimes more commonly known by Netflow,
@@ -483,9 +489,69 @@ representations as input. Now, these new capture and monitoring technologies
 are making it possible to capture raw data at very high rates—and causing us
 to rethink what the “best” representations might be for a wide array of
 networking tasks that might rely on machine learning.</p>
+<p><em>Programmatic Interfaces.</em>
+Ultimately, analyzing packet captures programmatically can require more
+sophisticated libraries and APIs. While many of these programmatic options are
+typically restricted to running on general-purpose computing devices (e.g.,
+servers, middleboxes), as opposed to network-specific hardware, software-based
+options provide significant flexibility in manipulating and analyzing packet
+capture—including generating features that can be used for machine learning
+models.</p>
+<p>A good place to become familiar with low-level software packet capture
+libraries, particularly if you are new to the area, is Python’s <cite>scapy</cite> library;
+scapy will get you going quickly, but its performance may leave something to
+be desired if you wish to conduct real-time measurements, parsing, and
+analysis.  Other options have a steeper learning curve; these include eBPF,
+dpkt, and PF_RING.  We have built on these libraries in a tool and
+accompanying Python library, <cite>netml</cite>, which we will use to conduct many of
+the exercises in this book.</p>
+<p><strong>Applications of Passive Measurement</strong></p>
+<p>There is also an increased desire to measure what is known as <strong>quality of
+experience</strong>, or <strong>QoE</strong>.  QoE has several connotations—it can be used to refer to
+either application quality metrics, for example, video resolution, startup
+delay, or rebuffering in the case of streaming video.  More generally, it can
+also refer to a user’s general satisfaction level or, rather, quality of
+experience, when interacting with a particular application; a common metric for
+this type of QoE is a mean opinion score (MOS). Sometimes, people use the term
+“application QoE” to differentiate application quality metrics from general
+user experience.</p>
 </div>
-<div class="section" id="data-from-acquisition-to-analysis">
-<h2>Data: From Acquisition to Analysis<a class="headerlink" href="#data-from-acquisition-to-analysis" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="tradeoffs-active-vs-passive-measurement">
+<h3>Tradeoffs: Active vs. Passive Measurement<a class="headerlink" href="#tradeoffs-active-vs-passive-measurement" title="Permalink to this headline">¶</a></h3>
+<p>Active measurements may be convenient to
+implement but have their own drawbacks: (1) they require measuring to a
+particular network endpoint, which in certain cases (e.g., a speed test, an
+active measurement of network performance) requires setting up a server on the
+other end of the measurement; (2) they involve introducing additional traffic
+into the network, which in some cases may introduce prohibitive network load;
+(3) because the measurements themselves are synthetic, the measurements
+themselves may not be representative of what a user actually experiences.</p>
+<p>As previously discussed, there is also an increasing desire to measure the
+quality of specific applications, in particular applications such as web
+browsing, video streaming, real-time video conferencing, and so forth. One way
+of assessing the quality of these applications is using active measurements
+that emulate the behavior of these specific applications. For example, the
+Federal Communications Commission (FCC) incorporates active measurements for
+web performance and video streaming performance for specific services into
+their Measuring Broadband America (MBA) test suite.</p>
+<p>There are several challenges with using application-specific measurements to
+assess application performance. First, application probes must be designed for
+each specific application, and the probes themselves must mimic the behavior
+of that application. Accordingly, different applications must have custom
+probes to accurately measure the performance of the respective application.
+Furthermore, accurate performance measurement of each application also
+requires the appropriate measurement infrastructure, such as servers, located
+in the appropriate locations (e.g., content delivery networks).  As a result
+of these complications, a preferred method for measuring application
+performance is to <em>passively</em> measure the traffic of the respective
+applications and <em>infer</em> the application quality. This endeavor turns out to
+be both a measurement problem and a machine learning problem! We will discuss
+passive measurement in the next section and applications of machine learning
+to passively collected network traffic in subsequent sections.</p>
+</div>
+</div>
+<div class="section" id="from-acquisition-to-model-input">
+<h2>From Acquisition to Model Input<a class="headerlink" href="#from-acquisition-to-model-input" title="Permalink to this headline">¶</a></h2>
 <p>Now that we understand the different forms that network data (and, in
 particular, network traffic measurements) can take, we turn to understanding
 some of the tools that enable the capture of network traffic data, as well as
@@ -499,18 +565,17 @@ of Python to perform this type of data analysis. Although similar analysis is
 possible in other frameworks and languages, some of the more cutting-edge
 tools that we will explore in this book are primarily available through Python
 APIs, so Python is a good place to start.</p>
-<div class="section" id="acquisition-tools">
-<h3>Acquisition Tools<a class="headerlink" href="#acquisition-tools" title="Permalink to this headline">¶</a></h3>
-<p><em>Passive Measurement.</em>
-A common tool to analyze passive traffic measurements is Wireshark. Wireshark
+<div class="section" id="from-packets-to-flows">
+<h3>From Packets to Flows<a class="headerlink" href="#from-packets-to-flows" title="Permalink to this headline">¶</a></h3>
+<p>A common tool to analyze passive traffic measurements is <em>Wireshark</em>. Wireshark
 is an application that can be installed on many common operating systems,
 including Mac, Windows, and Linux.  Underlying the Wireshark tool itself is a
 library called libpcap, which provides an interface between the network
 interface card and the software applications that read data from packets into
 memory and process them.</p>
-<p>The figure below shows an example analysis from Wireshark. Each row in the
-application represents a single packet, and each column represents a
-particular field. Clicking on any particular row will yield additional
+<p><a class="reference internal" href="#fig-wireshark"><span class="std std-numref">Figure 2</span></a> shows an example analysis from Wireshark. Each
+row in the application represents a single packet, and each column represents
+a particular field. Clicking on any particular row will yield additional
 information in the bottom half of the split screen. The information is
 arranged according to the packet’s “layers”, with the Ethernet information at
 the top, followed by the IP information, the TCP information, and finally any
@@ -518,6 +583,13 @@ information that might be contained in the payload. Because much modern
 Internet traffic is encrypted, most of the information that we will use (and
 apply) with machine learning examples in this book will come from the header
 information.</p>
+<div class="figure align-center" id="id1">
+<span id="fig-wireshark"></span><a class="reference internal image-reference" href="../images/wireshark.png"><img alt="../images/wireshark.png" src="../images/wireshark.png" style="width: 900px;" /></a>
+<p class="caption"><span class="caption-number">Figure 2. </span><span class="caption-text">Wireshark capture.</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
 <p>Taking a closer look at the fields in each packet, particular information
 turns out to frequently be useful for a wide variety of machine learning
 tasks. Relevant features include, for example, the length of each packet and
@@ -540,120 +612,146 @@ that generate this type of flow statistics generally operate on network
 devices, such as routers and switches. For example, on Cisco routers, the
 software that is used to produce flow records is commonly referred to as
 NetFlow. A standard version of this software and format is called IPFIX.</p>
-<p>Ultimately analyzing packet captures programmatically can require more
-sophisticated libraries and APIs. While many of these programmatic options are
-typically restricted to running on general-purpose computing devices (e.g.,
-servers, middleboxes), as opposed to network-specific hardware, software-based
-options provide significant flexibility in manipulating and analyzing packet
-capture—including generating features that can be used for machine learning
-models.</p>
-<p>A good place to become familiar with low-level software packet capture
-libraries, particularly if you are new to the area, is Python’s scapy library;
-scapy will get you going quickly, but its performance may leave something to
-be desired if you wish to conduct real-time measurements, parsing, and
-analysis.  Other options have a steeper learning curve; these include eBPF,
-dpkt, and PF_RING.  We have built on these libraries in a tool and
-accompanying Python library, netml, which you can use for conducting many of
-the exercises in this book.</p>
-<p><em>Active Measurement.</em>
-Another approach for gathering network traffic data is to perform active
-measurements that yield information about the network. Active measurements can
-yield information about network endpoints, or about paths between endpoints.
-One common approach to gathering data through active network measurements is
-through what is called a <em>scan</em>, whereby a single (or small number) of
-machines on the network send traffic to other network endpoints in an attempt
-to elicit a response from those endpoints. That response is typically a
-response that corresponds to the protocol traffic that was sent to the device
-(e.g., a reply to an ICMP ping, a response to a TCP SYN packet, a response to
-an HTTP(S) request, a response to a TLS handshake request). Based on those
-response packets, the measurement device that initiated the active measurement
-can collect responses. The existence (or lack thereof), format, structure, or
-content of those responses can then subsequently be used as features in
-supervised or unsupervised machine learning algorithms for a variety of tasks.</p>
-<p>One common application of machine learning to network data gathered from
-active measurements is <em>fingerprinting</em>. Briefly, just about anything in the
-network can be fingerprinted, or identified—things that can be
-fingerprinted include network infrastructure (e.g., routers, middleboxes),
-device types (e.g., laptop, desktop, mobile), operating system, TLS version,
-and so forth. A classical network fingerprinting tool is called nmap; the tool
-would scan another network endpoint and, based on the format of reply packets,
-could then determine with reasonable accuracy the operating system (and
-OS version) of the endpoint. The conventional version of nmap used a static
-set of rules to determine the likely operating system using features that were
-discovered and encoded by hand (e.g., TCP options, congestion control
-parameters). More recently, research has demonstrated that, given operating
-system labels and TCP SYN-ACK packets (i.e., responses to the initial part of
-the TCP three-way handshake), it is possible to train machine
-learning models that can automatically discover the operating system of a
-network endpoint, to a much greater degree of accuracy than nmap.</p>
-<p>Network measurement has other forms of active measurement that could
-ultimately be amenable to machine learning, although these areas are somewhat
-less explored. One particular possible application area is <em>anomaly
-detection</em>, specifically unsupervised learning techniques to detect unusual,
-actionable changes in network performance. For example, network operators
-commonly perform active measurements to measure network characteristics like
-availability (i.e., uptime), round-trip latency, and so forth. Due to the
-packet-switched nature of traffic delivery on the Internet, some amount of
-latency variation and packet loss is normal, and to be expected. On the other
-hand, more unusual or severe latency aberrations might warrant operator
-attention. To date, it is less well-understood how to automatically examine
-longitudinal latency performance measurements and (1) reliably determine when
-an aberration requires operator attention vs. being part of normal network
-operations or conditions (e.g., buffering); (2) determine the underlying cause
-of the latency problem (and, in particular, whether the source of that latency
-aberration is due to a problem within the ISP network, the user’s home
-network, an endpoint device, or some other cause).</p>
+</div>
+<div class="section" id="from-flows-to-features">
+<h3>From Flows to Features<a class="headerlink" href="#from-flows-to-features" title="Permalink to this headline">¶</a></h3>
+<p>Representations of network traffic that are most effective for prediction and
+inference problems in networking detection are typically {em a priori}
+unclear.  Representation choices typically involve various statistics
+concerning traffic volumes, packet sampling rates, and aggregation intervals.
+Yet, which of these transformations retain predictive information is typically
+initially unknown.  One example challenge is choosing the granularity on
+which to aggregate a feature: For instance, if we decide to measure and
+represent the number of packets per second as a feature, then changes in
+traffic patterns at the millisecond level might go undetected; on the other
+hand, recording at this granularity creates higher dimensional observations
+introducing high-dimensional data that creates challenges with both scale and
+accuracy.  (The so-called <em>curse of dimensionality</em> in machine learning is
+the observed fact that the higher the dimension of the input, the harder it is
+to achieve good accuracy; in particular, we might then require an amount of
+training data exponential as a function of dimension.)</p>
+<p>The process of feature extraction from raw network traffic affects the accuracy
+of a variety of models.  There are many possible ways to represent raw traffic
+traces (i.e., packets) as inputs. The data itself can be aggregated on various
+time windows, elided, transformed into different bases, sampled, and so forth.
+We focus on representations of network traffic data that do not incorporate
+semantics from the header itself, such as IP addresses, port numbers, sequence
+numbers, or other specific values in the packet headers themselves.
+Representations that are agnostic to specific values in the headers ensures
+that the resulting models are trained to recognize novel behavior regardless of
+the {em specific} source, destination, application, or location in the
+network. In contrast to past work in this area, which has typically focused on
+a single problem in novelty detection using a single dataset and a chosen
+procedure, our focus is on studying the applicability of representation, we aim
+for {em generality} and reproducibility of results across a range of problems,
+studying the applicability of different representations across a range of
+problems.</p>
+<p><cite>netml</cite> is a network anomaly detection tool and library written in Python. It
+consists of two sub-modules: (1) a <cite>pcap</cite> parser that produces flows using
+Scapy/dpkt and (2) a novelty detection module that applies the novelty
+detection algorithms. The library takes network packet traces as input,
+transforms them into various data representations, and can be incorporated as a
+Python library or invoked directly from the command line.</p>
+<div class="sidebar">
+<p class="sidebar-title">Activity: Feature Extraction</p>
+<p>The <a class="reference internal" href="appendix.html#appendix-feature-extraction"><span class="std std-ref">Appendix</span></a> provides an initial
+opportunity to use the <cite>netml</cite> library to extract features from a network
+trace.  The <cite>netml</cite> library is publicly available on Github as an open-source Python
+library. It has been packaged on PyPi for easy installation.</p>
+</div>
+<p>The <cite>netml</cite> library consists of approximately 11,000 lines of Python, with the
+packet parsing module comprising approximately 3,500 lines of Python, the
+implementations of various novelty detection modules comprising another 3,000
+lines, another 3,000 lines in support of the <cite>netml</cite> command-line utility, and
+the rest of the code in support of various utilities (e.g., testing).  <cite>netml</cite>
+is a useful tool for converting network traffic captures to features that can
+be used for various network analysis tasks. It has been designed, implemented,
+and released as an open-source tool to help researchers and practitioners in
+the field of network security.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">netml.pparser.parser</span> <span class="kn">import</span> <span class="n">PCAP</span>
+<span class="kn">from</span> <span class="nn">netml.utils.tool</span> <span class="kn">import</span> <span class="n">load_data</span>
+
+<span class="n">pcap</span> <span class="o">=</span> <span class="n">PCAP</span><span class="p">(</span>
+    <span class="s1">&#39;data/demo.pcap&#39;</span><span class="p">,</span>
+    <span class="n">flow_ptks_thres</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span>
+    <span class="n">verbose</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">pcap</span><span class="o">.</span><span class="n">pcap2flows</span><span class="p">()</span>
+
+<span class="c1"># Extract inter-arrival time features</span>
+<span class="n">pcap</span><span class="o">.</span><span class="n">flow2features</span><span class="p">(</span><span class="s1">&#39;IAT&#39;</span><span class="p">,</span> <span class="n">fft</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="n">iat_features</span> <span class="o">=</span> <span class="n">pcap</span><span class="o">.</span><span class="n">features</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&#39;_pcap2flows()&#39; starts at 2023-03-28 14:34:32
+pcap_file: data/demo.pcap
+ith_packets: 0
+len(flows): 36
+total number of flows: 36. Num of flows &lt; 2 pkts: 8, and &gt;=2 pkts: 28 without timeout splitting.
+kept flows: 28. Each of them has at least 2 pkts after timeout splitting.
+flow_durations.shape: (28, 1)
+       col_0
+count 28.000
+mean   0.028
+std    0.028
+min    0.000
+25%    0.000
+50%    0.034
+75%    0.039
+max    0.107
+&lt;class &#39;pandas.core.frame.DataFrame&#39;&gt;
+RangeIndex: 28 entries, 0 to 27
+Data columns (total 1 columns):
+ #   Column  Non-Null Count  Dtype
+---  ------  --------------  -----
+ 0   col_0   28 non-null     float64
+dtypes: float64(1)
+memory usage: 352.0 bytes
+None
+0th_flow: len(pkts): 2
+After splitting flows, the number of subflows: 26 and each of them has at least 2 packets.
+&#39;_pcap2flows()&#39; ends at 2023-03-28 14:34:32 and takes 0.0008 mins.
+&#39;_flow2features()&#39; starts at 2023-03-28 14:34:32
+True
+&#39;_flow2features()&#39; ends at 2023-03-28 14:34:32 and takes 0.0 mins.
+</pre></div>
+</div>
 </div>
 </div>
 </div>
 
 
            </div>
-           
           </div>
-          <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="pipelines.html" class="btn btn-neutral float-right" title="Chapter 4: Machine Learning Pipeline" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="motivation.html" class="btn btn-neutral float-left" title="Chapter 2: Motivating Problems and Examples" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="motivation.html" class="btn btn-neutral float-left" title="Chapter 2: Motivating Problems" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipeline.html" class="btn btn-neutral float-right" title="Chapter 4: Machine Learning Pipeline" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &copy; Copyright 2022
-
-    </p>
+    <p>&#169; Copyright 2023.</p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

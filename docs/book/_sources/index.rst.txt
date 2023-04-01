@@ -5,11 +5,10 @@
 
 |
 	    
-Applied Machine Learning for Networking
-=============================================
-
-Noah Apthorpe and Nick Feamster 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Machine Learning for Networking
+===============================
+Nick Feamster and Noah Apthorpe
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 |
 
@@ -20,12 +19,13 @@ Noah Apthorpe and Nick Feamster
    text/intro.rst
    text/motivation.rst  
    text/measurement.rst
-   text/pipelines.rst
+   text/pipeline.rst
    text/supervised.rst
    text/unsupervised.rst
    text/automation.rst
-   text/concerns.rst
    text/future.rst
+
+   text/appendix.rst
 
    README.rst
    authors.rst

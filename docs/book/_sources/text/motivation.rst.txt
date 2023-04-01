@@ -1,5 +1,5 @@
-Chapter 2: Motivating Problems and Examples
-===========================================
+Chapter 2: Motivating Problems 
+==============================
 
 Various tasks in computer networking rely on drawing inferences from data
 gathered from networks. Generally speaking, these networking tasks fall one of
@@ -44,8 +44,8 @@ entail detecting a misconfiguration or component failure. The rest of this
 chapter explores each of these classes of application in more detail and also
 introduces methods that are commonly used to address problems in each area.
         
-Applications to Security
-------------------------
+Security
+--------
 
 One of the earliest applications of machine learning to networking was in the
 area of network security; specifically, the problem of detecting email spam
@@ -56,6 +56,12 @@ including the detection of denial of service attacks, phishing, botnets, and
 other attacks.  In many cases, machine learning has been applied to *detect* a
 network-based attack *post hoc*, but in some cases machine learning has even
 been used to *predict* attacks before they happen, as we discuss below.
+
+.. sidebar:: Activity: Security
+
+   The :ref:`Appendix <appendix-security>` provides an opportunity to explore a security
+   application in the context of network traffic analysis, exploring how
+   features of attack traffic differ from normal web browsing activities.
 
 Botnets, Spam, and Malware
 ++++++++++++++++++++++++++
@@ -118,7 +124,7 @@ machine learning-based attack detection methods based on DNS traffic. Many
 companies, for example, could sell security appliances to Internet service
 providers, enterprise networks, or other institutions that would simply
 "listen" to DNS traffic and detect unusual behavior. More recent
-trends---notably the evolution of DNS to rely on encrpyted transport and
+trends---notably the evolution of DNS to rely on encrypted transport and
 application protocols (i.e., DNS-over-TLS, and its more popular variant
 DNS-over-HTTPS), and the deployment of these technologies in increasingly more
 (and popular) operating systems and browsers means that DNS traffic is
@@ -173,7 +179,7 @@ Machine learning has proved effective in detecting account compromise in this
 environment, adapting to adversaries with limited human intervention, as well
 as capturing non-linear correlations between features and labels (in this
 case, predicting whether an attack has taken place). These models must take
-into accounta variety of inputs, including authentication logs, threat data,
+into account a variety of inputs, including authentication logs, threat data,
 the login behavior on accounts, and so forth. Input features to these models
 include aspects such as whether the login occurs at a normal or abnormal time
 of day, whether the login is coming from a known device, application, IP
@@ -187,7 +193,7 @@ process of engineering and representing features to models.
 Anomaly Detection
 +++++++++++++++++
 
-Anomaly detection---sometiems also referred to as *novelty detection*---
+Anomaly detection---sometimes also referred to as *novelty detection*---
 describes a broad class of problems that involve attempts to detect anything
 "unusual". Typically, anomaly detection problems involve the application of
 unsupervised machine learning techniques. 
@@ -214,14 +220,14 @@ or a new version of World of Warcraft is released, large numbers of Internet
 users may attempt to download software updates at the same time. Because these
 updates can be quite large, users who download these updates can generate a
 massive volume of traffic in a short period of time. Historically, these
-events have been referred to as *flash crowds*. Early work in statsitical
-anomaly detection for networks has attempted to distingiush flash crowds from
+events have been referred to as *flash crowds*. Early work in statistical
+anomaly detection for networks has attempted to distinguish flash crowds from
 malicious activities such as denial of service attacks. However, regardless of
 intent, the anomalies themselves can pose operational challenges for network
 operators.
 
-Applications to Performance
----------------------------
+Performance
+-----------
 
 When network transport and application protocols were simpler, it was possible
 to model the behavior of protocols as a function of network conditions (e.g.,
@@ -233,6 +239,14 @@ form. The rise of encrypted traffic has also made it difficult to perform
 certain types of analysis directly, making it necessary to develop models that
 can infer properties of transport protocols or applications indirectly from
 various features of the network traffic.
+
+.. sidebar:: Activity: Performance
+
+   The :ref:`Appendix <appendix-network-performance>` provides an opportunity to
+   explore a network performance application in the context of network traffic
+   analysis, exploring how application performance is evident in network
+   traffic.
+
 
 Quality of Experience Inference
 +++++++++++++++++++++++++++++++
@@ -262,6 +276,34 @@ As a result, it is often necessary to develop new models and algorithms to
 infer the quality of these streams from features in encrypted traffic. These
 models typically rely on features such as the rate of arrival of individual
 video segments, the size of these segments, and so forth. 
+
+Application, Service, and Device Identification
++++++++++++++++++++++++++++++++++++++++++++++++
+
+Machine learning models are sometimes used to identify specific network
+elements and applications---a process sometimes referred to as
+"fingerprinting". This process can be used to identify applications, devices,
+websites, and other services. *Website fingeprinting* is a common application
+of machine learning whereby a model takes features from network traffic as
+input and attempts to identify the website---or even the specific
+webpage---that a user is visiting. Because individual websites tend to have a
+unique number of objects, and each of those objects tend to have unique sizes,
+the combination of the number and size of objects being transferred can often
+uniquely identify a website or webpage. Other work has observed that
+sets of queries from the Internet's domain name system (DNS) can also uniquely
+identify websites. 
+
+Similar sets of features can also be used to identify network endpoints (e.g.,
+the type of device that is connecting to the network), the type of service
+(e.g., video, web, gaming), and even the specific service (e.g., Netflix,
+YouTube), without the benefits of direct traffic inspection. As with QoE
+estimation, fingerprinting tasks have become more challenging as a result
+of increasing levels of traffic encryption. Yet, the features that are
+available as metadata in network traffic, such as packet sizes and
+interarrival times, the number of traffic flows, the duration of each flow,
+and so forth, have made it possible to uniquely identify applications,
+devices, websites, and services even if the underlying traffic itself is
+encrypted. 
 
 Performance Prediction
 ++++++++++++++++++++++
@@ -302,30 +344,81 @@ predict how traffic demands will grow among a particular group of subscribers
 (or households), and thus when it may be necessary to perform additional
 provisioning (a so-called "node split"). 
 
-Application, Service, and Device Identification
-+++++++++++++++++++++++++++++++++++++++++++++++
+Resource Allocation
+-------------------
 
-Machine learning models are sometimes used to identify specific network
-elements and applications---a process sometimes referred to as
-"fingerprinting". This process can be used to identify applications, devices,
-websites, and other services. *Website fingeprinting* is a common application
-of machine learning whereby a model takes features from network traffic as
-input and attempts to identify the website---or even the specific
-webpage---that a user is visiting. Because individual websites tend to have a
-unique number of objects, and each of those objects tend to have unique sizes,
-the combination of the number and size of objects being transfered can often
-uniquely identify a website or webpage. Other work has observed that
-sets of queries from the Internet's domain name system (DNS) can also uniquely
-identify websites. 
+Machine learning has also begun to be used in contexts of network resource
+allocation and optimization. Resource allocation---the problem of deciding how
+much resources should be devoted to a particular traffic flow, application, or
+process---can be performed over both
+short and long timescales. 
 
-Similar sets of features can also be used to identify network endpoints (e.g.,
-the type of device that is connecting to the network), the type of service
-(e.g., video, web, gaming), and even the specific service (e.g., Netflix,
-YouTube), without the benefits of direct traffic inspection. As with QoE
-estimation, fingerprinting tasks have become more challenging as a result
-of increasing levels of traffic encryption. Yet, the features that are
-available as metadata in network traffic, such as packet sizes and
-interarrival times, the number of traffic flows, the duration of each flow,
-and so forth, have made it possible to uniquely identify applications,
-devices, websites, and services even if the underlying traffic itself is
-encrypted. 
+* Over longer timescales, machine learning can be used to predict and forecast
+  how demand might change over time, allowing network operators to better
+  provision network resources. 
+* Over shorter timescales, machine learning can be used to determine how fast
+  and application should send, how data should be compressed and encoded, and
+  even the paths that traffic should take through the network.
+
+In these areas in particular, specific types of machine learning, including
+both deep learning and reinforcement learning, are especially applicable.
+Below, we discuss some of these applications, and how machine learning is
+being applied in these contexts. 
+
+Network Provisioning
+++++++++++++++++++++
+
+Large service provider networks routinely face questions about when, how, and
+where to provision capacity in their networks. Typically, these problems may
+entail gathering data about past and present levels of traffic on the network
+and making predictions about how traffic patterns will evolve over time. Based
+on those predictions, network operators may then make changes to network
+configuration that result in additional network capacity, traffic taking
+different routes through the network, and so forth. 
+
+In this part of the process, where operators make changes to affect
+provisioning and topology, machine learning can also play a role, helping
+network operators answer "what if" questions about how changes to network
+configuration ultimately affect other facets, such as traffic volumes along
+different paths, and even application performance. For example, large content
+distribution networks such as Google have used machine learning to help
+predict how search response time might be affected by the deployment of
+additional web caches.
+
+Coding and Rate Control
++++++++++++++++++++++++
+
+A very active area in networked systems and applications today is the
+development of data encoding schemes that measure network conditions and adapt
+encoding in real time, to deliver content efficiently.  Network conditions
+such as packet loss and latency can vary over time for many reasons, such as
+variable traffic loads that may introduce congestion. In such scenarios, when
+conditions change, the senders and receivers of traffic may want to adapt how
+data is coded, to maximize the likelihood that the data is delivered with low
+latency, at the highest possible quality. 
+
+Common applications where this problem arises include both on-demand and
+real-time video streaming. In both cases, users want to receive a high quality
+video. Yet, the network may delay or lose packets, and the receiving client
+must then either decode the video with the data it receives or wait for the
+lost data to be retransmitted (which may not be an option if retransmission
+takes too long). In the past, common encoding schemes would measure network
+conditions such as loss rate and compute a level of redundancy to include with
+the transmission, in advance. Yet, if that encoding was done ahead of time and
+the network conditions change again, then inefficiencies can arise---with
+either excess data being sent (if the loss rate is less than planned) or the
+client receiving a poor quality stream (if the loss rate is higher than
+planned).
+
+Emerging machine-learning based approaches use techniques like reinforcement
+learning to determine how to encode a video stream so that the client can
+receive a high-quality stream with low latency, even as network conditions
+change.  In addition to encoding content according to changing network
+conditions, a sender can also adapt its sending rate in response to changing
+network conditions (a process known as *congestion control*). Research has
+shown that, in some circumstances, a sender can adjust its sending rate in
+ways that optimize a pre-defined objective function in response to changing
+network conditions. While the early incarnations have applied game theory to
+achieve this optimization, the fundamental questions involve the learnabiity
+of congestion control algorithms, and to what extent they can out-perform
+manually designed ones.
