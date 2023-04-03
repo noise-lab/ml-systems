@@ -1,0 +1,300 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{feamster}[2018/03/28 Feamster Exams]
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+\usepackage{graphics,epsfig,amsmath,amssymb}
+\usepackage{epsf}
+\usepackage{boxedminipage}
+\usepackage{fullpage}
+\usepackage{fancyheadings}
+\usepackage{times}
+\usepackage{amsmath}
+\usepackage{ifthen}
+\usepackage{pseudocode}
+\usepackage{array}
+\usepackage{psfrag}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{listings}
+\usepackage{lastpage}
+\usepackage{totcount}
+\usepackage{url}
+
+% 45 degree column titles
+\usepackage{adjustbox}
+\newcommand{\headrow}[1]{\multicolumn{1}{c}{\adjustbox{angle=45,lap=\width-0.5em}{#1}}}
+
+% start \section on new page
+\usepackage[compact]{titlesec}
+%\newcommand{\sectionbreak}{\clearpage}
+
+% TIKZ FIGURES
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usetikzlibrary{calc,positioning,arrows.meta,shapes}
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfplotsset{width=12cm,compat=1.9}
+\pgfsetlayers{background,main,foreground}
+
+
+% PAGE LAYOUT
+\pagestyle{fancy}
+\setlength{\topmargin}{.0in}
+\setlength{\parindent}{0in}
+\setlength{\parskip}{0in}
+\setlength{\footskip}{0.15in}
+\setlength{\textheight}{8in}
+
+\lstset{breaklines=true}
+
+\newcounter{pctr}
+\stepcounter{pctr}
+
+\newcounter{partctr}
+
+% headers/footers
+\lhead[\fancyplain{}{\bf Page \thepage ~of~\pageref{LastPage}}]%
+      {\shortlecture{} \exam{}, \term{}}
+\rfoot[{\bf Initials: \shortanswer{.5}{}}]%
+      {{\bf Initials: \shortanswer{.5}{}}}
+\rhead[\shortlecture{} \exam{}, \term{}]%
+      {\fancyplain{}{\bf Page \thepage ~of~\pageref{LastPage}}}
+\cfoot{}
+%\setlength{\headrulewidth}{0in}
+\setlength{\headsep}{.5in}
+
+% Sections
+\renewcommand{\thesection}{{\bf\Roman{section}}}
+\renewcommand{\theenumi}{{\bf\Alph{enumi}.}}
+\renewcommand{\labelenumi}{{\bf\Alph{enumi}.}}
+
+
+
+% Support for rendering of solutions
+% Pass option "solution" to package to switch to solution mode
+
+\newcommand{\setversion}[1]{\def\version{#1}}
+\setversion{quiz} % default
+
+\DeclareOption{solution}{
+	\setversion{solution}  %override
+}
+
+\ExecuteOptions{}
+
+\ProcessOptions\relax
+
+\newcommand{\solution}[1]{\ifthenelse{\equal{\version}{solution}}{#1}{}}
+
+
+% Different formatting based on version
+\ifthenelse{\equal{\version}{solution}}{%IS SOLUTION
+	\tikzset{
+		bubble-correct/.style={fill=black},
+        link-correct/.style={ultra thick},
+        path-correct/.style={thick, color=blue!50!green, mark=x}
+	}
+} {
+    \tikzset{
+		bubble-correct/.style={fill=none},
+        link-correct/.style={},
+        path-correct/.style={draw=none}
+    }
+}
+
+% ANSWERBOX
+% Creates a text box in which students can write their answer.
+% First argument specifies the height of the box
+% Second argument gives the solution
+\newcommand{\answerbox}[2]{
+	\ifthenelse{\equal{\version}{solution}}{
+    	\tikz\draw (0,0) rectangle node[align=left, text width = .95\textwidth] {\textbf{Solution:} #2} (\textwidth, #1 * 1.5cm) node[above, anchor = south east] {(Answer inside the box)};%
+	} {
+    	\tikz\draw (0,0) rectangle (\textwidth, #1 * 1.5cm) node[above, anchor = south east] {(Answer inside the box)};%
+	}
+}
+
+\newcommand{\shortanswerbox}[2]{
+    \ifthenelse{\equal{\version}{solution}}{
+		\tikz[baseline=(x.base)]\draw (0,0) rectangle node (x) {\textbf{#2}\vphantom{Aq}} (#1 * 1.5cm, 1.5cm);%
+    }{
+    	\tikz[baseline=(x.base)]\draw (0,0) rectangle node (x) {\vphantom{Aq}} (#1 * 1.5cm, 1.5cm);%
+    }	
+}
+
+\newcommand{\shortanswer}[2]{
+	\ifthenelse{\equal{\version}{solution}}{
+		\tikz[]\draw (0,0) -- node[above] (char) {#2} (#1 * 1.5cm, 0);%
+    }{
+    	\tikz\draw (0,0) -- (#1 * 1.5cm, 0);%
+    }
+}
+
+
+% MULTIPLE CHOICE BUBBLES
+\newcommand*\answercircle[1]{
+	\tikz[baseline=(char.base)]{\draw circle (1.2ex) node[right=1ex] (char) {#1\vphantom{Aq}};}%
+}
+\newcommand*\correctanswercircle[1]{
+	\ifthenelse{\equal{\version}{solution}}{%
+		\tikz[baseline=(char.base)]{%
+        	\draw[bubble-correct] circle (1.2ex) node[right=1ex] (char) {#1\vphantom{Aq}};%
+        }%
+    }{%
+    	\tikz[baseline=(char.base)]{%
+        	\draw circle (1.2ex) node[right=1ex] (char) {#1\vphantom{Aq}};%
+        }%
+    }%
+}
+
+% YES/NO MULTIPLE CHOICE WITH ANSWER
+\newcommand{\yesno}{
+	\answercircle{Yes}\hspace{1ex}\answercircle{No}
+}
+\newcommand{\yesnoyes}{
+	\correctanswercircle{Yes}\hspace{1ex}\answercircle{No}
+}
+\newcommand{\yesnono}{
+	\answercircle{Yes}\hspace{1ex}\correctanswercircle{No}
+}
+
+\newcommand{\answertext}[1]{%
+	\ifthenelse{\equal{\version}{solution}}{#1}{}%
+}
+\newcommand{\correcttext}[1]{
+	\ifthenelse{\equal{\version}{solution}}{
+    	\tikz[baseline=(char.base)]{
+            \node[shape=circle,draw, thick, inner sep=1pt, overlay] (char) {\textbf{#1}};%
+        }%
+    }{%
+    #1%
+    }%
+}
+
+% INSTRUCTIONS FOR HOW TO FILL OUT THE BUBBLES
+\newcommand{\correctbubble}[1]{
+	\tikz[baseline=(char.base)]{
+		\filldraw[fill=black] circle (1.2ex) node[right=1ex] (char) {#1};
+    }
+}
+\newcommand{\incorrectbubble}[1]{
+	\tikz[baseline=(char.base)]{
+		\draw (-1.4, 0) circle (1.2ex);
+        \draw[overlay, thick] ($(-1.4, 0) + (-6pt, 4pt)$) -- (-1.4, -.05);
+        \draw[overlay, thick] ($(-1.4, 0) + (12pt, 8pt)$) -- (-1.4, -.05);
+		\draw (-.7, 0) circle (1.2ex);
+        \filldraw[fill=black] (-.7, 0) circle (.3ex);
+		\draw circle (1.2ex) node[right=1ex] (char) {#1};
+        \draw[thick, overlay] (-6pt, 6pt) -- (6pt, -6pt);
+        \draw[thick, overlay] (-6pt, -6pt) -- (6pt, 6pt);
+    }
+}
+
+
+% Track total number of points
+
+\newtotcounter{TotalPoints}
+\newtotcounter{TotalQuestions}
+
+% uses these macros to delimit problems
+\newcommand\prob[1]%
+  {\begin{itemize}[leftmargin=*]\item[]%
+   {\vspace{0ex}
+   		\ifnum1=#1\relax
+			\bf\thepctr. ~[#1~ point]:
+        \else
+        	\bf\thepctr. ~[#1~ points]:
+        \fi
+   }\stepcounter{pctr}\stepcounter{TotalQuestions}\addtocounter{TotalPoints}{#1}}
+\newcommand\eprob{\end{itemize}\vspace{-2ex}}
+\newcommand\probnote[1]%
+  {\\\begin{tabular}{cr} \hspace{3in} & {\bf (#1)} \\ \end{tabular}}
+
+
+\newenvironment{question}[1]{
+	\vspace{1ex}
+	\begin{itemize}[leftmargin=*]\item[]%
+   		{
+        \ifnum1=#1\relax
+        	\bf\thepctr. ~[#1~ point]:
+		\else
+			\bf\thepctr. ~[#1~ points]:
+        \fi
+	}\stepcounter{pctr}\stepcounter{TotalQuestions}\addtocounter{TotalPoints}{#1}
+}{
+	\end{itemize}%\vspace{0.25ex}
+}
+
+
+ % Compact itemize and enumerate.  Note that they use the same counters and
+% symbols as the usual itemize and enumerate environments.
+\def\compactify{\itemsep=0pt \topsep=0pt \partopsep=0pt \parsep=0pt}
+\let\latexusecounter=\usecounter
+\newenvironment{CompactItemize}
+  {\def\usecounter{\compactify\latexusecounter}
+   \begin{itemize}}
+  {\end{itemize}\let\usecounter=\latexusecounter}
+\newenvironment{CompactEnumerate}
+  {\def\usecounter{\compactify\latexusecounter}
+   \begin{enumerate}}
+  {\end{enumerate}\let\usecounter=\latexusecounter}
+  
+
+
+% Titlepage
+
+\renewcommand{\maketitle}{
+
+\begin{tikzpicture}[overlay, remember picture]
+	\node at ($(current page.north)+(0, -3cm)$) (logo) {\includegraphics[width=4cm]{princeton}};
+\end{tikzpicture}
+\begin{center}
+{\LARGE \textbf{\exam{} \solution{-- Solution}}} \\[1.2ex]
+{\Large \textbf{\lecture{} \\[1.1 ex] \term{}}} \\[1ex]
+\end{center}
+\vspace{.2in}
+
+
+% This is the box on the first page with overall quiz information
+
+There are \underline{\total{TotalQuestions} questions} and \underline{\pageref{LastPage}
+pages} in this quiz booklet (including this page). There are {\bf 
+\total{TotalPoints} total points}, and you have {\bf \totaltime{} minutes} to answer the
+questions.  Answer each question according to the instructions given.\\
+\textbf{Do not open this exam booklet until instructed to do so.}
+
+\vspace{.5em} 
+
+Print your answers legibly. The intended answers fit within the
+spaces provided on the question sheets. \textbf{You will only be graded on the answers that are within the provided answer boxes, figures or tables}.
+If you find a question ambiguous, state any assumptions you make.
+
+
+\vspace{.5em}
+
+\textbf{Open notes policy:} You are only allowed to use \textbf{printed
+  lecture slides and course readings} and \textbf{a single two-sided letter-sized note sheet}.
+No books, no notes, no other materials, no phones, no computers, no
+laptops, no PDAs, etc., unless otherwise noted.
+
+\vspace{0.5 em}
+
+(1)~Write your initials here to indicate that you've read the instructions: \shortanswer{1.5}{}
+
+(2)~ All students are bound by the university's academic integrity rules and requirements. In the space below, write out and sign the Princeton Honor Code pledge before turning in the exam: ``I pledge my honor that I have not violated the Honor Code during this examination.'' 
+
+\tikz\draw (0,0) rectangle (\textwidth, 2 * 1.5cm) node[above, anchor = south east] {};
+
+(3)~ Write your name and netID in the space below AND your initials at the bottom of each page of this booklet.
+
+\vspace{.1in}
+{\bf\Large{Name:} \shortanswer{5}{} }
+
+\vspace{.05in}
+{\bf\Large{NetID:} \shortanswer{5}{} }
+}
+  
+  
