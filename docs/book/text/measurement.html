@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Chapter 3: Data Acquisition &mdash; Machine Learning for Networking Version 0.1 documentation</title><link rel="stylesheet" href="../static/css/theme.css" type="text/css" />
+  <title>Chapter 3: Network Data &mdash; Machine Learning for Networking Version 0.1 documentation</title><link rel="stylesheet" href="../static/css/theme.css" type="text/css" />
     <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../static/graphviz.css" type="text/css" />
       <link rel="stylesheet" href="../static/css/rtd_theme_mods.css" type="text/css" />
@@ -59,17 +59,17 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="intro.html">Chapter 1:  Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="motivation.html">Chapter 2: Motivating Problems</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Chapter 3: Data Acquisition</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#what-to-measure">What to Measure</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#how-to-measure">How to Measure</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Chapter 3: Network Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#types-of-network-data">Types of Network Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#data-collection-strategies">Data Collection Strategies</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#active-measurement">Active Measurement</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#passive-measurement">Passive Measurement</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#tradeoffs-active-vs-passive-measurement">Tradeoffs: Active vs. Passive Measurement</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#from-acquisition-to-model-input">From Acquisition to Model Input</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#from-packets-to-flows">From Packets to Flows</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#from-flows-to-features">From Flows to Features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#data-preparation">Data Preparation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#packet-capture">Packet Capture</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#packets-to-data-structures">Packets to Data Structures</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#data-structures-to-features">Data Structures to Features</a></li>
 </ul>
 </li>
 </ul>
@@ -77,8 +77,9 @@
 <li class="toctree-l1"><a class="reference internal" href="pipeline.html">Chapter 4: Machine Learning Pipeline</a></li>
 <li class="toctree-l1"><a class="reference internal" href="supervised.html">Chapter 5: Supervised Learning</a></li>
 <li class="toctree-l1"><a class="reference internal" href="unsupervised.html">Chapter 6: Unsupervised Learning</a></li>
-<li class="toctree-l1"><a class="reference internal" href="automation.html">Chapter 7:  Deployment Considarations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="future.html">Chapter 8:  Looking Ahead</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reinforcement.html">Chapter 7: Reinforcement Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="automation.html">Chapter 8:  Deployment Considarations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="future.html">Chapter 9:  Looking Ahead</a></li>
 <li class="toctree-l1"><a class="reference internal" href="appendix.html">Appendix: Activities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../README.html">About The Book</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../authors.html">About The Authors</a></li>
@@ -98,7 +99,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Chapter 3: Data Acquisition</li>
+      <li class="breadcrumb-item active">Chapter 3: Network Data</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/text/measurement.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -111,32 +112,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  
-<style>
-/* CSS overrides for sphinx_rtd_theme */
-
-/* 24px margin */
-.nbinput.nblast.container,
-.nboutput.nblast.container {
-    margin-bottom: 19px;  /* padding has already 5px */
-}
-
-/* ... except between code cells! */
-.nblast.container + .nbinput.container {
-    margin-top: -19px;
-}
-
-.admonition > p:before {
-    margin-right: 4px;  /* make room for the exclamation icon */
-}
-
-/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
-.math {
-    text-align: unset;
-}
-</style>
-<div class="section" id="chapter-3-data-acquisition">
-<h1>Chapter 3: Data Acquisition<a class="headerlink" href="#chapter-3-data-acquisition" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="chapter-3-network-data">
+<h1>Chapter 3: Network Data<a class="headerlink" href="#chapter-3-network-data" title="Permalink to this headline">¶</a></h1>
 <p>Managing networks requires gathering information that can be used to drive
 decisions about how to adapt to changing conditions. Doing so requires
 gathering information that can be used as input to the decision-making
@@ -183,8 +160,8 @@ introducing both techniques for processing raw network data into more
 aggregate statistics, as well as software libraries that can perform some of
 these transformations.  Before getting into specific measurement techniques,
 let’s talk a little bit about what metrics can be measured in the first place.</p>
-<div class="section" id="what-to-measure">
-<h2>What to Measure<a class="headerlink" href="#what-to-measure" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="types-of-network-data">
+<h2>Types of Network Data<a class="headerlink" href="#types-of-network-data" title="Permalink to this headline">¶</a></h2>
 <p>There are a wide variety of metrics that can be measured from network data.
 We highlight some of the common metrics below. Typically, these metrics
 can be measured directly, either by injecting traffic into the network and
@@ -248,8 +225,52 @@ voice call, and so forth.</p></li>
 </ul>
 </div></blockquote>
 </div>
-<div class="section" id="how-to-measure">
-<h2>How to Measure<a class="headerlink" href="#how-to-measure" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="data-collection-strategies">
+<h2>Data Collection Strategies<a class="headerlink" href="#data-collection-strategies" title="Permalink to this headline">¶</a></h2>
+<p>All machine learning pipelines begin with the collection of relevant data.
+Data can come from many different sources and can vary wildly in complexity.
+Most importantly, the data you gather, and how you represent it through
+collections of features, should accurately represent the underlying phenomena
+you are trying to model.  Machine learning algorithms learn primarily through
+inductive reasoning, i.e., they learn general rules by observing specific
+instances.  If the specific instances in your data are not adequately
+representative of the general phenomenon you are trying to model, the ML
+algorithm will not be able to learn the right general rules and any
+predictions based on the model are less likely to be correct.  Thus, decisions
+about what data to acquire and how to acquire it can often be critical to
+whether a model is accurate in practice, as well as whether the model is
+efficient and robust enough to be deployed in practice.</p>
+<p>In this respect, <em>domain knowledge</em> is particularly important in the context
+of machine learning. For example, knowing how patterns of malicious web
+requests as part of a denial of service attack or vulnerability scan would
+exhibit different characteristics from legitimate web requests is essential
+for thinking about the types of features that may ultimately be good for the
+models you ultimately train. More generally, when designing machine learning
+pipelines for specific tasks, domain knowledge about the problem you are
+trying to model can increase the likelihood that the model you design could
+work well in practice.</p>
+<p>When beginning a ML pipeline, it is common to ask, “how much data is necessary
+to achieve high-quality results?” Unfortunately, answering this question is
+not straightforward, as it depends the phenomenon you are trying to model, the
+machine learning algorithm you select, and the quality of the data you are
+able to gather. Conceptually, you will need to collect enough data such that
+all of the relevant variability in the underlying phenomenon is represented in
+the data.</p>
+<p>From the perspective of model accuracy, identifying features of the traffic
+that are likely to result in accurate predictions often requires knowledge of
+the underlying phenomena; from the perspective of practical deployment,
+considerations for data acquisition can also go beyond accuracy, because some
+features are more costly or cumbersome than others. For example, packet traces
+may contain significantly more information that statistical summaries of
+network traffic, yet packet traces are orders of magnitude larger, resulting
+in higher capture overhead, larger memory and storage costs, longer model
+training time, and so forth. On the other hand, summary statistics are more
+efficient to collect and store, and could reduce training time, yet they may
+obscure certain features or characteristics which could ultimately degrade
+model accuracy. Determining which feature subsets strike the appropriate
+balance between model accuracy and systems-related modeling costs is a general
+practical challenge, and the best ways to optimize for this tradeoff remains
+an open problem.</p>
 <p>There are two primary ways to measure networks: active measurement and passive
 measurement. Active measurement involves injecting traffic into the network
 and observing the behavior of the network. Passive measurement involves
@@ -287,7 +308,7 @@ cases of active measurement research and practice. We give a brief overview of
 each in this chapter and offer pointers to more detailed treatment of this
 material elsewhere.</p>
 <p><strong>Types of Active Measurement</strong></p>
-<p><em>Internet speed tests.</em> Perhaps one of the most canonical application
+<p><strong>Internet speed tests.</strong> Perhaps one of the most canonical application
 performance measurements is the Internet “speed test”, which typically refers
 as a test of application throughput.  Users commonly measure throughput with a
 client-based “speed test”; a common speed test, for example, is speedtest.net,
@@ -338,7 +359,7 @@ probes or the replies may be blocked by middleboxes, and the forward and
 reverse paths may not be symmetric, leading to various measurement
 inaccuracies. We refer the reader to related research to understand the
 limitations of traceroute.</p>
-<p><em>Domain Name System (DNS) queries and responses.</em> The performance of many
+<p><strong>Domain Name System (DNS) queries and responses.</strong> The performance of many
 Internet applications ultimately depends on the performance of the Domain Name
 System (DNS), the system that maps Internet domain names to IP addresses,
 among other tasks. Various tools have been developed to measure the
@@ -349,7 +370,7 @@ other adversary). With the rise of encrypted DNS protocols (e.g., DNS over
 HTTPS), there has been increasing attention into the performance of these
 protocols. As such, new tools have been developed and released to measure both
 the performance characteristics and behavior of various DNS resolvers.</p>
-<p><em>Internet scans.</em> One of the more established (and general) ways of
+<p><strong>Internet scans.</strong> One of the more established (and general) ways of
 performing active Internet measurements is to perform a so-called Internet
 “scan”, which typically involves sending a small amount of traffic (sometimes
 a single, specially crafted packet) to a single network endpoint and measuring
@@ -429,7 +450,7 @@ browsing or streaming video session) and thus the traffic that is captured may
 more accurately reflect the properties, behavior, and performance of
 application performance or user experience.</p>
 <p><strong>Types of Passive Measurement</strong></p>
-<p><em>Packet-level monitoring.</em> The most universal form of passive measurement is
+<p><strong>Packet-level monitoring.</strong> The most universal form of passive measurement is
 <em>packet capture</em>, sometimes also called <em>pcap</em> for short. Packet capture is
 essentially the equivalent of “listening in” on a network conversation, akin
 to a wiretap of sorts. A packet capture will (as the name suggests), capture
@@ -447,15 +468,7 @@ packets as they traverse the network, but also to store, transfer, and later
 process the data.  For this reason, packet captures are sometimes
 truncated—capturing only the packet headers, as opposed to the complete
 “payload”.</p>
-<div class="sidebar">
-<p class="sidebar-title">Activity: Data Acquisition from Passive Measurement</p>
-<p>The <a class="reference internal" href="appendix.html#appendix-data-acquisition"><span class="std std-ref">Appendix</span></a> provides an activity that
-allows you to explore the information that can be derived from passive
-measurement of network traffic, specifically packets captured from the
-network.  You will load the data into a Pandas dataframe, and then explore
-the data to answer a number of high-level questions about the data.</p>
-</div>
-<p><em>Flow-level monitoring.</em> Other aggregated representations of packet captures
+<p><strong>Flow-level monitoring.</strong> Other aggregated representations of packet captures
 are often used to reduce volume, storage, or processing overhead. One common
 example of aggregation is IPFIX (sometimes more commonly known by Netflow,
 which is the Cisco-proprietary version of the format). IPFIX reports only
@@ -489,7 +502,7 @@ representations as input. Now, these new capture and monitoring technologies
 are making it possible to capture raw data at very high rates—and causing us
 to rethink what the “best” representations might be for a wide array of
 networking tasks that might rely on machine learning.</p>
-<p><em>Programmatic Interfaces.</em>
+<p><strong>Programmatic Interfaces.</strong>
 Ultimately, analyzing packet captures programmatically can require more
 sophisticated libraries and APIs. While many of these programmatic options are
 typically restricted to running on general-purpose computing devices (e.g.,
@@ -515,10 +528,8 @@ experience, when interacting with a particular application; a common metric for
 this type of QoE is a mean opinion score (MOS). Sometimes, people use the term
 “application QoE” to differentiate application quality metrics from general
 user experience.</p>
-</div>
-<div class="section" id="tradeoffs-active-vs-passive-measurement">
-<h3>Tradeoffs: Active vs. Passive Measurement<a class="headerlink" href="#tradeoffs-active-vs-passive-measurement" title="Permalink to this headline">¶</a></h3>
-<p>Active measurements may be convenient to
+<p><strong>Tradeoffs: Active vs. Passive Measurement</strong>
+Active measurements may be convenient to
 implement but have their own drawbacks: (1) they require measuring to a
 particular network endpoint, which in certain cases (e.g., a speed test, an
 active measurement of network performance) requires setting up a server on the
@@ -550,8 +561,8 @@ passive measurement in the next section and applications of machine learning
 to passively collected network traffic in subsequent sections.</p>
 </div>
 </div>
-<div class="section" id="from-acquisition-to-model-input">
-<h2>From Acquisition to Model Input<a class="headerlink" href="#from-acquisition-to-model-input" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="data-preparation">
+<h2>Data Preparation<a class="headerlink" href="#data-preparation" title="Permalink to this headline">¶</a></h2>
 <p>Now that we understand the different forms that network data (and, in
 particular, network traffic measurements) can take, we turn to understanding
 some of the tools that enable the capture of network traffic data, as well as
@@ -565,8 +576,8 @@ of Python to perform this type of data analysis. Although similar analysis is
 possible in other frameworks and languages, some of the more cutting-edge
 tools that we will explore in this book are primarily available through Python
 APIs, so Python is a good place to start.</p>
-<div class="section" id="from-packets-to-flows">
-<h3>From Packets to Flows<a class="headerlink" href="#from-packets-to-flows" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="packet-capture">
+<h3>Packet Capture<a class="headerlink" href="#packet-capture" title="Permalink to this headline">¶</a></h3>
 <p>A common tool to analyze passive traffic measurements is <em>Wireshark</em>. Wireshark
 is an application that can be installed on many common operating systems,
 including Mac, Windows, and Linux.  Underlying the Wireshark tool itself is a
@@ -600,6 +611,14 @@ represented individually, as sequences, as summary statistics, as
 distributions, and so forth. Combined with timing information, it is possible
 to compute various traffic rates (e.g., packets per second, bytes per second
 over various time intervals).</p>
+<div class="sidebar">
+<p class="sidebar-title">Activity: Data Acquisition from Passive Measurement</p>
+<p>The <a class="reference internal" href="appendix.html#appendix-data-acquisition"><span class="std std-ref">Appendix</span></a> provides an activity that
+allows you to explore the information that can be derived from passive
+measurement of network traffic, specifically packets captured from the
+network.  You will load the data into a Pandas dataframe, and then explore
+the data to answer a number of high-level questions about the data.</p>
+</div>
 <p>Combining these basic statistics with additional information from the packet
 header makes it possible to generate these features for individual flows:
 Specifically, individual traffic flows are typically defined by five values
@@ -613,8 +632,187 @@ devices, such as routers and switches. For example, on Cisco routers, the
 software that is used to produce flow records is commonly referred to as
 NetFlow. A standard version of this software and format is called IPFIX.</p>
 </div>
-<div class="section" id="from-flows-to-features">
-<h3>From Flows to Features<a class="headerlink" href="#from-flows-to-features" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="packets-to-data-structures">
+<h3>Packets to Data Structures<a class="headerlink" href="#packets-to-data-structures" title="Permalink to this headline">¶</a></h3>
+<p>Given network traffic gathered using packet capture tools, the next step is to
+convert the captured data into a format that can be used for further
+analysis, including eventual input into machine learning models.</p>
+<p>One common format for analyzing data is the Python library Pandas. Pandas
+provides a data structure called a dataframe, which is a two-dimensional
+structure that can be used to store data in a tabular format. The columns of
+the dataframe are analogous to the columns in a spreadsheet, and the rows are
+analogous to the rows in a spreadsheet. The data in each column is of the same
+type, and the data in each row is of the same type.</p>
+<p>The example below shows an example of a Pandas dataframe that contains
+information about the number of packets and bytes observed in a particular
+packet capture. We have used the <cite>pcap2pandas</cite> function in the <cite>netml</cite> library
+to extract various information from the packet capture and store it in a
+Pandas dataframe.</p>
+<p>The function produces a set of columns that are listed in the example below.
+We have printed out a few rows of the dataframe, with some of these columns
+extracted, to illustrate basic use of the library.</p>
+<div class="admonition-converting-packet-capture-data-to-a-pandas-dataframe-with-netml admonition" id="fig-pandas">
+<p class="admonition-title">Converting packet capture data to a Pandas dataframe with <cite>netml</cite>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">netml.pparser.parser</span> <span class="kn">import</span> <span class="n">PCAP</span>
+
+<span class="n">pcap</span> <span class="o">=</span> <span class="n">PCAP</span><span class="p">(</span><span class="s1">&#39;../examples/notebooks/data/http.pcap&#39;</span><span class="p">)</span>
+<span class="n">pcap</span><span class="o">.</span><span class="n">pcap2pandas</span><span class="p">()</span>
+<span class="n">pdf</span> <span class="o">=</span> <span class="n">pcap</span><span class="o">.</span><span class="n">df</span>
+<span class="n">pdf</span> <span class="o">=</span> <span class="n">pdf</span><span class="p">[[</span><span class="s1">&#39;datetime&#39;</span><span class="p">,</span> <span class="s1">&#39;ip_src&#39;</span><span class="p">,</span> <span class="s1">&#39;port_src&#39;</span><span class="p">,</span> <span class="s1">&#39;ip_dst&#39;</span><span class="p">,</span> <span class="s1">&#39;port_dst&#39;</span><span class="p">,</span> <span class="s1">&#39;length&#39;</span><span class="p">]]</span>
+<span class="n">pdf</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;_pcap2pandas()&#39;</span> <span class="n">starts</span> <span class="n">at</span> <span class="mi">2023</span><span class="o">-</span><span class="mi">04</span><span class="o">-</span><span class="mi">18</span> <span class="mi">15</span><span class="p">:</span><span class="mi">55</span><span class="p">:</span><span class="mi">53</span>
+<span class="s1">&#39;_pcap2pandas()&#39;</span> <span class="n">ends</span> <span class="n">at</span> <span class="mi">2023</span><span class="o">-</span><span class="mi">04</span><span class="o">-</span><span class="mi">18</span> <span class="mi">15</span><span class="p">:</span><span class="mi">56</span><span class="p">:</span><span class="mi">00</span> <span class="ow">and</span> <span class="n">takes</span> <span class="mf">0.1169</span> <span class="n">mins</span><span class="o">.</span>
+</pre></div>
+</div>
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>datetime</th>
+      <th>ip_src</th>
+      <th>port_src</th>
+      <th>ip_dst</th>
+      <th>port_dst</th>
+      <th>length</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>2022-09-29 20:24:42</td>
+      <td>192.168.1.58</td>
+      <td>57256</td>
+      <td>35.186.224.43</td>
+      <td>443</td>
+      <td>109</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2022-09-29 20:24:42</td>
+      <td>35.186.224.43</td>
+      <td>443</td>
+      <td>192.168.1.58</td>
+      <td>57256</td>
+      <td>66</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>2022-09-29 20:24:42</td>
+      <td>35.186.224.43</td>
+      <td>443</td>
+      <td>192.168.1.58</td>
+      <td>57256</td>
+      <td>106</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>2022-09-29 20:24:42</td>
+      <td>192.168.1.58</td>
+      <td>57256</td>
+      <td>35.186.224.43</td>
+      <td>443</td>
+      <td>66</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>2022-09-29 20:24:42</td>
+      <td>192.168.1.58</td>
+      <td>60463</td>
+      <td>172.64.154.162</td>
+      <td>443</td>
+      <td>60</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>2022-09-29 20:24:42</td>
+      <td>172.64.154.162</td>
+      <td>443</td>
+      <td>192.168.1.58</td>
+      <td>60463</td>
+      <td>60</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>2022-09-29 20:24:42</td>
+      <td>54.201.14.11</td>
+      <td>443</td>
+      <td>192.168.1.42</td>
+      <td>50325</td>
+      <td>66</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>2022-09-29 20:24:42</td>
+      <td>192.168.1.42</td>
+      <td>50325</td>
+      <td>54.201.14.11</td>
+      <td>443</td>
+      <td>66</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>2022-09-29 20:24:42</td>
+      <td>140.82.112.26</td>
+      <td>443</td>
+      <td>192.168.1.58</td>
+      <td>59966</td>
+      <td>92</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>2022-09-29 20:24:42</td>
+      <td>192.168.1.58</td>
+      <td>60848</td>
+      <td>142.251.32.4</td>
+      <td>443</td>
+      <td>78</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<div class="section" id="data-structures-to-features">
+<h3>Data Structures to Features<a class="headerlink" href="#data-structures-to-features" title="Permalink to this headline">¶</a></h3>
+<p>After data acquisition, the next step is <em>preparing</em> the data for input to
+train models.
+<em>Data preparation</em> involves organizing the data
+into observations, or <em>examples</em>; generating <em>features</em> and (in the case of
+supervised learning) a <em>label</em> for each observation; and preparing the dataset
+by dividing the data into training and test sets (typically with an additional
+sub-division of the training set to tune model parameters).</p>
+<p>Many supervised machine learning problems represent the training examples as a
+two-dimensional matrix. Each row of the matrix contains a single <em>example</em>.
+Each column of the matrix corresponds to a single <em>feature</em> or <em>attribute</em>.
+This means that each example (row) is a vector of features (columns). This
+definition is quite flexible and works for many networks problems at different
+scales.
+For example, each example might correspond to an IPFIX flow record, with
+features corresponding to the number of packets in the flow, the start and end
+times of the flow, the source and destination IP addresses, etc. In a
+different problem, each example might correspond to a single user, with
+features representing average throughput and latency to their home router in
+1-hour intervals. This flexibility is a boon, because it allows developers of
+machine learning algorithms to work with a consistent mathematical
+formulation—a matrix (or table) of examples and features. In this book, we
+will generally refer to a matrix of training examples as <strong>X</strong>. Sometimes in
+code examples we will also use <strong>features</strong> to refer to the matrix of training
+examples.</p>
 <p>Representations of network traffic that are most effective for prediction and
 inference problems in networking detection are typically {em a priori}
 unclear.  Representation choices typically involve various statistics
@@ -630,6 +828,14 @@ accuracy.  (The so-called <em>curse of dimensionality</em> in machine learning i
 the observed fact that the higher the dimension of the input, the harder it is
 to achieve good accuracy; in particular, we might then require an amount of
 training data exponential as a function of dimension.)</p>
+<p>In the context of networking, a example might be an individual packet, an
+entire traffic flow (with associated summary statistics), information about a
+connection or transaction, and so forth. In the last chapter, we explored the
+process by which which raw packet traces can be performed into certain
+features, such as flows.  In this chapter, we will see how to take this
+process a step further, by transforming the data into a labeled dataset for
+input to a machine learning model—and how to ultimately train and evaluate
+the resulting model using this data.</p>
 <p>The process of feature extraction from raw network traffic affects the accuracy
 of a variety of models.  There are many possible ways to represent raw traffic
 traces (i.e., packets) as inputs. The data itself can be aggregated on various
@@ -659,20 +865,29 @@ opportunity to use the <cite>netml</cite> library to extract features from a net
 trace.  The <cite>netml</cite> library is publicly available on Github as an open-source Python
 library. It has been packaged on PyPi for easy installation.</p>
 </div>
-<p>The <cite>netml</cite> library consists of approximately 11,000 lines of Python, with the
-packet parsing module comprising approximately 3,500 lines of Python, the
-implementations of various novelty detection modules comprising another 3,000
-lines, another 3,000 lines in support of the <cite>netml</cite> command-line utility, and
-the rest of the code in support of various utilities (e.g., testing).  <cite>netml</cite>
-is a useful tool for converting network traffic captures to features that can
-be used for various network analysis tasks. It has been designed, implemented,
-and released as an open-source tool to help researchers and practitioners in
-the field of network security.</p>
+<p>The <cite>netml</cite> software package includes a Python library, the <cite>netml</cite>
+command-line utility, and the rest of the code in support of various utilities
+(e.g., testing).  <cite>netml</cite> is a useful tool for converting network traffic
+captures to features that can be used for various network analysis tasks. It
+has been designed, implemented, and released as an open-source tool to help
+researchers and practitioners in the field of network security.</p>
+<p>Below is an example of the <cite>netml</cite> library’s capability for converting passive
+traffic measurements to 12 different features for each traffic flow. The
+example below shows the features associated with the first three flows in the
+packet trace.  Those features are: flow duration, number of packets sent per
+second, number of bytes per second, and various statistics on packet sizes
+within each flow: mean, standard deviation, inter-quartile range, minimum, and
+maximum, the total number of packets, and total number of bytes.
+The <cite>netml</cite> library supports a variety of different feature
+extraction methods.</p>
+<div class="admonition-extracting-features-from-a-packet-capture-with-netml admonition" id="fig-netml-features">
+<p class="admonition-title">Extracting features from a packet capture with <cite>netml</cite>.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">netml.pparser.parser</span> <span class="kn">import</span> <span class="n">PCAP</span>
 <span class="kn">from</span> <span class="nn">netml.utils.tool</span> <span class="kn">import</span> <span class="n">load_data</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
 <span class="n">pcap</span> <span class="o">=</span> <span class="n">PCAP</span><span class="p">(</span>
-    <span class="s1">&#39;data/demo.pcap&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;../examples/notebooks/data/http.pcap&#39;</span><span class="p">,</span>
     <span class="n">flow_ptks_thres</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
     <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span>
     <span class="n">verbose</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
@@ -681,44 +896,128 @@ the field of network security.</p>
 <span class="n">pcap</span><span class="o">.</span><span class="n">pcap2flows</span><span class="p">()</span>
 
 <span class="c1"># Extract inter-arrival time features</span>
-<span class="n">pcap</span><span class="o">.</span><span class="n">flow2features</span><span class="p">(</span><span class="s1">&#39;IAT&#39;</span><span class="p">,</span> <span class="n">fft</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">pcap</span><span class="o">.</span><span class="n">flow2features</span><span class="p">(</span><span class="s1">&#39;STATS&#39;</span><span class="p">,</span> <span class="n">fft</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
-<span class="n">iat_features</span> <span class="o">=</span> <span class="n">pcap</span><span class="o">.</span><span class="n">features</span>
+<span class="n">features</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">pcap</span><span class="o">.</span><span class="n">features</span><span class="p">)</span>
+<span class="n">features</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&#39;_pcap2flows()&#39; starts at 2023-03-28 14:34:32
-pcap_file: data/demo.pcap
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&#39;_pcap2flows()&#39; starts at 2023-04-18 15:56:08
+pcap_file: ../examples/notebooks/data/http.pcap
 ith_packets: 0
-len(flows): 36
-total number of flows: 36. Num of flows &lt; 2 pkts: 8, and &gt;=2 pkts: 28 without timeout splitting.
-kept flows: 28. Each of them has at least 2 pkts after timeout splitting.
-flow_durations.shape: (28, 1)
-       col_0
-count 28.000
-mean   0.028
-std    0.028
-min    0.000
-25%    0.000
-50%    0.034
-75%    0.039
-max    0.107
+ith_packets: 10000
+ith_packets: 20000
+len(flows): 593
+total number of flows: 593. Num of flows &lt; 2 pkts: 300, and &gt;=2 pkts: 293 without timeout splitting.
+kept flows: 293. Each of them has at least 2 pkts after timeout splitting.
+flow_durations.shape: (293, 1)
+        col_0
+count 293.000
+mean   11.629
+std    15.820
+min     0.000
+25%     0.076
+50%     0.455
+75%    20.097
+max    46.235
 &lt;class &#39;pandas.core.frame.DataFrame&#39;&gt;
-RangeIndex: 28 entries, 0 to 27
+RangeIndex: 293 entries, 0 to 292
 Data columns (total 1 columns):
  #   Column  Non-Null Count  Dtype
 ---  ------  --------------  -----
- 0   col_0   28 non-null     float64
+ 0   col_0   293 non-null    float64
 dtypes: float64(1)
-memory usage: 352.0 bytes
+memory usage: 2.4 KB
 None
-0th_flow: len(pkts): 2
-After splitting flows, the number of subflows: 26 and each of them has at least 2 packets.
-&#39;_pcap2flows()&#39; ends at 2023-03-28 14:34:32 and takes 0.0008 mins.
-&#39;_flow2features()&#39; starts at 2023-03-28 14:34:32
+0th_flow: len(pkts): 4
+After splitting flows, the number of subflows: 291 and each of them has at least 2 packets.
+&#39;_pcap2flows()&#39; ends at 2023-04-18 15:56:13 and takes 0.086 mins.
+&#39;_flow2features()&#39; starts at 2023-04-18 15:56:13
 True
-&#39;_flow2features()&#39; ends at 2023-03-28 14:34:32 and takes 0.0 mins.
+&#39;_flow2features()&#39; ends at 2023-04-18 15:56:13 and takes 0.0046 mins.
 </pre></div>
 </div>
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>0</th>
+      <th>1</th>
+      <th>2</th>
+      <th>3</th>
+      <th>4</th>
+      <th>5</th>
+      <th>6</th>
+      <th>7</th>
+      <th>8</th>
+      <th>9</th>
+      <th>10</th>
+      <th>11</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>30.076</td>
+      <td>0.133</td>
+      <td>11.637</td>
+      <td>87.500</td>
+      <td>21.500</td>
+      <td>66.000</td>
+      <td>87.500</td>
+      <td>109.000</td>
+      <td>66.000</td>
+      <td>109.000</td>
+      <td>4.000</td>
+      <td>350.000</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>30.060</td>
+      <td>0.133</td>
+      <td>11.444</td>
+      <td>86.000</td>
+      <td>20.000</td>
+      <td>66.000</td>
+      <td>86.000</td>
+      <td>106.000</td>
+      <td>66.000</td>
+      <td>106.000</td>
+      <td>4.000</td>
+      <td>344.000</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>40.960</td>
+      <td>0.122</td>
+      <td>8.057</td>
+      <td>66.000</td>
+      <td>0.000</td>
+      <td>66.000</td>
+      <td>66.000</td>
+      <td>66.000</td>
+      <td>66.000</td>
+      <td>66.000</td>
+      <td>5.000</td>
+      <td>330.000</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
 </div>
 </div>
 </div>

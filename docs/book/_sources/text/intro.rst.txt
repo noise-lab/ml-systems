@@ -41,7 +41,7 @@ aberrations and fixing problems as (or before) they arise, so that the network
 can continue to run well.
 
 How Networks Run
-++++++++++++++++
+----------------
 
 To maintain good performance for the applications they must support, networks
 must continually adapt to changing conditions. For example, when a component
@@ -100,7 +100,7 @@ closed-form models and simulations of protocols, applications and systems,
 today these systems are far too complex for closed-form analysis.
 
 The Role of Machine Learning
-++++++++++++++++++++++++++++
+----------------------------
 
 ..
     * What is ML?
@@ -177,7 +177,7 @@ requires the ability to infer, forecast, and predict, so that the appropriate
 changes can be made in the first place. 
 
 Why Now?
-++++++++
+--------
 ..       
     * What's the history? and Why now?
         * History
@@ -233,7 +233,7 @@ can be applied to networking, from long-term prediction and forecasting, to
 short-term diagnosis, to real-time adaptation to changing conditions.
 
 What You Will Learn in This Book
-++++++++++++++++++++++++++++++++
+--------------------------------
 
 ..
     * What you will learn from this book

@@ -22,6 +22,8 @@ Nick Feamster and Noah Apthorpe
    text/pipeline.rst
    text/supervised.rst
    text/unsupervised.rst
+   text/llm.rst
+   text/reinforcement.rst
    text/automation.rst
    text/future.rst
 

@@ -1,5 +1,5 @@
-Chapter 3: Data Acquisition
-===========================
+Chapter 3: Network Data
+=======================
 
 Managing networks requires gathering information that can be used to drive
 decisions about how to adapt to changing conditions. Doing so requires
@@ -51,8 +51,8 @@ aggregate statistics, as well as software libraries that can perform some of
 these transformations.  Before getting into specific measurement techniques,
 let's talk a little bit about what metrics can be measured in the first place.
 
-What to Measure
----------------
+Types of Network Data
+---------------------
 
 There are a wide variety of metrics that can be measured from network data.
 We highlight some of the common metrics below. Typically, these metrics
@@ -118,8 +118,58 @@ metrics can be measured with active measurement, passive measurement, or both.
       lost data---which could correspond to frames in a video, words in a
       voice call, and so forth. 
 
-How to Measure
---------------
+Data Collection Strategies
+---------------------------
+
+All machine learning pipelines begin with the collection of relevant data.
+Data can come from many different sources and can vary wildly in complexity.
+Most importantly, the data you gather, and how you represent it through
+collections of features, should accurately represent the underlying phenomena
+you are trying to model.  Machine learning algorithms learn primarily through
+inductive reasoning, i.e., they learn general rules by observing specific
+instances.  If the specific instances in your data are not adequately
+representative of the general phenomenon you are trying to model, the ML
+algorithm will not be able to learn the right general rules and any
+predictions based on the model are less likely to be correct.  Thus, decisions
+about what data to acquire and how to acquire it can often be critical to
+whether a model is accurate in practice, as well as whether the model is
+efficient and robust enough to be deployed in practice.
+
+In this respect, *domain knowledge* is particularly important in the context
+of machine learning. For example, knowing how patterns of malicious web
+requests as part of a denial of service attack or vulnerability scan would
+exhibit different characteristics from legitimate web requests is essential
+for thinking about the types of features that may ultimately be good for the
+models you ultimately train. More generally, when designing machine learning
+pipelines for specific tasks, domain knowledge about the problem you are
+trying to model can increase the likelihood that the model you design could
+work well in practice. 
+
+When beginning a ML pipeline, it is common to ask, "how much data is necessary
+to achieve high-quality results?" Unfortunately, answering this question is
+not straightforward, as it depends the phenomenon you are trying to model, the
+machine learning algorithm you select, and the quality of the data you are
+able to gather. Conceptually, you will need to collect enough data such that
+all of the relevant variability in the underlying phenomenon is represented in
+the data. 
+
+From the perspective of model accuracy, identifying features of the traffic
+that are likely to result in accurate predictions often requires knowledge of
+the underlying phenomena; from the perspective of practical deployment,
+considerations for data acquisition can also go beyond accuracy, because some
+features are more costly or cumbersome than others. For example, packet traces
+may contain significantly more information that statistical summaries of
+network traffic, yet packet traces are orders of magnitude larger, resulting
+in higher capture overhead, larger memory and storage costs, longer model
+training time, and so forth. On the other hand, summary statistics are more
+efficient to collect and store, and could reduce training time, yet they may
+obscure certain features or characteristics which could ultimately degrade
+model accuracy. Determining which feature subsets strike the appropriate
+balance between model accuracy and systems-related modeling costs is a general
+practical challenge, and the best ways to optimize for this tradeoff remains
+an open problem.
+
+
 
 There are two primary ways to measure networks: active measurement and passive
 measurement. Active measurement involves injecting traffic into the network
@@ -130,7 +180,7 @@ more detail, and explore the different ways that each type of measurement can
 be used to gather data.
 
 Active Measurement
-++++++++++++++++++
+~~~~~~~~~~~~~~~~~~
 
 One way to measure the characteristics of a network is to send traffic across
 the network towards a particular endpoint and observe the characteristics of
@@ -165,7 +215,7 @@ material elsewhere.
 **Types of Active Measurement**
 
 
-*Internet speed tests.* Perhaps one of the most canonical application
+**Internet speed tests.** Perhaps one of the most canonical application
 performance measurements is the Internet "speed test", which typically refers
 as a test of application throughput.  Users commonly measure throughput with a
 client-based "speed test"; a common speed test, for example, is speedtest.net,
@@ -219,7 +269,7 @@ reverse paths may not be symmetric, leading to various measurement
 inaccuracies. We refer the reader to related research to understand the
 limitations of traceroute.
 
-*Domain Name System (DNS) queries and responses.* The performance of many
+**Domain Name System (DNS) queries and responses.** The performance of many
 Internet applications ultimately depends on the performance of the Domain Name
 System (DNS), the system that maps Internet domain names to IP addresses,
 among other tasks. Various tools have been developed to measure the
@@ -231,7 +281,7 @@ HTTPS), there has been increasing attention into the performance of these
 protocols. As such, new tools have been developed and released to measure both
 the performance characteristics and behavior of various DNS resolvers.
 
-*Internet scans.* One of the more established (and general) ways of
+**Internet scans.** One of the more established (and general) ways of
 performing active Internet measurements is to perform a so-called Internet
 "scan", which typically involves sending a small amount of traffic (sometimes
 a single, specially crafted packet) to a single network endpoint and measuring
@@ -304,7 +354,7 @@ aberration is due to a problem within the ISP network, the user's home
 network, an endpoint device, or some other cause).
 
 Passive Measurement
-+++++++++++++++++++
+~~~~~~~~~~~~~~~~~~~
 
 In contrast to active measurement, which introduces new traffic into the
 network to measure the performance of the network, *passive measurement*
@@ -319,7 +369,7 @@ application performance or user experience.
 **Types of Passive Measurement**
 
 
-*Packet-level monitoring.* The most universal form of passive measurement is
+**Packet-level monitoring.** The most universal form of passive measurement is
 *packet capture*, sometimes also called *pcap* for short. Packet capture is
 essentially the equivalent of "listening in" on a network conversation, akin
 to a wiretap of sorts. A packet capture will (as the name suggests), capture
@@ -339,16 +389,8 @@ process the data.  For this reason, packet captures are sometimes
 truncated---capturing only the packet headers, as opposed to the complete
 "payload". 
 
-.. sidebar:: Activity: Data Acquisition from Passive Measurement
 
-    The :ref:`Appendix <appendix-data-acquisition>` provides an activity that
-    allows you to explore the information that can be derived from passive
-    measurement of network traffic, specifically packets captured from the
-    network.  You will load the data into a Pandas dataframe, and then explore
-    the data to answer a number of high-level questions about the data. 
-
-
-*Flow-level monitoring.* Other aggregated representations of packet captures
+**Flow-level monitoring.** Other aggregated representations of packet captures
 are often used to reduce volume, storage, or processing overhead. One common
 example of aggregation is IPFIX (sometimes more commonly known by Netflow,
 which is the Cisco-proprietary version of the format). IPFIX reports only
@@ -385,7 +427,7 @@ to rethink what the "best" representations might be for a wide array of
 networking tasks that might rely on machine learning.
 
 
-*Programmatic Interfaces.*
+**Programmatic Interfaces.**
 Ultimately, analyzing packet captures programmatically can require more
 sophisticated libraries and APIs. While many of these programmatic options are
 typically restricted to running on general-purpose computing devices (e.g.,
@@ -415,9 +457,7 @@ this type of QoE is a mean opinion score (MOS). Sometimes, people use the term
 "application QoE" to differentiate application quality metrics from general
 user experience.
 
-Tradeoffs: Active vs. Passive Measurement
-+++++++++++++++++++++++++++++++++++++++++
-
+**Tradeoffs: Active vs. Passive Measurement**
 Active measurements may be convenient to
 implement but have their own drawbacks: (1) they require measuring to a
 particular network endpoint, which in certain cases (e.g., a speed test, an
@@ -451,10 +491,8 @@ be both a measurement problem and a machine learning problem! We will discuss
 passive measurement in the next section and applications of machine learning
 to passively collected network traffic in subsequent sections.
 
-
-From Acquisition to Model Input
--------------------------------
-
+Data Preparation
+----------------
 Now that we understand the different forms that network data (and, in
 particular, network traffic measurements) can take, we turn to understanding
 some of the tools that enable the capture of network traffic data, as well as
@@ -470,8 +508,8 @@ possible in other frameworks and languages, some of the more cutting-edge
 tools that we will explore in this book are primarily available through Python
 APIs, so Python is a good place to start.
 
-From Packets to Flows
-+++++++++++++++++++++
+Packet Capture
+~~~~~~~~~~~~~~
 
 A common tool to analyze passive traffic measurements is *Wireshark*. Wireshark
 is an application that can be installed on many common operating systems,
@@ -511,6 +549,15 @@ distributions, and so forth. Combined with timing information, it is possible
 to compute various traffic rates (e.g., packets per second, bytes per second
 over various time intervals). 
 
+.. sidebar:: Activity: Data Acquisition from Passive Measurement
+
+    The :ref:`Appendix <appendix-data-acquisition>` provides an activity that
+    allows you to explore the information that can be derived from passive
+    measurement of network traffic, specifically packets captured from the
+    network.  You will load the data into a Pandas dataframe, and then explore
+    the data to answer a number of high-level questions about the data. 
+
+
 Combining these basic statistics with additional information from the packet
 header makes it possible to generate these features for individual flows:
 Specifically, individual traffic flows are typically defined by five values
@@ -524,9 +571,65 @@ devices, such as routers and switches. For example, on Cisco routers, the
 software that is used to produce flow records is commonly referred to as
 NetFlow. A standard version of this software and format is called IPFIX.
 
+Packets to Data Structures
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-From Flows to Features
-++++++++++++++++++++++
+Given network traffic gathered using packet capture tools, the next step is to
+convert the captured data into a format that can be used for further
+analysis, including eventual input into machine learning models. 
+
+One common format for analyzing data is the Python library Pandas. Pandas
+provides a data structure called a dataframe, which is a two-dimensional
+structure that can be used to store data in a tabular format. The columns of
+the dataframe are analogous to the columns in a spreadsheet, and the rows are
+analogous to the rows in a spreadsheet. The data in each column is of the same
+type, and the data in each row is of the same type.
+
+The example below shows an example of a Pandas dataframe that contains
+information about the number of packets and bytes observed in a particular
+packet capture. We have used the `pcap2pandas` function in the `netml` library
+to extract various information from the packet capture and store it in a
+Pandas dataframe.  
+
+The function produces a set of columns that are listed in the example below.
+We have printed out a few rows of the dataframe, with some of these columns
+extracted, to illustrate basic use of the library.
+
+.. _fig-pandas:
+.. admonition:: Converting packet capture data to a Pandas dataframe with `netml`.
+
+    .. include:: inline/measurement_pcap2pandas.rst
+
+
+Data Structures to Features
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+After data acquisition, the next step is *preparing* the data for input to
+train models. 
+*Data preparation* involves organizing the data
+into observations, or *examples*; generating *features* and (in the case of
+supervised learning) a *label* for each observation; and preparing the dataset
+by dividing the data into training and test sets (typically with an additional
+sub-division of the training set to tune model parameters). 
+
+Many supervised machine learning problems represent the training examples as a
+two-dimensional matrix. Each row of the matrix contains a single *example*.
+Each column of the matrix corresponds to a single *feature* or *attribute*.
+This means that each example (row) is a vector of features (columns). This
+definition is quite flexible and works for many networks problems at different
+scales. 
+For example, each example might correspond to an IPFIX flow record, with
+features corresponding to the number of packets in the flow, the start and end
+times of the flow, the source and destination IP addresses, etc. In a
+different problem, each example might correspond to a single user, with
+features representing average throughput and latency to their home router in
+1-hour intervals. This flexibility is a boon, because it allows developers of
+machine learning algorithms to work with a consistent mathematical
+formulation---a matrix (or table) of examples and features. In this book, we
+will generally refer to a matrix of training examples as **X**. Sometimes in
+code examples we will also use **features** to refer to the matrix of training
+examples.
+
 
 Representations of network traffic that are most effective for prediction and
 inference problems in networking detection are typically {\em a priori}
@@ -544,6 +647,14 @@ the observed fact that the higher the dimension of the input, the harder it is
 to achieve good accuracy; in particular, we might then require an amount of
 training data exponential as a function of dimension.)
 
+In the context of networking, a example might be an individual packet, an
+entire traffic flow (with associated summary statistics), information about a
+connection or transaction, and so forth. In the last chapter, we explored the
+process by which which raw packet traces can be performed into certain
+features, such as flows.  In this chapter, we will see how to take this
+process a step further, by transforming the data into a labeled dataset for
+input to a machine learning model---and how to ultimately train and evaluate
+the resulting model using this data.
 
 The process of feature extraction from raw network traffic affects the accuracy
 of a variety of models.  There are many possible ways to represent raw traffic
@@ -577,14 +688,25 @@ Python library or invoked directly from the command line.
     library. It has been packaged on PyPi for easy installation. 
 
 
-The `netml` library consists of approximately 11,000 lines of Python, with the
-packet parsing module comprising approximately 3,500 lines of Python, the
-implementations of various novelty detection modules comprising another 3,000
-lines, another 3,000 lines in support of the `netml` command-line utility, and
-the rest of the code in support of various utilities (e.g., testing).  `netml`
-is a useful tool for converting network traffic captures to features that can
-be used for various network analysis tasks. It has been designed, implemented,
-and released as an open-source tool to help researchers and practitioners in
-the field of network security. 
+The `netml` software package includes a Python library, the `netml`
+command-line utility, and the rest of the code in support of various utilities
+(e.g., testing).  `netml` is a useful tool for converting network traffic
+captures to features that can be used for various network analysis tasks. It
+has been designed, implemented, and released as an open-source tool to help
+researchers and practitioners in the field of network security. 
 
-.. include:: inline/pipeline_netml-features.rst
+Below is an example of the `netml` library's capability for converting passive
+traffic measurements to 12 different features for each traffic flow. The
+example below shows the features associated with the first three flows in the
+packet trace.  Those features are: flow duration, number of packets sent per
+second, number of bytes per second, and various statistics on packet sizes
+within each flow: mean, standard deviation, inter-quartile range, minimum, and
+maximum, the total number of packets, and total number of bytes.
+The `netml` library supports a variety of different feature
+extraction methods.
+
+
+.. _fig-netml-features:
+.. admonition:: Extracting features from a packet capture with `netml`.
+
+    .. include:: inline/measurement_netml-features.rst

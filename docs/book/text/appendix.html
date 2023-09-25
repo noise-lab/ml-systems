@@ -30,7 +30,7 @@
     <script src="../static/js/theme.js"></script>
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Packet Capture and Analysis" href="examples/notebooks/01-Packet-Capture-Basics.html" />
-    <link rel="prev" title="Chapter 8: Looking Ahead" href="future.html" /> 
+    <link rel="prev" title="Chapter 9: Looking Ahead" href="future.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -59,12 +59,13 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="intro.html">Chapter 1:  Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="motivation.html">Chapter 2: Motivating Problems</a></li>
-<li class="toctree-l1"><a class="reference internal" href="measurement.html">Chapter 3: Data Acquisition</a></li>
+<li class="toctree-l1"><a class="reference internal" href="measurement.html">Chapter 3: Network Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pipeline.html">Chapter 4: Machine Learning Pipeline</a></li>
 <li class="toctree-l1"><a class="reference internal" href="supervised.html">Chapter 5: Supervised Learning</a></li>
 <li class="toctree-l1"><a class="reference internal" href="unsupervised.html">Chapter 6: Unsupervised Learning</a></li>
-<li class="toctree-l1"><a class="reference internal" href="automation.html">Chapter 7:  Deployment Considarations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="future.html">Chapter 8:  Looking Ahead</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reinforcement.html">Chapter 7: Reinforcement Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="automation.html">Chapter 8:  Deployment Considarations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="future.html">Chapter 9:  Looking Ahead</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Appendix: Activities</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#packet-capture">Packet Capture</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="examples/notebooks/01-Packet-Capture-Basics.html">Packet Capture and Analysis</a></li>
@@ -97,8 +98,7 @@
 <li class="toctree-l3"><a class="reference internal" href="examples/notebooks/09-Naive-Bayes.html">Naïve Bayes Spam Classifier</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#linear-regression">Linear Regression</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/10-Linear-Regression.html">Linear Regression on Network Traffic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#linear-regression">Linear Regression</a><ul class="simple">
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#logistic-regression">Logistic Regression</a><ul>
@@ -156,7 +156,7 @@
             <a href="../_sources/text/appendix.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
-        <a href="future.html" class="btn btn-neutral float-left" title="Chapter 8: Looking Ahead" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="future.html" class="btn btn-neutral float-left" title="Chapter 9: Looking Ahead" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="examples/notebooks/01-Packet-Capture-Basics.html" class="btn btn-neutral float-right" title="Packet Capture and Analysis" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
   </div>
   <hr/>
@@ -164,31 +164,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  
-<style>
-/* CSS overrides for sphinx_rtd_theme */
-
-/* 24px margin */
-.nbinput.nblast.container,
-.nboutput.nblast.container {
-    margin-bottom: 19px;  /* padding has already 5px */
-}
-
-/* ... except between code cells! */
-.nblast.container + .nbinput.container {
-    margin-top: -19px;
-}
-
-.admonition > p:before {
-    margin-right: 4px;  /* make room for the exclamation icon */
-}
-
-/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
-.math {
-    text-align: unset;
-}
-</style>
-<div class="section" id="appendix-activities">
+  <div class="section" id="appendix-activities">
 <span id="appendix"></span><h1>Appendix: Activities<a class="headerlink" href="#appendix-activities" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="packet-capture">
 <span id="appendix-basics"></span><h2>Packet Capture<a class="headerlink" href="#packet-capture" title="Permalink to this headline">¶</a></h2>
@@ -357,26 +333,6 @@
 <div class="section" id="linear-regression">
 <span id="appendix-linear-regression"></span><h2>Linear Regression<a class="headerlink" href="#linear-regression" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="examples/notebooks/10-Linear-Regression.html">Linear Regression on Network Traffic</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="examples/notebooks/10-Linear-Regression.html#Part-1:-Simple-Linear-Regression.">Part 1: Simple Linear Regression.</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/10-Linear-Regression.html#Group-Traffic-Info-Flows">Group Traffic Info Flows</a></li>
-<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/10-Linear-Regression.html#Generate-Features">Generate Features</a></li>
-<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/10-Linear-Regression.html#Train-Model">Train Model</a></li>
-<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/10-Linear-Regression.html#Visualize-Your-Model">Visualize Your Model</a></li>
-<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/10-Linear-Regression.html#Evaluation:-Error-Computation">Evaluation: Error Computation</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="examples/notebooks/10-Linear-Regression.html#Part-2:-Polynomial-Basis-Expansion">Part 2: Polynomial Basis Expansion</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples/notebooks/10-Linear-Regression.html#Part-3:-Exploring-Relationships-between-Other-Features">Part 3: Exploring Relationships between Other Features</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples/notebooks/10-Linear-Regression.html#Bonus:-Reducing-Error-on-Test-Set">Bonus: Reducing Error on Test Set</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/10-Linear-Regression.html#Part-1">Part 1</a></li>
-<li class="toctree-l3"><a class="reference internal" href="examples/notebooks/10-Linear-Regression.html#Part-2">Part 2</a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
 </div>
 </div>
 <div class="section" id="logistic-regression">
@@ -536,7 +492,7 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="future.html" class="btn btn-neutral float-left" title="Chapter 8: Looking Ahead" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="future.html" class="btn btn-neutral float-left" title="Chapter 9: Looking Ahead" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="examples/notebooks/01-Packet-Capture-Basics.html" class="btn btn-neutral float-right" title="Packet Capture and Analysis" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

@@ -64,7 +64,7 @@ been used to *predict* attacks before they happen, as we discuss below.
    features of attack traffic differ from normal web browsing activities.
 
 Botnets, Spam, and Malware
-++++++++++++++++++++++++++
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 One of the earliest forms of messaging on the Internet was electronic mail
 ("email"). The design of the Internet made it possible for anyone to send a
@@ -156,7 +156,7 @@ connectivity to a group of IP addresses, and whether (and how) those
 connectivity properties have evolved over time.
 
 Account Compromise
-++++++++++++++++++
+~~~~~~~~~~~~~~~~~~
 
 Another area where machine learning is commonly applied is the detection of
 compromised accounts. In particular, attackers may attempt to compromise a
@@ -191,7 +191,7 @@ process of engineering and representing features to models.
 
  
 Anomaly Detection
-+++++++++++++++++
+~~~~~~~~~~~~~~~~~
 
 Anomaly detection---sometimes also referred to as *novelty detection*---
 describes a broad class of problems that involve attempts to detect anything
@@ -249,7 +249,7 @@ various features of the network traffic.
 
 
 Quality of Experience Inference
-+++++++++++++++++++++++++++++++
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 An increasingly active area for machine learning inference is *application
 performance inference*, and a related area of *quality of experience (QoE)
 estimation*. As its name suggests application performance inference seeks to
@@ -278,7 +278,7 @@ models typically rely on features such as the rate of arrival of individual
 video segments, the size of these segments, and so forth. 
 
 Application, Service, and Device Identification
-+++++++++++++++++++++++++++++++++++++++++++++++
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Machine learning models are sometimes used to identify specific network
 elements and applications---a process sometimes referred to as
@@ -306,7 +306,7 @@ devices, websites, and services even if the underlying traffic itself is
 encrypted. 
 
 Performance Prediction
-++++++++++++++++++++++
+~~~~~~~~~~~~~~~~~~~~~~
 
 Machine learning can also apply to scenarios where it is necessary to predict
 the performance of a networked system, where predicting and evaluating the
@@ -366,7 +366,7 @@ Below, we discuss some of these applications, and how machine learning is
 being applied in these contexts. 
 
 Network Provisioning
-++++++++++++++++++++
+~~~~~~~~~~~~~~~~~~~~
 
 Large service provider networks routinely face questions about when, how, and
 where to provision capacity in their networks. Typically, these problems may
@@ -386,7 +386,7 @@ predict how search response time might be affected by the deployment of
 additional web caches.
 
 Coding and Rate Control
-+++++++++++++++++++++++
+~~~~~~~~~~~~~~~~~~~~~~~
 
 A very active area in networked systems and applications today is the
 development of data encoding schemes that measure network conditions and adapt

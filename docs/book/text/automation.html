@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Chapter 7: Deployment Considarations &mdash; Machine Learning for Networking Version 0.1 documentation</title><link rel="stylesheet" href="../static/css/theme.css" type="text/css" />
+  <title>Chapter 9: Deployment Considerations &mdash; Machine Learning for Networking Version 0.1 documentation</title><link rel="stylesheet" href="../static/css/theme.css" type="text/css" />
     <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../static/graphviz.css" type="text/css" />
       <link rel="stylesheet" href="../static/css/rtd_theme_mods.css" type="text/css" />
@@ -29,8 +29,8 @@
         <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "tex2jax_ignore|mathjax_ignore|document", "processClass": "tex2jax_process|mathjax_process|math|output_area"}})</script>
     <script src="../static/js/theme.js"></script>
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Chapter 8: Looking Ahead" href="future.html" />
-    <link rel="prev" title="Chapter 6: Unsupervised Learning" href="unsupervised.html" /> 
+    <link rel="next" title="Chapter 10: Looking Ahead" href="future.html" />
+    <link rel="prev" title="Chapter 8: Large Language Models" href="llm.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -59,17 +59,19 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="intro.html">Chapter 1:  Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="motivation.html">Chapter 2: Motivating Problems</a></li>
-<li class="toctree-l1"><a class="reference internal" href="measurement.html">Chapter 3: Data Acquisition</a></li>
+<li class="toctree-l1"><a class="reference internal" href="measurement.html">Chapter 3: Network Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pipeline.html">Chapter 4: Machine Learning Pipeline</a></li>
 <li class="toctree-l1"><a class="reference internal" href="supervised.html">Chapter 5: Supervised Learning</a></li>
 <li class="toctree-l1"><a class="reference internal" href="unsupervised.html">Chapter 6: Unsupervised Learning</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Chapter 7:  Deployment Considarations</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="reinforcement.html">Chapter 7: Reinforcement Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="llm.html">Chapter 8: Large Language Models</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Chapter 9:  Deployment Considerations</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#automation">Automation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#model-drift">Model Drift</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#explainability">Explainability</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="future.html">Chapter 8:  Looking Ahead</a></li>
+<li class="toctree-l1"><a class="reference internal" href="future.html">Chapter 10:  Looking Ahead</a></li>
 <li class="toctree-l1"><a class="reference internal" href="appendix.html">Appendix: Activities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../README.html">About The Book</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../authors.html">About The Authors</a></li>
@@ -89,45 +91,21 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Chapter 7:  Deployment Considarations</li>
+      <li class="breadcrumb-item active">Chapter 9:  Deployment Considerations</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/text/automation.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
-        <a href="unsupervised.html" class="btn btn-neutral float-left" title="Chapter 6: Unsupervised Learning" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="future.html" class="btn btn-neutral float-right" title="Chapter 8: Looking Ahead" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="llm.html" class="btn btn-neutral float-left" title="Chapter 8: Large Language Models" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="future.html" class="btn btn-neutral float-right" title="Chapter 10: Looking Ahead" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
   </div>
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  
-<style>
-/* CSS overrides for sphinx_rtd_theme */
-
-/* 24px margin */
-.nbinput.nblast.container,
-.nboutput.nblast.container {
-    margin-bottom: 19px;  /* padding has already 5px */
-}
-
-/* ... except between code cells! */
-.nblast.container + .nbinput.container {
-    margin-top: -19px;
-}
-
-.admonition > p:before {
-    margin-right: 4px;  /* make room for the exclamation icon */
-}
-
-/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
-.math {
-    text-align: unset;
-}
-</style>
-<div class="section" id="chapter-7-deployment-considarations">
-<h1>Chapter 7:  Deployment Considarations<a class="headerlink" href="#chapter-7-deployment-considarations" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="chapter-9-deployment-considerations">
+<h1>Chapter 9:  Deployment Considerations<a class="headerlink" href="#chapter-9-deployment-considerations" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="automation">
 <h2>Automation<a class="headerlink" href="#automation" title="Permalink to this headline">¶</a></h2>
 <p>While the use of deep learning techniques can help automate feature
@@ -178,6 +156,17 @@ given task.</p>
 </div>
 <div class="section" id="explainability">
 <h2>Explainability<a class="headerlink" href="#explainability" title="Permalink to this headline">¶</a></h2>
+<p>While deep learning models have achieved substantial improvements in performance for a variety of tasks, it has proven challenging to explain why these models behave as they do, especially to laypersons.</p>
+<p>Improvements in explainability are essential to the continued development of machine learning.
+Accountability, fairness, trust, and reliability are all easier to achieve if models are more easily
+interrogated and interpreted by human developers and users.</p>
+<p>Since explainability is a complex idea (what should be explainable? To whom?), it helps to break down it down into several possible goals for model development:
+NETWORKING EXAMPLES FOR ALL THREE CATEGORIES</p>
+<p>First, we might prefer models that are <em>decomposable</em>, i.e. readily divided into smaller, easier to understand components. If each of these components can be explained in an straightforward manner, the behavior of the entire model may become more readily understood</p>
+<p>Second, we might prefer models that are <em>simulatable</em>, i.e. that would allow a human to step through the processes employed by the model (in a feasible amount of time) and achieve a process-based understanding of the model’s inner workings.</p>
+<p>Third, we might prefer models that are <em>transparent</em>, i.e. that provide guarantees about their behavior and how variations in inputs and parameters will affect outputs.</p>
+<p>Unfortunately, the types of deep learning models that currently perform the best on many complex tasks are among the least interpretable computer programs ever developed on all three categories. Whether this will change in the near or distant future is a matter for the ML research community.</p>
+<p>Fortunately, many ML models that can be applied effectively to networks data are substantially more explainable. Shallow ML methods (especially decision trees/forests and support vector machines) are quite explainable, and can rival the performance of neural networks on many networks tasks with lower-dimensional data (Chapter SUPERVISED). Even neural networks of modest size can often be visualized and instrumented such that the effect of input and parameter changes are more easily understood.</p>
 </div>
 </div>
 
@@ -185,8 +174,8 @@ given task.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="unsupervised.html" class="btn btn-neutral float-left" title="Chapter 6: Unsupervised Learning" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="future.html" class="btn btn-neutral float-right" title="Chapter 8: Looking Ahead" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="llm.html" class="btn btn-neutral float-left" title="Chapter 8: Large Language Models" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="future.html" class="btn btn-neutral float-right" title="Chapter 10: Looking Ahead" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

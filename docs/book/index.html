@@ -58,12 +58,14 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="text/intro.html">Chapter 1:  Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="text/motivation.html">Chapter 2: Motivating Problems</a></li>
-<li class="toctree-l1"><a class="reference internal" href="text/measurement.html">Chapter 3: Data Acquisition</a></li>
+<li class="toctree-l1"><a class="reference internal" href="text/measurement.html">Chapter 3: Network Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="text/pipeline.html">Chapter 4: Machine Learning Pipeline</a></li>
 <li class="toctree-l1"><a class="reference internal" href="text/supervised.html">Chapter 5: Supervised Learning</a></li>
 <li class="toctree-l1"><a class="reference internal" href="text/unsupervised.html">Chapter 6: Unsupervised Learning</a></li>
-<li class="toctree-l1"><a class="reference internal" href="text/automation.html">Chapter 7:  Deployment Considarations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="text/future.html">Chapter 8:  Looking Ahead</a></li>
+<li class="toctree-l1"><a class="reference internal" href="text/llm.html">Chapter 7: Large Language Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="text/reinforcement.html">Chapter 8: Reinforcement Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="text/automation.html">Chapter 9:  Deployment Considerations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="text/future.html">Chapter 10:  Looking Ahead</a></li>
 <li class="toctree-l1"><a class="reference internal" href="text/appendix.html">Appendix: Activities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="README.html">About The Book</a></li>
 <li class="toctree-l1"><a class="reference internal" href="authors.html">About The Authors</a></li>
@@ -95,31 +97,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  
-<style>
-/* CSS overrides for sphinx_rtd_theme */
-
-/* 24px margin */
-.nbinput.nblast.container,
-.nboutput.nblast.container {
-    margin-bottom: 19px;  /* padding has already 5px */
-}
-
-/* ... except between code cells! */
-.nblast.container + .nbinput.container {
-    margin-top: -19px;
-}
-
-.admonition > p:before {
-    margin-right: 4px;  /* make room for the exclamation icon */
-}
-
-/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
-.math {
-    text-align: unset;
-}
-</style>
-<a class="reference external image-reference" href="https://github.com/SystemsApproach/ml"><img alt="images/ml-networks.png" class="align-center" src="images/ml-networks.png" style="width: 300px;" /></a>
+  <a class="reference external image-reference" href="https://github.com/SystemsApproach/ml"><img alt="images/ml-networks.png" class="align-center" src="images/ml-networks.png" style="width: 300px;" /></a>
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
@@ -146,10 +124,10 @@
 <li class="toctree-l2"><a class="reference internal" href="text/motivation.html#resource-allocation">Resource Allocation</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="text/measurement.html">Chapter 3: Data Acquisition</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="text/measurement.html#what-to-measure">What to Measure</a></li>
-<li class="toctree-l2"><a class="reference internal" href="text/measurement.html#how-to-measure">How to Measure</a></li>
-<li class="toctree-l2"><a class="reference internal" href="text/measurement.html#from-acquisition-to-model-input">From Acquisition to Model Input</a></li>
+<li class="toctree-l1"><a class="reference internal" href="text/measurement.html">Chapter 3: Network Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="text/measurement.html#types-of-network-data">Types of Network Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="text/measurement.html#data-collection-strategies">Data Collection Strategies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="text/measurement.html#data-preparation">Data Preparation</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="text/pipeline.html">Chapter 4: Machine Learning Pipeline</a><ul>
@@ -160,9 +138,9 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="text/supervised.html">Chapter 5: Supervised Learning</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="text/supervised.html#non-parametric-models">Non-Parametric Models</a></li>
-<li class="toctree-l2"><a class="reference internal" href="text/supervised.html#probabilistic-models">Probabilistic Models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="text/supervised.html#linear-models">Linear Models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="text/supervised.html#support-vector-machines">Support Vector Machines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="text/supervised.html#probabilistic-models">Probabilistic Models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="text/supervised.html#decision-trees">Decision Trees</a></li>
 <li class="toctree-l2"><a class="reference internal" href="text/supervised.html#ensemble-methods">Ensemble Methods</a></li>
 <li class="toctree-l2"><a class="reference internal" href="text/supervised.html#deep-learning">Deep Learning</a></li>
@@ -174,13 +152,28 @@
 <li class="toctree-l2"><a class="reference internal" href="text/unsupervised.html#semi-supervised-learning">Semi-Supervised Learning</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="text/automation.html">Chapter 7:  Deployment Considarations</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="text/llm.html">Chapter 7: Large Language Models</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="text/llm.html#background">Background</a></li>
+<li class="toctree-l2"><a class="reference internal" href="text/llm.html#large-language-models-in-networking">Large Language Models in Networking</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="text/reinforcement.html">Chapter 8: Reinforcement Learning</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="text/reinforcement.html#background">Background</a></li>
+<li class="toctree-l2"><a class="reference internal" href="text/reinforcement.html#markov-decision-processes">Markov Decision Processes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="text/reinforcement.html#discounted-rewards">Discounted Rewards</a></li>
+<li class="toctree-l2"><a class="reference internal" href="text/reinforcement.html#q-values">Q-Values</a></li>
+<li class="toctree-l2"><a class="reference internal" href="text/reinforcement.html#q-value-iteration">Q-Value Iteration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="text/reinforcement.html#q-learning">Q-Learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="text/reinforcement.html#approximate-q-learning">Approximate Q-Learning</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="text/automation.html">Chapter 9:  Deployment Considerations</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="text/automation.html#automation">Automation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="text/automation.html#model-drift">Model Drift</a></li>
 <li class="toctree-l2"><a class="reference internal" href="text/automation.html#explainability">Explainability</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="text/future.html">Chapter 8:  Looking Ahead</a></li>
+<li class="toctree-l1"><a class="reference internal" href="text/future.html">Chapter 10:  Looking Ahead</a></li>
 <li class="toctree-l1"><a class="reference internal" href="text/appendix.html">Appendix: Activities</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="text/appendix.html#packet-capture">Packet Capture</a></li>
 <li class="toctree-l2"><a class="reference internal" href="text/appendix.html#security">Security</a></li>

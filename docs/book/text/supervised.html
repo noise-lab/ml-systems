@@ -59,16 +59,11 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="intro.html">Chapter 1:  Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="motivation.html">Chapter 2: Motivating Problems</a></li>
-<li class="toctree-l1"><a class="reference internal" href="measurement.html">Chapter 3: Data Acquisition</a></li>
+<li class="toctree-l1"><a class="reference internal" href="measurement.html">Chapter 3: Network Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pipeline.html">Chapter 4: Machine Learning Pipeline</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Chapter 5: Supervised Learning</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#non-parametric-models">Non-Parametric Models</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#k-nearest-neighbors">K Nearest Neighbors</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#probabilistic-models">Probabilistic Models</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#naive-bayes">Naive Bayes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#expectation-maximization">Expectation Maximization</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#linear-models">Linear Models</a><ul>
@@ -84,6 +79,11 @@
 <li class="toctree-l3"><a class="reference internal" href="#kernel-methods">Kernel Methods</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#probabilistic-models">Probabilistic Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#naive-bayes">Naive Bayes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#expectation-maximization">Expectation Maximization</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#decision-trees">Decision Trees</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#training">Training</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#parameter-tuning">Parameter Tuning</a></li>
@@ -97,12 +97,19 @@
 <li class="toctree-l3"><a class="reference internal" href="#boosting">Boosting</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#deep-learning">Deep Learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#deep-learning">Deep Learning</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#multi-layer-perceptron">Multi-Layer Perceptron</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#convolutional-neural-networks">Convolutional Neural Networks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#recurrent-neural-networks">Recurrent Neural Networks</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="unsupervised.html">Chapter 6: Unsupervised Learning</a></li>
-<li class="toctree-l1"><a class="reference internal" href="automation.html">Chapter 7:  Deployment Considarations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="future.html">Chapter 8:  Looking Ahead</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reinforcement.html">Chapter 7: Reinforcement Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="llm.html">Chapter 8: Large Language Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="automation.html">Chapter 9:  Deployment Considerations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="future.html">Chapter 10:  Looking Ahead</a></li>
 <li class="toctree-l1"><a class="reference internal" href="appendix.html">Appendix: Activities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../README.html">About The Book</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../authors.html">About The Authors</a></li>
@@ -135,56 +142,35 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  
-<style>
-/* CSS overrides for sphinx_rtd_theme */
-
-/* 24px margin */
-.nbinput.nblast.container,
-.nboutput.nblast.container {
-    margin-bottom: 19px;  /* padding has already 5px */
-}
-
-/* ... except between code cells! */
-.nblast.container + .nbinput.container {
-    margin-top: -19px;
-}
-
-.admonition > p:before {
-    margin-right: 4px;  /* make room for the exclamation icon */
-}
-
-/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
-.math {
-    text-align: unset;
-}
-</style>
-<div class="section" id="chapter-5-supervised-learning">
+  <div class="section" id="chapter-5-supervised-learning">
 <h1>Chapter 5: Supervised Learning<a class="headerlink" href="#chapter-5-supervised-learning" title="Permalink to this headline">¶</a></h1>
-<p>In this chapter, we introduce <em>supervised learning</em>, the process by which a
-machine learning model can learn from labeled examples. Supervised learning
-requires having access to one or more <em>labeled datasets</em>—data that has not
-only the features, but also the associated labels. For example, in the case of
-malware classification, the features might include metrics from the network
-traffic (e.g., bytes per second, packets per second, number of IP addresses
-contacted), and the labels might be whether or not the traffic is being
-generated by malicious software.</p>
-<p>Throughout this chapter, we will describe a variety of supervised learning
-models, using networking examples as a guide. This book does not necessarily
-assume you’ve seen these models before, and so readers who are aiming to get
-basic intuition behind different models will find this chapter helpful.
-Readers who are already familiar with these models may still find these
-examples helpful, as the examples in the chapter present cases where
-particular models or types of models are suited to different classification
-problems, as well as cases in the networking domain where these models have
-been successfully applied in the past.</p>
-<p>We organize our discussion of supervised learning into the following
-categories: (1) non-parametric models (i.e., models where the size of the
-model grows with the size of the dataset); (2) linear models (i.e., models
-based on a linear prediction function, including possible basis expansion);
-(3) tree-based models; (4) ensemble methods (i.e., models that make
-predictions by combining the predictions of simpler models); and (5) deep
-learning models (i.e., those that can also learn representations of the data).</p>
+<p>In this chapter, we will discuss <em>supervised learning</em>, the process by which a
+machine learning model can learn from labeled data (sometimes called labeled
+examples). Supervised learning requires having access to one or more <em>labeled
+datasets</em>—data that has not only the features, but also an associated label
+for each data point. For example, in the case of malware classification, the
+features might include metrics from the network traffic (e.g., bytes per
+second, packets per second, number of IP addresses contacted), and the labels
+could be whether the traffic is being generated by a malicious software
+software program (“malware”).</p>
+<p>In this chapter, we will describe a variety of supervised learning models,
+using examples from networking as an illustrative guide. We do not assume
+you’ve seen these models before, and so readers who want to get basic
+intuition behind different models and how they can be applied in different
+network settings should find this chapter illuminating.  Readers who are
+already familiar with these models may also find the discussion helpful, as
+the examples in the chapter present cases where particular models or types of
+models are suited to different classification problems, as well as cases in
+the networking domain where these models have been successfully applied.</p>
+<p>We organize the discussion of supervised learning in this chapter into the following
+categories:</p>
+<ol class="arabic simple">
+<li><p>non-parametric models (i.e., models where the size of the model grows with the size of the dataset);</p></li>
+<li><p>linear models (i.e., models based on a linear prediction function, including possible basis expansion);</p></li>
+<li><p>tree-based models;</p></li>
+<li><p>ensemble methods (i.e., models that make predictions by combining the predictions of simpler models); and</p></li>
+<li><p>deep learning models (i.e., those that can also learn representations of the data).</p></li>
+</ol>
 <div class="section" id="non-parametric-models">
 <h2>Non-Parametric Models<a class="headerlink" href="#non-parametric-models" title="Permalink to this headline">¶</a></h2>
 <p>Non-parametric models grow as the size of the dataset grows. Perhaps the most
@@ -200,23 +186,26 @@ training data. The model can vary based on the distance function to use to
 define “closest” (there are many options), but ultimately, k-nearest neighbors
 boils down to finding the closest training examples and predicting their mean
 or their mode.</p>
-<p>Training a k-nearest neighbors model is trivial: there is nothing to do other
-than store the training data in a data structure, such as a KD-tree, that
-makes it easy to compare distances between a data point and observations in
-the training data. All of the work and computational effort occurs during the
-prediction step, where these distances are computed.  The choice of k is a
-hyperparameter that can be chosen via a line search and a validation set.</p>
+<p>Training a k-nearest neighbors model is simple and efficient: there is nothing
+to do other than store the training data in a data structure, such as a
+KD-tree, that makes it easy to compare distances between a data point and
+observations in the training data. All of the work and computational effort
+thus occurs during prediction, where these distances are computed.  The
+choice of k is a hyperparameter that can be selected using a standard tuning
+approach, such as a line search, along with a validation set.</p>
 <p>Because kNN is sometimes impractical (e.g., storing the training set may be
 prohibitive, inference time can be large), the model is often used as a
-baseline to compare against other more practical models.  kNN is relatively
-easy to train and optimize, but the computation performance is poor if the
-training set has many examples—and gets worse as the training set grows.
-Yet, kNN is often used as a low bar or baseline for comparing against other
-models.  Because kNN operates by distance computations in a multi-dimensional
-space, the model works best when features are standardized to have zero mean
-and unit variance. Otherwise, the closest examples may be overwhelmed by one
-feature that just happens to have values in smaller units.</p>
-<p>Unfortunately, KNN also scales poorly with the number of features in each
+baseline to compare model performance against other more practical models.
+kNN is relatively easy to train and optimize, but the computation performance
+is poor if the training set has many examples—and gets worse as the training
+set grows.  Nonetheless, kNN is often used as a baseline for comparing against
+other models.</p>
+<p><strong>kNN example here</strong></p>
+<p>Because kNN operates by distance computations in a multi-dimensional space,
+the model works best when features are standardized to have zero mean and unit
+variance. Otherwise, the closest examples may be overwhelmed by one feature
+that just happens to have values in smaller units.</p>
+<p>Unfortunately, kNN also scales poorly with the number of features in each
 example (i.e., the dimensionality of the feature set). Many functions that can
 be used to compute distance between vectors don’t work very well in high
 dimensions, because in higher dimensional spaces, everything starts to be far
@@ -240,89 +229,6 @@ website fingerprinting, need not be efficient (e.g., if it can be performed
 offline, or simply to demonstrate feasibility of an attack). In practice,
 other models are typically more common, particularly due to the computational
 requirements that can make kNN inefficient in practice.</p>
-</div>
-</div>
-<div class="section" id="probabilistic-models">
-<h2>Probabilistic Models<a class="headerlink" href="#probabilistic-models" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="naive-bayes">
-<h3>Naive Bayes<a class="headerlink" href="#naive-bayes" title="Permalink to this headline">¶</a></h3>
-<p>Let’s now explore a classifier called the naive Bayes classifier. The naive
-Bayes classifier is a type of classification method in a family called kernel
-density classification.  Naive Bayes works well on small data sets, it’s
-computationally efficient for both training and prediction, and it works well
-in a variety of settings.</p>
-<p>It typically requires knowing or estimating the probability density of the
-feature space from which we’re trying to perform the estimation.  There’s a
-notion called an optimal base classifier, where if you knew that the data had
-an underlying probability distribution you could formulate an optimal
-classifier as follows given a set of observations X, you could pick the Y that
-maximizes the posterior probability of observing Y being a particular class
-given those observations.  Doing so requires knowing the probability
-distributions of the features on which we’re performing this estimation, and
-that distribution typically isn’t known, but we can make some assumptions.
-What’s commonly done is to select a family of parametric distributions such as
-a Gaussian, Bernoulli, or multinomial distribution, and then try to estimate
-the parameters of that distribution once we’ve estimated the density of those
-features. We can then perform this computation.</p>
-<div class="sidebar">
-<p class="sidebar-title">Activity: Naive Bayes</p>
-<p>The <a class="reference internal" href="appendix.html#appendix-naive-bayes"><span class="std std-ref">Appendix</span></a> provides an activity to train and
-evaluate a Naive Bayes classifier to perform spam classification.</p>
-</div>
-<p>If we’re trying to estimate the probability of Y being a particular value or
-class given a set of observations, X, we can use Bayes rule to express that as
-the posterior probability of X given Y times the prior probability of Y,
-divided by the prior probability of observing those X values.  The naive Bayes
-classifier is called a probabilistic classifier, because not only does it make
-a class prediction, but it can also predict the likelihood of an observation
-being of a particular class, given a set of observations.  The naive Bayes
-classifier compares posterior probabilities for each possible class. Because
-those probabilities for each observation does not depend on prior probability
-of observing the feature values, X, we can drop the denominator and just
-compare those numerator values and the class value for y that has the largest
-posterior numerator is the predicted class.</p>
-<p>The Naive Bayes classifier makes two important assumptions. One is that each
-feature X and its corresponding likelihood is independent; that is, there’s no
-relationship between the likelihoods of pairs or groups of features. That’s an
-assumption that is commonly violated in practice but making this assumption
-allows Bayes rule to avoid the curse of dimensionality, where the size of the
-required training set often grows exponentially with the number of features in
-the model. The second assumption is that for each feature we have to assume
-some statistical distribution on the features themselves; in other words, we
-have to estimate the kernel density for those features.</p>
-<p>There are three common distributions that are used in naive Bayes
-classification.  When we have numerical features it’s common to assume a
-Gaussian distribution.  If there are categorical features we may use a
-Bernoulli distribution. If there are discrete or count features, it’s common to
-use a multinomial distribution.  Why do we have to make these statistical
-distribution assumptions? If we look at the quantity we’re trying to compute
-again it involves computing two quantities: one is the likelihood of Y, or the
-prior probability of Y. That’s easy: we just figure out how often each class
-occurs in our data set. The second quantity we need to know is the probability
-of observing a set of X’s given Y; unless we have an extremely large number of
-data points we’re not going to be able to compute this directly, and so we’ll
-have to make some assumptions about this particular distribution.</p>
-<p>This is where we’re going to make assumptions about the distribution of X, and
-specifically the distribution of X conditioned on Y. The second assumption that
-we need to make is that those probabilities x given y are independent. In other
-words, we can compute the joint probability distribution of those X’s
-conditioned on Y by computing the probabilities of each individual feature X
-given Y and multiplying them together. This independence assumption greatly
-simplifies our computation, so now all we need to do when maximizing this
-posterior probability is to compute the following: we choose the value for y
-that maximizes the prior probability of observing that value of Y times the
-probability of <em>each</em> X_i observation, given that particular class value of Y.</p>
-<p>The Naive Bayes classifier has various advantages and disadvantages.  It’s
-efficient and scalable: it’s a very simple algorithm based essentially on
-counting frequencies of occurrence.  It works on very small data sets. It’s
-interpretable: each distribution is estimated as a one-dimensional distribution
-because the probabilities of each feature occurring are assumed to be
-independent.  Unfortunately, because the Naive Bayes classifier assumes
-independence of features, it can’t learn relationships between those features,
-which may sometimes be something you want to do in practice.</p>
-</div>
-<div class="section" id="expectation-maximization">
-<h3>Expectation Maximization<a class="headerlink" href="#expectation-maximization" title="Permalink to this headline">¶</a></h3>
 </div>
 </div>
 <div class="section" id="linear-models">
@@ -516,6 +422,89 @@ libraries provide, each with pros and cons. Nonetheless, they all allow us to
 adapt linear SVMs to nonlinear data.</p>
 </div>
 </div>
+<div class="section" id="probabilistic-models">
+<h2>Probabilistic Models<a class="headerlink" href="#probabilistic-models" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="naive-bayes">
+<h3>Naive Bayes<a class="headerlink" href="#naive-bayes" title="Permalink to this headline">¶</a></h3>
+<p>Let’s now explore a classifier called the naive Bayes classifier. The naive
+Bayes classifier is a type of classification method in a family called kernel
+density classification.  Naive Bayes works well on small data sets, it’s
+computationally efficient for both training and prediction, and it works well
+in a variety of settings.</p>
+<p>It typically requires knowing or estimating the probability density of the
+feature space from which we’re trying to perform the estimation.  There’s a
+notion called an optimal base classifier, where if you knew that the data had
+an underlying probability distribution you could formulate an optimal
+classifier as follows given a set of observations X, you could pick the Y that
+maximizes the posterior probability of observing Y being a particular class
+given those observations.  Doing so requires knowing the probability
+distributions of the features on which we’re performing this estimation, and
+that distribution typically isn’t known, but we can make some assumptions.
+What’s commonly done is to select a family of parametric distributions such as
+a Gaussian, Bernoulli, or multinomial distribution, and then try to estimate
+the parameters of that distribution once we’ve estimated the density of those
+features. We can then perform this computation.</p>
+<div class="sidebar">
+<p class="sidebar-title">Activity: Naive Bayes</p>
+<p>The <a class="reference internal" href="appendix.html#appendix-naive-bayes"><span class="std std-ref">Appendix</span></a> provides an activity to train and
+evaluate a Naive Bayes classifier to perform spam classification.</p>
+</div>
+<p>If we’re trying to estimate the probability of Y being a particular value or
+class given a set of observations, X, we can use Bayes rule to express that as
+the posterior probability of X given Y times the prior probability of Y,
+divided by the prior probability of observing those X values.  The naive Bayes
+classifier is called a probabilistic classifier, because not only does it make
+a class prediction, but it can also predict the likelihood of an observation
+being of a particular class, given a set of observations.  The naive Bayes
+classifier compares posterior probabilities for each possible class. Because
+those probabilities for each observation does not depend on prior probability
+of observing the feature values, X, we can drop the denominator and just
+compare those numerator values and the class value for y that has the largest
+posterior numerator is the predicted class.</p>
+<p>The Naive Bayes classifier makes two important assumptions. One is that each
+feature X and its corresponding likelihood is independent; that is, there’s no
+relationship between the likelihoods of pairs or groups of features. That’s an
+assumption that is commonly violated in practice but making this assumption
+allows Bayes rule to avoid the curse of dimensionality, where the size of the
+required training set often grows exponentially with the number of features in
+the model. The second assumption is that for each feature we have to assume
+some statistical distribution on the features themselves; in other words, we
+have to estimate the kernel density for those features.</p>
+<p>There are three common distributions that are used in naive Bayes
+classification.  When we have numerical features it’s common to assume a
+Gaussian distribution.  If there are categorical features we may use a
+Bernoulli distribution. If there are discrete or count features, it’s common to
+use a multinomial distribution.  Why do we have to make these statistical
+distribution assumptions? If we look at the quantity we’re trying to compute
+again it involves computing two quantities: one is the likelihood of Y, or the
+prior probability of Y. That’s easy: we just figure out how often each class
+occurs in our data set. The second quantity we need to know is the probability
+of observing a set of X’s given Y; unless we have an extremely large number of
+data points we’re not going to be able to compute this directly, and so we’ll
+have to make some assumptions about this particular distribution.</p>
+<p>This is where we’re going to make assumptions about the distribution of X, and
+specifically the distribution of X conditioned on Y. The second assumption that
+we need to make is that those probabilities x given y are independent. In other
+words, we can compute the joint probability distribution of those X’s
+conditioned on Y by computing the probabilities of each individual feature X
+given Y and multiplying them together. This independence assumption greatly
+simplifies our computation, so now all we need to do when maximizing this
+posterior probability is to compute the following: we choose the value for y
+that maximizes the prior probability of observing that value of Y times the
+probability of <em>each</em> X_i observation, given that particular class value of Y.</p>
+<p>The Naive Bayes classifier has various advantages and disadvantages.  It’s
+efficient and scalable: it’s a very simple algorithm based essentially on
+counting frequencies of occurrence.  It works on very small data sets. It’s
+interpretable: each distribution is estimated as a one-dimensional distribution
+because the probabilities of each feature occurring are assumed to be
+independent.  Unfortunately, because the Naive Bayes classifier assumes
+independence of features, it can’t learn relationships between those features,
+which may sometimes be something you want to do in practice.</p>
+</div>
+<div class="section" id="expectation-maximization">
+<h3>Expectation Maximization<a class="headerlink" href="#expectation-maximization" title="Permalink to this headline">¶</a></h3>
+</div>
+</div>
 <div class="section" id="decision-trees">
 <h2>Decision Trees<a class="headerlink" href="#decision-trees" title="Permalink to this headline">¶</a></h2>
 <p>Another way of performing classification or prediction is through performing a
@@ -619,6 +608,7 @@ certain activities from Internet of things traffic.</p>
 <p>Because boosting is inherently sequential, it is not that amenable to parallelized training. Typically, you make each individual classifier very simple and fast to train, so the entire boosted classifier is also efficient.</p>
 <p>Another type of boosting, AdaBoost, also uses sequential classifiers that try to improve each other’s performance. The weight given to each example in the training set is increased if the previous classifier got that example incorrect and decreased otherwise. This means that successive classifiers put more effort into correctly predicting examples that were missed by earlier classifiers. Each successive classifier is itself weighted by how well it performs on the entire training set.</p>
 <p>There is a proof that AdaBoost combined with any weak learning algorithm, i.e. any classifier that does better than random guessing, will eventually produce a model which perfectly fits your training data. Empirically, this also improves test error as well.</p>
+<p>Gradient Boosting…</p>
 </div>
 </div>
 <div class="section" id="deep-learning">
@@ -651,6 +641,15 @@ takes a multidimensional input and applies weights to each input feature. The
 output of this computation is then passed through an activation function,
 which maps the output to 0, 1, or 2. Different shapes of activation functions
 can be used for this purpose.</p>
+<p>Deep learning is concerned with representation learning and
+involves many transformations or layers in the model. A feed forward neural
+network is a particular type of neural net architecture that is used in deep
+learning. The training process of a neural net is iterative, involving both
+forward and backward propagation through the network. The weights of the
+neural net are adjusted to reduce loss, and a typical training process might
+include hundreds or even thousands of epochs.</p>
+<div class="section" id="multi-layer-perceptron">
+<h3>Multi-Layer Perceptron<a class="headerlink" href="#multi-layer-perceptron" title="Permalink to this headline">¶</a></h3>
 <p>A multi-layer perceptron takes multidimensional input features, applies
 weights to those inputs, passes each input feature through a neuron, and
 ultimately aggregates the output of the hidden layer to a single neuron that
@@ -668,13 +667,13 @@ net to correct for the resulting error. There is no typical closed-form
 optimal solution for the weights. Generally, it is an iterative search
 process, and a typical training process might include hundreds or even
 thousands of epochs.</p>
-<p>In summary, deep learning is concerned with representation learning and
-involves many transformations or layers in the model. A feed forward neural
-network is a particular type of neural net architecture that is used in deep
-learning. The training process of a neural net is iterative, involving both
-forward and backward propagation through the network. The weights of the
-neural net are adjusted to reduce loss, and a typical training process might
-include hundreds or even thousands of epochs.</p>
+</div>
+<div class="section" id="convolutional-neural-networks">
+<h3>Convolutional Neural Networks<a class="headerlink" href="#convolutional-neural-networks" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="recurrent-neural-networks">
+<h3>Recurrent Neural Networks<a class="headerlink" href="#recurrent-neural-networks" title="Permalink to this headline">¶</a></h3>
+</div>
 </div>
 </div>
 

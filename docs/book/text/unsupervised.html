@@ -29,7 +29,7 @@
         <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "tex2jax_ignore|mathjax_ignore|document", "processClass": "tex2jax_process|mathjax_process|math|output_area"}})</script>
     <script src="../static/js/theme.js"></script>
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Chapter 7: Deployment Considarations" href="automation.html" />
+    <link rel="next" title="Chapter 7: Large Language Models" href="llm.html" />
     <link rel="prev" title="Chapter 5: Supervised Learning" href="supervised.html" /> 
 </head>
 
@@ -59,7 +59,7 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="intro.html">Chapter 1:  Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="motivation.html">Chapter 2: Motivating Problems</a></li>
-<li class="toctree-l1"><a class="reference internal" href="measurement.html">Chapter 3: Data Acquisition</a></li>
+<li class="toctree-l1"><a class="reference internal" href="measurement.html">Chapter 3: Network Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pipeline.html">Chapter 4: Machine Learning Pipeline</a></li>
 <li class="toctree-l1"><a class="reference internal" href="supervised.html">Chapter 5: Supervised Learning</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Chapter 6: Unsupervised Learning</a><ul>
@@ -79,8 +79,10 @@
 <li class="toctree-l2"><a class="reference internal" href="#semi-supervised-learning">Semi-Supervised Learning</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="automation.html">Chapter 7:  Deployment Considarations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="future.html">Chapter 8:  Looking Ahead</a></li>
+<li class="toctree-l1"><a class="reference internal" href="llm.html">Chapter 7: Large Language Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reinforcement.html">Chapter 8: Reinforcement Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="automation.html">Chapter 9:  Deployment Considerations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="future.html">Chapter 10:  Looking Ahead</a></li>
 <li class="toctree-l1"><a class="reference internal" href="appendix.html">Appendix: Activities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../README.html">About The Book</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../authors.html">About The Authors</a></li>
@@ -106,51 +108,30 @@
       </li>
   </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
         <a href="supervised.html" class="btn btn-neutral float-left" title="Chapter 5: Supervised Learning" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="automation.html" class="btn btn-neutral float-right" title="Chapter 7: Deployment Considarations" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="llm.html" class="btn btn-neutral float-right" title="Chapter 7: Large Language Models" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
   </div>
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  
-<style>
-/* CSS overrides for sphinx_rtd_theme */
-
-/* 24px margin */
-.nbinput.nblast.container,
-.nboutput.nblast.container {
-    margin-bottom: 19px;  /* padding has already 5px */
-}
-
-/* ... except between code cells! */
-.nblast.container + .nbinput.container {
-    margin-top: -19px;
-}
-
-.admonition > p:before {
-    margin-right: 4px;  /* make room for the exclamation icon */
-}
-
-/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
-.math {
-    text-align: unset;
-}
-</style>
-<div class="section" id="chapter-6-unsupervised-learning">
+  <div class="section" id="chapter-6-unsupervised-learning">
 <h1>Chapter 6: Unsupervised Learning<a class="headerlink" href="#chapter-6-unsupervised-learning" title="Permalink to this headline">¶</a></h1>
 <p>In this chapter, we introduce <em>unsupervised learning</em>, the process by which a machine learning model can learn from <em>unlabeled</em> examples.
 The goal of unsupervised learning is to identify patterns in data that are useful for understanding the data or processing the data further.</p>
-<p>Most data in the world is unlabeled, including most network data. For example… The prevalence of unlabeled data makes unsupervised learning a powerful tool for data analytics.</p>
-<p>Throughout this chapter, we will describe a variety of unsupervised learning models, using networking examples as a guide. This book does not necessarily assume you’ve seen these models before, and so readers who are aiming to get basic intuition behind different models will find this chapter helpful. Readers who are already familiar with these models may still find these examples helpful, as the examples in the chapter present cases where particular models or types of models are suited to different problems, as well as cases in the networking domain where these models have been successfully applied in the past.</p>
+<p>Most data in the world is unlabeled, including most network data. For example, packet captures do not inherently include labels of perceived quality of service or presence of malware. The prevalence of unlabeled data makes unsupervised learning a powerful tool for data analytics.</p>
+<p>Throughout this chapter, we will describe a variety of unsupervised learning models, using networking examples as a guide. This book does not necessarily assume you’ve seen these models before, and so readers who are aiming to get basic intuition behind different models will find this chapter helpful. Readers who are already familiar with these models may still find these examples helpful, as they present cases where particular models or types of models are suited to different problems, as well as cases in the networking domain where these models have been successfully applied in the past.</p>
 <p>We organize our discussion of unsupervised learning into the following categories: (1) dimensionality reduction (i.e., models that reduce the number of features in a data set to those most useful for a task); (2) clustering (i.e., models that group data based on similarity); and (3) semi-supervised learning (i.e., models that use unsupervised techniques to prepare data for supervised learning).</p>
 <div class="section" id="dimensionality-reduction">
 <h2>Dimensionality Reduction<a class="headerlink" href="#dimensionality-reduction" title="Permalink to this headline">¶</a></h2>
-<p>Real world data sets are often high dimensional.
-They have many features and can’t be easily plotted on a 2D or 3D graph. Producing useful visualizations of high dimensional data requires reducing the number of features while preserving important relationships within the data.</p>
-<p>The training time of most supervised ML models also increases with the number of features.
-For very high dimensional data, it may be desirable to reduce the number of features as a preprocessing step to make training computationally feasible. Dimensionality reduction algorithms perform this preprocessing step by removing or combining  features while preserving important relationships within the data.</p>
-<p>Both visualization and preprocessing for computational performance motivate dimensionality reduction in practice.</p>
+<p>Networking data sets are often high dimensional, meaning that each example in the data set has many features. This is typically true regardless of the measurement approach used to collect the data set. Individual packets have many headers. IPFIX records have many fields for each recorded flow. Internet scans results contain a variety of information about each endpoint or IP addressed scanned.
+While high-dimensional data provides lots of information that is useful for maching learining, it also poses two distinct challenges.</p>
+<p>First, high-dimensional data can’t be easily plotted on a 2D or 3D graph. This makes it difficult to explore the data visually and gain an intuition about important patterns that may be essential to understanding the meaning of the data.
+Producing useful visualizations of high-dimensional data requires reducing the number of features such that 2D or 3D visualizations are possible.</p>
+<p>Second, the training time of most machine learning models increases with the number of features in a data set.
+For very high dimensional data, it may be desirable to reduce the number of features as a preprocessing step to make training computationally feasible. While this may result in a reduction in model performance, it is preferrable to a model that can’t be feasibly trained at all.</p>
+<p>Dimensionality reduction algorithms can be used to address either of these challenges. These algorithms work by removing or combining features to produce a new version of the dataset in a lower <em>target</em> dimensionality while attempting to preserve important patterns within the data.
+There are many dimensionality reduction algorithms, far more than we can discuss in this book, so we focus on three commonly used algorithms that can be readily applied to network data.</p>
 <div class="sidebar">
 <p class="sidebar-title">Activity: Dimensionality Reduction</p>
 <p>The <a class="reference internal" href="appendix.html#appendix-dimensionality-reduction"><span class="std std-ref">Appendix</span></a> provides an
@@ -159,23 +140,71 @@ problem to reduce input complexity.</p>
 </div>
 <div class="section" id="principal-component-analysis">
 <h3>Principal Component Analysis<a class="headerlink" href="#principal-component-analysis" title="Permalink to this headline">¶</a></h3>
-<p>The goal of principal component analysis (PCA) is to transform the data to have a new, smaller set of features derived from the original features. The new features minimize the distance that individual data points move as a result of the transformation, and maximize the variance of the data points in the target dimensionality.
-The features in the reduced dimensionality are called the <em>principle components</em>.</p>
-<p>Vanilla PCA is limited to linear transformations, but alternatives, such as <em>kernel PCA</em> can also account for non-linear relationships in the data.</p>
+<p>The goal of principal component analysis (PCA) is to transform the data to have a new, smaller set of features derived from the original features. The PCA algorithm attempts to minimize the amount that individual data points change as a result of the transformation while maximizing the variance of the data points in the new, lower dimensionality. This tradeoff seeks to reduce information loss caused by dimensionality reduction.</p>
+<p>The features in the target dimensionality are called <em>principle components</em>. Each of the principle components is a combination of the original features. Regular PCA is limited to linear combinations, but alternatives, such as <em>kernel PCA</em> can also account for non-linear relationships in the data.</p>
+<p>PCA is non-parametric deterministic dimensionality reduction algorithm. This means that PCA does not have any parameters that require training and that independent applications of PCA to the same dataset with the same target dimensionality will produce the same results. Applying PCA requires choosing the target dimensionality and whether you would like to use the linear or kernel version of the algorithm. Kernel PCA also requires the choice of kernel function, for which a polynomial or radial basis function (RBF) kernel is often a good place to start.</p>
+<div class="admonition-using-pca-to-visualize-packet-capture-data-in-2d admonition" id="fig-pca">
+<p class="admonition-title">Using PCA to visualize packet capture data in 2D.</p>
+</div>
 </div>
 <div class="section" id="t-distributed-stochastic-neighbor-embedding">
 <h3>T-Distributed Stochastic Neighbor Embedding<a class="headerlink" href="#t-distributed-stochastic-neighbor-embedding" title="Permalink to this headline">¶</a></h3>
 <p>T-distributed stochastic neighbor embedding (T-SNE) is a dimensionality reduction algorithm that typically produces much cleaner visualizations in two or three dimensions than PCA. T-SNE is particularly useful when you want to visualize your data to gain intuition about underlying patterns that might prove informative for supervised models or clustering.</p>
-<p>T-SNE uses probability distributions to spread out dissimilar points in the target diminsionality while keeping similar points near each other.
+<p>T-SNE uses probability distributions to spread out dissimilar points while keeping similar points near each other in the target diminsionality.
 The algorithm involves three main steps:</p>
 <blockquote>
 <div><ol class="arabic simple">
-<li><p>Fit a normal distribution to the distances between pairs of points in the original data</p></li>
-<li><p>Find a mapping from the normal distribution (in the original high-dimensional space) to a T-distribution in the target dimensional space that minimizes the divergence between the distributions</p></li>
+<li><p>Fitting a normal (Gaussian) distribution to the distances between pairs of points in the original data</p></li>
+<li><p>Mapping the normal distribution in the original high-dimensional space to a T-distribution in the target dimensional space that minimizes the divergence between the distributions</p></li>
 <li><p>Select new locations for the points in the target dimensional space by drawing from this T-distribution</p></li>
 </ol>
 </div></blockquote>
-<p>Because T-distributions have more probility density in the tails than a normal distribution, this spreads dissimilar points in the target dimensional space while keeping similar points in proximity. Visualizations produced using T-SNE show distinct clustering if such structure exists in the original high dimensional data.</p>
+<p>Because T-distributions have more probility density in the tails than a normal distribution, this spreads out dissimilar points in the target dimensionality while keeping similar points in proximity. Visualizations produced using T-SNE show distinct clustering if such structure exists in the original high dimensional data.</p>
+<p>T-SNE is a non-parametric stochasic dimensionality reduction algorithm. This means that T-SNE does not have any parameters that require training. However, the use of a randomized draw to place data points in the target dimensionality space means that independent applications of T-SNE to the same data set may produce different results.</p>
+<div class="admonition-using-t-sne-to-visualize-packet-capture-data-in-2d admonition" id="fig-tsne">
+<p class="admonition-title">Using T-SNE to visualize packet capture data in 2D.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">netml.pparser.parser</span> <span class="kn">import</span> <span class="n">PCAP</span>
+<span class="kn">from</span> <span class="nn">sklearn.manifold</span> <span class="kn">import</span> <span class="n">TSNE</span>
+<span class="kn">import</span> <span class="nn">matplotlib</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">pandas</span>
+<span class="kn">import</span> <span class="nn">numpy</span>
+
+<span class="n">pcap</span> <span class="o">=</span> <span class="n">PCAP</span><span class="p">(</span><span class="s1">&#39;../examples/notebooks/data/http.pcap&#39;</span><span class="p">)</span>
+<span class="n">pcap</span><span class="o">.</span><span class="n">pcap2pandas</span><span class="p">()</span>
+<span class="n">pdf</span> <span class="o">=</span> <span class="n">pcap</span><span class="o">.</span><span class="n">df</span><span class="p">[[</span><span class="s1">&#39;ip_dst_int&#39;</span><span class="p">,</span> <span class="s1">&#39;port_dst&#39;</span><span class="p">,</span> <span class="s1">&#39;ip_src_int&#39;</span><span class="p">,</span> <span class="s1">&#39;port_src&#39;</span><span class="p">]]</span>
+<span class="n">is_dns</span> <span class="o">=</span> <span class="n">pcap</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;is_dns&#39;</span><span class="p">]</span>
+
+<span class="n">tsne</span> <span class="o">=</span> <span class="n">TSNE</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">tsne</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">pdf</span><span class="p">)</span>
+
+<span class="n">dns_colors</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">factorize</span><span class="p">(</span><span class="n">is_dns</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">flow_colors</span> <span class="o">=</span> <span class="n">pdf</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="nb">hash</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">row</span><span class="p">)),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+
+<span class="n">fig</span><span class="p">,</span> <span class="p">(</span><span class="n">ax1</span><span class="p">,</span> <span class="n">ax2</span><span class="p">)</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">result</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">result</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span><span class="n">flow_colors</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;tab20&quot;</span><span class="p">)</span>
+<span class="n">ax2</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">result</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">result</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span><span class="n">dns_colors</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">ListedColormap</span><span class="p">([</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="s1">&#39;red&#39;</span><span class="p">]))</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;TSNE Result: Packets Colored by Flow&quot;</span><span class="p">)</span>
+<span class="n">ax2</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;TSNE Result: DNS Packets in Red&quot;</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">labelsize</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">ax2</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">labelsize</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">&quot;unsupervised_tsne.png&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;_pcap2pandas()&#39;</span> <span class="n">starts</span> <span class="n">at</span> <span class="mi">2023</span><span class="o">-</span><span class="mi">05</span><span class="o">-</span><span class="mi">04</span> <span class="mi">23</span><span class="p">:</span><span class="mi">53</span><span class="p">:</span><span class="mi">14</span>
+<span class="s1">&#39;_pcap2pandas()&#39;</span> <span class="n">ends</span> <span class="n">at</span> <span class="mi">2023</span><span class="o">-</span><span class="mi">05</span><span class="o">-</span><span class="mi">04</span> <span class="mi">23</span><span class="p">:</span><span class="mi">53</span><span class="p">:</span><span class="mi">25</span> <span class="ow">and</span> <span class="n">takes</span> <span class="mf">0.1825</span> <span class="n">mins</span><span class="o">.</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">Library</span><span class="o">/</span><span class="n">Frameworks</span><span class="o">/</span><span class="n">Python</span><span class="o">.</span><span class="n">framework</span><span class="o">/</span><span class="n">Versions</span><span class="o">/</span><span class="mf">3.10</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="mf">.10</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">sklearn</span><span class="o">/</span><span class="n">manifold</span><span class="o">/</span><span class="n">_t_sne</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">800</span><span class="p">:</span> <span class="ne">FutureWarning</span><span class="p">:</span> <span class="n">The</span> <span class="n">default</span> <span class="n">initialization</span> <span class="ow">in</span> <span class="n">TSNE</span> <span class="n">will</span> <span class="n">change</span> <span class="kn">from</span> <span class="s1">&#39;random&#39;</span> <span class="n">to</span> <span class="s1">&#39;pca&#39;</span> <span class="ow">in</span> <span class="mf">1.2</span><span class="o">.</span>
+  <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+<span class="o">/</span><span class="n">Library</span><span class="o">/</span><span class="n">Frameworks</span><span class="o">/</span><span class="n">Python</span><span class="o">.</span><span class="n">framework</span><span class="o">/</span><span class="n">Versions</span><span class="o">/</span><span class="mf">3.10</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="mf">.10</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">sklearn</span><span class="o">/</span><span class="n">manifold</span><span class="o">/</span><span class="n">_t_sne</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">810</span><span class="p">:</span> <span class="ne">FutureWarning</span><span class="p">:</span> <span class="n">The</span> <span class="n">default</span> <span class="n">learning</span> <span class="n">rate</span> <span class="ow">in</span> <span class="n">TSNE</span> <span class="n">will</span> <span class="n">change</span> <span class="kn">from</span> <span class="mf">200.0</span> <span class="n">to</span> <span class="s1">&#39;auto&#39;</span> <span class="ow">in</span> <span class="mf">1.2</span><span class="o">.</span>
+  <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+</pre></div>
+</div>
+<img alt="../images/unsupervised_tsne.png" class="align-center" src="../images/unsupervised_tsne.png" />
+</div>
 </div>
 <div class="section" id="autoencoders">
 <h3>Autoencoders<a class="headerlink" href="#autoencoders" title="Permalink to this headline">¶</a></h3>
@@ -183,12 +212,18 @@ The algorithm involves three main steps:</p>
 <p>An autoencoder network has input and output layers that are the same size as the number of features in the data.
 The intermediate layers of the network have an “hourglass” shape, with decreasing numbers of nodes from the input layer to a central “encoding” layer and increasing numbers of nodes from the encoding layer to the output layer.
 This reduction in layer size forces information loss as each example passes through the autoencoder, since the encoding layer cannot retain all features of the input data.</p>
-<p>Autoencoders are trained to reproduce their input as closely as possible in their output. In other words, the sama data is used as both the training examples and the training labels. This causes the network to find parameters such that the encoding layer retains the most important information about the input features and serves as the target low-dimensional representation. The size of the encoding layer is selected beforehand to match the target dimensionality of the dimensionality reduction process.</p>
+<p>TODO: IMAGE OF AUTOENCODER</p>
+<p>Autoencoders are trained to reproduce input examples as closely as possible in their output. In other words, the sama data is used as both the training examples and the training labels. This causes the network to find parameters such that the encoding layer retains the most important information about the input features and serves as the target low-dimensional representation. The size of the encoding layer is selected beforehand to match the target dimensionality of the dimensionality reduction process.</p>
+<p>Unlike PCA and T-SNE autoencoders can discover highly nonlinear relationships between features in the original dataset and use these relationships to find good lower-dimensionality representations. Also unlike PCA and T-SNE, autoencoders are parametric, meaning that they require training. In practice, autoencoders are more frequenly used to reduce the number of features to make training computationally feasible rather than to produce a 2D or 3D version of the data for visualization.</p>
+<p>TODO: AUTOENCODER EXAMPLE</p>
 </div>
 </div>
 <div class="section" id="clustering">
 <h2>Clustering<a class="headerlink" href="#clustering" title="Permalink to this headline">¶</a></h2>
 <p>Clustering algorithms group data points by similarity, identifying latent structure in the dataset.</p>
+<p>Clustering algorithms are extremely useful for data exploration, as understanding a data set often requires understanding similarities among groups of data points. For example, it might be valuable to know that a dataset of network flows can be naturally grouped into two clusters: “elephant” flows consuming lots of bandwidth and “mouse” flows consuming relatively little bandwidth. Similarly, it might be valuable to learn that a dataset of packets naturally clusters into 3 groups: network configuration packets, user application packets, and malicious packets. If the clusters found by a clustering algorithm do not match your understanding of the data, it may be that there is something more interesting going on in the data set that motivates further exploration.</p>
+<p>Clustering algorithms are also useful for <em>anomaly detection</em>, a machine learning task that involves identifying anomalous data points that are dissimilar to most other points in the data set. This is pratically relevant for security tasks, as anomalous packets or flows might be due to novel network attacks.</p>
+<p>There are many clustering algorithms, far more than we can discuss in this book, so we focus on three commonly used algorithms that can be readily applied to network data.</p>
 <div class="sidebar">
 <p class="sidebar-title">Activity: Clustering</p>
 <p>The <a class="reference internal" href="appendix.html#appendix-clustering"><span class="std std-ref">Appendix</span></a> provides an activity to apply
@@ -207,17 +242,19 @@ both benign and attack traffic.</p>
 <li><p>Repeat steps 3 and 4 until the centroid locations stop changing.</p></li>
 </ol>
 </div></blockquote>
-<p>This algorithm is fast and always converges but has some drawbacks.
-Most importantly, you have to choose the number of clusters. This can be straightfoward if you have existing knowledge about the structure of the dataset. For example, if you have a network traffic dataset that you want to cluster into TCP and UDP traffic, you might choose K=2 and then check whether the clusters match protocols</p>
-<p>If you don’t know the number of clusters, you can run K-means with increasing cluster numbers to see which produces the cleanest clustering, but you might be better off choosing a different algorithm.
-K-means also performs poorly for non-spherical clusters or clusters of varying density. If your data falls into either of these categories, you might also be better off choosing a different algorithm.</p>
+<p>This algorithm is fast and always converges. However, it has drawbacks that can limit its applicability.
+Most importantly, you have to choose the number of clusters. This can be straightfoward if you have existing knowledge about the structure of the dataset. For example, if you have a dataset of IP packets that you want to cluster into TCP and UDP traffic, you could choose K=2 and then check whether the discovered clusters actually match these protocols.</p>
+<p>If you don’t know the number of clusters, you can run K-means with increasing cluster numbers to see which produces the cleanest clustering, but you might be better off choosing a different algorithm that does not require an <em>a priori</em> choice of the number of clusters.
+K-means also performs poorly for non-spherical clusters or clusters of varying density (where some clusters have points that are much more similar to each other than the points in other clusters). If your data falls into either of these categories, you might also be better off choosing a different algorithm.</p>
+<p>TODO: EXAMPLE OF K-MEANS</p>
 </div>
 <div class="section" id="gaussian-mixture-models">
 <h3>Gaussian Mixture Models<a class="headerlink" href="#gaussian-mixture-models" title="Permalink to this headline">¶</a></h3>
-<p>This alternative to K-means defines clusters not just by their center point (centroid) but also by their variance.
-This assumes that the underlying clusters in the data follow normal distributions, with each cluster having a mean and variance. While this may not be strictly true for some data, it is often a good approximation due to the central limit theorem.</p>
-<p>The process of applying Gaussain mixture models (GMM) is fairly similar to K-means. You must choose a number of centroids (or repeat the model iteratively with different number of centroids), and the model will find the centroid means and variances that best fit your data.</p>
-<p>A Gaussian Mixture Model is also a generative model, because you can draw new data points from the underlying distributions. This allows you to create new data with similar characteristics as your training data, useful for many applications (e.g. training set augmentation).</p>
+<p>This alternative to K-means defines clusters not just by their center point (centroid) but also by the variance of the distribution of points in each cluster.
+This assumes that the locations of points in each cluster clusters follow a normal (Gaussian) distribution. While this may not be strictly true for some data sets, it is often a good approximation for large data sets due to the central limit theorem.</p>
+<p>The process of applying Gaussain mixture models (GMM) is fairly similar to K-means. You must choose a number of clusters (or repeat the model iteratively with different number of clusters), and the model will find a normal distribution for each cluster with a mean and variance that best fits the data in the cluster.</p>
+<p>Gaussian mixture model can also be used to generate new data by drawing new data points from the normal distributions corresponding to each cluster. This allows you to create new data with similar characteristics as your training data, which can be useful for augmenting a data set to provide enough data for training a supervised algorithm.</p>
+<p>TODO: EXAMPLE OF GMM</p>
 </div>
 <div class="section" id="density-based-spatial-clustering-of-applications-with-noise-dbscan">
 <h3>Density-Based Spatial Clustering of Applications with Noise (DBSCAN)<a class="headerlink" href="#density-based-spatial-clustering-of-applications-with-noise-dbscan" title="Permalink to this headline">¶</a></h3>
@@ -227,18 +264,22 @@ High-density groups of points (groups with relatively many points a relatively s
 DBSCAN is frequently used for anomaly detection, because it can automatically identify points that don’t fit in to any existing clusters.
 This is very useful in networks problems, such as malicious traffic detection, where identifying unusual examples is valuable.</p>
 <p>DBSCAN has some disadvantages due to its dependency on data density. If you have some clusters that are tightly packed and other clusters that are more spread out, DBSCAN may be unable to achieve the desired clustering. DBSCAN can also struggle with high dimensional data because the ‘’curse of dimensionality’’ means that all data points appear far apart in high dimensional space.</p>
+<p>TODO: EXAMPLE OF DBSCAN</p>
 </div>
 <div class="section" id="hierarchical-clustering">
 <h3>Hierarchical Clustering<a class="headerlink" href="#hierarchical-clustering" title="Permalink to this headline">¶</a></h3>
-<p>Hierarchical clustering approaches contruct a ‘’dendrogram,’’ or tree diagram, that illustrates how examples can be progressively grouped by an arbitrary similarity metric (e.g. Euclidean distance). This provides a really nice visual representation of your dataset including which points are more closely related than others.</p>
-<p>If you want to create a specific clustering from a hierarchical dendrogram, you can divide the tree at a specific level of similarity, and all examples grouped at that position become clusters.</p>
+<p>Hierarchical clustering algorithms contruct a ‘’dendrogram,’’ or tree diagram, that illustrates how examples can be progressively grouped based on similarity. This provides a nice visualization of your dataset indicating which points are more closely related than others. You can choose what similarity metric is used to construct the dendrogram (Euclidean distance is a common choice) based on how you want to interpret data point similarity. For example, you might want to hierarchically cluster a packet capture dataset based on the proximity of packets in the IP address space. In this case, you could choose the Hamming distance metric to measure the number of bit positions in which IP addresses differ.</p>
+<p>If you want to create a specific set of clusters from a hierarchical dendrogram, you can divide the tree at a specific similarity threshold. All data points at least that similar to each other are then part of the same cluster.</p>
+<p>TODO: EXAMPLE OF HIERARCHICAL CLUSTERING</p>
 </div>
 </div>
 <div class="section" id="semi-supervised-learning">
 <h2>Semi-Supervised Learning<a class="headerlink" href="#semi-supervised-learning" title="Permalink to this headline">¶</a></h2>
-<p>Semi-supervised learning leverages unsupervised learning to speed up the process of providing ground-truth labels for eventual supervised ML. In nearly all fields of ML, manual labeling is tedious. This is especially true for networks. The idea behind semi-supervised learning is that you combine a small number of manual labels with a clustering algorithm to produce a fully labeled training dataset.</p>
-<p>You start by using a clustering algorithm to group the unlabeled training data. You then manually label a few randomly selected points from each cluster and propagate the most frequent manual label in each cluster to the other points in the cluster. This gives you a fully labeled data set even though you only had to manually label a few points.</p>
-<p>Ideally, the clustering algorithm produces clusters in which all points are from the same class, but in practice, some clusters may have examples from multiple classes. You can perform semi-supervised learning recursively to address this issue. For example, if one cluster has points with several disparate manual labels, you can re-run the clustering algorithm on just this cluster, identifying sub-clusters that may correspond to a single class.</p>
+<p>Semi-supervised learning leverages unsupervised learning to speed up the process of identifying labels for a supervised model. In nearly all fields of ML, manual labeling is tedious. This is especially true for network data. Imagine going through a packet capture dataset to manually apply a label to every individual packet.</p>
+<p>Semi-supervised learning allows you to combine a relatively small number of manual labels with a clustering algorithm to produce a fully labeled dataset.</p>
+<p>Semi-supervised starts by applying a clustering algorithm to group the unlabeled training data. You then manually label a few randomly selected points from each cluster and propagate the most frequent manual label in each cluster to the other points in the cluster. This gives you a fully labeled data set even though you only had to manually label a few data points.</p>
+<p>Ideally, the clustering algorithm produces clusters in which all points are from the same class. In practice, some clusters may have examples from multiple classes. You can perform semi-supervised learning recursively to address this issue. For example, if some clusters have points from different classes, you can re-run the clustering algorithm on these clusters individually to identify sub-clusters corresponding to single classes.</p>
+<p>TODO: EXAMPLE OF SEMI-SUPERVISED LEARNING</p>
 </div>
 </div>
 
@@ -247,7 +288,7 @@ This is very useful in networks problems, such as malicious traffic detection, w
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="supervised.html" class="btn btn-neutral float-left" title="Chapter 5: Supervised Learning" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="automation.html" class="btn btn-neutral float-right" title="Chapter 7: Deployment Considarations" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="llm.html" class="btn btn-neutral float-right" title="Chapter 7: Large Language Models" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

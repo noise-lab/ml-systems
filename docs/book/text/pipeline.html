@@ -30,7 +30,7 @@
     <script src="../static/js/theme.js"></script>
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Chapter 5: Supervised Learning" href="supervised.html" />
-    <link rel="prev" title="Chapter 3: Data Acquisition" href="measurement.html" /> 
+    <link rel="prev" title="Chapter 3: Network Data" href="measurement.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -59,13 +59,20 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="intro.html">Chapter 1:  Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="motivation.html">Chapter 2: Motivating Problems</a></li>
-<li class="toctree-l1"><a class="reference internal" href="measurement.html">Chapter 3: Data Acquisition</a></li>
+<li class="toctree-l1"><a class="reference internal" href="measurement.html">Chapter 3: Network Data</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Chapter 4: Machine Learning Pipeline</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#data-engineering">Data Engineering</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#data-acquisition">Data Acquisition</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#data-preparation">Data Preparation</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#features-and-labels">Features and Labels</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#labels-types-of-prediction-problems">Labels: Types of Prediction Problems</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cleaning-data">Cleaning Data</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#understanding-the-data">Understanding the Data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dealing-with-outliers">Dealing with Outliers</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#labeling-data">Labeling Data</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#why-data-needs-labels">Why Data Needs Labels</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#labeling-for-prediction-problems">Labeling for Prediction Problems</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#dividing-data">Dividing Data</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#training-and-testing-sets">Training and Testing Sets</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#validation-sets">Validation Sets</a></li>
 </ul>
@@ -85,8 +92,9 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="supervised.html">Chapter 5: Supervised Learning</a></li>
 <li class="toctree-l1"><a class="reference internal" href="unsupervised.html">Chapter 6: Unsupervised Learning</a></li>
-<li class="toctree-l1"><a class="reference internal" href="automation.html">Chapter 7:  Deployment Considarations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="future.html">Chapter 8:  Looking Ahead</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reinforcement.html">Chapter 7: Reinforcement Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="automation.html">Chapter 8:  Deployment Considarations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="future.html">Chapter 9:  Looking Ahead</a></li>
 <li class="toctree-l1"><a class="reference internal" href="appendix.html">Appendix: Activities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../README.html">About The Book</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../authors.html">About The Authors</a></li>
@@ -111,7 +119,7 @@
             <a href="../_sources/text/pipeline.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
-        <a href="measurement.html" class="btn btn-neutral float-left" title="Chapter 3: Data Acquisition" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="measurement.html" class="btn btn-neutral float-left" title="Chapter 3: Network Data" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="supervised.html" class="btn btn-neutral float-right" title="Chapter 5: Supervised Learning" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
   </div>
   <hr/>
@@ -119,31 +127,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  
-<style>
-/* CSS overrides for sphinx_rtd_theme */
-
-/* 24px margin */
-.nbinput.nblast.container,
-.nboutput.nblast.container {
-    margin-bottom: 19px;  /* padding has already 5px */
-}
-
-/* ... except between code cells! */
-.nblast.container + .nbinput.container {
-    margin-top: -19px;
-}
-
-.admonition > p:before {
-    margin-right: 4px;  /* make room for the exclamation icon */
-}
-
-/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
-.math {
-    text-align: unset;
-}
-</style>
-<div class="section" id="chapter-4-machine-learning-pipeline">
+  <div class="section" id="chapter-4-machine-learning-pipeline">
 <h1>Chapter 4: Machine Learning Pipeline<a class="headerlink" href="#chapter-4-machine-learning-pipeline" title="Permalink to this headline">¶</a></h1>
 <p>Now that we have a good understanding of how to gather different types of
 network data through measurement, we can begin to think about how to transform
@@ -158,15 +142,31 @@ the following steps:</p>
 <li><p>Model Evaluation</p></li>
 </ul>
 </div></blockquote>
-<p>We often refer to this broader process as the <em>machine learning pipeline</em>; the
-last chapter, we discussed the mechanics of the first part of this pipeline,
-data acquisition, in the context of network data—that is, different types of
+<p>We often refer to this process as the <em>machine learning pipeline</em>; the last
+chapter, we discussed the mechanics of the first part of this pipeline, data
+acquisition, in the context of network data—that is, different types of
 network measurement. In this chapter, we will discuss the pipeline as a whole.
 Generally, the machine learning pipeline applies to models that learn from
 labeled examples (<em>supervised learning</em>) as well as from data that does not
 have corresponding labels (<em>unsupervised learning</em>). We will focus initially
 in this chapter on how the pipeline applies to supervised learning, before
 turning to how it can be applied in the unsupervised context.</p>
+<div class="figure align-center" id="id1">
+<span id="fig-ml-pipeline"></span><a class="reference internal image-reference" href="../images/ml-pipeline.png"><img alt="../images/ml-pipeline.png" src="../images/ml-pipeline.png" style="width: 800px;" /></a>
+<p class="caption"><span class="caption-number">Figure 3. </span><span class="caption-text">Machine learning pipeline.</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<p><a class="reference internal" href="#fig-ml-pipeline"><span class="std std-numref">Figure 3</span></a> illustrates the machine learning
+pipeline.  Data engineering consists of taking data input and generating a
+representation appropriate for model training, associating labels
+with the examples in the data, and splitting the data into training and
+validation sets.  Model training consists of learning a model from the
+training data.  Model evaluation consists of evaluating the model on the
+validation data and, if necessary, tuning the model to improve its
+performance.  The output of the pipeline is a model that can be used to
+predict labels for new examples.</p>
 <div class="section" id="data-engineering">
 <h2>Data Engineering<a class="headerlink" href="#data-engineering" title="Permalink to this headline">¶</a></h2>
 <p>The first step in training any machine learning model is gathering the data
@@ -176,116 +176,98 @@ different types of network measurement, as well as how to transform this data
 into features that may be relevant for training machine learning models, such
 as flows. In this chapter, we will take that process a step further, applying
 those techniques to create a labeled dataset for model input.</p>
-<div class="section" id="data-acquisition">
-<h3>Data Acquisition<a class="headerlink" href="#data-acquisition" title="Permalink to this headline">¶</a></h3>
-<p>All machine learning pipelines begin with the collection of relevant data.
-Data can come from many different sources and can vary wildly in complexity.
-Most importantly, the data you gather, and how you represent it through
-collections of features, should accurately represent the underlying phenomena
-you are trying to model.  Machine learning algorithms learn primarily through
-inductive reasoning, i.e., they learn general rules by observing specific
-instances.  If the specific instances in your data are not adequately
-representative of the general phenomenon you are trying to model, the ML
-algorithm will not be able to learn the right general rules and any
-predictions based on the model are less likely to be correct.  Thus, decisions
-about what data to acquire and how to acquire it can often be critical to
-whether a model is accurate in practice, as well as whether the model is
-efficient and robust enough to be deployed in practice.</p>
-<p>In this respect, <em>domain knowledge</em> is particularly important in the context
-of machine learning. For example, knowing how patterns of malicious web
-requests as part of a denial of service attack or vulnerability scan would
-exhibit different characteristics from legitimate web requests is essential
-for thinking about the types of features that may ultimately be good for the
-models you ultimately train. More generally, when designing machine learning
-pipelines for specific tasks, domain knowledge about the problem you are
-trying to model can increase the likelihood that the model you design could
-work well in practice.</p>
-<p>When beginning a ML pipeline, it is common to ask, “how much data is necessary
-to achieve high-quality results?” Unfortunately, answering this question is
-not straightforward, as it depends the phenomenon you are trying to model, the
-machine learning algorithm you select, and the quality of the data you are
-able to gather. Conceptually, you will need to collect enough data such that
-all of the relevant variability in the underlying phenomenon is represented in
+<p>In the context of machine learning, a <em>dataset</em> is a collection of examples
+that are used to train a model.  Each example is a collection of features
+that are used to predict a label.  For example, in the context of network
+data, a dataset might consist of a collection of flows, where each flow is
+represented by a collection of features, and the label is the type of
+application that generated the flow.</p>
+<p>The process of preparing a dataset for input to a model (i.e., for training)
+is sometimes called <em>data engineering</em>. This process consists of a number of
+steps, including cleaning the data, associating labels with the examples, and
+splitting the data into training, test, and validation sets.  In this
+section, we will discuss each of these steps.</p>
+<div class="section" id="cleaning-data">
+<h3>Cleaning Data<a class="headerlink" href="#cleaning-data" title="Permalink to this headline">¶</a></h3>
+<p>Machine learning models are only as good as the data that we provide them with
+for training. If the data itself contains errors, including incorrect or
+missing values, the resulting trained models will reflect those errors.
+Understanding the quality of data gathered from network measurements, such as
+those discussed in the last chapter, is an important part of the data cleaning
+process and is a relatively well-understood practice within the context of
+Internet measurement. Vern Paxson’s “Strategies for Sound Internet
+Measurement” provides a more extensive introduction to the topic of
+understanding and cleaning data gathered from network measurements.  Here, we
+offer a few brief pointers on cleaning network data, inspired by some of the
+insights from Paxson’s paper, with additional insights as they pertain to
+machine learning.</p>
+<div class="section" id="understanding-the-data">
+<h4>Understanding the Data<a class="headerlink" href="#understanding-the-data" title="Permalink to this headline">¶</a></h4>
+<p>An important step towards using data for machine learning is understanding the
+nature and characteristics of the data. This step is important for a number of
+reasons. First, it helps us understand the quality of the data, including
+critical aspects such as the size of the dataset, where the data was gathered,
+and so forth. Second, a deeper exploration can help us understand the
+characteristics of the data that may ultimately lead us to defining features
+that improve classification accuracy.</p>
+<p>Before exploring any dataset in detail, it is helpful to understand basic
+characteristics concerning its size, and the nature of the data. Let’s
+continue with the simple example from last chapter, where we loaded a packet
+trace into a Pandas dataframe and generated features.</p>
+<p>Before we proceed with feature generation or machine learning, however, we
+should understand some basics from out dataset, including, for example, how
+many packets are in the dataset, the start and end times of the dataset,
+minimum and maximum packet lengths and so forth. We can use the <code class="docutils literal notranslate"><span class="pre">describe</span></code>
+method of the Pandas dataframe to get a summary of the dataset. The example
+below shows an example of the output of the <code class="docutils literal notranslate"><span class="pre">describe</span></code> method for the
+dataframe from the last chapter to enable some sanity checking of
 the data.</p>
-<p>From the perspective of model accuracy, identifying features of the traffic
-that are likely to result in accurate predictions often requires knowledge of
-the underlying phenomena; from the perspective of practical deployment,
-considerations for data acquisition can also go beyond accuracy, because some
-features are more costly or cumbersome than others. For example, packet traces
-may contain significantly more information that statistical summaries of
-network traffic, yet packet traces are orders of magnitude larger, resulting
-in higher capture overhead, larger memory and storage costs, longer model
-training time, and so forth. On the other hand, summary statistics are more
-efficient to collect and store, and could reduce training time, yet they may
-obscure certain features or characteristics which could ultimately degrade
-model accuracy. Determining which feature subsets strike the appropriate
-balance between model accuracy and systems-related modeling costs is a general
-practical challenge, and the best ways to optimize for this tradeoff remains
-an open problem.</p>
-</div>
-<div class="section" id="data-preparation">
-<h3>Data Preparation<a class="headerlink" href="#data-preparation" title="Permalink to this headline">¶</a></h3>
-<p>After data acquisition, the next step is <em>preparing</em> the data for eventual
-input to models. This process of <em>data preparation</em> involves organizing the
-data into observations, or <em>examples</em>; generating <em>features</em> and (in the case
-of supervised learning) a <em>label</em> for each observation; and preparing the
-dataset by dividing the data into training and test sets (typically with an
-additional sub-division of the training set to tune model parameters). In the
-context of networking, a example might be an individual packet, an entire
-traffic flow (with associated summary statistics), information about a
-connection or transaction, and so forth. In the last chapter, we briefly saw
-the process by which raw packet traces can be performed into certain features,
-such as flows. In this chapter, we will see how to take this process a step
-further, by transforming the data into a labeled dataset for input to a
-machine learning model.</p>
-<div class="section" id="features-and-labels">
-<h4>Features and Labels<a class="headerlink" href="#features-and-labels" title="Permalink to this headline">¶</a></h4>
-<p>The goal of supervised machine learning is to use labeled data to train a
-model that can the predict correct labels (sometimes referred to as <em>targets</em>
-or target predictions) for data points that the model did not see when it was
-being trained.</p>
-<p>As a human analogue, the process of supervised machine learning is akin
-learning how to solve a general problem by seeing the correct answer to
-several specific instances and identifying patterns that are useful for
-solving any instance of the task. For example, when driving, you know that the
-correct action when seeing a stop light is to bring your car to a halt, even
-though you may have never seen that specific stoplight at that instance ever
-before. In the context of networking, then, many such examples exist. A
-machine learning model might automatically recognize an attack, or traffic
-from a specific application, even though the model has never before seen that
-specific traffic trace.</p>
-<p>Any use of supervised learning to solve a problem must thus necessarily
-involve the collection of <em>labeled training data</em>. Training data is usually
-divided into <em>training examples</em> and <em>training labels</em>. The training examples
-are observations or data points. The training labels consist of the <em>correct</em>
-categories or values that a trained machine learning algorithm should assign
-to each of the training examples.  Many supervised machine learning problems
-represent the training examples as a two-dimensional matrix. Each row of the
-matrix contains a single <em>example</em>.  Each column of the matrix corresponds to
-a single <em>feature</em> or <em>attribute</em>.  This means that each example (row) is a
-vector of features (columns). This definition is quite flexible and works for
-many networks problems at different scales.</p>
-<p>For example, each example might correspond to an IPFIX flow record, with
-features corresponding to the number of packets in the flow, the start and end
-times of the flow, the source and destination IP addresses, etc. In a
-different problem, each example might correspond to a single user, with
-features representing average throughput and latency to their home router in
-1-hour intervals. This flexibility is a boon, because it allows developers of
-machine learning algorithms to work with a consistent mathematical
-formulation—a matrix (or table) of examples and features. In this book, we
-will generally refer to a matrix of training examples as <strong>X</strong>. Sometimes in
-code examples we will also use <strong>features</strong> to refer to the matrix of training
-examples.</p>
+<p>The output from this exercise is a helpful sanity check. The “shape” command
+shows us how many rows and columns that we have in our data (specifically, the
+number of rows, corresponding to the number of packets; and the number of
+columns, corresponding to the number of features). The <code class="docutils literal notranslate"><span class="pre">describe</span></code> command
+shows us some basic statistics about the data, including the minimum and
+maximum values for each feature, as well as the mean and standard deviation
+for each feature.  The <code class="docutils literal notranslate"><span class="pre">head</span></code> command shows us the first few rows of the
+dataset; the <code class="docutils literal notranslate"><span class="pre">tail</span></code> command shows us the last few rows of the dataset; and the
+<code class="docutils literal notranslate"><span class="pre">info</span></code> command shows us the data types of each column, all of which can be
+helpful for sanity checking the data.</p>
+<p>For example, we can see the minimum and maximum values for the length of each
+packet: 60 bytes and 1514 bytes, respectively. These values should make sense,
+given our domain knowledge about network traffic and packet maximum
+transmission unit (MTU). Similarly, we see that the minimum port number is
+53 (a well-known service port for DNS), and the maximum port is less than
+65536 (the maximum allowable port number, given that the field is only 16
+bites).</p>
+<div class="admonition-extracting-features-from-a-packet-capture-with-netml admonition" id="fig-understanding-data">
+<p class="admonition-title">Extracting features from a packet capture with <cite>netml</cite>.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">netml.pparser.parser</span> <span class="kn">import</span> <span class="n">PCAP</span>
 
-<span class="n">pcap</span> <span class="o">=</span> <span class="n">PCAP</span><span class="p">(</span><span class="s1">&#39;data/demo.pcap&#39;</span><span class="p">)</span>
+<span class="n">pcap</span> <span class="o">=</span> <span class="n">PCAP</span><span class="p">(</span><span class="s1">&#39;../examples/notebooks/data/http.pcap&#39;</span><span class="p">)</span>
 <span class="n">pcap</span><span class="o">.</span><span class="n">pcap2pandas</span><span class="p">()</span>
 <span class="n">pdf</span> <span class="o">=</span> <span class="n">pcap</span><span class="o">.</span><span class="n">df</span>
-<span class="n">pdf</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">pdf</span> <span class="o">=</span> <span class="n">pdf</span><span class="p">[[</span><span class="s1">&#39;datetime&#39;</span><span class="p">,</span> <span class="s1">&#39;ip_src&#39;</span><span class="p">,</span> <span class="s1">&#39;port_src&#39;</span><span class="p">,</span> <span class="s1">&#39;ip_dst&#39;</span><span class="p">,</span> <span class="s1">&#39;port_dst&#39;</span><span class="p">,</span> <span class="s1">&#39;length&#39;</span><span class="p">]]</span>
+
+<span class="c1"># Example sanity checking of data.</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">Dimension of data: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">pdf</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+
+<span class="c1"># Print minimum and maximum times.</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">Min time: </span><span class="si">{}</span><span class="se">\n</span><span class="s2">Max time: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">pdf</span><span class="p">[</span><span class="s1">&#39;datetime&#39;</span><span class="p">]),</span> <span class="nb">max</span><span class="p">(</span><span class="n">pdf</span><span class="p">[</span><span class="s1">&#39;datetime&#39;</span><span class="p">])))</span>
+
+<span class="c1"># Describe the dataframe.</span>
+<span class="n">pdf</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;_pcap2pandas()&#39;</span> <span class="n">starts</span> <span class="n">at</span> <span class="mi">2023</span><span class="o">-</span><span class="mi">03</span><span class="o">-</span><span class="mi">28</span> <span class="mi">14</span><span class="p">:</span><span class="mi">32</span><span class="p">:</span><span class="mi">37</span>
-<span class="s1">&#39;_pcap2pandas()&#39;</span> <span class="n">ends</span> <span class="n">at</span> <span class="mi">2023</span><span class="o">-</span><span class="mi">03</span><span class="o">-</span><span class="mi">28</span> <span class="mi">14</span><span class="p">:</span><span class="mi">32</span><span class="p">:</span><span class="mi">37</span> <span class="ow">and</span> <span class="n">takes</span> <span class="mf">0.0009</span> <span class="n">mins</span><span class="o">.</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>WARNING: No IPv4 address found on anpi0 !
+WARNING: No IPv4 address found on anpi1 !
+WARNING: more No IPv4 address found on en3 !
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Dimension</span> <span class="n">of</span> <span class="n">data</span><span class="p">:</span> <span class="p">(</span><span class="mi">24798</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
+
+
+<span class="n">Min</span> <span class="n">time</span><span class="p">:</span> <span class="mi">2022</span><span class="o">-</span><span class="mi">09</span><span class="o">-</span><span class="mi">29</span> <span class="mi">20</span><span class="p">:</span><span class="mi">24</span><span class="p">:</span><span class="mi">42</span>
+<span class="n">Max</span> <span class="n">time</span><span class="p">:</span> <span class="mi">2022</span><span class="o">-</span><span class="mi">09</span><span class="o">-</span><span class="mi">29</span> <span class="mi">20</span><span class="p">:</span><span class="mi">25</span><span class="p">:</span><span class="mi">30</span>
 </pre></div>
 </div>
 <div>
@@ -306,240 +288,137 @@ examples.</p>
   <thead>
     <tr style="text-align: right;">
       <th></th>
-      <th>datetime</th>
-      <th>dns_query</th>
-      <th>dns_resp</th>
-      <th>ip_dst</th>
-      <th>ip_dst_int</th>
-      <th>ip_src</th>
-      <th>ip_src_int</th>
-      <th>is_dns</th>
-      <th>length</th>
-      <th>mac_dst</th>
-      <th>mac_dst_int</th>
-      <th>mac_src</th>
-      <th>mac_src_int</th>
-      <th>port_dst</th>
       <th>port_src</th>
-      <th>protocol</th>
-      <th>time</th>
-      <th>time_normed</th>
+      <th>port_dst</th>
+      <th>length</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <th>0</th>
-      <td>2023-03-28 14:32:18</td>
-      <td>None</td>
-      <td>None</td>
-      <td>3.215.27.40</td>
-      <td>64428840</td>
-      <td>10.150.81.73</td>
-      <td>177623369</td>
-      <td>False</td>
-      <td>120</td>
-      <td>00:00:5e:00:01:0a</td>
-      <td>1577058570</td>
-      <td>a0:78:17:a5:92:65</td>
-      <td>176437653246565</td>
-      <td>443</td>
-      <td>50966</td>
-      <td>TCP</td>
-      <td>1680031938.954769</td>
-      <td>0.000000</td>
+      <th>count</th>
+      <td>24798.000000</td>
+      <td>24798.000000</td>
+      <td>24798.000000</td>
     </tr>
     <tr>
-      <th>1</th>
-      <td>2023-03-28 14:32:18</td>
-      <td>None</td>
-      <td>None</td>
-      <td>3.215.27.40</td>
-      <td>64428840</td>
-      <td>10.150.81.73</td>
-      <td>177623369</td>
-      <td>False</td>
-      <td>120</td>
-      <td>00:00:5e:00:01:0a</td>
-      <td>1577058570</td>
-      <td>a0:78:17:a5:92:65</td>
-      <td>176437653246565</td>
-      <td>443</td>
-      <td>50967</td>
-      <td>TCP</td>
-      <td>1680031938.954848</td>
-      <td>0.000079</td>
+      <th>mean</th>
+      <td>9572.610452</td>
+      <td>51357.588475</td>
+      <td>1176.372611</td>
     </tr>
     <tr>
-      <th>2</th>
-      <td>2023-03-28 14:32:18</td>
-      <td>None</td>
-      <td>None</td>
-      <td>3.215.27.40</td>
-      <td>64428840</td>
-      <td>10.150.81.73</td>
-      <td>177623369</td>
-      <td>False</td>
-      <td>120</td>
-      <td>00:00:5e:00:01:0a</td>
-      <td>1577058570</td>
-      <td>a0:78:17:a5:92:65</td>
-      <td>176437653246565</td>
-      <td>443</td>
-      <td>50968</td>
-      <td>TCP</td>
-      <td>1680031938.954991</td>
-      <td>0.000222</td>
+      <th>std</th>
+      <td>21482.363472</td>
+      <td>21937.801421</td>
+      <td>580.866842</td>
     </tr>
     <tr>
-      <th>3</th>
-      <td>2023-03-28 14:32:18</td>
-      <td>None</td>
-      <td>None</td>
-      <td>3.215.27.40</td>
-      <td>64428840</td>
-      <td>10.150.81.73</td>
-      <td>177623369</td>
-      <td>False</td>
-      <td>120</td>
-      <td>00:00:5e:00:01:0a</td>
-      <td>1577058570</td>
-      <td>a0:78:17:a5:92:65</td>
-      <td>176437653246565</td>
-      <td>443</td>
-      <td>50969</td>
-      <td>TCP</td>
-      <td>1680031938.955147</td>
-      <td>0.000378</td>
+      <th>min</th>
+      <td>53.000000</td>
+      <td>53.000000</td>
+      <td>60.000000</td>
     </tr>
     <tr>
-      <th>4</th>
-      <td>2023-03-28 14:32:18</td>
-      <td>None</td>
-      <td>None</td>
-      <td>3.215.27.40</td>
-      <td>64428840</td>
-      <td>10.150.81.73</td>
-      <td>177623369</td>
-      <td>False</td>
-      <td>120</td>
-      <td>00:00:5e:00:01:0a</td>
-      <td>1577058570</td>
-      <td>a0:78:17:a5:92:65</td>
-      <td>176437653246565</td>
-      <td>443</td>
-      <td>50970</td>
-      <td>TCP</td>
-      <td>1680031938.955261</td>
-      <td>0.000492</td>
+      <th>25%</th>
+      <td>443.000000</td>
+      <td>60895.000000</td>
+      <td>1292.000000</td>
     </tr>
     <tr>
-      <th>5</th>
-      <td>2023-03-28 14:32:18</td>
-      <td>None</td>
-      <td>None</td>
-      <td>3.215.27.40</td>
-      <td>64428840</td>
-      <td>10.150.81.73</td>
-      <td>177623369</td>
-      <td>False</td>
-      <td>120</td>
-      <td>00:00:5e:00:01:0a</td>
-      <td>1577058570</td>
-      <td>a0:78:17:a5:92:65</td>
-      <td>176437653246565</td>
-      <td>443</td>
-      <td>50971</td>
-      <td>TCP</td>
-      <td>1680031938.955426</td>
-      <td>0.000657</td>
+      <th>50%</th>
+      <td>443.000000</td>
+      <td>60964.000000</td>
+      <td>1494.000000</td>
     </tr>
     <tr>
-      <th>6</th>
-      <td>2023-03-28 14:32:18</td>
-      <td>None</td>
-      <td>None</td>
-      <td>3.215.27.40</td>
-      <td>64428840</td>
-      <td>10.150.81.73</td>
-      <td>177623369</td>
-      <td>False</td>
-      <td>120</td>
-      <td>00:00:5e:00:01:0a</td>
-      <td>1577058570</td>
-      <td>a0:78:17:a5:92:65</td>
-      <td>176437653246565</td>
-      <td>443</td>
-      <td>50972</td>
-      <td>TCP</td>
-      <td>1680031938.955595</td>
-      <td>0.000826</td>
+      <th>75%</th>
+      <td>443.000000</td>
+      <td>60988.000000</td>
+      <td>1510.000000</td>
     </tr>
     <tr>
-      <th>7</th>
-      <td>2023-03-28 14:32:18</td>
-      <td>None</td>
-      <td>None</td>
-      <td>3.215.27.40</td>
-      <td>64428840</td>
-      <td>10.150.81.73</td>
-      <td>177623369</td>
-      <td>False</td>
-      <td>120</td>
-      <td>00:00:5e:00:01:0a</td>
-      <td>1577058570</td>
-      <td>a0:78:17:a5:92:65</td>
-      <td>176437653246565</td>
-      <td>443</td>
-      <td>50973</td>
-      <td>TCP</td>
-      <td>1680031938.955703</td>
-      <td>0.000934</td>
-    </tr>
-    <tr>
-      <th>8</th>
-      <td>2023-03-28 14:32:18</td>
-      <td>None</td>
-      <td>None</td>
-      <td>3.215.27.40</td>
-      <td>64428840</td>
-      <td>10.150.81.73</td>
-      <td>177623369</td>
-      <td>False</td>
-      <td>120</td>
-      <td>00:00:5e:00:01:0a</td>
-      <td>1577058570</td>
-      <td>a0:78:17:a5:92:65</td>
-      <td>176437653246565</td>
-      <td>443</td>
-      <td>50974</td>
-      <td>TCP</td>
-      <td>1680031938.955798</td>
-      <td>0.001029</td>
-    </tr>
-    <tr>
-      <th>9</th>
-      <td>2023-03-28 14:32:18</td>
-      <td>None</td>
-      <td>None</td>
-      <td>3.215.27.40</td>
-      <td>64428840</td>
-      <td>10.150.81.73</td>
-      <td>177623369</td>
-      <td>False</td>
-      <td>120</td>
-      <td>00:00:5e:00:01:0a</td>
-      <td>1577058570</td>
-      <td>a0:78:17:a5:92:65</td>
-      <td>176437653246565</td>
-      <td>443</td>
-      <td>50975</td>
-      <td>TCP</td>
-      <td>1680031938.955935</td>
-      <td>0.001166</td>
+      <th>max</th>
+      <td>65429.000000</td>
+      <td>65429.000000</td>
+      <td>1514.000000</td>
     </tr>
   </tbody>
 </table>
-</div><p>In addition to training examples, creating a supervised machine learning model
+</div></div>
+<p>Understanding the distribution of features can also help us understand which
+features may be useful for a particular classification problem. For example,
+in the example above, we might hypothesize that there is a relationship
+between the length of a packet and the type of application that generated the
+packet, or the direction of traffic.  We can test this hypothesis by plotting
+the distribution of packet lengths for each port number, as shown below.</p>
+</div>
+<div class="section" id="dealing-with-outliers">
+<h4>Dealing with Outliers<a class="headerlink" href="#dealing-with-outliers" title="Permalink to this headline">¶</a></h4>
+<p>Inevitably, data gathered from real-world network measurements will often
+contain outliers. Outliers exist in many datasets, and there are many possible
+ways to deal with them. The first step in dealing with outliers is to identify
+them.  One way to identify outliers is to use a box plot, which is a common
+way to visualize the distribution of data.  A box plot is a graphical
+representation of the distribution of data, where the box represents the
+interquartile range of the data, and the whiskers represent the minimum and
+maximum values of the data.  Outliers are typically represented as points
+outside of the whiskers.  The example below shows a box plot of the minimum
+and maximum packet lengths for each flow in the dataset we explored with
+<cite>netml</cite> from the last chapter.</p>
+<div class="admonition-exploring-the-distribution-of-packet-lengths-to-identify-outliers admonition" id="fig-length-boxplot">
+<p class="admonition-title">Exploring the distribution of packet lengths to identify outliers.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="c1"># create a boxplot using matplotlib</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+
+<span class="c1"># Explore the distribution of `netml` features</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">boxplot</span><span class="p">([</span><span class="n">features</span><span class="p">[</span><span class="mi">8</span><span class="p">],</span> <span class="n">features</span><span class="p">[</span><span class="mi">9</span><span class="p">]])</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">([</span><span class="s1">&#39;Minimum Lengths&#39;</span><span class="p">,</span> <span class="s1">&#39;Maximum Lengths&#39;</span><span class="p">])</span>
+
+<span class="c1"># set labels for the plot</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Packet Lengths for Each Flow&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Column Name&#39;</span><span class="p">)</span>
+
+<span class="c1"># show the plot</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;pipeline_length-boxplot.png&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<img alt="../images/pipeline_length-boxplot.png" class="align-center" src="../images/pipeline_length-boxplot.png" />
+</div>
+</div>
+</div>
+<div class="section" id="labeling-data">
+<h3>Labeling Data<a class="headerlink" href="#labeling-data" title="Permalink to this headline">¶</a></h3>
+<p>Supervised machine learning requires training models on labeled data. In this
+section we’ll talk about why data needs labels, as well as the process of
+labelling data for different types of prediction problems.</p>
+<div class="section" id="why-data-needs-labels">
+<h4>Why Data Needs Labels<a class="headerlink" href="#why-data-needs-labels" title="Permalink to this headline">¶</a></h4>
+<p>The goal of supervised machine learning is to use labeled data to train a
+model that can the predict correct labels (sometimes referred to as <em>targets</em>
+or target predictions) for data points that the model did not see when it was
+being trained.</p>
+<p>As a human analogue, supervised machine learning is akin learning how to solve
+a general problem by seeing the “correct” answer to several specific instances
+and identifying more general patterns that are useful for solving any instance
+of the task.  For example, when driving, you know that the correct action when
+seeing a stop light is to bring your car to a halt, even though you may have
+never seen that specific stop light at that instance ever before. In the
+context of networking, then, many such examples exist. A machine learning
+model might automatically recognize an attack or traffic from a specific
+application based on “signature” properties, even though the model has never
+before seen that specific traffic trace.</p>
+<p>Any use of supervised learning to solve a problem must thus necessarily
+involve the collection of <em>labeled training data</em>. Training data typically has
+two aspects: <em>examples</em> (i.e., multi-dimensional data points) and <em>labels</em>
+(i.e., the “correct answers”). The training examples are observations or data
+points. The training labels consist of the “correct” categories or values that
+a trained machine learning algorithm should assign to each of the training
+examples.</p>
+<p>In addition to training examples, creating a supervised machine learning model
 also requires an associated <em>label</em> for each set of feature. For single-label
 learning tasks, there will be a single label for every example in the data
 set. So if you have a matrix of training examples with 20 rows, you will need
@@ -556,9 +435,50 @@ convenience, the vector (or matrix, for multi-label tasks) of training labels
 are usually given the variable name <em>y</em>. The first dimension of the training
 labels is the same cardinality as the first dimension of the training
 examples.</p>
+<p>The example below shows an example of labeling data, based on two loaded
+packet captures. The first trace is a packet capture of benign traffic, and
+the second is a trace of HTTP scans for the log4j vulnerability. The example
+shows the use of <cite>netml</cite> to load the packet captures and extract features and
+the subsequent process of adding a label to each of the resulting data frames,
+before concatenating the two frames and separating into <em>X</em> and <em>y</em>, for
+eventual input to training a machine learning model.</p>
+<div class="admonition-labeling-data-for-supervised-machine-learning admonition" id="fig-labeling">
+<p class="admonition-title">Labeling data for supervised machine learning.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">hpcap</span> <span class="o">=</span> <span class="n">PCAP</span><span class="p">(</span><span class="s1">&#39;../examples/notebooks/data/http.pcap&#39;</span><span class="p">,</span> <span class="n">flow_ptks_thres</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">lpcap</span> <span class="o">=</span> <span class="n">PCAP</span><span class="p">(</span><span class="s1">&#39;../examples/notebooks/data/log4j.pcap&#39;</span><span class="p">,</span> <span class="n">flow_ptks_thres</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="c1"># extract flows from pcap</span>
+<span class="n">hpcap</span><span class="o">.</span><span class="n">pcap2flows</span><span class="p">()</span>
+<span class="n">lpcap</span><span class="o">.</span><span class="n">pcap2flows</span><span class="p">()</span>
+
+<span class="c1"># extract features from each flow via IAT</span>
+<span class="n">lpcap</span><span class="o">.</span><span class="n">flow2features</span><span class="p">(</span><span class="s1">&#39;IAT&#39;</span><span class="p">,</span> <span class="n">fft</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">ld</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">lpcap</span><span class="o">.</span><span class="n">features</span><span class="p">)</span>
+
+<span class="c1"># extract features from each flow via IAT</span>
+<span class="n">hpcap</span><span class="o">.</span><span class="n">flow2features</span><span class="p">(</span><span class="s1">&#39;IAT&#39;</span><span class="p">,</span> <span class="n">fft</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">hd</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">hpcap</span><span class="o">.</span><span class="n">features</span><span class="p">)</span>
+
+<span class="n">hds</span> <span class="o">=</span> <span class="n">hd</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,:</span><span class="mi">4</span><span class="p">]</span>
+<span class="n">hds</span><span class="o">.</span><span class="n">shape</span>
+
+<span class="c1"># label the normal and anomalous HTTP traffic traces</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;mode.chained_assignment&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+<span class="n">hds</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">ld</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+
+<span class="c1"># concatenate the two data frames</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">ld</span><span class="p">,</span><span class="n">hds</span><span class="p">])</span>
+
+<span class="c1"># separate into features and labels</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,:</span><span class="mi">4</span><span class="p">]</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">]</span>
+</pre></div>
 </div>
-<div class="section" id="labels-types-of-prediction-problems">
-<h4>Labels: Types of Prediction Problems<a class="headerlink" href="#labels-types-of-prediction-problems" title="Permalink to this headline">¶</a></h4>
+</div>
+</div>
+<div class="section" id="labeling-for-prediction-problems">
+<h4>Labeling for Prediction Problems<a class="headerlink" href="#labeling-for-prediction-problems" title="Permalink to this headline">¶</a></h4>
 <p>The format of the training labels distinguishes <em>regression</em> problems from
 <em>classification</em> problems. Regression problems involve labels that are
 continuous numbers. Classification problems involve discrete labels (e.g.
@@ -625,6 +545,17 @@ care about small distinctions of a few bits per second. Instead, you could
 reframe the problem as a classification task and categorize potential updates
 into a few quality of experience classes.</p>
 </div>
+</div>
+<div class="section" id="dividing-data">
+<h3>Dividing Data<a class="headerlink" href="#dividing-data" title="Permalink to this headline">¶</a></h3>
+<p>Once the data is labeled, we can use the data to train a machine learning
+model. Before we can do so, we need to divide the data into training and
+testing sets. The training set is used to train the model, and the testing set
+is used to evaluate the model’s performance.  Additionally, in the process of
+training, a subset of the training data is often withheld from the model to
+perform <em>validation</em> (i.e., to evaluate the model’s performance during
+training), to help tune a model’s parameters. We explore each of these
+concepts with examples below.</p>
 <div class="section" id="training-and-testing-sets">
 <h4>Training and Testing Sets<a class="headerlink" href="#training-and-testing-sets" title="Permalink to this headline">¶</a></h4>
 <p>The goal of supervised learning is to train a model that takes observations
@@ -642,6 +573,13 @@ training labels, then you deploy it in the wild. The algorithm starts seeing
 new data and producing predictions for that data. How can you evaluate whether
 it is working?</p>
 <p>The way to solve this problem is to test the performance of the trained algorithm on additional data that it has never seen, but for which you already know the correct labels. This requires that you train the algorithm using only a portion of the entire labeled dataset (the <em>training set</em>) and withhold the rest of the labeled data (the <em>test set</em>) for testing how well the model generalizes to new information.</p>
+<div class="admonition-splitting-data-into-training-and-test-sets admonition" id="fig-train-test">
+<p class="admonition-title">Splitting data into training and test sets.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
+<span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
 <p>The examples that you reserve for the test set should be randomly selected to avoid bias in most cases. However, some types of data require more care when choosing test set examples.
 If you have data for which the order of the examples is particularly important, then you should select a random contiguous subset of that data as your test set. That maintains the internal structure that is relevant for understanding the test examples. This is particularly important for chronological data (e.g. packets from a network flow). If you do not select a contiguous subset, you may end up with a nonsensical test set with examples from one day followed by examples from a year later followed by examples from a few months after that.</p>
 <p>This brings us to the golden rule of supervised machine learning: <strong>never train on the test set!</strong> Nothing in the final model or data pre-processing pipeline should be influenced by the examples in the test set. This includes model parameters and hyperparameters (more below). The test set is only for testing and reporting your final performance. This allows the performance evaluation from the test set to be as close of an approximation as possible to the <em>generalization error</em> of the model, or how well the model would perform on new data that is independent but identically distributed (i.i.d.) to the test set. For example, when you report that your model performed with 95% accuracy on a test set, this means that you also expect 95% accuracy on new i.i.d. data in the wild. This caveat about i.i.d. matters, because if your training data and/or test set is not representative of the real-world data seen by the model, the model is unlikely to perform as well on the real-world data (imagine a trained Chess player suddenly being asked to play in a Go tournament).</p>
@@ -656,13 +594,21 @@ still being able to test the final generalization error of the completed
 model, involves dividing your labeled data into three parts:</p>
 <blockquote>
 <div><ol class="arabic simple">
-<li><p>a training set, which you use to train the algorithm,</p></li>
-<li><p>a test set, that is used to test the generalization error of the <strong>final</strong> model, and</p></li>
-<li><p>the <em>validation set</em>, which is used to test the generalization error of intermediate versions of the model as you tune the hyperparameters.</p></li>
+<li><p>a <em>training set</em>, which you use to train the algorithm,</p></li>
+<li><p>a <em>test set</em>, which is used to test the generalization error of the <strong>final</strong> model, and</p></li>
+<li><p>a <em>validation set</em>, which is used to test the generalization error of intermediate versions of the model as you tune the hyperparameters.</p></li>
 </ol>
 </div></blockquote>
 <p>This way you can check the generalization performance of the model while still reserving some completely new data for reporting the final performance on the test set.</p>
-<p>If the final model performs well across the training, validation, and test sets, you can be quite confident that it will perform well on other new data as well. Alternatively, your final model might perform well on the training and validation sets but poorly on the test set. That would indicate that the model is overly tuned to the specificities of the training and validation sets, causing it to generalize poorly to new data. This phenomenon is called <em>overfitting</em> and is a pervasive problem for supervised machine learning. Overfitting has inspired many techniques to avoid and mitigate, several of which we describe below.</p>
+<p>If the final model performs well across the training, validation, and test
+sets, you can be quite confident that it will perform well on other new data
+as well. Alternatively, your final model might perform well on the training
+and validation sets but poorly on the test set. That would indicate that the
+model is overly tuned to the specificities of the training and validation
+sets, causing it to generalize poorly to new data. This phenomenon is called
+<em>overfitting</em> and is a pervasive problem for supervised machine learning.
+Overfitting has inspired many techniques to avoid and mitigate, several of
+which we describe below.</p>
 <p>While dividing your labeled data into training, validation, and test sets works well conceptually, it has a practical drawback. The amount of data used to actually train the model (the training set) is significantly reduced. If you apply a 60% training, 20% validation, 20% test split, that leaves only 60% of your data for actual training. This can reduce performance, because supervised ML models generally perform better with more training data.</p>
 <p>The solution to this is to use a process called <em>cross validation</em>, which allows you to combine the training and validation sets through a series of sequential model trainings called <em>folds</em>. In each fold, you pull out a subset of the training data for validation and train the model on the rest. You repeat this process with non-overlapping subsets for each fold, such that every training example has been in a validation fold once.  In a 5-fold cross-validation, each fold would use 20% of the non-test data as a validation set and the remaining 80% for training. This would result in 5 different validation performance measurements (one for each folds) that you can average together for the <em>average cross-validation performance</em>.</p>
 <p>Cross-validation provides a more robust measure of generalization performance than fixed training and validation sets. It is so common that supervised machine learning results are often reported in terms of the average performance on an N-fold cross-validation.</p>
@@ -677,11 +623,28 @@ For such models, a smaller number of folds (often 5 or 10) are used in practice.
 <p>Training a supervised machine learning model involves adjusting the model’s parameters to improve its ability to predict the training labels from the training examples. This adjustment process takes place automatically, typically using an iterative algorithm (such as gradient descent) to gradually optimize the model’s parameters.
 If the training process works correctly, it will produce a model that performs as well as possible on the training set.
 Whether or not this trained model will generalize to new data must be tested using a validation and/or test set.</p>
+<div class="admonition-model-training admonition" id="fig-train-model">
+<p class="admonition-title">Model training.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.ensemble</span> <span class="kn">import</span> <span class="n">RandomForestClassifier</span>
+
+<span class="n">rf</span> <span class="o">=</span> <span class="n">RandomForestClassifier</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                            <span class="n">n_jobs</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>
+                            <span class="n">n_estimators</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+                            <span class="n">class_weight</span><span class="o">=</span><span class="s1">&#39;balanced&#39;</span><span class="p">)</span>
+
+<span class="c1"># Train the model using the training sets y_pred=clf.predict(X_test)</span>
+<span class="n">rf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span><span class="n">y_train</span><span class="p">)</span>
+
+<span class="c1"># prediction on test set</span>
+<span class="n">y_pred</span> <span class="o">=</span> <span class="n">rf</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
 <p>It is important to note the difference between model <em>parameters</em> and <em>hyperparameters</em>.</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>Parameters are the elements of the model that the training algorithm automatically modifies when attempting to improve the model’s performance on the training set.</p></li>
-<li><p>Hyperparameters are “meta”-parameters that can be tuned manually or automatically, depending on the degree to which the model creation process is automated.</p></li>
+<li><p><em>Parameters</em> are the elements of the model that the training algorithm automatically modifies when attempting to improve the model’s performance on the training set.</p></li>
+<li><p>Hyperparameters* are “meta”-parameters that can be tuned manually or automatically, depending on the degree to which the model creation process is automated.</p></li>
 </ul>
 </div></blockquote>
 <p>Model training is a minimization process. Each training step attempts to
@@ -724,7 +687,20 @@ For example, the <em>simulated annealing</em> algorithm starts with a large lear
 </div>
 <div class="section" id="bias-variance-and-overfitting">
 <h3>Bias-Variance and Overfitting<a class="headerlink" href="#bias-variance-and-overfitting" title="Permalink to this headline">¶</a></h3>
-<p><em>Overfitting</em> is a common problem for many supervised machine learning models. An “overfit” model has been overly tuned to idiosyncracies of the training set and doesn’t generalize well to new data.</p>
+<p><em>Overfitting</em> is a common problem for many supervised machine learning models.
+An “overfit” model has been overly tuned to idiosyncracies of the training set
+and doesn’t generalize well to new data.</p>
+<p>Machine learning models can either be underfit or overfit. An underfit model
+is too restrictive and fails to capture the relevant structure or details of
+the data being modeled. For example, fitting a linear function to a dataset
+with nonlinear characteristics would result in an underfit model. On the other
+hand, an overfit model is too permissive and captures noise or random
+fluctuations in the data, which may not generalize well to new, unseen data.</p>
+<p>The balance between bias and variance is crucial in machine learning. If a
+model is too biased or has high bias, it may oversimplify the data and result
+in poor performance on both the training and test data. On the other hand, if
+a model has high variance, it may overfit the training data and perform poorly
+on the test data.</p>
 <p>It’s useful to be able to detect when your model is overfitting. One way is to
 compare the model’s training error and validation error when trained on
 increasing fractions of the training set or for increasing number of gradient
@@ -733,29 +709,62 @@ you can be fairly confident that the model isn’t overfitting (and is likely
 underfitting, requiring more training data or training iterations to improve
 its performance). If the validation error is significantly worse than the
 training error, the model is likely overfitting.</p>
-<p>There are several ways to deal with overfitting.
-The best approach is to collect more training data such that your training set is more representative of any new data the model will see in the wild. Another approach, <em>early stopping</em> involves stopping the training process when the training error and validation error start to diverge. <em>Regularization</em> places a penalty on parameter complexity during the training process, helping to prevent the model from becoming overly tuned to the training examples.</p>
+<p>To balance the trade-off between bias and variance, we need to tune our
+machine learning models. One common approach is regularization, which involves
+adding penalties or constraints to the model to prevent it from becoming too
+complex. Regularization techniques such as L1 and L2 regularization can help
+reduce the variance of a model by constraining the weights of the model during
+training.</p>
+<p>There are several ways to deal with overfitting.  The best approach is to
+collect more training data such that your training set is more representative
+of any new data the model will see in the wild. Another approach, <em>early
+stopping</em> involves stopping the training process when the training error and
+validation error start to diverge. <em>Regularization</em> places a penalty on
+parameter complexity during the training process, helping to prevent the model
+from becoming overly tuned to the training examples.</p>
+<p>Another approach is to use ensemble methods, such as bagging and boosting,
+which combine multiple models to reduce variance and improve overall
+performance. Bagging involves training multiple instances of the same model on
+different subsets of the training data, while boosting involves combining the
+predictions of multiple weak models to create a stronger model.</p>
+<p>Additionally, cross-validation can be used to assess the performance of a
+model and select the best hyperparameters or model configurations</p>
 </div>
 </div>
 <div class="section" id="model-evaluation">
 <h2>Model Evaluation<a class="headerlink" href="#model-evaluation" title="Permalink to this headline">¶</a></h2>
-<p>Before we can dive into learning about machine learning algorithms, we need to define a few more concepts to help us determine whether these algorithms are meeting their goals. First, we need to define what we mean by “close to the real label.”  This is another way of saying “how do we measure the success of the model?”</p>
-<p>There are many performance metric functions. In general, they compare predictions that your model produces to the correct labels and produce a real number indicating the performance of the model.</p>
+<p>Before we dive into learning about machine learning algorithms, we need to
+define a few more concepts to help us determine whether these algorithms are
+meeting their goals. First, we need to define what we mean by “close to the
+real label.”  This is another way of saying “how do we measure the success (or
+accuracy) of the model?”</p>
+<p>There are many performance metrics that we can use to evaluate a machine
+learning model. In general, these metrics compare predictions that a trained
+model produces to the correct labels and produce a value or other indication
+(e.g., a curve) that reflects the performance of the model.</p>
 <div class="section" id="performance-metrics">
 <h3>Performance Metrics<a class="headerlink" href="#performance-metrics" title="Permalink to this headline">¶</a></h3>
-<p>For regression problems, you’ll often use an error function like mean squared error or mean absolute error. In this example, we have some data points, we’ve plotted a linear regression line, we could see the errors of the points off of the line. And you could report the average of those errors are the average of those squared errors as the performance of your model. The training process will attempt to minimize this error to produce a regression model that produces predictions which are as close as possible to all data points on average.</p>
+<p>For regression problems, you’ll often use an error function like mean squared
+error or mean absolute error. In this example, we have some data points, we’ve
+plotted a linear regression line, we could see the errors of the points off of
+the line. And you could report the average of those errors are the average of
+those squared errors as the performance of your model. The training process
+will attempt to minimize this error to produce a regression model that
+produces predictions which are as close as possible to all data points on
+average.</p>
 <div class="sidebar">
 <p class="sidebar-title">Activity: Machine Learning Pipeline</p>
 <p>The <a class="reference internal" href="appendix.html#appendix-ml-pipeline"><span class="std std-ref">Appendix</span></a> provides an activity to train and
 evaluate a model end-to-end, including evaluating a supervised learning
 model with various metrics.</p>
 </div>
-<p>For classification, we can’t use mean or absolute errors directly, because the class labels are not real-valued and may not be ordinal. For example, [EX]</p>
+<p>For classification, we can’t use mean or absolute errors directly, because the
+class labels are not real-valued and may not be ordinal.</p>
 <blockquote>
 <div><ul>
 <li><p><strong>Accuracy.</strong> is popular performance metric for classification problem
 because it is intuitive. The accuracy of a model is the ratio of correct
-predictions to all predictions. For example [EX]. For some problems, this
+predictions to all predictions. For some problems, this
 works pretty well. But for others just reporting accuracy is deceptive.</p>
 <p>Imagine you’re training a machine learning algorithm to take in packets
 and classify them as “malicious” or “benign”. If you just use the naive
@@ -769,7 +778,24 @@ classification where you’re expecting even numbers of both classes
 examples. In multi-class problems or tasks where certain classes are rare,
 accuracy isn’t a great way to report your results.</p>
 </li>
-<li><p><strong>Precision and Recall.</strong> A better way to report classification performance
+</ul>
+</div></blockquote>
+<div class="admonition-accuracy admonition" id="fig-accuracy">
+<p class="admonition-title">Accuracy</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">accuracy_score</span>
+
+<span class="c1"># Compute accuracy</span>
+<span class="n">accuracy</span> <span class="o">=</span> <span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Accuracy: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">accuracy</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Accuracy</span><span class="p">:</span> <span class="mf">0.9891944990176817</span>
+</pre></div>
+</div>
+</div>
+<blockquote>
+<div><ul>
+<li><p><strong>Precision and Recall.</strong> Another way to report classification performance
 accuracy for multi-class and non-balanced classes is with a precision or
 recall score. These scores are best understood in the context of binary
 classification tasks. The precision score is the percentage of the
@@ -786,7 +812,7 @@ does, it’s right. A high recall algorithm may make a lot of predictions
 hitting  most of the examples in the class of interest, but also a bunch
 of examples ones that we didn’t care about. In different real world
 situations, you might want to tune your algorithm to have a higher
-precision or a higher recall, depending on your application. [EX]</p>
+precision or a higher recall, depending on your application.</p>
 <p>For example, consider a machine learning system that is detecting malware
 in a mission critical system. It may not matter if there are some false
 alarms (low precision), but you want to make sure the system doesn’t miss
@@ -796,20 +822,67 @@ through to the inbox (low recall), but you don’t want the detector to
 accidentally classify any non-spam messages as spam (high precision).</p>
 <p>Since you can tune many algorithms to trade off precision and recall,
 you’ll often plot a precision/recall curve that shows how the tuning of
-some parameter affects precision and the recall. [EX PLOT] An ideal
-algorithm will have a curve that looks like [EX]</p>
-<p>Now, if you aren’t sure where to pick on this curve, you’ll often choose
+some parameter affects precision and the recall. An ideal algorithm will
+have a curve that is one where precision remains high (close to 1) for all
+recall values.</p>
+</li>
+</ul>
+</div></blockquote>
+<div class="admonition-reciver-operating-characteristic-for-evaluating-the-results-of-a-classifier-on-test-data admonition" id="fig-pr-curve">
+<p class="admonition-title">Reciver operating characteristic for evaluating the results of a classifier on test data.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import necessary libraries</span>
+<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">precision_recall_curve</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="c1"># Assuming you have already trained and tested a binary classification model,</span>
+<span class="c1"># and have true labels y_true and predicted labels y_pred:</span>
+
+<span class="c1"># Compute precision-recall curve</span>
+<span class="n">precision</span><span class="p">,</span> <span class="n">recall</span><span class="p">,</span> <span class="n">thresholds</span> <span class="o">=</span> <span class="n">precision_recall_curve</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
+
+<span class="c1"># Plot PR curve</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">recall</span><span class="p">,</span> <span class="n">precision</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Precision-Recall curve&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Recall&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Precision&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Precision-Recall Curve&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;pipeline_pr-curve.png&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<img alt="../images/pipeline_pr-curve.png" class="align-center" src="../images/pipeline_pr-curve.png" />
+</div>
+<blockquote>
+<div><blockquote>
+<div><p>Now, if you aren’t sure where to pick on this curve, you’ll often choose
 the like the Pareto optimal setting where any trade off that you make in
 one direction is outweighed by the trade off that you’d make in another
 direction. And if you’re familiar with Pareto optimality from economics,
 it’s exactly the same idea.</p>
-</li>
+</div></blockquote>
+<ul class="simple">
 <li><p><strong>F1 Score.</strong> Sometimes you want to report a single number that says how
 well your algorithm performs instead of both precision and recall scores.
 The standard approach is to report an F1 score, which is the harmonic mean
 of precision and recall. The harmonic mean causes the F1 score to weigh low
 values higher. This means that a high precision won’t offset a particularly
 low recall or vice versa.</p></li>
+</ul>
+</div></blockquote>
+<div class="admonition-f1-score admonition" id="fig-f1-score">
+<p class="admonition-title">F1 Score</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">f1_score</span>
+
+<span class="n">f1</span> <span class="o">=</span> <span class="n">f1_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;F1 Score: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">f1</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">F1</span> <span class="n">Score</span><span class="p">:</span> <span class="mf">0.9942257217847769</span>
+</pre></div>
+</div>
+</div>
+<blockquote>
+<div><ul>
 <li><p><strong>Receiver Operating Characteristic.</strong> The receiver operating
 characteristic (ROC) is another performance measure that uses the <em>true
 positive rate</em> and the <em>false positive rate</em>.  The true positive rate is
@@ -826,9 +899,44 @@ want a single metric to use for the algorithm performance that
 incorporates the fact that you can tune these parameters, you can use the
 area under the ROC curve. Since your algorithm would ideally be able to
 achieve a high true positive rate with a very low false positive rate,
-you’d have this curve [EX], which is right along the edge of the graph,
-the ideal area under the curve is 1.</p>
+you’d have a curve that is right along the edge of the graph.
+The ideal area under the curve (AUC) is 1.</p>
 </li>
+</ul>
+</div></blockquote>
+<div class="admonition-reciver-operating-characteristic-for-evaluating-the-results-of-a-classifier-on-test-data admonition" id="fig-roc-curve">
+<p class="admonition-title">Reciver operating characteristic for evaluating the results of a classifier on test data.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">roc_curve</span><span class="p">,</span> <span class="n">auc</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="c1"># Compute ROC curve and AUC score</span>
+<span class="n">fpr</span><span class="p">,</span> <span class="n">tpr</span><span class="p">,</span> <span class="n">thresholds</span> <span class="o">=</span> <span class="n">roc_curve</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
+<span class="n">roc_auc</span> <span class="o">=</span> <span class="n">auc</span><span class="p">(</span><span class="n">fpr</span><span class="p">,</span> <span class="n">tpr</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">ROC AUC: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">roc_auc</span><span class="p">))</span>
+
+<span class="c1"># Plot ROC curve</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">fpr</span><span class="p">,</span> <span class="n">tpr</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;darkorange&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;ROC curve (AUC = </span><span class="si">%0.2f</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="n">roc_auc</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;navy&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.05</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;False Positive Rate&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;True Positive Rate&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Receiver Operating Characteristic&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">&quot;lower right&quot;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;pipeline_roc-curve.png&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ROC</span> <span class="n">AUC</span><span class="p">:</span> <span class="mf">0.9395975232198142</span>
+</pre></div>
+</div>
+<img alt="../images/pipeline_roc-curve.png" class="align-center" src="../images/pipeline_roc-curve.png" />
+</div>
+<blockquote>
+<div><ul class="simple">
 <li><p><strong>Confusion Matrices.</strong> Confusion matrices go beyond a single number or a
 scalar metric for classification performance and instead provide details
 about how your model is making mistakes. A confusion matrix plots the
@@ -839,9 +947,33 @@ If your model is sometimes making mistakes, there will be numbers outside of
 this diagonal. You can then investigate these examples to see why they might
 be more difficult for the model and focus on these cases to improve your
 performance.  Confusion matrices are useful for debugging and iterative
-improvements.</p></li>
+improvements. The</p></li>
 </ul>
 </div></blockquote>
+<div class="admonition-confusion-matrix-for-evaluating-the-results-of-a-classifier-on-test-data admonition" id="fig-confusion-matrix">
+<p class="admonition-title">Confusion matrix for evaluating the results of a classifier on test data.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn</span> <span class="kn">import</span> <span class="n">metrics</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">confusion_matrix</span><span class="p">,</span> <span class="n">ConfusionMatrixDisplay</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">metrics</span><span class="o">.</span><span class="n">confusion_matrix</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">))</span>
+
+<span class="n">cm</span> <span class="o">=</span> <span class="n">confusion_matrix</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">rf</span><span class="o">.</span><span class="n">classes_</span><span class="p">)</span>
+<span class="n">disp</span> <span class="o">=</span> <span class="n">ConfusionMatrixDisplay</span><span class="p">(</span><span class="n">confusion_matrix</span><span class="o">=</span><span class="n">cm</span><span class="p">,</span>
+                           <span class="n">display_labels</span><span class="o">=</span><span class="n">rf</span><span class="o">.</span><span class="n">classes_</span><span class="p">)</span>
+<span class="n">disp</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+
+<span class="c1"># show the plot</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;pipeline_confusion-matrix.png&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[[</span> <span class="mi">60</span>   <span class="mi">8</span><span class="p">]</span>
+ <span class="p">[</span>  <span class="mi">3</span> <span class="mi">947</span><span class="p">]]</span>
+</pre></div>
+</div>
+<img alt="../images/pipeline_confusion-matrix.png" class="align-center" src="../images/pipeline_confusion-matrix.png" />
+</div>
 </div>
 </div>
 </div>
@@ -850,7 +982,7 @@ improvements.</p></li>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="measurement.html" class="btn btn-neutral float-left" title="Chapter 3: Data Acquisition" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="measurement.html" class="btn btn-neutral float-left" title="Chapter 3: Network Data" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="supervised.html" class="btn btn-neutral float-right" title="Chapter 5: Supervised Learning" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
