@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chapter 7: Large Language Models &mdash; Machine Learning for Networking Version 0.1 documentation</title><link rel="stylesheet" href="../static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../static/css/rtd_theme_mods.css" type="text/css" />
+    <link rel="shortcut icon" href="../static/bridge.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  <script id="documentation_options" data-url_root="../" src="../static/documentation_options.js"></script>
+        <script src="../static/jquery.js"></script>
+        <script src="../static/underscore.js"></script>
+        <script src="../static/doctools.js"></script>
+        <script src="../static/language_data.js"></script>
+        <script src="https://www.googletagmanager.com/gtag/js?id=G-QLSP3FJWGT"></script>
+        <script >
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-QLSP3FJWGT');
+</script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "tex2jax_ignore|mathjax_ignore|document", "processClass": "tex2jax_process|mathjax_process|math|output_area"}})</script>
+    <script src="../static/js/theme.js"></script>
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Chapter 8: Reinforcement Learning" href="reinforcement.html" />
+    <link rel="prev" title="Chapter 6: Unsupervised Learning" href="unsupervised.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Machine Learning for Networking
+          </a>
+              <div class="version">
+                Version 0.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption"><span class="caption-text">Table of Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Chapter 1:  Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="motivation.html">Chapter 2: Motivating Problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="measurement.html">Chapter 3: Network Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.html">Chapter 4: Machine Learning Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="supervised.html">Chapter 5: Supervised Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="unsupervised.html">Chapter 6: Unsupervised Learning</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Chapter 7: Large Language Models</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#background">Background</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#vectors">Vectors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#transformers">Transformers</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#large-language-models-in-networking">Large Language Models in Networking</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#network-protocol-analysis">Network Protocol Analysis</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="reinforcement.html">Chapter 8: Reinforcement Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="automation.html">Chapter 9:  Deployment Considerations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="future.html">Chapter 10:  Looking Ahead</a></li>
+<li class="toctree-l1"><a class="reference internal" href="appendix.html">Appendix: Activities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../README.html">About The Book</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../authors.html">About The Authors</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Machine Learning for Networking</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Chapter 7: Large Language Models</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/text/llm.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="unsupervised.html" class="btn btn-neutral float-left" title="Chapter 6: Unsupervised Learning" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="reinforcement.html" class="btn btn-neutral float-right" title="Chapter 8: Reinforcement Learning" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="chapter-7-large-language-models">
+<h1>Chapter 7: Large Language Models<a class="headerlink" href="#chapter-7-large-language-models" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="background">
+<h2>Background<a class="headerlink" href="#background" title="Permalink to this headline">¶</a></h2>
+<p>Large language models have gained increasing prevalence in many aspects of
+society today, with interactive sessions such as OpenAI’s ChatGPT and Google’s
+Bard allowing users to query and receive answers for a diverse set of general
+downstream tasks. Although they are highly developed and tailored, the
+underlying architecture of the models for systems such as GPT and LaMDA is
+based on a transformer model. In such a model, each word in a given input is
+represented by one or more tokens, and each input is represented with an
+embedding, a high-dimensional representation of the input that captures its
+semantics.  Self-attention is then used to assign a weight for each token in
+an input based on its importance to its surrounding tokens. This mechanism
+allows transformer models to capture fine-grained relationships in input
+semantics that are not captured by other machine learning models, including
+conventional neural networks.</p>
+<p>The use of large-language models in computer networks is rapidly expanding.
+One of the areas where these models show promise is in the areas of network
+security and performance troubleshooting. In this chapter, we will explore
+some of these early examples in more detail, as well as discuss some of the
+practical hurdles towards deploying LLMs in production networks.</p>
+<p>Large language models typically operate on a vocabulary of words. Since this
+book is about applications of machine learning to networking, ultimately the
+models we work with will operate on network data (e.g., packets, elements from
+network traffic), not words or text in a language. Nonetheless, before we talk
+about applications of LLMs to networking, it helps to understand the basic
+design of LLMs and how they operate on text data. We will provide this
+overview by providing background on two key concepts in LLMs: vectors and
+transformers.</p>
+<div class="section" id="vectors">
+<h3>Vectors<a class="headerlink" href="#vectors" title="Permalink to this headline">¶</a></h3>
+<p>Language models represent each word as a long array of numbers called a <em>word
+vector</em>. Each word has a corresponding word vector, and each word thus
+represents a point in a high-dimensional space. This representation allows
+models to reason about spatial relationships between words. For example, the
+word vector for “cat” might be close to the word vector for “dog”, since these
+words are semantically similar. In contrast, the word vector for “cat” might
+be far from the word vector for “computer”, since these words are semantically
+different. In the mid-2010s, Google’s word2vec project led to significant
+advances in the quality of word vectors; specifically, these vectors allowed
+various semantic relationships, such as analogies, to be captured in the
+spatial relationships. <strong>dictionary meaning, not linguistic context</strong></p>
+<p>(free: speech or beer)
+While word vectors, and simple arithmetic operations on these vectors, have
+turned out out to be useful for capturing these relationships, they missed
+another important characteristic, which is that words can change meaning
+depending on context (e.g., the word “sound” might mean very different things
+depending on whether we were talking about a proof or a musical performance).
+Fortunately, word vectors have also been useful as input to more complex
+<em>large language models</em> that are capable of reasoning about the meaning of
+words from context. These models are capable of capturing the meaning of
+sentences and paragraphs, and are the basis for many modern machine learning
+applications. LLMs comprise many layers of <em>transformers</em>, a concept we will
+discuss next.</p>
+</div>
+<div class="section" id="transformers">
+<h3>Transformers<a class="headerlink" href="#transformers" title="Permalink to this headline">¶</a></h3>
+<p>The fundamental building block of a large language model is the transformer.
+In large language models, each token is represented as a high-dimensional
+vector. In GPT-3, for example, each token is represented by a vector of nearly
+13,000 dimensions.  The model first applies what is referred to as an <em>attention
+layer</em> to assign weights to each token in the input based on its relationships
+to the tokens in the rest of the input.  In the attention layer, so-called
+attention heads retrieve information from earlier words in the prompt.</p>
+<p>Second, the <em>feed-forward</em> portion of the model then uses the results from the
+attention layer to predict the next token in a sequence given the previous
+tokens.  This process is accomplished using the weights calculated by the
+self-attention mechanism to calculate a weighted average of the token vectors
+in the input.  This weighted average is then used to predict the next token in
+the sequence. The feed-forward layers in some sense represent a databased of
+information that the model has learned from from the training data;
+feed-forward layers effectively encode relationships between tokens as seen
+elsewhere in the training data.</p>
+<p>Large language models tend to have many sets of attention and feed-forward
+layers, resulting in the ability to make fairly complex predictions on text.
+Of course, network traffic does not have the same form or structure as text,
+but if packets are treated as tokens, and the sequence of packets is treated as
+a sequence of tokens, then the same mechanism can be used to predict the next
+packet in a sequence given the previous packets.  This is the basic idea
+behind the use of large language models in network traffic analysis.</p>
+<p>A key distinction of large-language models from other types of machine
+learning approaches that we’ve read about in previous chapters is that
+training them doesn’t rely on having explicitly labeled data. Instead, the
+model is trained on a large corpus of text, and the model learns to predict
+the next word in a sequence given the previous words.  This is, in some sense,
+another form of <em>unsupervised learning</em>.</p>
+<p>Transformers tend to work well on problems that (1) can be represented with
+sequences of structured input; and (2) have large input spaces that any one
+feature set cannot sufficiently represent.  In computer networking, several
+areas, including protocol analysis and traffic analysis, bear some of these
+characteristics.  In both of these cases, manual analysis of network traffic
+can be cumbersome.  Yet, some of the other machine learning models and
+approaches we have covered in previous chapters can also be difficult for
+certain types of problems.  For example, mappings of byte offsets or header
+fields and their data types for all protocols, as well as considering all
+values a field may take, may yield prohibitively large feature spaces.  For
+example, detecting and mitigating protocol misconfiguration can be well-suited
+to transformer models, where small nuances, interactions, or
+misinterpretations of protocol settings can lead to complicated corner cases
+and unexpected behavior that may be challenging to encode in either static
+rule sets or formal methods approaches.</p>
+<p>BERT is popular transformer-based model that has been successfully extended to
+a number of domains, with modifications to the underlying vocabulary used
+during training. At a high level, BERT operates in two phases: pre-training
+and fine-tuning. In the pre-training phase, BERT is trained over unlabeled
+input, and is evaluated on two downstream tasks to verify its understanding of
+the input. After pre-training, BERT models may then be fine-tuned with labeled
+data to perform tasks such as classification (or, in other domains, text generation)
+that have the same input format.</p>
+<p>In recent years, transformer-based models have been applied to large text
+corpora to perform a variety of tasks, including question answering, text
+generation, and translation.  On the other hand, their utility outside of the
+context of text—and especially in the context of data that does not
+constitute English words—remains an active area of exploration.</p>
+</div>
+</div>
+<div class="section" id="large-language-models-in-networking">
+<h2>Large Language Models in Networking<a class="headerlink" href="#large-language-models-in-networking" title="Permalink to this headline">¶</a></h2>
+<p>The utility of large language models for practical network management
+applications is an active area of research.  In this section, we will explore
+a particular early-stage example of the use of large language models for the
+analysis of network traffic: the analysis of network protocols.</p>
+<div class="section" id="network-protocol-analysis">
+<h3>Network Protocol Analysis<a class="headerlink" href="#network-protocol-analysis" title="Permalink to this headline">¶</a></h3>
+<p>We will explore a recent example from Chu et al., who explored the use of
+large language models to detect vulnerable or misconfigured versions of the
+TLS protocol.  In this work, BERT was trained using a dataset of TLS
+handshakes.</p>
+<p>A significant challenge in applying large language models to network data is
+to build a vocabulary and corresponding training set that would allow the
+model to understand TLS handshakes. This step is necessary, and important,
+because existing LLMs are typically trained on text data, and the vocabulary
+used in these models is typically based on the vocabulary of the English
+language.  To train a model that understands TLS handshakes, the first step
+involved building a vocabulary that would allow the model to understand
+TLS handshakes. In this case, the input to the model is a concatenation of
+values in the headers of the server_hello and server_hello_done messages, as
+well as any optional server steps in the TLS handshake. The resulting input
+was normalized (i.e., to lowercase ASCII characters) and tokenized.</p>
+<p>The resulting trained model was evaluated against a set of labeled TLS
+handshakes, with examples of known misconfigurations coming from the Qualys
+SSL Server Test website. The model was able to correctly identify TLS
+misconfigurations with near-perfect accuracy.</p>
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="unsupervised.html" class="btn btn-neutral float-left" title="Chapter 6: Unsupervised Learning" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="reinforcement.html" class="btn btn-neutral float-right" title="Chapter 8: Reinforcement Learning" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
