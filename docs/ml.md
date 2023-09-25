@@ -49,6 +49,10 @@
 * [How to Read PCA Biplots, Scree Plots](https://blog.bioturing.com/2018/06/18/how-to-read-pca-biplots-and-scree-plots/)
 * [PCA and SVD Explained with Numpy](https://towardsdatascience.com/pca-and-svd-explained-with-numpy-5d13b0d2a4d8)
 
+### Deep Learning
+
+* [Large Language Models](https://arstechnica.com/science/2023/07/a-jargon-free-explanation-of-how-ai-large-language-models-work/)
+
 ### Visualization and Interpretation
 * [Formatting Seaborn Axis/Tick Labels](https://matplotlib.org/3.2.1/gallery/text_labels_and_annotations/date.html)
 * [Colormaps for Clustering](https://matplotlib.org/3.1.0/tutorials/colors/colormaps.html)
