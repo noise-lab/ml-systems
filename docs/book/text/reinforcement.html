@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chapter 8: Reinforcement Learning &mdash; Machine Learning for Networking Version 0.1 documentation</title><link rel="stylesheet" href="../static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../static/css/rtd_theme_mods.css" type="text/css" />
+    <link rel="shortcut icon" href="../static/bridge.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  <script id="documentation_options" data-url_root="../" src="../static/documentation_options.js"></script>
+        <script src="../static/jquery.js"></script>
+        <script src="../static/underscore.js"></script>
+        <script src="../static/doctools.js"></script>
+        <script src="../static/language_data.js"></script>
+        <script src="https://www.googletagmanager.com/gtag/js?id=G-QLSP3FJWGT"></script>
+        <script >
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-QLSP3FJWGT');
+</script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "tex2jax_ignore|mathjax_ignore|document", "processClass": "tex2jax_process|mathjax_process|math|output_area"}})</script>
+    <script src="../static/js/theme.js"></script>
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Chapter 9: Deployment Considerations" href="automation.html" />
+    <link rel="prev" title="Chapter 7: Large Language Models" href="llm.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Machine Learning for Networking
+          </a>
+              <div class="version">
+                Version 0.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption"><span class="caption-text">Table of Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Chapter 1:  Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="motivation.html">Chapter 2: Motivating Problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="measurement.html">Chapter 3: Network Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.html">Chapter 4: Machine Learning Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="supervised.html">Chapter 5: Supervised Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="unsupervised.html">Chapter 6: Unsupervised Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="llm.html">Chapter 7: Large Language Models</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Chapter 8: Reinforcement Learning</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#background">Background</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#markov-decision-processes">Markov Decision Processes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#discounted-rewards">Discounted Rewards</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#q-values">Q-Values</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#q-value-iteration">Q-Value Iteration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#q-learning">Q-Learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#approximate-q-learning">Approximate Q-Learning</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="automation.html">Chapter 9:  Deployment Considerations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="future.html">Chapter 10:  Looking Ahead</a></li>
+<li class="toctree-l1"><a class="reference internal" href="appendix.html">Appendix: Activities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../README.html">About The Book</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../authors.html">About The Authors</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Machine Learning for Networking</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Chapter 8: Reinforcement Learning</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/text/reinforcement.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="llm.html" class="btn btn-neutral float-left" title="Chapter 7: Large Language Models" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="automation.html" class="btn btn-neutral float-right" title="Chapter 9: Deployment Considerations" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="chapter-8-reinforcement-learning">
+<h1>Chapter 8: Reinforcement Learning<a class="headerlink" href="#chapter-8-reinforcement-learning" title="Permalink to this headline">¶</a></h1>
+<p>In this chapter, we introduce <em>reinforcement learning</em>, the process by which a machine learning model acts in an environment and learns to improve its performance based on feedback.
+The goal of reinforcement learning is to identify a strategy for choosing actions that will maximize the model’s expected rewards over time.</p>
+<div class="section" id="background">
+<h2>Background<a class="headerlink" href="#background" title="Permalink to this headline">¶</a></h2>
+<p>Unlike supervised learning, which requires pairs of examples and correct labels, reinforcement learning only requires feedback when the model does something relevant to the task. Unlike both supervised and unsupervised learning, many reinforcement learning models are able to <em>explore</em> their environment, making tradeoffs between searching for new approaches and optimizing existing knowledge.</p>
+<p>Throughout this chapter, we will describe the fundamental concepts of reinforcement learning as well as several reinformcent learning models, using networking examples as a guide. We will focus on a class of reinforcement learning models called <em>Q-learning</em>, as these models are relatively straightforward and perform well on many diverse tasks.</p>
+<p>We do not assume you’ve seen these models before, and so readers who are aiming to get basic intuition behind different models will find this chapter helpful. Readers who are already familiar with these models may still find the examples in this chapter helpful, as they present cases where particular models or types of models are suited to different problems, as well as cases in the networking domain where these models have been successfully applied in the past.</p>
+<p>We organize our discussion of reinforcement learning into the following topics: (1) important concepts, (2) Q-value iteration, (3) Q-learning, (4) deep Q-learning.</p>
+</div>
+<div class="section" id="markov-decision-processes">
+<h2>Markov Decision Processes<a class="headerlink" href="#markov-decision-processes" title="Permalink to this headline">¶</a></h2>
+<p>Reinforcement learning models are set in a <em>environment</em> that defines the possible <em>states</em> where the model can exist, what <em>actions</em> the model can take, and the <em>effects</em> of those actions. We can conceptualize an environment as a <em>Markov decision process</em>, i.e. a graph that connects states (vertices) with actions (edges).</p>
+<p>For every pair of states and a corresponding action, there is a <em>transition probability</em>. If the model is in the first state and takes the action, this is the probability that it will end up in the second state. If the environment is deterministic, the transition probabilities are all either 0 or 1, indicating that there is no uncertainty about the results of actions. Real-world environments are typically nondeterministic or are deterministic but rely on values inaccessible to the model. In these cases, the transition probabilities are real-valued and reflect the fact that actions have uncertain outcomes from the model’s perspective.</p>
+<p>EXAMPLE MDP FIGURE</p>
+<p>Many tasks can be expressed in this framework. For example, we can frame a
+network intrusion detection system FINISH EXAMPLE.</p>
+</div>
+<div class="section" id="discounted-rewards">
+<h2>Discounted Rewards<a class="headerlink" href="#discounted-rewards" title="Permalink to this headline">¶</a></h2>
+<p>Two values are essential to guiding the learning process of reinforcement learning models:</p>
+<p>A <em>reward function</em> provides positive feedback to the model when it does something that is useful for the task and negative feedback when it does something that is counterproductive to the task. For every combination of two states and an action, the reward function defines a reward that the model should receive if it starts in the first state, takes the action, and ends up in the second state. The creation of an effective reward function is essential to the learning process, as positive and negative rewards guide the model towards learning a strategy to perform the desired task.</p>
+<p>The <em>discount factor</em> is a scalar hyperparameter that quantifies how much the model should prioritize immediate rewards over future rewards. A high discount factor will incentivize the model to learn a strategy that maximizes rewards now (or in the near future), potentially lowering its total reward received over time (if it were allowed to run long enough to collect rewards in the distant future). A low discount factor will prioritize maxmizing the total reward received over time, but might result in lower rewards received in the near future.</p>
+</div>
+<div class="section" id="q-values">
+<h2>Q-Values<a class="headerlink" href="#q-values" title="Permalink to this headline">¶</a></h2>
+<p>To make things easier (and because it is essential for the models discussed in the next sections), we will introduce one additional composite value: the <em>q-value</em>. Q-values are defined with respect to state/action pairs. The q-value of a state/action pair is the sum of the discounted future rewards that the model can expect if it chooses to take that action when it is in that state.</p>
+<p>This is a big concept, so let’s break it down. First, imagine that the model is in a particular state <em>s</em>. It can potentially choose among several actions, but let’s imagine that it chooses action <em>a</em>. As a result of this choice, the model will end up in some other state (based on the transition probabilities) and might receive some immediate reward (based on the reward function). The model will then go on its merry way, continuing to choose actions and receive rewards on into the future. So just how good was the choice of action <em>a</em> from state <em>s</em>? To quantify this, we have to account for any immediate reward received and any future rewards that the model might have set itself up for by making this choice. Since we don’t want this q-value to depend on the future (it should only depend on <em>s</em> and <em>a</em>), let’s assume that the model only makes perfect choices in the future, receiving the maximum amount of reward possible. Of course, these future rewards might be less enticing to the model than immediate rewards based on the discount factor. The q-value therefore combines both the immediate reward and the discounted optimal future rewards into a single number indicating the quality of the decision of taking action <em>a</em> in state <em>s</em>.</p>
+<p>The q-value is important because a model that knows (or learns) accurate q-values can perform optimally. When it finds itself in any state, it simply chooses the action for which the corresponding state/action q-value is the highest. Because the q-values have already accounted for the effect of this action on the model’s future options, the model doesn’t need to worry about the future when making any individual decision – it just chooses an action based on the q-values associated with its current state.</p>
+<p>This formulation of q-values reframes reinforcement learning into a task of determining the most accurate q-values for any state-action combinations that the model might encounter. Fortunately, this has guided model design and led to many effective reinforcement learning algorithms, including those we discuss below. Unfortunately, this formulation does not address the fundamental limitations addressed in the previous section: if there are an infinite number of states and/or actions in an environment, there will also be an infinite number of q-values. The following approaches address this issue for environments of increasing complexity.</p>
+</div>
+<div class="section" id="q-value-iteration">
+<h2>Q-Value Iteration<a class="headerlink" href="#q-value-iteration" title="Permalink to this headline">¶</a></h2>
+<p>Fortunately, some tasks, especially in the networks space, have narrowly defined environments, in which it is possible to determine and store all information about the environment, including the states, actions, transition probabilities, reward function, and discount factor prior to any learning taking place. FOR EXAMPLE.</p>
+<p>In these cases, the agent can run a <em>offline</em> iterative algorithm to determine all q-values without needing to explore or otherwise interact with the environment whatsoever. Starting with all q-values set to <span class="math notranslate nohighlight">\(0\)</span>, the model computes the following equation iteratively for each [state, action] pair until the q-values converge. where <span class="math notranslate nohighlight">\(s\)</span> is the state, <span class="math notranslate nohighlight">\(a\)</span> is the action, <span class="math notranslate nohighlight">\(s'\)</span> is a different state, <span class="math notranslate nohighlight">\(a'\)</span> is a different action, <span class="math notranslate nohighlight">\(T\)</span> is the transition probability, <span class="math notranslate nohighlight">\(R\)</span> is the reward function, and <span class="math notranslate nohighlight">\(\gamma\)</span> is the discount factor. This processes uses the q-value computed at iteration <span class="math notranslate nohighlight">\(k\)</span> to compute the q-value at iteration <span class="math notranslate nohighlight">\(k+1\)</span>.</p>
+<div class="math notranslate nohighlight">
+\[Q_{k+1}(s,a) \leftarrow \sum_{s'}T(s,a,s')[R(s,a,s') + \gamma  \max_{a'} Q_k(s', a')]\]</div>
+<p>Once all q-values have converged, the agent can then use the q-values to act optimally in the environment. Regardless of which state <span class="math notranslate nohighlight">\(s\)</span> the agent finds itself, it chooses the action <span class="math notranslate nohighlight">\(a\)</span> for which the q-value of the pair <span class="math notranslate nohighlight">\((s,a)\)</span> is the highest.</p>
+</div>
+<div class="section" id="q-learning">
+<h2>Q-Learning<a class="headerlink" href="#q-learning" title="Permalink to this headline">¶</a></h2>
+<p>Unfortunately, for most reinforcement learning tasks, the agent does not know much (or anything) about the environment at the outset. Instead, the agent must <em>explore</em> the environment to discover the states and rewards. This is an online process, meaning that the q-values, and therefore the best strategy, cannot be calculated a priori. Only by engaging with the environment can the agent figure out the q-values. Starting with estimates for all q-values at 0, the agent performs the following iterative update after each exploratory step, where <span class="math notranslate nohighlight">\(\alpha\)</span> is a learning rate parameter that controls how fast new exploratory steps update the existing q-value estimates.</p>
+<div class="math notranslate nohighlight">
+\[Q(s,a) \leftarrow (1-\alpha)Q(s,a) + \alpha(r+\gamma \max Q(s',a'))\]</div>
+<p>This process tells the agent how to update q-value estimates, but it doesn’t say anything about which actions to take while exploring. Environment exploration is an example of an “exploration/exploitation” tradeoff. On one hand, it makes sense to venture into new areas of the environment to see if they yield new approaches to the solution. On the other hand, it makes sense to fine tune strategies already known to work well. In practice, Q-learning agents will define a (potentially dynamic) parameter <span class="math notranslate nohighlight">\(0 \le \epsilon \le 1\)</span> such that random actions are chosen with probability <span class="math notranslate nohighlight">\(\epsilon\)</span> (new strategies) and the action with the highest estimated q-value at the current state chosen with probability <span class="math notranslate nohighlight">\(1-\epsilon\)</span>. Once the agent has finished exploring and is satisfied with its q-value estimates, it can enter a deployment phase where it always chooses the action that maximizes the estimated q-value.</p>
+</div>
+<div class="section" id="approximate-q-learning">
+<h2>Approximate Q-Learning<a class="headerlink" href="#approximate-q-learning" title="Permalink to this headline">¶</a></h2>
+<p>For all but the simplest tasks, it is not possible to enumerate all (state, action) pairs, making it impossible to keep an estimate of all q-values in memory.  In analog real-world environments, there are a (practically) infinite number of states. Even digitally represented environments often have more possible states and actions than can be feasibly computed or stored. Part of the advancement of reinforcement learning has involved the development of models that better handle these aspects of realistic environments.</p>
+<p>Rather than creating an agent that attempts to store all q-values, approximate
+q-learning has the agent use a machine learning model to predict the q-value
+for the current state and all possible actions. This approach significantly
+reduces the amount of storage needed, as the agent need only maintain the
+model, the current state, and the set of possible actions.  A version of
+approximate Q-learning called <strong>deep q-learning</strong> uses a neural network model
+to predict q-values. The agent collects training data during exploration.
+If the agent takes action <span class="math notranslate nohighlight">\(a\)</span> from state <span class="math notranslate nohighlight">\(s\)</span>
+during exploration and receives reward <span class="math notranslate nohighlight">\(r\)</span>, it updates the label (target)
+q-value for pair <span class="math notranslate nohighlight">\((s,a)\)</span> to the following:</p>
+<div class="math notranslate nohighlight">
+\[Q_{target}(s,a) = r + \gamma \max_{a'}Q_{pred}(s',a')\]</div>
+<p>After taking several exploratory steps and updating several q-value targets, the
+agent re-trains the deep learning model such that its predicted q-values are closer
+to the targets. Once the agent has finished exploring and is satisfied with the final
+trained deep learning model, it can enter a deployment phase where it always chooses
+the action with the highest predicted q-value at the current state.</p>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="llm.html" class="btn btn-neutral float-left" title="Chapter 7: Large Language Models" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="automation.html" class="btn btn-neutral float-right" title="Chapter 9: Deployment Considerations" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
