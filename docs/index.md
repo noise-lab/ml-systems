@@ -58,8 +58,8 @@ Class agenda for each meeting is in the [agenda](agenda.md).
 | 15                                 | Clustering<br>([Clustering](notebooks/15-Clustering-Clean.html))                                                        |                               |                   |
 | 16                                 | Autoencoders<br>([Autoencoders](notebooks/16-Autoencoders-Clean.html))                                                  |
 | **Generative Models**              |                                                                                                                         | [Ch. 7]
-| 17                                 | Transformers <br>([Large Language Models](notebooks/18-LLM-Clean.html)                                                  |                               |                   |
-| 18                                 | Diffusion and State-Space Models <br />([Diffusion Models](notebooks/20-Diffusion-Clean.html)                           |                               |                   |
+| 17                                 | Transformers <br>([Large Language Models](notebooks/18-LLM-Clean.html))                                                  |                               |                   |
+| 18                                 | Diffusion and State-Space Models <br />([Diffusion Models](notebooks/20-Diffusion-Clean.html))                           |                               |                   |
 | **Bonus Topics**                   |                                                                                                                         |                               |                   |
 | 19                                 | Reinforcement Learning<br>([Automation](notebooks/19-Reinforcement-Clean.html))                                         | [Ch. 8]
 | 20                                 | Timeseries Analysis<br>([Timeseries](notebooks/17-Timeseries-Clean.html))                                               |                               |                   |
