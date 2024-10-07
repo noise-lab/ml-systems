@@ -33,3 +33,13 @@
        * Packet Capture to Pandas
        * Analysis
 * Security Applications (Slides, Discussion)
+
+# Lecture 3
+
+* Security Hands-On
+* More Motivation
+  * Application Quality of Experience
+  * Overview of Assignment 1
+  * Application quality hands-on (?)
+* Resource Provisioning Motivation (no hands-on)
+* Project Team Formation Time (if needed)
