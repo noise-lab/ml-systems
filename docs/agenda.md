@@ -43,3 +43,20 @@
   * Application quality hands-on (?)
 * Resource Provisioning Motivation (no hands-on)
 * Project Team Formation Time (if needed)
+
+# Lecture 4
+
+* Project office hours
+* Research in Networks/ML (Taveesh and Andrew)
+
+# Lecture 5
+
+* Resource allocation applications
+* QoE/Service Identification Hands-On
+
+# Lecture 6
+
+* Feature Extraction
+* Hands-On Activities
+   * Packet Statistics Extraction
+   * NetML Library
