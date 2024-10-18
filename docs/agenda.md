@@ -46,17 +46,25 @@
 
 # Lecture 4
 
+* Prof. Feamster out of town
 * Project office hours
 * Research in Networks/ML (Taveesh and Andrew)
 
 # Lecture 5
 
 * Resource allocation applications
-* QoE/Service Identification Hands-On
+  * Video bitrate adaptation (QoE)
+* QoE/Service Identification Hands-On (not completed in class)
 
 # Lecture 6
 
-* Feature Extraction
-* Hands-On Activities
-   * Packet Statistics Extraction
-   * NetML Library
+* Active and passive measurement
+   * Advantages and disadvantages of active and passive measurement
+     * Infrastructure considerations
+     * Measurements when you want them
+     * Systems costs considerations
+     * Privacy considerations
+   * Feature extraction from packet captures
+   * What is a flow? (5-tuple)
+* Hands-On Activity
+   * Packet Statistics Extraction - Flow Statistics (Manual)
