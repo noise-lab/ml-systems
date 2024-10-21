@@ -68,3 +68,14 @@
    * What is a flow? (5-tuple)
 * Hands-On Activity
    * Packet Statistics Extraction - Flow Statistics (Manual)
+
+# Lecture 7
+
+* Hands-On Activity
+   * Packet Statistics Extraction - Flow Statistics (netML)
+* Data Preparation and ML Pipelines
+* Hands-On Activity
+   * Data Preparation
+
+
+
