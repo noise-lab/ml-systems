@@ -79,3 +79,15 @@
 
 
 
+# Lecture 8
+
+* Hands-On Activity
+  * Data Preparation and Model Training (#7)
+* ML Pipelines
+  * Training and testing
+  * Train-test split
+  * Cross-validation
+  * Hyperparameter tuning
+  * Evaluation metrics
+* Hands-On Activity
+   * ML-Pipeline (#8)
