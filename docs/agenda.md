@@ -82,7 +82,7 @@
 # Lecture 8
 
 * Hands-On Activity
-  * Data Preparation and Model Training (#7)
+  * Data Preparation and Model Training (#6)
 * ML Pipelines
   * Training and testing
   * Train-test split
@@ -90,4 +90,18 @@
   * Hyperparameter tuning
   * Evaluation metrics
 * Hands-On Activity
-   * ML-Pipeline (#8)
+   * ML-Pipeline (#7)
+
+# Lecture 9
+
+* Hands-On Activity
+   * ML-Pipeline (#7)
+* Evaluation Metrics
+   * Accuracy
+   * Precision
+   * Recall
+   * ROC
+   * AUC
+* Midterm Topics Stop **Here** (Nothing below here!)
+* Supervised Learning Overview
+* Naive Bayes
