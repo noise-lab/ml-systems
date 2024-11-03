@@ -91,6 +91,7 @@
   * Evaluation metrics
 * Hands-On Activity
    * ML-Pipeline (#7)
+* Midterm Topics Stop **Here** (Nothing below here!)
 
 # Lecture 9
 
@@ -102,6 +103,5 @@
    * Recall
    * ROC
    * AUC
-* Midterm Topics Stop **Here** (Nothing below here!)
 * Supervised Learning Overview
 * Naive Bayes
