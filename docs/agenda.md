@@ -105,3 +105,14 @@
    * AUC
 * Supervised Learning Overview
 * Naive Bayes
+
+# Lecture 10 
+
+* In-Class Midterm
+
+# Lecture 11
+
+* Linear Regression
+* Hands-On Activity (#10 Linear Regression)
+* 
+
