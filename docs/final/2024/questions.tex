@@ -1,0 +1,188 @@
+\section*{Supervised Learning}
+\vspace*{-0.15in}
+
+\prob{2} Linear regression is suitable for modeling which types of
+relationships?
+\begin{center}
+    \begin{tabularx}{0.9\textwidth}{X X}
+        \correctanswercircle{Polynomial relationships} &
+        \answercircle{Any non-linear relationship} \\
+        \correctanswercircle{First-degree linear relationships} &
+        \answercircle{None of the above} \\
+    \end{tabularx}
+\end{center}
+\eprob
+
+\prob{2} Logistic regression is best suited for which type of task?
+\begin{center}
+    \begin{tabularx}{0.9\textwidth}{X X}
+        \answercircle{Non-linear prediction} & \correctanswercircle{Predicting probabilities for distinct outcomes} \\
+        \answercircle{Clustering} & \answercircle{Dimensionality reduction} \\
+    \end{tabularx}
+\end{center}
+\eprob
+
+\prob{2} What is one advantage of using a random forest over a single decision tree?
+\begin{center}
+    \begin{tabularx}{0.9\textwidth}{X X}
+        \answercircle{Simpler to interpret} &
+        \correctanswercircle{Reduced risk of overfitting} \\
+        \answercircle{Requires less computational power} & \answercircle{All
+        of the above} \\
+    \end{tabularx}
+\end{center}
+\eprob
+
+\prob{2} Describe {\bf two ways} that random forests introduce randomness into the
+model over basic decision trees.
+\answerbox{1.5}{Random forests introduce randomness by training on random
+subsets of the data and by considering a random subset of features at each
+split.}
+\eprob
+
+\section*{Unsupervised Learning}
+\vspace*{-0.15in}
+\prob{1} Which dimensionality reduction technique is most suited for
+visualization? (Select the single best answer.)
+\begin{center}
+    \begin{tabularx}{0.9\textwidth}{X X}
+        \answercircle{PCA} & \correctanswercircle{t-SNE} \\
+        \answercircle{Random Forest} & \answercircle{Logistic Regression} \\
+    \end{tabularx}
+\end{center}
+\eprob
+
+\prob{3} Describe how dimensionality reduction can improve model robustness.
+\eprob
+\answerbox{1.5}{Dimensionality reduction can help reduce the risk of
+overfitting by removing irrelevant features. This can improve model
+robustness by ensuring that the model generalizes well to unseen data.}
+
+\prob{1} Which clustering technique is density-based? (Select the single best answer.)
+\begin{center}
+    \begin{tabularx}{0.9\textwidth}{X X}
+        \answercircle{k-means} & \answercircle{GMM} \\
+        \correctanswercircle{DBSCAN} & \answercircle{Hierarchical clustering}
+        \\
+    \end{tabularx}
+\end{center}
+\eprob
+
+\prob{2} K-means clustering always creates the same clusters when run multiple times.
+\begin{center}
+    \yesnono
+\end{center}
+\eprob
+
+\prob{4} Consider the dendrogram and the cluster options below. Which of the
+following are valid clusters? (Select all that apply.)
+
+\begin{center}
+    \begin{minipage}{0.45\textwidth}
+            \begin{tabularx}{\textwidth}{X X}
+                        \correctanswercircle{\{A, B\}} & \answercircle{\{C,
+                E\}} \\
+                        \correctanswercircle{\{C, D\}} & \answercircle{\{E, F,
+                        G, A\}} \\
+                                \correctanswercircle{\{E, F, G\}} &
+                \answercircle{\{A, C, G\}} \\
+                    \end{tabularx}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.5\textwidth}
+            \begin{tikzpicture}[scale=0.8, transform shape] % Made the figure
+                smaller
+
+                        % Leaf nodes (labels moved down to -0.4)
+                        \node (A) at (0, -0.4) {A};
+                                \node (B) at (1, -0.4) {B};
+                                        \node (C) at (2, -0.4) {C};
+                                                \node (D) at (3, -0.4) {D};
+                                                        \node (E) at (4, -0.4)
+                                                        {E};
+                                                                \node (F) at
+                (5, -0.4) {F};
+                        \node (G) at (6, -0.4) {G};
+
+                                % Vertical lines for individual leaves
+                                \draw (0, 0) -- (0, 1);
+                                        \draw (1, 0) -- (1, 1);
+                                                \draw (2, 0) -- (2, 1);
+                                                        \draw (3, 0) -- (3,
+                1);
+                        \draw (4, 0) -- (4, 1);
+                                \draw (5, 0) -- (5, 1);
+                                        \draw (6, 0) -- (6, 1);
+
+                                                % Horizontal connections for
+                                        % first
+                                        % level
+                                                \draw (0, 1) -- (1, 1);
+                                                        \draw (2, 1) -- (3,
+                1);
+                        \draw (4, 1) -- (5, 1);
+
+                                % Merge lines for first level
+                                \draw (0.5, 1) -- (0.5, 2);
+                                        \draw (2.5, 1) -- (2.5, 2);
+                                                \draw (4.5, 1) -- (4.5, 2);
+
+                                                        % Horizontal
+                                                % connection for second level
+                                                        \draw (0.5, 2) --
+                (2.5, 2);
+
+                        % Merge line for second level
+                        \draw (1.5, 2) -- (1.5, 3);
+
+                                % Horizontal connection for second level (E-F
+                        % to the tree)
+                                \draw (4.5, 2) -- (4.5, 3);
+
+                                        % Final horizontal connection
+                                        \draw (1.5, 3) -- (4.5, 3);
+
+                                                % Final merge line to top
+                                                \draw (3, 3) -- (3, 4);
+
+                                                        % Attach G to the tree
+                                                        \draw (6, 1) -- (6,
+                4);
+                        \draw (3, 4) -- (6, 4);
+
+                            \end{tikzpicture}
+            \end{minipage}
+        \end{center}
+        \eprob
+
+
+\section*{Generative AI}
+\vspace*{-0.15in}
+
+\prob{3} Describe how a generative model for network traffic traces can
+improve model robustness for a model like quality of experience (QoE)
+inference.
+
+\answerbox{2}{ 
+A generating model for network traffic traces can help improve model
+robustness for QoE inference by providing a more diverse set of training
+data. This can help the model learn to generalize better to unseen data
+and improve its performance in real-world scenarios.}
+\eprob
+
+\section*{Feedback}
+\vspace*{-0.15in}
+\prob{1}
+Interest (1=Boring!; 10=Amazing!):
+\shortanswerbox{0.5}{5}
+Difficulty (1=Too easy; 10=Too hard):
+\shortanswerbox{0.5}{5}
+\eprob
+\prob{1}
+1. One thing you like. 2. One topic you would have wanted to see covered that
+wasn't:\\
+\answerbox{0.75}{1. The professor's jokes are so funny. 2. More free food!
+}
+\eprob
+
+
