@@ -114,5 +114,62 @@
 
 * Linear Regression
 * Hands-On Activity (#10 Linear Regression)
-* 
+
+# Lecture 12
+
+* Logistic Regression
+* Hands-On Activity (#11 Logistic Regression)
+
+# Lecture 13
+
+* Decision Trees and Ensembles
+* Advantages and disadvantages of decision trees
+* Random Forests
+  * Bagging / Design
+  * Advantages of Random Forest over Decision Trees
+
+
+# Lecture 14
+
+* What is representation learning?
+   * Deep Learning
+   * Neural Networks
+   * Backpropagation
+
+# Lecture 15
+
+* Dimensionality Reduction
+* Motivation for Dimensionality Reduction
+  * Visualization
+  * Computation/Training Time
+  * Interpretability
+  * Noise Reduction/Model Robustness
+* Example Dimensionality Reduction Techniques
+   * PCA
+   * t-SNE
+   * PVA vs. t-SNE - when to use which?
+
+
+# Lecture 16
+
+* Clustering
+   * K-means
+   * GMM
+   * Hierarchical Clustering
+   * DBSCAN
+* Hands-On Activity (#15 Clustering)
+
+# Lecture 17
+
+* Bit-level representation of network data (nPrint)
+  * Motivation
+  * Applications
+  * Challenges
+* Generative AI
+   * GANs
+   * Transformers
+   * Stable Diffusion
+* Reasons and motivation to use generative AI for network data
+  * Data augmentation
+  * Privacy constraints
 
