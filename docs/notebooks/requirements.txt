@@ -1,0 +1,15 @@
+dnslib==0.9.26
+dpkt==1.9.8
+matplotlib==3.10.1
+matplotlib-inline==0.1.7
+netml==0.7.1
+numpy==2.0.2
+pandas==2.2.3
+pcapml_fe==0.0.3
+pydotplus==2.0.2
+python-dateutil==2.9.0.post0
+scapy==2.5.0
+scikit-learn==1.5.2
+scipy==1.15.2
+seaborn==0.13.2
+statsmodels==0.14.4
