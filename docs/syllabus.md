@@ -133,6 +133,27 @@ No collaboration is permitted on quizzes or exams. All work submitted for the
 project must properly cite ideas and work that are not those of the students
 in the group.
 
+## Use of AI Tools and Large Language Models
+
+I acknowledge and even expect that you will use large language models (LLMs)
+and other AI tools for assistance in completing assignments. This is perfectly
+acceptable and encouraged. However, you are expected to understand the output
+these tools generate.
+
+AI-assisted coding improves efficiency, but only if you understand its outputs.
+Just as I would not be able to evaluate an LLM-produced essay in philosophy if
+I didn't understand the subject matter, these tools do you no good if you cannot
+understand, evaluate, improve, debug, and iterate on their output.
+
+Therefore, you are allowed to use AI tools to help automate anything you are
+confident that you understand well enough to implement manually yourself. This
+approach best simulates the real world, where you will inevitably need to know
+how to use these tools well and to your advantage, but you will ultimately be
+responsible for understanding the software and code that you produce.
+
+When using AI tools, please acknowledge their use in your submissions and be
+prepared to explain and defend any code or solutions you submit.
+
 ## Kindness, Respect, and Free Expression
 
 Topics in this course, particularly those that touch on ethics, policy, the
