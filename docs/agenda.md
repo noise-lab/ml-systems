@@ -4,7 +4,7 @@
   * Slack
   * Github Classroom
   * Canvas/Github
-  * Logistics (October 11)
+  * Logistics 
 * Coverage of syllabus
   * Course objectives
   * Topic outline
@@ -14,13 +14,13 @@
 * Lecture on course material
   * Introduction to Computer Networks
   * Packet Capture
-* Hands-On 1: Packet Capture
-  * Wireshark basics and installation
-  * Getting started with Jupyter, etc.
-
+* Getting Started with Hands-On 1 (Notebook Setup)
 
 # Lecture 2
 
+* Hands-On 1: Packet Capture
+  * Wireshark basics and installation
+  * Getting started with Jupyter, etc.
 * Introduction (Slides)
   * Motivating Applications
   * Security
