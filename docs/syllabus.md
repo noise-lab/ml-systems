@@ -21,10 +21,10 @@ All material will be available from the Github repository.
 
 | Component     | Amount |
 | --------      | ------ |
-| Exams         | 30%    |
-| Assignments   | 40%    |
-| Project       | 20%    |
-| Participation | 10%    |
+| Exams         | 45%    |
+| Assignments   | 20%    |
+| Project       | 30%    |
+| Participation | 5%     |
 
 **Exam.** The course will have a midterm exam and a final exam. The goal of these exams
 will be to test your knowledge of concepts covered in class. The format and
@@ -35,6 +35,14 @@ assignments (one every other week). These assignments will be logical
 extensions of hands-on assignments in class. If you have a laptop, you should
 be able to complete these assignments on personal computing equipment. If you
 need computing resources, please ask.
+
+**Important:** Assignments will be graded primarily for completion. While we
+encourage the use of AI tools to assist with assignment completion (with proper
+acknowledgment and explanation of your prompting approach), the key learning
+objective is understanding the underlying concepts. We reserve the right to test
+your understanding of assignment topics through various means including pop
+quizzes in class, oral examinations, midterm/final exams, or other assessment
+methods to ensure you have grasped the fundamental concepts behind the code.
 
 **[Project.](assignments/project.md)** The course will have a small project. You will have two options
 for completing the project. 
