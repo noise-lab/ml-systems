@@ -71,6 +71,12 @@ We may have occasional in-class quizzes to track your engagement with the
 material. These will be included in the participation grade, if applicable;
 don't worry if you miss one.
 
+**Optional Reading Responses.** Students may optionally submit reading
+responses on any of the assigned readings. These responses help me identify
+topics that would benefit from additional coverage or attention in class.
+Submitting thoughtful reading responses can count toward your participation
+grade.
+
 ## Prerequisites
 
 The only pre-requisite for the course is **Introduction to Computer Systems**. In
