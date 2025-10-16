@@ -9,8 +9,6 @@
 **This accommodation does not apply to exams in my courses.**
 
 - All exams in my courses are **untimed** - there are no time limits imposed
-- Students may use the full exam period to complete their work
-- Because exams are already untimed, the extra time accommodation does not provide additional benefit
 
 ### Reduced Distraction Testing Environment
 
@@ -19,7 +17,7 @@
 - All exams are administered in a quiet classroom setting
 - If you require a separate room due to your accommodation needs, you may take the exam **one day early** in my office or a TA's office
 - **The exam must be taken in the presence of a TA or instructor**
-- **Any rescheduled exams will include an additional oral component**
+- **Rescheduled exams may include an additional oral component, as appropriate**
 - **Important:** You must request alternate exam scheduling **at least two weeks in advance** of the exam date
 
 ### Computer Use for Exams
@@ -91,7 +89,7 @@ Alternative accommodations available:
 ### Approved and Implemented
 - Computer/laptop for note-taking in class
 - Photography of visual content
-- Separate exam room (with two weeks advance notice, includes oral component)
+- Separate exam room (with two weeks advance notice, may include oral component)
 - Flexibility with attendance/participation
 
 ### Not Applicable / Already Standard Practice
