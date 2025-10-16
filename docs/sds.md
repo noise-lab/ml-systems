@@ -17,7 +17,7 @@
 - All exams are administered in a quiet classroom setting
 - If you require a separate room due to your accommodation needs, you may take the exam **one day early** in my office or a TA's office
 - **The exam must be taken in the presence of a TA or instructor**
-- **Rescheduled exams may include an additional oral component, as appropriate**
+- Rescheduled exams may include an additional oral component, as appropriate
 - **Important:** You must request alternate exam scheduling **at least two weeks in advance** of the exam date
 
 ### Computer Use for Exams
