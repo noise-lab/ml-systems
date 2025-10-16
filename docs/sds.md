@@ -83,11 +83,8 @@ Alternative accommodations available:
 
 **For other in-class activities (e.g., presentation, debate):**
 - When these components are part of the course, they are essential learning requirements
-- If you anticipate difficulty attending your scheduled activity, please contact me at least **two weeks in advance**
-- We can discuss options such as:
-  - Rescheduling to a different session
-  - Participating remotely if technically feasible
-  - Alternative demonstration of the learning objectives (in consultation with SDS)
+- Students sign up for the date they wish to participate in these activities
+- Since you control when you participate, you can select a date that works with your schedule and accommodation needs
 
 ## Communication and Process
 
@@ -107,7 +104,6 @@ Alternative accommodations available:
 
 **Requires communication:**
 - Separate exam room (two weeks advance notice)
-- Rescheduling of in-class activities when applicable (two weeks advance notice)
 
 ### If You Have Concerns
 
