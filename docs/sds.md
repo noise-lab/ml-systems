@@ -66,10 +66,6 @@ Alternative accommodations available:
 - Every hour late (or fraction) counts against your balance
 - This policy already incorporates flexibility for students who need additional time
 
-**Medical exceptions:**
-- Absences with medical documentation do not count against your grace period
-- Contact me with medical documentation if you need additional time beyond your grace period
-
 **Important:**
 - You must still complete all assignments to pass the course
 - Once your grace period is exhausted, late work receives half credit if submitted within one week
@@ -79,10 +75,6 @@ Alternative accommodations available:
 **How it works:**
 - I do not take formal attendance in my courses
 - Participation is a component of your final grade
-- For students with attendance flexibility accommodations, I will work with you to find alternative ways to demonstrate engagement:
-  - Submitting reading responses (already an option for all students)
-  - Participating in office hours conversations
-  - One-on-one discussions with me or the TAs about course topics
 
 **For in-class quizzes:**
 - In-class quizzes are part of the participation grade
