@@ -86,31 +86,6 @@ Alternative accommodations available:
 - Students sign up for the date they wish to participate in these activities
 - Since you control when you participate, you can select a date that works with your schedule and accommodation needs
 
-## Communication and Process
-
-### Before Each Exam
-
-**If you need a reduced-distraction testing environment in a separate room:**
-- Contact me at least **two weeks in advance** of the exam
-- We will schedule you to take the exam one day early in my office or a TA's office, in the presence of a TA or instructor
-- The rescheduled exam will include an additional oral component
-- I will confirm the date, time, and location with you
-
-### For Ongoing Accommodations
-
-**Approved without further action needed:**
-- Computer/laptop use for note-taking in class
-- Photography of visual content (slides, whiteboard)
-
-**Requires communication:**
-- Separate exam room (two weeks advance notice)
-
-### If You Have Concerns
-
-- Reach out to me via email or during office hours
-- You can also contact your SDS director if you have questions about implementation
-- All discussions will be kept confidential
-
 ## Summary of Accommodations by Type
 
 ### Approved and Implemented
