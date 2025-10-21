@@ -254,11 +254,228 @@
 
 # Lecture 7
 
-* Hands-On Activity
-   * Packet Statistics Extraction - Flow Statistics (netML)
-* Data Preparation and ML Pipelines
-* Hands-On Activity
-   * Data Preparation
+* Course Transition: From Data Acquisition to Data Preparation
+  * Completed: How to get data out of networks
+  * Moving to: How to prepare data for ML models
+  * Looking ahead: Deep learning (weeks 6-7) - can throw raw data at models
+    * Tools: nPrint (bit-level representation)
+    * But first: Learn traditional feature extraction approaches
+
+* ML Pipeline Overview
+  * Input → Transformation → Dimensionality Reduction → Training → Output → Evaluation
+  * Each step has associated costs (systems consideration)
+  * Not just about accuracy - consider:
+    * Amount of training data required
+    * Data acquisition cost
+    * Ability to move data to model
+    * Time to detection (inference speed)
+    * Storage and transmission costs
+    * Compute requirements for transformation
+
+* Systems Considerations in ML for Networks
+  * **Key principle**: It's not always about 99% accuracy
+  * Important factors beyond accuracy:
+    * **Time to detection**: How quickly can model provide answer for system to act on it
+    * **Willingness to tolerate wrong answers**: Sometimes 90% accuracy quickly is better than 99% slowly
+    * **Training data requirements**: How much data needed
+    * **Data access**: Can we actually get the data we need
+    * **Model serving**: How to deploy model to where data is
+  * Example use case: QoE inference for network re-provisioning
+    * Need timely answers to add servers or adjust configuration
+    * Speed of inference matters as much as accuracy
+
+* Supervised vs. Unsupervised Learning Review
+  * **Supervised Learning**: Training with labels
+    * Mnemonic: "Supervising" the model with examples
+    * Can evaluate using labels as "answer key"
+  * **Unsupervised Learning**: Training without labels
+    * Common tasks: Clustering, pattern detection
+    * Can still do classification (e.g., anomaly detection with two clusters)
+    * Evaluation is harder (no answer key)
+
+* Features and Labels
+  * **Features**: Inputs to the model (covariates in statistics)
+  * **Labels**: What the model is trying to predict/classify (supervised learning only)
+  * Feature selection remains one of most important parts of modeling process
+  * How you represent data affects how model learns (or doesn't learn)
+
+* Data Representation Challenges in Network Systems
+
+  * **Scale**
+    * Example: UChicago campus traffic = 5-10 Gbps
+    * Generates ~1 GB per second of data
+    * Too much to process all at once for training
+    * Need strategies for managing volume (sampling, filtering, aggregation)
+
+  * **Sequential Dependencies**
+    * Network traffic has temporal ordering constraints
+    * Example: Can't exchange data before connection handshake completes
+    * No traffic should occur after connection ends
+    * Need to encode these dependencies in data representation
+    * Techniques: Positional encoding (like in transformers)
+    * Research area: How to represent temporal dependencies in network traces
+
+  * **Non-Uniform Time Series**
+    * Unlike audio (smooth) or video (relatively smooth even with VBR)
+    * Network traffic is very bursty
+    * Challenge: How to represent this to a model
+    * NetML solution: Compute statistics per time window (e.g., 5 seconds) instead of per packet
+    * Trade-off: Lose some information but handle burstiness
+
+  * **Multi-Flow Dependencies**
+    * Web browsers open ~8 parallel connections to servers
+    * How to represent relationships across multiple flows
+    * Still an open research question
+
+  * **Different Representation Types**
+    * **Event time series**: Binary (did traffic exceed threshold?)
+    * **Time-based**: Statistics computed per time bin
+    * **Volume-based**: Statistics computed per data volume (e.g., per megabyte)
+    * NetML library supports these different representations
+
+* Feature Engineering and Transformation
+
+  * **Why Feature Engineering Still Matters** (Despite Deep Learning)
+    * Reduces complexity → faster training and inference
+    * Easier to understand models
+    * Easier to maintain
+    * Some features easy to compute, others require state or deep packet inspection
+
+  * **Types of Feature Transformations**
+    * **Binary variables**: Threshold-based (e.g., traffic exceeded rate?)
+    * **Categorical variables**: Time of day, day of week (weekday vs weekend)
+    * **Scaling and normalization**: Common preprocessing
+    * **Aggregation**: Average, median, percentiles
+    * **Polynomial basis expansion**: Express non-linear relationships in linear models
+      * Linear models are fast and have provable properties
+      * Can capture non-linear patterns with feature expansion
+
+  * **Dimensionality Reduction**
+    * Reduces volume of data passed to model
+    * Systems benefits: lower storage, memory, compute
+    * Can use tree-based models (e.g., Random Forests) for feature importance
+      * Helps identify which features matter most
+      * Enables further dimensionality reduction
+
+* Data Quality Issues and Pitfalls
+
+  * **1. Erroneous/Missing Data**
+    * Example: Negative round-trip time values (OS bug in measurement software)
+    * **Critical first step**: Understand the process that led to erroneous data
+    * Question: Why am I getting missing/incorrect values?
+    * If you don't understand the cause, question the entire dataset
+    * **Always visualize and explore data before training**
+      * Look at distributions, outliers, unexpected values
+      * Not "tangential" - this is central to ML workflow
+    * Strategies for handling:
+      * Fix if possible (e.g., recompute from other available data)
+      * Remove erroneous data points
+      * Remove entire dataset if systemic issues
+    * **Beware of library defaults**: scikit-learn does automatic imputation
+      * May mask data quality issues
+
+  * **2. Insufficient Training Data**
+    * Not enough to discover appropriate patterns
+    * May not be able to discriminate classes or make accurate predictions
+
+  * **3. Non-Representative Training Data**
+    * **Challenge**: Often don't know if data is representative
+    * Examples in networking:
+      * Training on laptop Netflix data - will it work on Android phone?
+        * Different players, different resolutions
+        * May or may not generalize
+      * Training on Netflix - will it work on Amazon Prime?
+      * Training on campus network traffic vs. enterprise network
+        * Different application mixes (Canvas usage vs. enterprise apps)
+        * Could affect anomaly detection models
+    * **Important consideration**: Where will model be deployed?
+      * Training data should match deployment context
+
+  * **4. Irrelevant Features** (Overfitting Risk)
+
+    * **Classic Example: Husky vs. Wolf (Snow Detector)**
+      * Model learned to detect snow in background, not animal features
+      * Pixels indicating snow were most important, not animal characteristics
+
+    * **Networking Example: TTL-based Attack Detection (nPrint paper)**
+      * Model achieved high accuracy on attack detection
+      * Post-hoc analysis revealed it learned Time-To-Live (TTL) field
+      * **TTL explanation**:
+        * Starts at high value (e.g., 255)
+        * Decrements by 1 at each network hop
+        * Indirectly encodes network distance
+      * **Problem**: Model learned network distance, not attack characteristics
+        * Attacker from different location → model fails
+        * Legitimate traffic at same distance → false positive
+        * Essentially built a "topology detector" not attack detector
+      * Discovered after reviewer questioned what model was using
+
+    * **Defense strategies**:
+      * Use domain knowledge and intuition
+      * **Examine trained models post-hoc** (explainable AI)
+      * Look at feature importance and weights
+      * Ask: "Does this make sense? Is this relevant?"
+      * **Diversify training data** (important suggestion from class)
+        * Add noisy versions with varied irrelevant features
+        * Include data with different TTL values, timestamps, etc.
+        * Forces model not to over-rely on spurious correlations
+
+    * **Bias in ML** (Non-networking example)
+      * Finnish→English translation with gendered pronouns
+      * "He is a nurse" / "She is a doctor" reversed based on training data stereotypes
+      * Model does pattern matching on training distribution
+      * Root cause: Training data reflected societal biases
+      * Entire research area: Fairness and algorithmic transparency
+      * **Lesson for networking**: Be aware of biases in network datasets
+
+  * **5. Outliers**
+    * **Critical practice**: Always investigate outliers
+    * Mentor's advice: "Either you have a bug or a really interesting research paper" (mostly bugs)
+    * Examples:
+      * 30-second page load time - why did this happen?
+      * Negative RTT - measurement error
+    * Decision framework:
+      * Can it be explained by phenomenon you want to model? → Keep it
+      * Is it a measurement artifact? → Remove it (but understand if it's systemic)
+      * Is it a one-time anomaly? → Investigate thoroughly before deciding
+
+* Hands-On Activity: NetML Library
+  * **Purpose**: Feature extraction from network traffic
+  * Available on PyPI: `pip install netml`
+  * Compatible with Python 3.x
+  * **Key capabilities**:
+    * PCAP to flows conversion
+    * Statistical feature generation
+    * Multiple representation options (time-based, volume-based, event-based)
+  * **Important note**: Assignments don't require NetML
+    * Can complete assignments without it
+    * Library provided as useful tool for understanding feature extraction
+  * **Hands-on approach**:
+    * Follow README documentation
+    * Explore different feature extraction options
+    * Understand what statistics are being computed
+  * **Feedback welcome**: Open source project, contributions encouraged
+
+* Preview of Next Session (Friday)
+  * ML Pipelines and Evaluation Metrics
+  * Topics:
+    * False positives and true positives
+    * Accuracy, Precision, Recall
+    * F1 score
+    * ROC curves and AUC
+  * Will continue with NetML hands-on (more time allocated)
+
+* Key Midterm Concepts Highlighted
+  * Systems considerations beyond accuracy in ML for networks
+  * Difference between passive and active measurement (from previous lectures)
+  * Examples of non-representative training data in networking contexts
+  * Understanding and addressing irrelevant features
+  * Data quality issues and their impact
+
+* Technical Issues Noted
+  * Canvas outage (AWS issue) affecting file access
+  * Files to be posted on Slack as backup
+  * Some hands-on materials need cleanup/completion
 
 
 
