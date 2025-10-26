@@ -1,4 +1,6 @@
-# Lecture 1
+## Agenda
+
+### Meeting 1
 
 * Basics
   * Slack
@@ -16,7 +18,7 @@
   * Packet Capture
 * Getting Started with Hands-On 1 (Notebook Setup)
 
-# Lecture 2
+### Meeting 2
 
 * Hands-On 1: Packet Capture
   * Wireshark basics and installation
@@ -34,7 +36,7 @@
        * Analysis
 * Security Applications (Slides, Discussion)
 
-# Lecture 3
+### Meeting 3
 
 * Security Hands-On
 * More Motivation
@@ -44,13 +46,13 @@
 * Resource Provisioning Motivation (no hands-on)
 * Project Team Formation Time (if needed)
 
-# Lecture 4
+### Meeting 4
 
 * Prof. Feamster out of town
 * Project office hours
 * Research in Networks/ML (Taveesh and Andrew)
 
-# Lecture 5
+### Meeting 5
 
 * Follow-up from Previous Sessions
   * Q&A: Packet capture and network monitoring
@@ -239,7 +241,7 @@
   * This is how training data was collected for QoE inference models
   * (Note: May have been removed or changed by Netflix)
 
-# Lecture 6
+### Meeting 6
 
 * Active and passive measurement
    * Advantages and disadvantages of active and passive measurement
@@ -252,7 +254,7 @@
 * Hands-On Activity
    * Packet Statistics Extraction - Flow Statistics (Manual)
 
-# Lecture 7
+### Meeting 7
 
 * Course Transition: From Data Acquisition to Data Preparation
   * Completed: How to get data out of networks
@@ -479,21 +481,309 @@
 
 
 
-# Lecture 8
+### Meeting 8
 
-* Hands-On Activity
-  * Data Preparation and Model Training (#6)
-* ML Pipelines
-  * Training and testing
-  * Train-test split
-  * Cross-validation
-  * Hyperparameter tuning
-  * Evaluation metrics
-* Hands-On Activity
-   * ML-Pipeline (#7)
-* Midterm Topics Stop **Here** (Nothing below here!)
+* **Midterm Logistics and Study Resources**
+  * **Past Midterms Available**
+    * Previous exams with full solutions accessible on GitHub
+    * Compile LaTeX files to get PDF with or without solutions (toggle switch in LaTeX)
+    * Exam covers material through Meeting 8 only
+  * **Exam Format**
+    * In-class exam (next Friday)
+    * Designed to be completable in 30 minutes
+    * No strict time limit - take as much time as needed (typically 60-80 minutes max)
+    * Fits on approximately one double-sided sheet (makes grading easier, reduces time pressure)
+    * **Assignment-based question**: Always includes a question related to the assignment
+      * Not asking to write code, but may show code excerpts
+      * Understanding what you did in the assignment is critical
+  * **Performance Distribution**
+    * Median typically around 90%
+    * Left-tailed distribution (most students do well)
+    * Not designed to trick students
+  * **Feedback Questions**
+    * Three short questions at end: difficulty level, interest level, one suggestion
+    * Suggestion should be about the course, not the midterm
+    * Feedback reviewed before grading other questions
+  * **Study Strategy Suggestion**
+    * Can use LLMs to generate practice tests from notes, past exams, and agenda
+    * Feed all materials into LLM and ask for practice questions
+    * Professor experimenting with using LLMs to draft actual exam (will need editing)
+  * **Solutions to Hands-On Activities**
+    * All solutions through #8 will be provided by Monday
+    * Solutions for incomplete/skipped activities also provided for reference
 
-# Lecture 9
+* **Course Progress and Transition**
+  * **Ready for Machine Learning Models**
+    * Framework now complete: data acquisition → pipeline → evaluation
+    * Next phase (post-midterm): Learning about specific models
+    * Starting Monday: Supervised learning models (Naive Bayes, Linear Regression, etc.)
+  * **Assignment 1 Clarifications**
+    * **NetML is NOT required** for completing the assignment
+      * Some students chose to use it (that's fine)
+      * Assignment designed to be completed without NetML knowledge
+      * Assigned before NetML was introduced
+    * **Multi-class ROC/AUC**
+      * For resolution prediction: Can pick a threshold (high vs. low) to make it binary
+      * Or use scikit-learn's `roc_auc_score` with `multiclass` parameter (one-vs-rest approach)
+      * Graphing ROC for multiclass: Not required if using sklearn's built-in scoring
+    * **PCAP vs. Pickle File**
+      * Pickle file has all necessary features already processed
+      * In practice, would start from PCAP, but pickle saves that step for this assignment
+      * Use pickle file as validation/test set for real Netflix session prediction
+
+* **Model Training and Evaluation Fundamentals**
+
+  * **The Central Question: Does the Model Work?**
+    * **What does "work" mean?**
+      * High enough accuracy for prediction on the task
+      * Generalizes beyond training data (doesn't overfit)
+      * Can be applied to different datasets without retraining
+    * **Context: Supervised Learning**
+      * This discussion focuses on supervised learning (models with labels)
+      * Unsupervised learning evaluation is different (deferred to later)
+      * Goal: Can the model predict labels/outcomes given features?
+
+  * **The Bias-Variance Tradeoff (Most Important Concept)**
+    * **Understanding Model Complexity**
+      * X-axis: Model complexity (more training data, more features, higher-order polynomials)
+      * Y-axis: Prediction error (lower is better, but only to a point)
+      * Cyan line: Training error (what model sees during training)
+      * Red line: Test error (what model sees on unseen data - the real goal)
+    * **Underfitting vs. Overfitting**
+      * **Underfitting**: Model too simple, high error even on training set
+      * **Overfitting**: Model too complex, memorizes training data but fails on test data
+        * Example: Could fit perfect curve through all training points (zero training error)
+        * But that complex function won't generalize
+        * Network examples: Using TTL, IP addresses, timestamps as features
+      * **Sweet Spot**: Just enough complexity to minimize test error
+        * Balance between fitting training data and generalizing
+        * Global/local minimum on test error curve
+    * **The Challenge**: Can't see the red line during training
+      * Test set must remain unseen (like not giving students the exam in advance)
+      * Would defeat the purpose of evaluation
+      * Must use other techniques to estimate what test performance will be
+
+  * **Train-Test Split and Cross-Validation**
+    * **Basic Train-Test Split**
+      * **CRITICAL FIRST STEP**: Split data BEFORE any processing
+      * Common split: 80% training, 20% testing
+      * **Never touch test set during training** - lock it away immediately
+      * Only use test set for final evaluation
+    * **K-Fold Cross-Validation**
+      * **Purpose**: Estimate test performance without seeing actual test set
+      * **How it works**:
+        * Take training data and hold out portion (e.g., 20%) for validation
+        * Train on remaining 80%, test on held-out 20%
+        * Repeat K times with different held-out portions (K=5 is very common for 80/20 split)
+        * Average results across all folds
+      * **Use for hyperparameter tuning**:
+        * Try different model complexities (e.g., polynomial degrees, number of features)
+        * Evaluate on held-out validation sets
+        * Select parameters that minimize validation error
+        * Hope that performs well on final test set
+    * **When Cross-Validation May Fail: Model Drift**
+      * Training and test distributions can differ due to real-world changes
+      * Examples:
+        * Denial of service attack
+        * Flash crowd (Super Bowl traffic surge)
+        * COVID-19 (no traffic on campus)
+        * Seasonal changes (leaves on trees affecting radio propagation)
+      * **Verizon Example**: Cellular network performance prediction
+        * Summer vs. winter: Different radio propagation due to humidity, foliage
+        * Models trained in summer may not work in winter
+        * This is a model drift problem
+      * Model drift detection is active research area
+
+  * **Data Leakage - Critical Pitfall**
+    * **The Problem**: Accidentally letting test set information leak into training
+    * **Common Mistake Example**: Normalization/scaling
+      * Wrong: Take average of entire dataset → normalize → split train/test
+      * Why wrong: Test set statistics (mean, variance) influenced training
+      * Right: Split first → normalize using only training set statistics → apply same normalization to test
+    * **Best Practice**: FIRST thing in pipeline is train-test split
+      * Before normalization, before feature engineering, before anything
+      * Take 20% for test, put in a box, don't look at it
+      * Do all processing on training set only
+    * Very common, non-intuitive mistake even for experienced practitioners
+
+* **Evaluation Metrics Beyond Accuracy**
+
+  * **The Base Rate Fallacy**
+    * **Pregnancy Test Example**
+      * Test claims 99% accuracy
+      * Population pregnancy rate: 1%
+      * Can achieve 99% accuracy by always saying "not pregnant"
+      * But this test is useless for detecting actual pregnancies
+    * **Implication**: Accuracy alone is misleading when classes are imbalanced
+    * Need metrics that capture detection performance on minority class
+
+  * **Network Security Examples**
+    * **Email Spam Filtering**
+      * Spam rate historically ~90% of email
+      * Could get 90% accuracy by marking everything as spam
+      * **But**: Would miss job offers, important emails (high cost of false positives)
+      * **Preference**: Lower detection rate (70%) with very low false positive rate (0.0001%)
+      * Better to see some spam than to lose important legitimate email
+    * **Cancer Screening (Prostate Cancer)**
+      * Base rate very low (<1% of population)
+      * **Detection rate (True Positive Rate)**: Don't want to miss actual cancer
+      * **False Positive Rate**: Don't want unnecessary biopsies, surgeries
+      * Both rates matter, different people weight them differently
+      * Screening guidelines are controversial partly due to these tradeoffs
+
+  * **Confusion Matrix (Key Tool for Understanding Performance)**
+    * **Structure**
+      * Rows: Actual labels (ground truth)
+      * Columns: Predicted labels (model output)
+      * **Diagonal**: Correct predictions (want high numbers here)
+      * **Off-diagonal**: Errors (want low numbers here)
+    * **Key Metrics from Confusion Matrix**
+      * **True Positive (TP)**: Correctly predicted positive (diagonal, top-left for binary)
+      * **True Negative (TN)**: Correctly predicted negative (diagonal, bottom-right for binary)
+      * **False Positive (FP)**: Predicted positive, actually negative (off-diagonal)
+      * **False Negative (FN)**: Predicted negative, actually positive (off-diagonal)
+    * **Visual Reading**
+      * Scikit-learn shades confusion matrices for easy reading
+      * Darker diagonal = better performance
+      * Can compute all metrics below from confusion matrix
+    * **Multi-Class Extension**
+      * Can be N×N for N classes (e.g., 10×10 for 10-way classification)
+      * Shows which classes are confused with each other
+      * Example: How often is "bear" classified as "horse" or "rabbit"?
+
+  * **Core Evaluation Metrics Definitions**
+    * **Accuracy**: (TP + TN) / (TP + TN + FP + FN)
+      * How many predictions were correct overall
+      * Entire diagonal / entire matrix
+      * Misleading when classes imbalanced
+    * **Precision (Positive Predictive Value)**: TP / (TP + FP)
+      * Of things predicted positive, how many were actually positive
+      * 1 - false positive rate (roughly)
+      * Visual: True positives / predicted positive column
+    * **Recall (True Positive Rate, Sensitivity, Detection Rate)**: TP / (TP + FN)
+      * Of actual positives, how many did we detect
+      * How sensitive is the test to detecting positives
+      * Visual: True positives / actual positive row
+    * **Specificity (True Negative Rate)**: TN / (TN + FP)
+      * Of actual negatives, how many did we correctly identify as negative
+      * Visual: True negatives / actual negative row
+    * **F1 Score**: 2 × (Precision × Recall) / (Precision + Recall)
+      * Harmonic mean of precision and recall
+      * Single number capturing both metrics
+      * Range: 0 to 1, higher is better
+      * **Limitation**: Doesn't factor in true negative rate
+      * Not a silver bullet - often need to look at multiple metrics
+
+  * **Receiver Operating Characteristic (ROC) Curve**
+    * **Purpose**: Visualize tradeoff between detection and false positives as threshold varies
+    * **Axes**
+      * X-axis: False Positive Rate
+      * Y-axis: True Positive Rate (Detection Rate, Recall)
+    * **Interpretation**
+      * **Ideal curve**: Goes straight up (high detection) then right (low FPR)
+      * **Good model**: Curve bows toward top-left corner
+      * **Random classifier**: Diagonal line (worst case)
+      * Can read off tradeoffs: "For 90% detection, I get 5% false positive rate"
+    * **Area Under ROC Curve (AUC)**
+      * Single number summarizing ROC curve
+      * **Range**: 0.5 (random) to 1.0 (perfect)
+      * 0.5 = straight diagonal line (worst)
+      * 1.0 = perfect classifier
+      * If curve sags below diagonal, just flip predictions
+    * **Possible Midterm Question**: Read ROC curve, interpret tradeoffs, or sketch what good ROC should look like
+
+  * **Precision-Recall Curve**
+    * **Purpose**: Alternative visualization of model performance
+    * **Axes**
+      * X-axis: Recall (True Positive Rate)
+      * Y-axis: Precision (Positive Predictive Value)
+    * **Interpretation**
+      * **Ideal curve**: Stays high (top-right) as recall increases
+      * Want high precision even as we increase recall (say more "yes"es)
+      * Mirror image of ROC curve conceptually
+    * **Intuition**
+      * As model says "yes" more often, recall goes up
+      * But want precision to stay high (minimize noise in "yes" predictions)
+      * Curve shows how precision degrades as we increase recall
+
+* **Hands-On Activity: ML Pipeline (#8)**
+  * **Dataset**: Web browsing vs. port scan detection
+  * **Task**: Train-test split, model training, confusion matrix generation
+  * **Model**: Random Forest (haven't covered yet, but can use any binary classifier)
+  * **Key Steps**
+    * Convert PCAPs to flows (two separate files: HTTP traffic and scan traffic)
+    * Label data: One file is legitimate (0), other is attack (1)
+    * Combine labeled datasets
+    * Train-test split (use 80/20)
+    * Train model
+    * Generate predictions on test set
+    * Create confusion matrix
+    * Compute evaluation metrics (F1 score recommended over accuracy)
+  * **Cross-Validation Notes**
+    * K=5 is common (corresponds to 80/20 split done 5 times)
+    * Use for hyperparameter tuning
+    * Don't need to scale/normalize for Random Forest (one reason it's a favorite model)
+  * **Important**: Do this hands-on - critical for understanding evaluation
+    * Even if you've done train-test before, good review with network data
+    * Understanding these concepts is key for everything after midterm
+
+* **Key Concepts Students Should Understand** (Midterm Topics)
+  * **Suggested Midterm Topics**:
+    * Explain bias-variance tradeoff and the "sweet spot" in model complexity
+    * Why can't we see test error during training, and how do we estimate it?
+    * What is K-fold cross-validation and why do we use it?
+    * Define and compute: Accuracy, Precision, Recall, Specificity, F1 Score
+    * Read and interpret a confusion matrix (compute metrics from it)
+    * Explain base rate fallacy with examples (spam, medical tests)
+    * Why accuracy is insufficient for imbalanced datasets
+    * Example: Network features that could cause overfitting (IP addresses, TTL, timestamps)
+    * Read/interpret ROC curve or Precision-Recall curve
+    * What is data leakage and how to prevent it (normalize AFTER split)
+    * Tradeoffs between precision and recall in different applications (spam vs. cancer screening)
+  * **Most Important Takeaway**: Understanding the bias-variance tradeoff figure
+    * Relationship between model complexity, training error, and test error
+    * Finding the sweet spot for generalization
+    * This concept underpins everything in model training and evaluation
+
+* **NOT Covered in Detail**
+  * Mathematical derivations of metrics
+  * Proof of why cross-validation works
+  * Specific model algorithms (Random Forest details - coming later)
+  * Evaluation of unsupervised learning (deferred)
+  * How to compute Area Under Curve (AUC) by hand
+
+* **Project Proposal**
+  * **Due Date**: Originally Monday, extended to Friday (can use late hours)
+  * **Format**: Very short proposal
+  * **Required Information**:
+    * What are you doing? (Brief description)
+    * What data will you use? (MOST IMPORTANT - need data to do project)
+    * Why are you doing this? What do you hope to learn?
+  * **Data Resources**
+    * Many network ML datasets available (links provided or will be updated)
+    * Choose dataset first before finalizing project idea
+    * Don't wait until week 9 to find data
+  * **Purpose of Proposal**
+    * Ensure you think about project early (not day 4 of week 9)
+    * Verify you have access to necessary data
+    * Pick something that teaches you what you're interested in learning
+    * Get feedback/approval from instructor
+
+* **Preview of Next Session (Monday)**
+  * **Supervised Learning Models Begin**
+    * Finally doing machine learning models!
+    * Starting with Naive Bayes (non-parametric model)
+    * Historical application: First ML use in network security (spam filtering)
+    * Brush up on probability: Conditional probability, Bayes' rule
+  * **Future Topics**
+    * Meeting 10 (approx.): Linear Regression
+    * Later: Logistic Regression, SVM, Decision Trees, Random Forests, Deep Learning
+    * Keeping model coverage application-oriented (not proving least squares, etc.)
+    * Most students have seen some of these - focus on network applications
+
+**Midterm Coverage Stops Here** (Nothing below this point will be on the midterm)
+
+### Meeting 9
 
 * Hands-On Activity
    * ML-Pipeline (#7)
@@ -506,21 +796,21 @@
 * Supervised Learning Overview
 * Naive Bayes
 
-# Lecture 10 
+### Meeting 10 
 
 * In-Class Midterm
 
-# Lecture 11
+### Meeting 11
 
 * Linear Regression
 * Hands-On Activity (#10 Linear Regression)
 
-# Lecture 12
+### Meeting 12
 
 * Logistic Regression
 * Hands-On Activity (#11 Logistic Regression)
 
-# Lecture 13
+### Meeting 13
 
 * Decision Trees and Ensembles
 * Advantages and disadvantages of decision trees
@@ -529,14 +819,14 @@
   * Advantages of Random Forest over Decision Trees
 
 
-# Lecture 14
+### Meeting 14
 
 * What is representation learning?
    * Deep Learning
    * Neural Networks
    * Backpropagation
 
-# Lecture 15
+### Meeting 15
 
 * Dimensionality Reduction
 * Motivation for Dimensionality Reduction
@@ -550,7 +840,7 @@
    * PVA vs. t-SNE - when to use which?
 
 
-# Lecture 16
+### Meeting 16
 
 * Clustering
    * K-means
@@ -559,7 +849,7 @@
    * DBSCAN
 * Hands-On Activity (#15 Clustering)
 
-# Lecture 17
+### Meeting 17
 
 * Bit-level representation of network data (nPrint)
   * Motivation
