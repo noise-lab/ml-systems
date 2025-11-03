@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(make clean:*)",
+      "Bash(make all:*)",
+      "Bash(rm:*)",
+      "Bash(make:*)",
+      "Bash(awk '{sum += $1; print NR\"\"\"\". \"\"\"\"$1\"\"\"\" points\"\"\"\"} END {print \"\"\"\"\\nTotal:\"\"\"\", sum, \"\"\"\"points\"\"\"\"}')",
+      "Bash(awk:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

@@ -1,0 +1,232 @@
+\section*{Motivating Applications}
+\vspace*{-0.1in}
+\prob{2}
+Which of the following are examples of application quality metrics that machine learning models can help predict in video streaming systems?
+
+Select all that apply.
+
+\begin{center}
+\begin{tabularx}{0.9\textwidth}{X X}
+\correctanswercircle{Video resolution (e.g., 480p, 720p, 1080p)} &
+\correctanswercircle{Rebuffering events (video stalling)}
+\\
+\correctanswercircle{Startup delay before playback begins} &
+\answercircle{WiFi signal strength at the access point}
+\\
+\answercircle{Hard disk read/write speed} &
+\correctanswercircle{Number of quality changes during playback}
+\end{tabularx}
+\end{center}
+\eprob
+
+\prob{3}
+In adaptive bitrate (ABR) video streaming, a player observes that network bandwidth has temporarily increased. Would the player always immediately request the highest available quality?
+\framebox{
+\yesnono
+}
+
+Explain why or why not.
+
+\answerbox{1.0}{No. The player must balance: (1) Buffer occupancy - if buffer is low, highest quality takes longer to download risking rebuffering; (2) Avoiding jarring quality changes; (3) Fairness to other network traffic. Progressive quality adjustment is preferred.}
+\eprob
+
+\prob{3}
+Which of the following network features would be most useful for distinguishing between normal HTTP web browsing and HTTP scanning activity (e.g., Log4j vulnerability scanning)?
+Select all that apply.
+
+\begin{center}
+\begin{tabularx}{0.9\textwidth}{X X}
+\answercircle{Average packet size} &
+\correctanswercircle{Number of unique destination IPs per source}
+\\
+\correctanswercircle{Rate of connection attempts (connections/sec)} &
+\answercircle{Source IP geographic location}
+\\
+\correctanswercircle{Ratio of failed to successful connections} &
+\correctanswercircle{Number of unique User-Agent strings}
+\end{tabularx}
+\end{center}
+\eprob
+
+\prob{3}
+Which of the following traffic features would be most useful for detecting automated web scraping (e.g., downloading all posts from a social media profile) versus normal human browsing?
+Select all that apply.
+
+\begin{center}
+\begin{tabularx}{0.9\textwidth}{X X}
+\correctanswercircle{Rate of page requests (requests/second)} &
+\answercircle{Source IP address}
+\\
+\answercircle{Time of day of requests} &
+\correctanswercircle{Sequential access to pages from same author}
+\\
+\correctanswercircle{Time between requests vs. human reading speed} &
+\answercircle{Destination TCP port (80 or 443)}
+\end{tabularx}
+\end{center}
+\eprob
+
+\prob{4}
+DNS-based features can detect malware even when application traffic is encrypted (HTTPS).
+\framebox{
+\yesnoyes
+}
+
+Explain why or why not.
+
+\answerbox{1.0}{Yes. DNS queries remain unencrypted even when subsequent data traffic uses HTTPS. DNS shows which domains a device contacts, revealing malicious patterns (e.g., botnet command-and-control servers) regardless of encryption.}
+\eprob
+
+\section*{Data Acquisition}
+\vspace*{-0.1in}
+\prob{3}
+Which of the following are characteristics of passive network measurement?
+Select all that apply.
+
+\begin{center}
+\begin{tabularx}{0.9\textwidth}{X X}
+\answercircle{Generates test packets to measure performance} &
+\correctanswercircle{Observes real user traffic and behavior}
+\\
+\correctanswercircle{Does not disrupt network conditions} &
+\answercircle{Can be performed on-demand at any time}
+\\
+\answercircle{Requires no special network access} &
+\correctanswercircle{May raise privacy concerns (GDPR, etc.)}
+\end{tabularx}
+\end{center}
+\eprob
+
+\prob{2}
+A network flow is defined by which 5 header fields?
+Select all that apply.
+
+\begin{center}
+\begin{tabularx}{0.9\textwidth}{X X}
+\correctanswercircle{Source IP address} &
+\answercircle{Packet timestamp}
+\\
+\correctanswercircle{Destination IP address} &
+\correctanswercircle{Source port}
+\\
+\correctanswercircle{Destination port} &
+\correctanswercircle{Protocol (TCP, UDP, etc.)}
+\end{tabularx}
+\end{center}
+\eprob
+
+\prob{3}
+What is one advantage and one disadvantage of using flow records compared to full packet captures for machine learning applications?
+
+\answerbox{1.4}{Advantage: Much smaller storage footprint, more practical for long-term storage and large-scale analysis. Less privacy-invasive (like phone call records vs. recorded conversations). Disadvantage: Lose fine-grained timing information (per-packet inter-arrival times), making it impossible to detect rebuffering or bursty traffic patterns.}
+\eprob
+
+\section*{ML Pipeline and Data Quality}
+\vspace*{-0.1in}
+\prob{4}
+In Assignment 1, you identified video segments in Netflix traffic by detecting gaps (e.g., 1-second pauses) between packets rather than using fixed byte counts.
+
+(a) Why are video segments variable in size rather than always the same number of bytes?
+
+(b) Name one feature you could compute from segment-level statistics that would be useful for predicting video resolution.
+
+\answerbox{2.0}{(a) Adaptive bitrate streaming - higher resolution videos contain more data per segment. As network conditions change, player adjusts quality, so segment sizes vary. Same duration segments have different byte counts depending on resolution/bitrate. (b) Segment download rate (bytes/second or bits/second), segment size in bytes, packets per segment, or segment duration. Bitrate strongly correlates with resolution.}
+\eprob
+
+\prob{3}
+A model trained on university campus network traffic might fail when deployed on an enterprise network because the training data is non-representative.
+\framebox{
+\yesnoyes
+}
+
+Why or why not?
+
+\answerbox{2.0}{Yes. Campus networks have different traffic patterns: different applications (Canvas/Zoom vs. SAP/CRM), different user behaviors (students vs. employees), different time-of-day patterns. Models trained on one distribution may not generalize to another.}
+\eprob
+
+\prob{3}
+In class, we discussed the TTL (Time-To-Live) example from network attack detection. A model achieved high accuracy but relied heavily on the TTL field.
+
+(a) Briefly explain what TTL represents and why it's problematic for attack detection.
+
+(b) Suggest one strategy to prevent over-relying on this feature.
+
+\answerbox{2.25}{(a) TTL starts at high value (64/255), decrements by 1 per router hop, encoding network distance. Problematic because TTL has nothing to do with whether traffic is malicious - attacks can originate from any distance. Model learned topology, not attack characteristics. (b) Diversify training data to include attacks and benign traffic from wide range of network distances/TTL values, or remove TTL from feature set after discovering its influence via feature importance analysis.}
+\eprob
+
+\section*{Model Training and Evaluation}
+\vspace*{-0.1in}
+\prob{3}
+At optimal model complexity, test error is minimized in the bias-variance tradeoff.
+\framebox{
+\yesnoyes
+}
+
+What happens to model accuracy on the test data at high complexity?
+
+\answerbox{2.6}{Yes, optimal complexity minimizes test error. At high complexity: Model overfits - training error decreases but test error increases. Model memorizes training data idiosyncrasies (specific IPs, timestamps, TTL values) that don't generalize.}
+\eprob
+
+\prob{3} When preparing features for your model, you normalize throughput across
+all data, and after that split 80/20 into train/test sets. Is this a correct
+data preparation approach?  \framebox{ \yesnono }
+
+Why or why not?
+
+\answerbox{3.0}{No. Problem: Data leakage - test set statistics influenced training. Model has indirect access to test set, causing overly optimistic estimates. Fix: FIRST split data (80/20), THEN compute normalization statistics using ONLY training set, FINALLY apply those parameters to both sets. Test set must remain unseen during all preprocessing.}
+\eprob
+
+\prob{2}
+Which metrics are better than accuracy for evaluating spam detection (90\% spam rate)?
+Select all that apply.
+
+\begin{center}
+\begin{tabularx}{0.9\textwidth}{X X}
+\correctanswercircle{Precision} &
+\answercircle{Total number of emails processed}
+\\
+\correctanswercircle{Recall / TPR (of actual spam, what fraction caught)} &
+\correctanswercircle{F1 Score (harmonic mean of precision and recall)}
+\\
+\correctanswercircle{Confusion matrix showing all classifications} &
+\correctanswercircle{False Positive Rate (legitimate emails marked spam)}
+\end{tabularx}
+\end{center}
+\eprob
+
+\newpage
+\section*{Cross-Validation and Model Drift}
+\vspace*{-0.1in}
+\prob{3}
+K-fold cross-validation provides a more robust estimate of model generalization than a single train-validation split.
+\framebox{
+\yesnoyes
+}
+
+Why or why not?
+
+\answerbox{2.0}{Yes. K-fold splits training data into K portions, trains K models (each using K-1 for training, 1 for validation), and averages results. More robust because: uses more data per fold, reduces impact of unlucky splits, averaging gives better estimate of expected performance. Allows hyperparameter tuning without touching test set.}
+\eprob
+
+\prob{4}
+During COVID-19, campus traffic patterns changed dramatically. A pre-COVID trained model failed during COVID.
+
+(a) What is this phenomenon called?
+
+(b) Why doesn't cross-validation protect against this?
+
+\answerbox{2.4}{(a) Model drift (or distribution shift) - training distribution differs from deployment distribution due to real-world changes. (b) Cross-validation assumes training and test data drawn from same distribution (i.i.d.). It randomly splits data from same time period, so all folds share characteristics. Cannot detect when real-world deployment differs from training environment - only estimates generalization within same distribution.}
+\eprob
+
+\section*{Feedback}
+\vspace*{-0.25in}
+\prob{2}
+Interest (1=Boring!; 10=Amazing!):
+\shortanswerbox{0.5}{7}
+Difficulty (1=Too easy; 10=Too hard):
+\shortanswerbox{0.5}{6}
+
+One thing you like. One suggestion for improvement:
+
+\answerbox{0.75}{1. Real-world examples. 2. More office hours.}
+\eprob
