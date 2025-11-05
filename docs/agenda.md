@@ -802,8 +802,57 @@
 
 ### Meeting 11
 
+* Administrative Updates
+  * Second midterm announced for December 5th (Week 9, last Friday)
+  * Not cumulative - covers topics 9-16 (after first midterm)
+  * Cheat sheets now officially allowed (two sheets for second midterm)
+  * Past finals/second midterms available in course repo (2021, 2022, 2023)
+  * Regrade policy clarified
+  * Midterm solutions posted with partial credit explanations
+  * Solutions for hands-on activities to be released faster (before next class)
+
 * Linear Regression
-* Hands-On Activity (#10 Linear Regression)
+  * Review of least squares regression
+    * Minimizing residual sum of squares (squared error)
+    * Single input and multiple input scenarios
+  * Applications to network traffic forecasting
+  * Linear independence assumption of features
+  * Hands-On Activity: Linear Regression on Network Traffic (#10)
+    * Using netML for feature extraction
+    * Predicting bytes from packet counts
+    * Observing artifacts (e.g., acknowledgement packets)
+
+* Polynomial Basis Expansion
+  * Motivation: Capturing non-linear relationships with linear models
+  * Adding polynomial features (X, X², X³, etc.)
+  * Tradeoff: Model complexity vs. overfitting
+  * Hyperparameter tuning for polynomial degree
+    * Using cross-validation on training set
+    * Monitoring training vs. validation error
+  * Hands-On Activity: Basis Expansion
+    * Implementing polynomial features
+    * Evaluating different polynomial degrees
+
+* Model Complexity Control
+  * Regularization (Ridge Regression / L2)
+  * Penalty parameter (lambda/alpha) for coefficient shrinkage
+  * Tradeoff between prediction error and model complexity
+  * Related techniques: Lasso, Elastic Net
+  * Discussion: Individual lambdas per feature vs. single global lambda
+
+* Real-World Application Example
+  * Content Delivery Network (CDN) response time prediction
+  * Using kernel regression with radial basis functions
+  * Reference to Google web server deployment paper (Section 5)
+
+* Introduction to Logistic Regression (Preview)
+  * Linear models for binary classification (0/1 outcomes)
+  * Sigmoid function for mapping to probabilities
+  * Decision boundaries
+  * When logistic regression works well vs. poorly (linearly separable data)
+  * No closed-form solution (requires iterative optimization)
+  * Application preview: DNS query vs. response classification
+  * Preview of Hands-On Activity (#11 Logistic Regression)
 
 ### Meeting 12
 
