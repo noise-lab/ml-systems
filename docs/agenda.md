@@ -48,9 +48,67 @@
 
 ### Meeting 4
 
-* Prof. Feamster out of town
-* Project office hours
-* Research in Networks/ML (Taveesh and Andrew)
+* **Application Performance Inference - Video Quality of Experience**
+  * Relationship between throughput and application performance
+  * Video quality metrics: startup delay, resolution, resolution switches, rebuffering
+  * Challenge: Inference without direct endpoint access (ISP/infrastructure provider perspective)
+  * Encrypted traffic complicates inference - can't see frames, resolutions directly
+
+* **What Can Be Observed from Encrypted Traffic**
+  * Metadata available: packets/second, bits/second, packet sizes, timing
+  * Segment boundaries (gaps in packet sequences where bitrate switches occur)
+  * Segment download rates and counts
+  * Machine learning problem: infer quality metrics from observable metadata
+
+* **Service Identification via DNS**
+  * Domain Name System (DNS) maps domain names to IP addresses
+  * Passive observation: watch DNS query/response to identify service traffic
+  * Example: netflix.com lookup returns 3 IP addresses for redundancy
+  * Client typically tries first address, falls back to others if needed
+  * IP addresses vary by location (different answers in Chicago vs NYC)
+
+* **DNS-Based Traffic Filtering**
+  * Step 1: Observe DNS query for service domain (e.g., netflix.com)
+  * Step 2: Extract IP addresses from DNS response
+  * Step 3: Filter subsequent traffic to/from those IPs to isolate service traffic
+  * Challenge: Multiple services can share same IP (cloud hosting platforms like AWS)
+  * Challenge: IP addresses can change during session (Netflix manifest provides new URLs)
+
+* **Encrypted DNS and Future Challenges**
+  * DNS over HTTPS (DoH) encrypts DNS queries via browsers
+  * Queries go to CloudFlare, etc. instead of visible on network
+  * Can no longer use DNS for service identification
+  * Next wave: service identification becomes its own ML problem
+
+* **Netflix Streaming Internals (Live Demo)**
+  * Right-click → Inspect → Network tab shows browser requests
+  * First request: license manifest (now encrypted via POST requests)
+  * Manifest contains URLs for video segments
+  * Video fetched in ~4000 byte chunks via range requests
+  * Content delivery network domains: nflxvideo.net, ipv4-c###-ord###-ix.deploy.nflxvideo.net
+  * Multiple servers used simultaneously during playback
+  * Preview hovering triggers segment downloads (not actual playback)
+
+* **Hands-On Activity #4: Service Identification**
+  * Use DNS lookups to identify Netflix traffic in mixed packet capture
+  * Filter DNS traffic for Netflix domains
+  * Extract IP addresses from DNS responses
+  * Filter packet capture for traffic to/from Netflix IPs
+  * Count packets, bytes, and analyze traffic patterns
+  * Prepares for Assignment 1: video QoE inference
+
+* **Practical Complications**
+  * Packet captures contain mix of traffic (Netflix, web browsing, IoT devices)
+  * Not all Netflix traffic is playback (catalog browsing, previews)
+  * Identifying actual playback sessions requires additional inference
+  * These corner cases make real-world deployment challenging
+
+* **Course Administrative Notes**
+  * Canvas used for optional question submissions
+  * Allows instructor to tailor lecture emphasis to student questions
+  * Participation grade component
+  * Solutions to hands-on activities provided after class
+  * Agenda file updated with detailed notes from each session
 
 ### Meeting 5
 
