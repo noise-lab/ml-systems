@@ -2,31 +2,31 @@
 
 ### Meeting 1
 
-* Basics
+* **Basics**
   * Slack
   * Github Classroom
   * Canvas/Github
   * Logistics 
-* Coverage of syllabus
+* **Coverage of syllabus**
   * Course objectives
   * Topic outline
   * Due dates
   * What's new this year
   * Project
-* Lecture on course material
+* **Lecture on course material**
   * Introduction to Computer Networks
   * Packet Capture
-* Getting Started with Hands-On 1 (Notebook Setup)
+* **Getting Started with Hands-On 1 (Notebook Setup)**
 
 ### Meeting 2
 
-* Hands-On 1: Packet Capture
+* **Hands-On 1: Packet Capture**
   * Wireshark basics and installation
   * Getting started with Jupyter, etc.
-* Introduction (Slides)
+* **Introduction (Slides)**
   * Motivating Applications
   * Security
-* Hands-On Activities
+* **Hands-On Activities**
   * Packet Capture
     * Learning Objectives
        * Wireshark Setup
@@ -34,17 +34,17 @@
        * Packet Capture
        * Packet Capture to Pandas
        * Analysis
-* Security Applications (Slides, Discussion)
+* **Security Applications (Slides, Discussion)**
 
 ### Meeting 3
 
-* Security Hands-On
-* More Motivation
+* **Security Hands-On**
+* **More Motivation**
   * Application Quality of Experience
   * Overview of Assignment 1
   * Application quality hands-on (?)
-* Resource Provisioning Motivation (no hands-on)
-* Project Team Formation Time (if needed)
+* **Resource Provisioning Motivation (no hands-on)**
+* **Project Team Formation Time (if needed)**
 
 ### Meeting 4
 
@@ -112,7 +112,7 @@
 
 ### Meeting 5
 
-* Follow-up from Previous Sessions
+* **Follow-up from Previous Sessions**
   * Q&A: Packet capture and network monitoring
     * Does packet capture affect the network itself? (Generally no - passive observation)
     * Can you see all network traffic from your laptop? (No - only your device's traffic in modern networks)
@@ -125,7 +125,7 @@
     * Column labels still need cleanup
   * Request for more time on hands-on code walkthroughs
 
-* Resource Allocation Applications
+* **Resource Allocation Applications**
   * Definition and Context
     * Resource allocation: Managing finite resources (bandwidth, storage, compute) among competing demands
     * Short-term: Allocating fixed capacity among current users
@@ -180,7 +180,7 @@
       * Sometimes simple rules or linear models work well
       * Will start with linear regression, then polynomial basis expansion
 
-* Introduction to Data Acquisition
+* **Introduction to Data Acquisition**
   * Passive Measurement
     * Definition: Observing the network without affecting it
     * Key characteristic: Measurement does not change network conditions
@@ -281,7 +281,7 @@
     * Active: Generate test traffic, no privacy issues, flexible but application-specific
     * Classic tradeoff: Accuracy vs. Privacy vs. Flexibility vs. Access
 
-* Preview of Next Session (Friday)
+* **Preview of Next Session (Friday)**
   * Hands-On: Data Acquisition and Flow Statistics
     * Load packet traces
     * Create flow records from packet traces
@@ -293,7 +293,7 @@
     * Representing data for ML models
   * Moving toward ML model training
 
-* Netflix Player "Nerd Stats" Note
+* **Netflix Player "Nerd Stats" Note**
   * Can view detailed playback metrics with special keystroke (Ctrl+Alt+T or similar)
   * Provides overlay with frame rate, resolution, bitrate, etc.
   * This is how training data was collected for QoE inference models
@@ -301,7 +301,7 @@
 
 ### Meeting 6
 
-* Active and passive measurement
+* **Active and passive measurement**
    * Advantages and disadvantages of active and passive measurement
      * Infrastructure considerations
      * Measurements when you want them
@@ -309,19 +309,19 @@
      * Privacy considerations
    * Feature extraction from packet captures
    * What is a flow? (5-tuple)
-* Hands-On Activity
+* **Hands-On Activity**
    * Packet Statistics Extraction - Flow Statistics (Manual)
 
 ### Meeting 7
 
-* Course Transition: From Data Acquisition to Data Preparation
+* **Course Transition: From Data Acquisition to Data Preparation**
   * Completed: How to get data out of networks
   * Moving to: How to prepare data for ML models
   * Looking ahead: Deep learning (weeks 6-7) - can throw raw data at models
     * Tools: nPrint (bit-level representation)
     * But first: Learn traditional feature extraction approaches
 
-* ML Pipeline Overview
+* **ML Pipeline Overview**
   * Input → Transformation → Dimensionality Reduction → Training → Output → Evaluation
   * Each step has associated costs (systems consideration)
   * Not just about accuracy - consider:
@@ -332,7 +332,7 @@
     * Storage and transmission costs
     * Compute requirements for transformation
 
-* Systems Considerations in ML for Networks
+* **Systems Considerations in ML for Networks**
   * **Key principle**: It's not always about 99% accuracy
   * Important factors beyond accuracy:
     * **Time to detection**: How quickly can model provide answer for system to act on it
@@ -344,7 +344,7 @@
     * Need timely answers to add servers or adjust configuration
     * Speed of inference matters as much as accuracy
 
-* Supervised vs. Unsupervised Learning Review
+* **Supervised vs. Unsupervised Learning Review**
   * **Supervised Learning**: Training with labels
     * Mnemonic: "Supervising" the model with examples
     * Can evaluate using labels as "answer key"
@@ -353,13 +353,13 @@
     * Can still do classification (e.g., anomaly detection with two clusters)
     * Evaluation is harder (no answer key)
 
-* Features and Labels
+* **Features and Labels**
   * **Features**: Inputs to the model (covariates in statistics)
   * **Labels**: What the model is trying to predict/classify (supervised learning only)
   * Feature selection remains one of most important parts of modeling process
   * How you represent data affects how model learns (or doesn't learn)
 
-* Data Representation Challenges in Network Systems
+* **Data Representation Challenges in Network Systems**
 
   * **Scale**
     * Example: UChicago campus traffic = 5-10 Gbps
@@ -393,7 +393,7 @@
     * **Volume-based**: Statistics computed per data volume (e.g., per megabyte)
     * NetML library supports these different representations
 
-* Feature Engineering and Transformation
+* **Feature Engineering and Transformation**
 
   * **Why Feature Engineering Still Matters** (Despite Deep Learning)
     * Reduces complexity → faster training and inference
@@ -417,7 +417,7 @@
       * Helps identify which features matter most
       * Enables further dimensionality reduction
 
-* Data Quality Issues and Pitfalls
+* **Data Quality Issues and Pitfalls**
 
   * **1. Erroneous/Missing Data**
     * Example: Negative round-trip time values (OS bug in measurement software)
@@ -499,7 +499,7 @@
       * Is it a measurement artifact? → Remove it (but understand if it's systemic)
       * Is it a one-time anomaly? → Investigate thoroughly before deciding
 
-* Hands-On Activity: NetML Library
+* **Hands-On Activity: NetML Library**
   * **Purpose**: Feature extraction from network traffic
   * Available on PyPI: `pip install netml`
   * Compatible with Python 3.x
@@ -516,7 +516,7 @@
     * Understand what statistics are being computed
   * **Feedback welcome**: Open source project, contributions encouraged
 
-* Preview of Next Session (Friday)
+* **Preview of Next Session (Friday)**
   * ML Pipelines and Evaluation Metrics
   * Topics:
     * False positives and true positives
@@ -525,14 +525,14 @@
     * ROC curves and AUC
   * Will continue with NetML hands-on (more time allocated)
 
-* Key Midterm Concepts Highlighted
+* **Key Midterm Concepts Highlighted**
   * Systems considerations beyond accuracy in ML for networks
   * Difference between passive and active measurement (from previous lectures)
   * Examples of non-representative training data in networking contexts
   * Understanding and addressing irrelevant features
   * Data quality issues and their impact
 
-* Technical Issues Noted
+* **Technical Issues Noted**
   * Canvas outage (AWS issue) affecting file access
   * Files to be posted on Slack as backup
   * Some hands-on materials need cleanup/completion
@@ -1217,7 +1217,7 @@
 
 ### Meeting 10 
 
-* In-Class Midterm
+* **In-Class Midterm**
 
 ### Meeting 11
 
@@ -1717,25 +1717,25 @@
 
 ### Meeting 13
 
-* TBD
+* **TBD**
 
 
 ### Meeting 14
 
-* What is representation learning?
+* **What is representation learning?**
    * Deep Learning
    * Neural Networks
    * Backpropagation
 
 ### Meeting 15
 
-* Dimensionality Reduction
-* Motivation for Dimensionality Reduction
+* **Dimensionality Reduction**
+* **Motivation for Dimensionality Reduction**
   * Visualization
   * Computation/Training Time
   * Interpretability
   * Noise Reduction/Model Robustness
-* Example Dimensionality Reduction Techniques
+* **Example Dimensionality Reduction Techniques**
    * PCA
    * t-SNE
    * PVA vs. t-SNE - when to use which?
@@ -1743,24 +1743,24 @@
 
 ### Meeting 16
 
-* Clustering
+* **Clustering**
    * K-means
    * GMM
    * Hierarchical Clustering
    * DBSCAN
-* Hands-On Activity (#15 Clustering)
+* **Hands-On Activity (#15 Clustering)**
 
 ### Meeting 17
 
-* Bit-level representation of network data (nPrint)
+* **Bit-level representation of network data (nPrint)**
   * Motivation
   * Applications
   * Challenges
-* Generative AI
+* **Generative AI**
    * GANs
    * Transformers
    * Stable Diffusion
-* Reasons and motivation to use generative AI for network data
+* **Reasons and motivation to use generative AI for network data**
   * Data augmentation
   * Privacy constraints
 
