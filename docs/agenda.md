@@ -1717,7 +1717,374 @@
 
 ### Meeting 13
 
-* **TBD**
+* **Introduction to Deep Learning and Neural Networks**
+
+  * **Course Positioning and Context**
+    * Transition from traditional ML (regression, trees, ensembles) to deep learning
+    * Building on previous supervised learning concepts
+    * Most complex topic of the course
+    * Will continue through Meeting 14 (representation learning)
+    * Focus: Understanding fundamentals, not implementing from scratch
+
+  * **Why Deep Learning for Network Data?**
+    * **Traditional approach limitations**
+      * Manual feature engineering required for every problem
+      * Domain expertise needed to design good features
+      * Flow statistics, timing features, packet counts - all hand-crafted
+      * Time-consuming and problem-specific
+    * **Deep learning advantage**
+      * Learns features automatically from raw data
+      * Representation learning: discovers useful features during training
+      * Can work with minimal preprocessing
+      * Same architecture applies across many problems
+
+  * **Key Tool: nPrint (Packet-as-Bitmap Representation)**
+    * Converts raw packets into bitmap/image-like representation
+    * Feed packets directly to neural network
+    * No manual feature extraction needed
+    * Will cover in more detail later (Meeting 17)
+    * Enables end-to-end learning from raw network data
+
+* **Neural Network Fundamentals**
+
+  * **The Biological Neuron Analogy**
+    * Brain neuron: dendrites (inputs) → soma (processing) → axon (output)
+    * Weighted inputs combine at cell body
+    * Fires signal when combined input exceeds threshold
+    * Output travels to other neurons via axon
+    * Note: Analogy breaks down quickly; artificial neurons quite different
+
+  * **The Artificial Neuron (Perceptron)**
+    * **Components**:
+      * Inputs: x₁, x₂, ..., xₙ (features)
+      * Weights: w₁, w₂, ..., wₙ (learned parameters)
+      * Bias: b (learned parameter, like intercept in regression)
+      * Weighted sum: z = Σ(wᵢxᵢ) + b
+      * Activation function: f(z) → output
+    * **Mathematical operation**: output = f(Σ(wᵢxᵢ) + b)
+    * Single neuron is essentially weighted linear combination + non-linearity
+
+  * **Activation Functions (Critical Component)**
+    * **Why needed**: Without activation function, network is just linear regression
+      * Stacking linear operations stays linear
+      * Can't learn complex patterns
+      * Need non-linearity to capture real-world relationships
+
+    * **Sigmoid (σ)**
+      * Formula: σ(z) = 1 / (1 + e⁻ᶻ)
+      * S-shaped curve, output range [0, 1]
+      * Smooth gradient everywhere
+      * **Problems**:
+        * Saturates at extremes (gradient → 0)
+        * Causes vanishing gradient problem
+        * Outputs not zero-centered
+      * Historical importance: used in early neural networks
+      * Still used in final layer for binary classification
+      * Same function from logistic regression
+
+    * **Tanh (Hyperbolic Tangent)**
+      * Formula: tanh(z) = (eᶻ - e⁻ᶻ) / (eᶻ + e⁻ᶻ)
+      * S-shaped like sigmoid
+      * Output range [-1, 1]
+      * Zero-centered (advantage over sigmoid)
+      * Still saturates at extremes (vanishing gradient issue)
+      * Better than sigmoid for hidden layers but still problematic
+
+    * **ReLU (Rectified Linear Unit)** - Most Common Today
+      * Formula: ReLU(z) = max(0, z)
+      * Extremely simple: outputs input if positive, else zero
+      * **Advantages**:
+        * Very fast to compute
+        * No saturation for positive values
+        * Sparse activation (many neurons output zero)
+        * Gradient is either 0 or 1 (simple backprop)
+        * Works extremely well empirically
+      * **Disadvantage**: "Dying ReLU" problem
+        * Neurons can get stuck outputting zero
+        * Gradient is zero for z < 0
+        * Once dead, stays dead
+      * Default choice for hidden layers in modern networks
+
+    * **Leaky ReLU and Variants**
+      * Formula: max(0.01z, z) or similar
+      * Small negative slope for z < 0
+      * Addresses dying ReLU problem
+      * Variations: Parametric ReLU, ELU, etc.
+
+    * **Key Takeaway**: Activation function choice matters
+      * ReLU family most common in modern practice
+      * Sigmoid only for output layer in binary classification
+      * This is a design choice / hyperparameter
+
+  * **Single Neuron Limitations**
+    * Can only learn linear decision boundaries (even with activation function)
+    * Example: Cannot solve XOR problem
+    * Famous historical result that motivated multi-layer networks
+    * Need multiple neurons in multiple layers for complex patterns
+
+* **Feed-Forward Neural Networks (Multi-Layer Perceptrons)**
+
+  * **Network Architecture**
+    * **Input layer**: Raw features (not really a "layer" - just the data)
+    * **Hidden layer(s)**: One or more layers of neurons
+      * Each neuron receives all inputs from previous layer
+      * Applies weights, bias, and activation function
+      * "Hidden" because not directly observable (not input or output)
+    * **Output layer**: Final predictions
+      * Regression: typically one neuron, no activation (or linear)
+      * Binary classification: one neuron with sigmoid activation
+      * Multi-class: multiple neurons with softmax activation
+
+  * **Fully Connected (Dense) Layers**
+    * Each neuron connects to every neuron in previous layer
+    * Most common layer type in basic neural networks
+    * "Fully connected" and "dense" are synonymous
+    * Number of weights = (neurons in layer i) × (neurons in layer i-1)
+
+  * **Network Depth and Width**
+    * **Width**: Number of neurons per layer
+    * **Depth**: Number of layers
+    * More depth/width = more parameters = more capacity = more complex patterns
+    * But: more risk of overfitting, longer training time
+
+  * **Why Multiple Layers Work**
+    * First layer: learns simple features
+    * Second layer: combines simple features into complex ones
+    * Deep layers: hierarchical feature learning
+    * Example in vision: edges → shapes → object parts → full objects
+    * Network automatically learns feature hierarchy
+    * This is "representation learning"
+
+* **Training Neural Networks**
+
+  * **Forward Propagation**
+    * Input data flows through network layer by layer
+    * Each layer computes: activation(weights × inputs + bias)
+    * Final layer produces prediction
+    * Deterministic process once weights are set
+
+  * **Loss Functions**
+    * **Regression**: Mean Squared Error (MSE)
+      * L = (1/n) Σ(ŷᵢ - yᵢ)²
+      * Same as linear regression
+    * **Binary Classification**: Binary Cross-Entropy
+      * Measures difference between predicted probability and true label
+    * **Multi-class Classification**: Categorical Cross-Entropy
+      * Extension to multiple classes
+    * Loss function measures "how wrong" the predictions are
+
+  * **Gradient Descent Optimization**
+    * Goal: Minimize loss function by adjusting weights
+    * **Algorithm**:
+      1. Initialize weights randomly
+      2. Forward pass: compute predictions and loss
+      3. Compute gradient of loss with respect to each weight
+      4. Update weights: w_new = w_old - learning_rate × gradient
+      5. Repeat until convergence
+    * **Learning rate**: Hyperparameter controlling step size
+      * Too large: overshoots minimum, unstable
+      * Too small: very slow convergence
+      * Typical values: 0.001 to 0.01
+
+  * **Backpropagation (The Key Algorithm)**
+    * **What it does**: Efficiently computes gradients for all weights
+    * **How it works**:
+      * Start at output layer
+      * Compute gradient of loss with respect to output
+      * Use chain rule to propagate gradient backward through network
+      * Each layer computes gradient with respect to its weights
+      * Propagates gradient to previous layer
+    * **Chain rule application**:
+      * Gradient flows backward through activation functions
+      * Through weight matrices
+      * Through all layers back to input
+    * **Efficiency**: Single backward pass computes all gradients
+      * Much faster than computing each gradient independently
+      * Makes training deep networks feasible
+    * **Key innovation**: Made deep learning practical
+
+  * **Training Epochs and Batches**
+    * **Epoch**: One complete pass through entire training dataset
+    * **Batch**: Subset of training data used for one gradient update
+    * **Mini-batch gradient descent** (most common):
+      * Split training data into batches (e.g., 32, 64, 128 examples)
+      * Compute gradient on batch
+      * Update weights
+      * Move to next batch
+    * **Why batching**:
+      * More stable gradient estimates than single example
+      * Faster than waiting for full dataset
+      * Enables parallelization on GPU
+    * **Batch size**: Another hyperparameter to tune
+
+  * **Stochastic vs. Batch Gradient Descent**
+    * **Batch (Full-batch)**: Use all training data per update
+      * Most accurate gradient
+      * Very slow for large datasets
+    * **Stochastic (SGD)**: Use one example per update
+      * Fast but noisy
+      * Can escape local minima due to noise
+    * **Mini-batch**: Middle ground (most common in practice)
+
+* **Challenges in Training Deep Networks**
+
+  * **Vanishing Gradient Problem**
+    * **What happens**:
+      * Gradients get smaller as they propagate backward
+      * Early layers receive tiny gradients
+      * Weights barely update
+      * Network can't learn
+    * **Causes**:
+      * Sigmoid/tanh activation functions saturate
+      * Gradient < 1 multiplied many times → approaches zero
+      * Especially bad in deep networks (many layers)
+    * **Impact**: Deep networks train very slowly or not at all
+    * **Solutions**:
+      * ReLU activation (gradient is 1 for positive values)
+      * Batch normalization
+      * Residual connections (skip connections)
+      * Better weight initialization
+
+  * **Exploding Gradient Problem**
+    * Opposite problem: gradients become very large
+    * Weight updates too big
+    * Training becomes unstable
+    * Weights can become NaN (not a number)
+    * **Solutions**:
+      * Gradient clipping (cap maximum gradient value)
+      * Careful weight initialization
+      * Lower learning rate
+
+  * **Overfitting in Neural Networks**
+    * Very high capacity models (millions of parameters)
+    * Can memorize training data
+    * Poor generalization to test data
+    * **Solutions**:
+      * Regularization (L1, L2 penalties on weights)
+      * Dropout (randomly zero out neurons during training)
+      * Early stopping (stop training when validation error increases)
+      * Data augmentation
+      * More training data
+
+  * **Local Minima and Saddle Points**
+    * Loss landscape is non-convex (unlike linear regression)
+    * Many local minima exist
+    * Gradient descent can get stuck
+    * In practice: less of a problem than expected
+      * High-dimensional spaces have fewer problematic local minima
+      * SGD noise helps escape bad local minima
+
+* **Practical Considerations and Hyperparameters**
+
+  * **Network Architecture Choices**
+    * Number of layers (depth)
+    * Number of neurons per layer (width)
+    * Activation functions
+    * No universal formula - requires experimentation
+    * Start simple, add complexity if needed
+
+  * **Key Hyperparameters to Tune**
+    * Learning rate (most important)
+    * Batch size
+    * Number of epochs
+    * Network architecture (layers, neurons)
+    * Regularization strength
+    * Dropout rate
+    * Choice of optimizer (Adam, SGD, RMSprop)
+
+  * **Training Tips**
+    * **Always start simple**: Small network, few layers
+    * **Monitor training and validation loss**: Watch for overfitting
+    * **Use validation set**: Don't touch test set during development
+    * **Visualize training progress**: Plot loss curves
+    * **Normalize inputs**: Scale features to similar ranges
+    * **Initialize weights carefully**: Random but not too large/small
+    * **Use Adam optimizer**: Good default choice (adaptive learning rate)
+
+* **Why Deep Learning for Network Data?**
+
+  * **Comparison with Traditional ML**
+    * **Traditional (e.g., Random Forest)**:
+      * Manually extract flow statistics
+      * Engineer domain-specific features
+      * Feed features to classifier
+      * Interpretable and fast
+    * **Deep Learning**:
+      * Feed raw packets (via nPrint representation)
+      * Network learns features automatically
+      * End-to-end learning
+      * More complex, less interpretable
+
+  * **When to Use Deep Learning**
+    * Large amounts of training data available
+    * Complex patterns in data
+    * Raw data is high-dimensional (images, packets, audio)
+    * Manual feature engineering is difficult
+    * State-of-the-art performance needed
+
+  * **When Traditional ML May Be Better**
+    * Small dataset
+    * Need interpretability
+    * Limited computational resources
+    * Domain features are well understood
+    * Fast inference required
+    * Random forests often "good enough"
+
+* **Deep Learning in Network Security and Management**
+
+  * **Traffic Classification**
+    * Identify application from encrypted traffic
+    * Netflix vs. YouTube vs. web browsing
+    * nPrint + CNN: learns packet-level patterns
+
+  * **Intrusion Detection**
+    * Detect malicious traffic patterns
+    * Can learn complex attack signatures
+    * Challenge: labeled attack data is scarce
+
+  * **QoE Prediction**
+    * Video quality inference from traffic
+    * Assignment 1 used traditional features
+    * Could use deep learning with more data
+
+  * **Malware Detection**
+    * Network behavior patterns
+    * DNS query sequences
+    * Packet timing and sizes
+
+  * **Encrypted Traffic Analysis**
+    * Can't inspect payload due to encryption
+    * Deep learning on metadata: packet sizes, timing, counts
+    * Privacy vs. security tradeoff
+
+* **Preview of Next Session (Meeting 14)**
+  * **Representation Learning** (deeper dive)
+    * What do hidden layers actually learn?
+    * Visualizing learned features
+    * Transfer learning
+  * **Convolutional Neural Networks (CNNs)**
+    * Designed for spatial/structured data
+    * How they work with network packets
+    * nPrint application
+  * **Recurrent Neural Networks (RNNs)**
+    * Sequential data (time series, text)
+    * Application to network time series
+  * **Autoencoders**
+    * Unsupervised representation learning
+    * Dimensionality reduction
+    * Anomaly detection in networks
+
+* **Key Concepts to Remember**
+  * **Neuron**: Weighted sum + bias + activation function
+  * **Activation functions**: Introduce non-linearity (ReLU most common)
+  * **Feed-forward network**: Input → hidden layers → output
+  * **Forward propagation**: Data flows through network
+  * **Backpropagation**: Gradients flow backward to update weights
+  * **Gradient descent**: Iterative weight updates to minimize loss
+  * **Epochs**: Full passes through training data
+  * **Vanishing/exploding gradients**: Major training challenges
+  * **Representation learning**: Networks learn features automatically
+  * **Deep learning advantage**: No manual feature engineering needed
 
 
 ### Meeting 14
