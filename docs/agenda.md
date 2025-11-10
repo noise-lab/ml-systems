@@ -785,16 +785,377 @@
 
 ### Meeting 9
 
-* Hands-On Activity
-   * ML-Pipeline (#7)
-* Evaluation Metrics
-   * Accuracy
-   * Precision
-   * Recall
-   * ROC
-   * AUC
-* Supervised Learning Overview
-* Naive Bayes
+* **Midterm Exam Format and Expectations - Detailed Walkthrough**
+
+  * **Physical Format**
+    * Now 4 pages instead of 2 (bigger answer boxes as requested)
+    * Same amount of content, just more writing space
+    * Double-sided pages (no backs available)
+    * Answer boxes sized to indicate expected response length
+    * Don't write outside boxes - may not be visible in GradeScope
+
+  * **Question Types**
+    * Mix of multiple choice and short answer
+    * "Select all that apply" questions
+    * Yes/No questions with explanation boxes
+    * Explanation boxes worth real points (not just the checkbox)
+    * Professor cares about rationale as much as correct answer
+
+  * **Grading Philosophy**
+    * If you get yes/no wrong but explanation is good → partial credit
+    * Questions often ambiguous or underspecified
+    * GradeScope allows clustering similar answers
+    * If half the class gets question wrong → probably bad question
+    * Explanation boxes are your opportunity to save yourself
+    * Professor reads all explanations to understand reasoning
+
+  * **Time Expectations**
+    * Designed for ~30 minutes if fast
+    * Nominally 80 minutes, but untimed (can stay as long as needed)
+    * No after class, so could theoretically stay very long
+    * Not testing time/speed - testing understanding
+    * TAs take exam first; multiply their time by 2 for student estimate
+
+  * **Study Resources Provided**
+    * Exam format document (what to expect)
+    * Three past exams with solutions available
+    * Can use LLM to generate practice questions
+    * Professor uses LLM to draft exam (then edits extensively)
+    * Prompt file available showing how exam was generated
+    * All topics listed in exam instructions
+
+  * **What to Focus On**
+    * Topics explicitly listed in exam document
+    * Format matches past exams very closely
+    * Can see point distributions from past exams
+    * Professor edited draft, so fairly final (4 days before exam)
+    * "Don't feel like you have to write three pages"
+
+* **Take-Home Midterm (Assignment)**
+
+  * **Format and Scope**
+    * Similar to Assignment 1 (already completed)
+    * Application: Video conferencing quality (not Netflix)
+    * Public template (can find in advance if you look)
+    * Same rules as Assignment 1 regarding tools
+
+  * **Collaboration Policy - IMPORTANT**
+    * NO collaboration on take-home midterm (unlike Assignment 1)
+    * Do NOT work with others (only assessment with this requirement)
+    * Can use any tools EXCEPT other humans
+    * Can talk to TAs (they won't give answers, but can discuss)
+    * Purpose: "Good to struggle by yourself a little bit"
+    * Not about policing - about learning through struggle
+    * "People have outed themselves in embarrassing ways"
+
+  * **Stress Management**
+    * "It's going to be okay"
+    * "I hope everybody aces it"
+    * "You have everything you need"
+    * Goal: Pleasant experience (as pleasant as midterm can be)
+    * Will be posted evening of class (mid-evening)
+
+* **Project Proposal Timeline Clarification**
+
+  * **Due Date Confusion Resolved**
+    * Spreadsheet said "today" but syllabus unclear
+    * Syllabus said "beginning of week 5"
+    * **Clarified: End of Week 5** (not today)
+    * Posted to Slack to memorialize decision
+    * Will be added to agenda/class notes
+
+* **Student Questions from Canvas**
+
+  * **Three Comments Received**
+    1. AWS outage discussion (covered below)
+    2. Standard models for DDoS/malware detection (deferred to later)
+    3. Naive Bayes assumption about underlying distribution (covered in lecture)
+
+* **AWS Outage Discussion - Systems Perspective**
+
+  * **Consolidation and Brittleness**
+    * Increasing consolidation of services onto centrally managed infrastructure
+    * Created brittleness in internet systems not seen in modern times
+    * Research study 4 years ago (unpublished, on arXiv):
+      * Measured top 10,000 websites
+      * 26-27% hosted exclusively on Amazon
+      * Reviewers thought it was "boring" (it wasn't)
+      * Professor posted on LinkedIn: "I told you so"
+    * Lesson: "Don't let anybody tell you what you're doing is bullshit or boring"
+
+  * **Implications**
+    * **Censorship**: Easier to pull content offline (everything on Amazon)
+    * **Security and Availability**: Single points of failure
+    * **Extreme vulnerability**: Points of brittleness in the system
+
+  * **Relevance to Machine Learning**
+    * What-if scenario evaluations in large systems
+    * TA Chase has worked extensively on this
+    * Student Luca worked on this summer
+
+  * **Evolution of System Analysis**
+    * **Era 1: Pencil and Paper (when dinosaurs roamed)**
+      * Professor's advisor did everything on chalkboard
+      * Used calculus and closed-form equations
+      * Could model simple web servers mathematically
+      * Example: Calculate throughput of web app with math
+      * Professor "wasn't very good at calculus" and "doesn't like chalk"
+
+    * **Era 2: Simulators**
+      * Systems got too complicated for chalk
+      * Built network simulators: NS2, then NS3
+      * Joke about not getting to numbers higher than 3 (middle school reference)
+
+    * **Era 3: Machine Learning (Current)**
+      * Systems now so complex, closed-form equations intractable
+      * Assignment 1 is example: can't model video QoE with equations
+      * Front-end/back-end systems too complex
+      * Need ML to predict: page response time, traffic patterns, failures
+      * Questions now only answerable by machine learning:
+        * Will this change cause too much traffic to one datacenter?
+        * Will it cause routing loops?
+        * Will part of system meltdown under load?
+
+  * **Configuration Changes and ML**
+    * Used to know what would happen when changing web server config
+    * Now systems too complex to predict
+    * ML already playing a role in what-if analysis
+    * Will play even larger role in future
+    * "Who knows, maybe the code that broke was AI generated" (probably was)
+
+  * **Deferred Question**: Standard models for DDoS/malware
+    * Will cover as specific models are introduced
+    * Can't discuss SVM before learning SVM
+    * Will mention applications throughout course
+
+* **Naive Bayes Classifier - Comprehensive Coverage**
+
+  * **Probability Foundations Review**
+    * **Independence**
+      * Coin flip: Next flip doesn't depend on previous (50/50 always)
+      * Statistically independent events
+    * **Conditional Probability (Non-Independence)**
+      * Token prediction in LLMs
+      * Example: Given word "machine", what's probability of next word?
+      * "Learning" or "translation" more likely than "sandwich"
+      * Probability conditioned on what's already observed
+    * **Two key concepts**: Independence and conditional probability
+
+  * **Bayes Rule as a Classifier**
+    * **Formula**: P(Y|X) = [P(X|Y) × P(Y)] / P(X)
+    * Poll: About half the class has seen Bayes rule before
+    * **Reading it as a classifier**:
+      * Y = target prediction (e.g., spam or not spam)
+      * X = features (e.g., words in message)
+      * P(Y|X) = Probability of class given features
+      * P(X|Y) = Probability of features given class
+      * P(Y) = Prior probability of class
+      * P(X) = Prior probability of features (can drop this!)
+
+  * **Maximum A Posteriori (MAP) Prediction**
+    * **Ŷ = argmax_Y P(Y|X)**
+    * Pick the Y that maximizes posterior probability
+    * "Maximum a posteriori probability" (MAP)
+    * In English: Pick outcome that's most likely given observations
+    * Compare P(spam|X) vs. P(not spam|X), pick larger
+
+  * **Simplification: Dropping the Denominator**
+    * P(X) doesn't depend on Y (marginal probability)
+    * Same across all classes when comparing
+    * Can just compare numerators: P(X|Y) × P(Y)
+    * **Big advantage**: Don't need to know P(X)!
+      * Example: What's probability of word "machine" in all emails?
+      * "I don't freaking know" - billions of emails
+      * Thankfully, don't need to compute this
+
+  * **Handling Multiple Features (The "Naive" Part)**
+    * **Reality**: X is a vector of features (X₁, X₂, ..., Xₙ)
+    * All words or word combinations
+    * P(X|Y) = P(X₁, X₂, ..., Xₙ|Y) - joint distribution
+    * **Problem**: Need to evaluate joint probability
+      * Every email has different word combinations
+      * Can't estimate probability of exact word combination
+
+  * **Independence Assumption (Why "Naive")**
+    * **Assumption**: Features are independent
+    * P(X₁, X₂, ..., Xₙ|Y) = P(X₁|Y) × P(X₂|Y) × ... × P(Xₙ|Y)
+    * Probability of joint event = product of individual probabilities
+    * Undergraduate probability 101
+    * **Final classifier**: Ŷ = argmax_Y [P(Y) × ∏P(Xᵢ|Y)]
+
+  * **Reading the Classifier in Plain English**
+    * Probability email is spam = P(spam) × ∏P(word|spam)
+    * P(spam) = prior (e.g., 90% of email is spam)
+    * Multiply by probability of each word appearing in spam
+    * Words like "Viagra", "Rolex", "Canadian pharmacy" → high P(word|spam)
+    * Those words rare in legitimate email → low P(word|not spam)
+    * Compare spam score vs. not-spam score, pick higher
+
+  * **Why It's Called "Naive"**
+    * **Student question**: Are word combinations dependent?
+    * **Answer**: YES! Features are NOT independent at all
+    * Example: "machine" and "learning" are highly correlated
+      * If you see "machine" in this class, ~90% chance next word is "learning"
+      * Violates independence assumption completely
+    * Called "naive" because makes unrealistic independence assumption
+    * **Mystery**: It works anyway! Nobody fully understands why
+      * "Welcome to the rest of the quarter"
+      * Some theories exist, but not well understood
+      * Common theme: Models work despite violated assumptions
+
+  * **The Zero Probability Problem**
+    * **Student insight**: What if word never appears in training set?
+    * Example: "Viagra" never in legitimate email training set
+    * P(Viagra|legitimate) = 0
+    * Product becomes 0 → posterior probability = 0
+    * **Real scenario**: Professor sends assignment about spam filtering
+      * "We're going to do spam filtering, look for words like Viagra"
+      * Legitimate instruction email marked as spam!
+      * Zero probability because word not in legitimate training set
+
+  * **Solution: Smoothing**
+    * Never let probability be exactly zero
+    * Add small value like 0.01 (nudge)
+    * Scikit-learn has parameter to control smoothing amount
+    * Should be "super small number" not zero
+
+  * **Distribution Assumptions**
+    * Need to know P(Xᵢ|Y) for each feature
+    * **Categorical features**: Use Bernoulli distribution
+    * **Numerical features**: Common to assume Gaussian distribution
+    * **Does it hold in practice?** Sometimes better than others
+    * "But independence doesn't hold either, so what are we worried about?"
+    * Somehow it all works despite violated assumptions
+
+  * **Advantages of Naive Bayes**
+    * **Incredibly efficient**
+      * Unlike deep learning and transformers
+      * Basically multiplication and table lookup
+      * No GPU required, no 3-week training time
+    * **Small data requirements**
+      * Don't need gigantic dataset
+      * Just need good probability estimates
+      * Can assume distribution and compute from few samples
+    * **Works surprisingly well**
+      * Despite independence assumption not holding
+      * Despite distribution assumptions being approximate
+      * Mystery why, but empirically effective
+
+  * **Disadvantages**
+    * **Not good at learning feature relationships**
+      * Can't capture correlations between features
+      * Assumes everything independent
+    * **Sensitive to zero probabilities** (need smoothing)
+    * **Requires distribution assumptions**
+
+* **Historical Application: Spam Filtering**
+
+  * **Spam Assassin - Early Days**
+    * One of first ML applications in networking and security
+    * Open source project (still exists!)
+    * Originally 100% naive Bayes classifier
+    * Ran locally on your machine
+    * "Not a toy assignment" - this was real production spam filtering
+
+  * **Highly Configurable**
+    * Could tweak probability parameters
+    * Example: "I really am interested in Viagra, I buy a lot of that"
+    * Adjust P(word|class) values manually
+    * Corresponds to tweaking the math we learned
+
+  * **Arms Race: Attackers Adapt**
+    * **Phase 1**: Naive Bayes spam filters work
+    * **Phase 2**: Attackers figure out the algorithm
+    * **Countermeasure 1**: Attach Shakespeare to bottom of spam emails
+      * Adds legitimate words to shift probabilities
+      * Makes spam look more like legitimate email
+    * **Countermeasure 2**: White text on white background
+      * Shakespeare invisible to humans
+      * But parsed by naive Bayes filter
+      * Defeats spam detection
+
+  * **Exam Question Preview**
+    * "Why would attaching Shakespeare mess up naive Bayes?"
+    * Understand how it affects the math
+    * Not on this midterm (Naive Bayes not covered)
+    * But good question for final
+    * Don't need to compute - understand intuitively
+
+* **Hands-On Activity #9: SMS Spam Classification**
+
+  * **Dataset**
+    * SMS text message corpus
+    * Labels: spam or ham (legitimate)
+    * **Prior probabilities**:
+      * 86% ham (legitimate)
+      * 13% spam
+    * Different from email (which was ~90% spam historically)
+
+  * **Part 1: Data Preparation**
+    * Load dataset into DataFrame
+    * Columns: label and message text
+    * Cleanup: Remove commas, punctuation, etc.
+    * Train-test split (80/20)
+    * **Verify priors same in both splits** (good practice)
+
+  * **Building Vocabulary**
+    * Create universe of all words in training set
+    * Needed to compute P(word|class)
+    * "Use your favorite AI assistant" for this
+      * Would take long time to code manually in Python
+      * Not the learning objective here
+      * ~20 minutes even with assistance
+    * Count word frequencies in each class
+
+  * **Professor's Confession**
+    * Found errors in own preprocessing
+    * Some weird words in vocabulary
+    * "I've got some work to do"
+    * Demonstrates: Data cleaning is hard, iterative process
+
+  * **Part 2: Scikit-Learn Implementation**
+    * Used `MultinomialNB` classifier
+    * Works well with categorical features
+    * Had problems with Bernoulli version previously
+    * Much easier than implementing from scratch
+
+  * **Part 3: Implement from Math (Optional)**
+    * Build naive Bayes from the mathematical formula
+    * "Really don't expect you to do" but available
+    * Part 1 sets you up for this if interested
+    * Mostly for understanding, not practical
+
+  * **Time Expectations**
+    * Part 1: ~20 minutes (with AI assistance)
+    * Full completion: Not expected in class
+    * "Massive headache" without AI help
+    * Focus: Understanding concepts, not Python string manipulation
+
+* **Course Pacing and Next Steps**
+
+  * **This Week**
+    * Midterm on Friday (no lecture that day)
+    * Won't finish hands-on today (15-20 minutes left in class)
+
+  * **Next Week (Monday after midterm)**
+    * Cover topics 10 and 11 together
+    * Linear regression and logistic regression
+    * "Shovel you all those vegetables" in one class
+    * Both are linear models students have seen before
+    * Moving quickly through familiar material
+
+  * **Professor Available**
+    * After every class
+    * Can schedule evening Zoom calls
+    * Open to suggestions, feedback, questions
+    * "I hang out after class all the time"
+
+* **Key Takeaways**
+  * Naive Bayes: Simple, effective, historically important
+  * Independence assumption violated but works anyway
+  * First major ML application in network security
+  * Understanding math helps understand adversarial attacks
+  * Data preparation often hardest part (cleaning, preprocessing)
 
 ### Meeting 10 
 
@@ -802,70 +1163,503 @@
 
 ### Meeting 11
 
-* Administrative Updates
-  * Second midterm announced for December 5th (Week 9, last Friday)
-  * Not cumulative - covers topics 9-16 (after first midterm)
-  * Cheat sheets now officially allowed (two sheets for second midterm)
-  * Past finals/second midterms available in course repo (2021, 2022, 2023)
-  * Regrade policy clarified
-  * Midterm solutions posted with partial credit explanations
-  * Solutions for hands-on activities to be released faster (before next class)
+* **Administrative Updates**
 
-* Linear Regression
-  * Review of least squares regression
-    * Minimizing residual sum of squares (squared error)
-    * Single input and multiple input scenarios
-  * Applications to network traffic forecasting
-  * Linear independence assumption of features
-  * Hands-On Activity: Linear Regression on Network Traffic (#10)
-    * Using netML for feature extraction
-    * Predicting bytes from packet counts
-    * Observing artifacts (e.g., acknowledgement packets)
+  * **Second Midterm Logistics**
+    * Date: December 5th (Week 9, last Friday of term)
+    * Not cumulative - covers topics 9-16 only (after first midterm)
+    * Format similar to first midterm (in-class, untimed)
+    * 2023 final/second midterm found and added to repo
+    * All past exams now available: 2021, 2022, 2023
+    * 2023 exam was ~4 pages (longer than first midterm's 2 pages)
+    * Will cover supervised and unsupervised learning techniques
+    * First time covering autoencoders on exam
 
-* Polynomial Basis Expansion
-  * Motivation: Capturing non-linear relationships with linear models
-  * Adding polynomial features (X, X², X³, etc.)
-  * Tradeoff: Model complexity vs. overfitting
-  * Hyperparameter tuning for polynomial degree
-    * Using cross-validation on training set
-    * Monitoring training vs. validation error
-  * Hands-On Activity: Basis Expansion
-    * Implementing polynomial features
-    * Evaluating different polynomial degrees
+  * **Cheat Sheet Policy - IMPORTANT CHANGE**
+    * NOW OFFICIALLY ALLOWED for second midterm
+    * Can bring TWO sheets (double-sided) to second midterm
+    * Option 1: Bring sheet from first midterm + one new sheet
+    * Option 2: Make two completely new sheets
+    * Not previously announced in syllabus - will be added
+    * Found on instructions of old practice exams, but not widely communicated
+    * Professor's philosophy:
+      * Making cheat sheet is excellent study exercise
+      * Using it during exam actually slows you down
+      * Main benefit is in the preparation process
 
-* Model Complexity Control
-  * Regularization (Ridge Regression / L2)
-  * Penalty parameter (lambda/alpha) for coefficient shrinkage
-  * Tradeoff between prediction error and model complexity
-  * Related techniques: Lasso, Elastic Net
-  * Discussion: Individual lambdas per feature vs. single global lambda
+  * **Grading Approach and Philosophy**
+    * Uses GradeScope to cluster similar answers
+    * Gives credit for reasonable variations when question was ambiguous
+    * Example: "model drift" vs "concept drift" vs "data drift" all accepted
+    * Not testing jargon knowledge - testing understanding
+    * If 15 out of 40 students answer same way, likely question was unclear
+    * Midterm solutions posted with explanations of partial credit
 
-* Real-World Application Example
-  * Content Delivery Network (CDN) response time prediction
-  * Using kernel regression with radial basis functions
-  * Reference to Google web server deployment paper (Section 5)
+  * **Regrade Policy**
+    * Clear mistakes (answer matches solution but not given credit): Fixed immediately
+    * Subjective regrades (interpretation differences): Will review entire exam
+    * Rationale: Discourage point-hunting; likely got credit elsewhere
+    * Unlikely individual points will affect final grade
+    * Open to discussions about any question
 
-* Introduction to Logistic Regression (Preview)
-  * Linear models for binary classification (0/1 outcomes)
-  * Sigmoid function for mapping to probabilities
-  * Decision boundaries
-  * When logistic regression works well vs. poorly (linearly separable data)
-  * No closed-form solution (requires iterative optimization)
-  * Application preview: DNS query vs. response classification
-  * Preview of Hands-On Activity (#11 Logistic Regression)
+  * **Student Feedback Incorporated**
+    * Positive response to hands-on activities - will continue
+    * Solutions will be released faster - target: before next class
+    * Slide coverage confusion addressed:
+      * Students don't know which slides were actually covered vs. available
+      * Short-term fix: Will call out slide numbers/titles during lecture
+      * Long-term plan: Convert to markdown to auto-track slide usage
+    * NetML confusion on Assignment 1:
+      * Was NOT required for assignment (caused confusion for some)
+      * Assignment predates NetML introduction in course
+      * Can complete without NetML knowledge
+    * Request: More candy (noted)
+
+* **Linear Regression**
+
+  * **Fundamental Concepts**
+    * Poll: Everyone in class has seen linear regression before
+    * General supervised learning framework
+      * Goal: Learn function f(X) that predicts Y from input features X
+      * Given: Training examples (X, Y) pairs
+      * Find: Function that best predicts Y from X
+    * Example: Temperature (X) vs. People in park (Y)
+    * Fitting a line to data in simple case
+
+  * **Error Measurement**
+    * Prediction: Ŷ (Y-hat)
+    * True value: Y
+    * Error for single point: |Ŷᵢ - Yᵢ|
+    * Total error: Sum over all data points
+    * Two common approaches:
+      * Absolute error: Σ|Ŷᵢ - Yᵢ|
+      * Squared error: Σ(Ŷᵢ - Yᵢ)²
+    * Squared error automatically produces positive values (no need for absolute value)
+    * Further from true value = more amplification with squared error
+
+  * **Least Squares Linear Regression**
+    * Minimizes Residual Sum of Squares (RSS)
+    * Visual interpretation: vertical distance from points to line
+    * Red dotted lines in plot = (Ŷ - Y) for each point
+    * Single input: Y = mX + b (choosing slope m and intercept b to minimize RSS)
+    * Multiple inputs: Matrix/vector formulation (requires linear algebra)
+    * Has closed-form solution (can solve with derivatives)
+    * Scikit-learn typically works with multiple inputs (vector X)
+
+  * **Linear Independence Assumption**
+    * Features should be linearly independent
+    * Often not true in practice (features correlate)
+    * Many non-linear relationships in real data
+
+  * **Application: Network Traffic Forecasting**
+    * Using linear regression to predict future network traffic
+    * Still used in practice for this application
+
+  * **Hands-On Activity #10: Linear Regression on Network Traffic**
+    * **Setup**
+      * Use NetML for feature extraction from packet captures
+      * Natural relationship: bytes vs. packets in flows
+      * Task: Predict bytes from packet counts (columns 10 and 11 in NetML matrix)
+      * "Doomed to succeed" - intentionally simple relationship
+
+    * **Scikit-learn Workflow**
+      * Select features (X) and target variable (Y)
+      * Train model: `model.fit(X, Y)`
+      * Generate predictions for plotting
+      * Visualize: scatter plot of true values + regression line
+
+    * **Key Observation: Acknowledgement Packet Artifact**
+      * Plot shows two distinct clusters
+      * Upper cluster: Data packets (high bytes, variable packets)
+      * Lower cluster: Acknowledgement packets (low bytes, few packets)
+      * Model fits poorly to acknowledgements (prediction error)
+
+    * **Discussion: Why Does Model Fit to Upper Cluster?**
+      * Squared error amplifies larger numbers
+      * Higher byte counts have larger absolute errors
+      * Minimizing RSS prioritizes fitting larger values
+      * Trade-off: Good fit for data packets, poor fit for ACKs
+
+    * **Design Question: How to Fix This?** (Potential exam question)
+      * Approach 1: Rescale/normalize data
+        * Would help model see differences between data points
+        * Reduces impact of magnitude differences
+      * Approach 2: Separate packet types (Professor's preference)
+        * First classify: data packet vs. acknowledgement
+        * Train two separate linear models (one per type)
+        * Use appropriate model based on packet type
+        * Better captures the two distinct distributions
+      * Highlights: Sometimes one model isn't enough; pipeline may need classification → regression
+
+* **Polynomial Basis Expansion**
+
+  * **Motivation and Concept**
+    * Real data often has non-linear relationships between features and target
+    * Examples: squared relationships, cubed relationships, etc.
+    * Want to capture non-linearity while keeping linear regression
+    * Linear regression appeals:
+      * Computationally efficient
+      * Nice provable properties about error minimization
+      * Closed-form solution
+
+  * **How Basis Expansion Works**
+    * Key insight: "Changing form of data, not form of function"
+    * Instead of passing single feature X, create feature matrix
+    * Columns: [X, X², X³, ...] (polynomial powers of X)
+    * Example transformation:
+      * Original: Single column X
+      * Expanded: Matrix with X, X², X³ as separate columns
+    * Model still uses linear regression
+    * Exploring linear relationship between X² (as a feature) and Y
+    * Not giving model more features - giving additional representations of same feature
+
+  * **Implementation in Hands-On**
+    * Build feature matrix with polynomial terms
+    * Pass to standard linear regression model
+    * Model finds linear combination of polynomial features
+    * Effectively fitting high-degree polynomial to data
+
+  * **Overfitting Risk**
+    * Higher degree expansion → lower training error
+    * But: Risk of overfitting to training set
+    * Bias-variance tradeoff applies directly
+    * Very high degree = perfect fit to training data = poor generalization
+
+  * **Student Question: How to Choose Polynomial Degree?**
+    * Critical hyperparameter tuning question
+    * Answer (well explained by student Clarice):
+      * More degrees = more complex model = better training fit
+      * But comes at cost of overfitting
+      * Classic model complexity tradeoff
+
+  * **Hyperparameter Tuning Process**
+    * **DON'T touch test set** (reinforce this concept)
+    * Procedure:
+      1. Split training set further (train/validation)
+      2. Train models with different polynomial degrees (1, 2, 3, ...)
+      3. Evaluate on validation set (held-out portion of training)
+      4. Use K-fold cross-validation for robustness
+      5. Monitor training error vs. validation error
+      6. Watch for divergence (sign of overfitting)
+    * Stop when validation error starts increasing
+    * Best degree: Minimizes validation error
+    * This is hyperparameter optimization (degree is parameter of the model)
+
+  * **Connection to Previous Concepts**
+    * Same principle as bias-variance tradeoff curve from Meeting 8
+    * Training error decreases with complexity
+    * Validation/test error has U-shape (sweet spot)
+    * Find the minimum of validation error curve
+
+  * **Professor's Note**
+    * Could make great problem set question
+    * "Build pipeline to test hyperparameter" (degree selection)
+    * Good second midterm question candidate
+
+* **Model Complexity Control - Regularization**
+
+  * **Two Sources of Model Complexity in Linear Regression**
+    1. Basis expansion (polynomial degree)
+    2. Number of non-zero coefficients (how many features used)
+
+  * **Ridge Regression (L2 Regularization)**
+    * **The Problem**
+      * Pass model 20 features
+      * Model uses all 20 to minimize prediction error
+      * May only need 3 features for good prediction
+      * Want to reduce dimensionality and prevent overfitting
+
+    * **The Solution: Penalty Term**
+      * Modified error function: RSS + λ × Σ(coefficients²)
+      * Standard part: Σ(Ŷᵢ - Yᵢ)² (prediction error)
+      * Penalty part: λ × Σ(βⱼ²) (complexity penalty)
+      * Sum over squares of all feature coefficients
+
+    * **Penalty Parameter: λ (lambda)**
+      * Scikit-learn calls it `alpha`
+      * Controls trade-off between accuracy and complexity
+      * λ = 0: No penalty, standard linear regression (may use all features)
+      * High λ: Strong penalty, prefers fewer features (drives coefficients to zero)
+      * "Turning the knob" on how much you care about model complexity
+
+    * **How It Reduces Complexity**
+      * Non-zero coefficient = feature is being used
+      * Zero coefficient = feature is ignored
+      * Penalty encourages coefficients to be zero
+      * Reduces effective dimensionality of model
+      * Fewer features = simpler model = less overfitting
+
+    * **Hyperparameter Tuning for λ**
+      * Same procedure as polynomial degree selection
+      * Use cross-validation on training set
+      * Don't touch test set
+      * Try different λ values, monitor validation error
+      * Select λ that minimizes validation error
+
+  * **Student Question: Why Not Individual λ per Feature?**
+    * **Question**: Why single global λ instead of λⱼ for each feature?
+    * **Answer - Multiple Perspectives**:
+      1. **Could do it** - technically possible, gives more control
+         * Would allow weighting specific features differently
+         * More flexibility in feature selection
+      2. **Drawbacks**:
+         * Hyperparameter space becomes very large
+         * With N features, need to tune N different λ values
+         * Becomes combinatorial search problem
+         * No longer has closed-form solution
+         * Computationally expensive
+      3. **Standard approach benefits**:
+         * Single parameter to tune (simpler)
+         * Philosophy: "Don't care which features to zero out, just want fewer"
+         * More features used = worse, regardless of which ones
+      4. **What matters most**: Feature either in or out
+         * Small non-zero coefficient still keeps feature in model
+         * Still have high-dimensional model (doesn't help much)
+         * Real goal: Drop features completely (zero them out)
+      5. **Alternative approach**: Could search which features to drop
+         * Treat as feature selection problem
+         * But becomes combinatorial
+         * Wouldn't be solvable in closed form
+
+  * **Related Regularization Techniques**
+    * **Lasso** (L1 regularization)
+      * Uses absolute values instead of squares
+      * More aggressive at zeroing coefficients
+    * **Elastic Net**
+      * Combination of L1 and L2
+      * Gets benefits of both
+    * Tradeoffs between techniques not critical for this class
+    * All share same concept: penalize complexity
+
+* **Real-World Application Example**
+  * **Google Web Server Deployment Paper**
+    * Reference: Section 5 of previously assigned paper
+    * Application: Content Delivery Network (CDN) response time prediction
+    * Question: How fast will web search results return?
+    * Configuration changes: Adding/moving servers, redirecting traffic
+
+  * **Technique Used: Kernel Regression**
+    * Uses radial basis functions (type of basis expansion)
+    * Basically linear regression with basis expansion
+    * "Not much more complicated" than hands-on exercise
+    * Standard regression approach, proven in production
+
+* **Introduction to Logistic Regression (Preview for Next Session)**
+
+  * **What Is Logistic Regression?**
+    * Also a linear model (like linear regression)
+    * Designed for classification instead of regression
+    * Typically binary classification (two-class problems)
+    * Examples: 0/1, yes/no, spam/not spam, query/response
+
+  * **When It Works Well vs. Poorly**
+    * **Works well**: Linearly separable data
+      * Top plot example: clear decision boundary
+      * Low X values → Class 0
+      * High X values → Class 1
+      * Can draw line to separate classes
+    * **Works poorly**: Non-linearly separable data
+      * Example: XOR pattern (can't separate with line)
+      * Historically motivated neural networks
+      * No linear model handles this well
+    * Fortunately: Network data often has linear separability
+
+  * **The Sigmoid Function (Key Component)**
+    * **The Challenge**: Lines go to infinity in both directions
+      * But we only care about predictions in range [0, 1]
+      * Need to map linear function to probability range
+
+    * **The Solution**: S-shaped sigmoid function
+      * Maps any real number to range [0, 1]
+      * Formula produces characteristic S-curve
+      * Nice properties:
+        * Maximum value = 1 (certain positive)
+        * Minimum value = 0 (certain negative)
+        * Middle = 0.5 (uncertain)
+        * Smooth transition between classes
+
+    * **Trade-off**: Math becomes non-convex
+      * Can't take clean derivatives
+      * No closed-form solution (unlike linear regression)
+      * Must use iterative optimization
+      * Slower training than linear regression
+
+    * **Important Note**: Will see sigmoid again in deep learning
+      * Fundamental building block of neural networks
+      * Same S-shaped function
+
+  * **Common Use Cases**
+    * Binary classification (most common)
+    * Can be extended to multi-class
+    * Two-class is standard application
+
+  * **Preview of Hands-On #11: DNS Classification**
+    * Task: Classify DNS queries vs. responses
+    * Feature: Packet size in bytes
+    * Observation: Queries typically smaller than responses
+    * Natural binary classification problem
+
+    * **Alternative Application Discussed**:
+      * Could use logistic regression on linear regression data
+      * Classify: Data packet vs. Acknowledgement
+      * Feature: Byte count
+      * Larger bytes → Data packet
+      * Smaller bytes → Acknowledgement
+      * Would be more coherent approach than two linear models
+
+  * **Next Session Plan**
+    * Start with Hands-On #11 (Logistic Regression)
+    * Finish logistic regression coverage
+    * Support Vector Machines (no hands-on)
+    * Decision Trees and Ensembles (professor's favorite)
+    * Goal: End of Week 6 = through Topic 12
 
 ### Meeting 12
 
-* Logistic Regression
-* Hands-On Activity (#11 Logistic Regression)
+* **Decision Trees**
+  * **Basic Concept and Representation**
+    * Dividing feature space into regions through sequential splits
+    * Tree structure: internal nodes (decisions), leaf nodes (predictions/classifications)
+    * Splits based on feature thresholds (for numerical features)
+    * Visual representation: decision boundaries in feature space
+  * **Decision Trees for Regression vs. Classification**
+    * Regression: Predict continuous values (e.g., baseball player salary)
+      * Leaf nodes contain mean of training points in that region
+      * Evaluate using Residual Sum of Squares (RSS)
+    * Classification: Predict categorical outcomes (e.g., dog/cat/horse)
+      * Leaf nodes contain class labels
+      * Evaluate using classification error, Gini index, or entropy
+  * **How Splits Are Determined**
+    * For regression: Minimize RSS in resulting regions
+    * For classification: Minimize Gini index or entropy (measure of class purity)
+    * Exhaustive search over features and thresholds
+    * Greedy approach: choose best split at each node
+  * **Model Complexity and Tree Depth**
+    * Tree depth = number of sequential splits
+    * Deeper trees = more complex models
+    * Maximum depth: each training point in its own region (perfect training accuracy, severe overfitting)
+    * Growing strategy: grow large tree, then prune back
+    * Can't just stop at local minimum (might miss important deeper splits)
+  * **Advantages of Decision Trees**
+    * Extremely easy to understand and interpret
+    * Explainable: can trace path through tree to explain any prediction
+    * Graphically intuitive
+    * Handles mixed feature types (qualitative + quantitative) without preprocessing
+    * No need to normalize/scale features
+    * Mirrors human decision-making processes
+  * **Disadvantages of Decision Trees**
+    * Very sensitive to small changes in training data (brittle)
+    * Initial splits cascade through entire tree structure
+    * Generally poor performance without ensemble methods
+    * High variance (small data changes cause big model changes)
+    * Almost never used alone in modern ML applications
+
+* **Ensemble Methods**
+  * **General Concept**
+    * Train multiple models instead of relying on single model
+    * Combine predictions through voting (classification) or averaging (regression)
+    * Key requirement: models must be different (can't just train same model 10 times)
+    * Introduce variation through:
+      * Different training data subsets (bagging)
+      * Different feature subsets (random forests)
+      * Sequential error correction (boosting)
+  * **Bagging (Bootstrap Aggregation)**
+    * Statistical technique: bootstrapped aggregation → "bagging"
+    * **Process**:
+      * Create multiple training sets through random sampling with replacement
+      * Sample size = original training set size
+      * Typically captures ~2/3 of unique data points (with repeats)
+      * Train separate tree on each bootstrap sample
+      * Aggregate: vote (classification) or average (regression)
+    * Reduces variance compared to single decision tree
+    * Still using same features at each split
+
+* **Random Forests**
+  * **Key Innovation Beyond Bagging**
+    * Bagging PLUS random feature selection at each split
+    * At each node: consider only random subset of features for splitting
+    * In 2D example: flip coin to decide whether to split on X1 or X2
+    * In high dimensions: randomly select subset of features per split
+    * Further decorrelates trees (reduces correlation between ensemble members)
+  * **Complete Random Forest Algorithm**
+    * Step 1: Create bootstrap sample (random sampling with replacement)
+    * Step 2: Build tree, but at each split:
+      * Randomly select subset of features
+      * Choose best split from only those features
+      * Still optimize threshold within selected features
+    * Step 3: Repeat for many trees (typical: 100-500 trees)
+    * Step 4: Aggregate predictions across all trees
+  * **Feature Importance**
+    * Random forests provide feature importance scores
+    * Based on average reduction in RSS (or Gini/entropy) per feature across all trees
+    * Helps identify which features drive predictions
+    * Useful even if not using random forest as final model (exploratory analysis)
+  * **Advantages of Random Forests**
+    * Much more accurate than single decision trees
+    * Very robust to changes in training data
+    * Efficient to train and extremely fast for inference
+    * No need to normalize or scale features
+    * Handles mixed feature types naturally
+    * Provides feature importances
+    * One of the most effective out-of-the-box classifiers
+    * Professor's go-to first model to try on new problems
+  * **Hyperparameters**
+    * Number of trees in forest
+    * Maximum tree depth (controls complexity)
+    * More trees + deeper trees = more complex = more potential for overfitting
+    * Same bias-variance tradeoff considerations as other models
+
+* **Boosting (Brief Overview)**
+  * **Different Ensemble Approach**
+    * Sequential rather than parallel
+    * Uses short "stubby" trees (depth 1-3)
+    * Focus on correcting errors from previous trees
+  * **Algorithm**
+    * Train initial shallow tree on data
+    * Identify misclassified examples
+    * Increase weights on misclassified points
+    * Train next tree on reweighted data (emphasizes previous errors)
+    * Add to ensemble and repeat
+  * **Hyperparameters**
+    * Number of trees (more trees = more complexity)
+    * Tree depth per boosted tree (typically very shallow)
+    * Shrinkage parameter (learning rate / sensitivity to errors)
+  * **Note**: Covered for completeness but not emphasized for exam
+
+* **Hands-On Activity: IoT Privacy with Random Forests (#12)**
+  * **Application Context**
+    * Research on privacy risks in IoT network traffic
+    * Question: Can network traffic reveal in-home activities?
+    * Collaboration with PhD student Noah Apthorpe
+    * Published research papers on this topic
+  * **Specific Problem: Motion Detection via Network Traffic**
+    * Device: Nest camera (sends video clips to cloud when motion detected)
+    * Observable: Network traffic rates increase when motion occurs
+    * Goal: Classify camera state (motion vs. idle) from traffic volume
+    * Privacy implication: Encrypted traffic still reveals behavioral patterns
+  * **Dataset**
+    * Packet captures from Nest camera converted to traffic rates
+    * Time series of upload/download rates
+    * Labels: motion events vs. idle periods
+  * **Note on Problem Complexity**
+    * Intentionally simple ML problem (could solve with threshold)
+    * Focus on learning concepts, not struggling with difficult modeling
+    * Most notebooks use "easy" problems so students can focus on techniques
+  * **Tasks in Notebook**
+    * Data already formatted (provided to students to avoid timezone/formatting issues)
+    * Train decision tree classifier
+    * Train random forest classifier
+    * Compare performance
+    * Explore feature importance (if time permits)
+    * Optional: Generate confusion matrix
+  * **Discussion Topics**
+    * Privacy risks from traffic analysis even with encryption
+    * Countermeasures: traffic padding, rate smoothing
+    * Future topic: Privacy and ML (potentially Week 9)
 
 ### Meeting 13
 
-* Decision Trees and Ensembles
-* Advantages and disadvantages of decision trees
-* Random Forests
-  * Bagging / Design
-  * Advantages of Random Forest over Decision Trees
+* TBD
 
 
 ### Meeting 14
