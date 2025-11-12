@@ -821,10 +821,10 @@
 
 ### Meeting 14
 
-* What is representation learning?
-   * Deep Learning
-   * Neural Networks
-   * Backpropagation
+* Bit-level representation of network data (nPrint)
+  * Motivation
+  * Applications
+  * Challenges
 
 ### Meeting 15
 
@@ -847,14 +847,10 @@
    * GMM
    * Hierarchical Clustering
    * DBSCAN
-* Hands-On Activity (#15 Clustering)
+* Hands-On Activity (#16 Clustering)
 
 ### Meeting 17
 
-* Bit-level representation of network data (nPrint)
-  * Motivation
-  * Applications
-  * Challenges
 * Generative AI
    * GANs
    * Transformers
