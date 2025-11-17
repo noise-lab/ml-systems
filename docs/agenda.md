@@ -2089,14 +2089,233 @@
 
 ### Meeting 14
 
-* **What is representation learning?**
-   * Deep Learning
-   * Neural Networks
-   * Backpropagation
-* **Bit-level representation of network data (nPrint)**
-  * Motivation
-  * Applications
-  * Challenges
+* **Learning Traffic Representations with nPrint**
+
+  * **Motivation: The Traditional ML Pipeline Problem**
+    * Every network traffic analysis task requires reinventing the entire pipeline
+    * Example workflows that require separate pipelines:
+      * Application identification (Netflix vs. YouTube vs. web browsing)
+      * Attack detection (port scans, denial of service, exploits like Log4J)
+    * Typical pipeline steps that must be repeated:
+      1. Collect and label traffic data
+      2. Design task-specific features (packet sizes, inter-arrival times, connection patterns, rates)
+      3. Engineer features (write code to extract them from packet traces)
+      4. Train models
+      5. Start over for next problem
+
+  * **Why Feature Engineering is Expensive**
+    * Requires significant time investment
+    * Demands domain expertise
+    * Takes effort even with modern tools and libraries
+    * Question posed: Could we generalize this pipeline?
+      * Throw traffic at model with labels → get results
+      * Let deep learning learn features automatically
+
+  * **Reproducibility Challenges in Network ML Research**
+    * **DARPA'98 Dataset Example**
+      * Famous intrusion detection dataset from 1998
+      * Two different research papers using same exact dataset
+      * Both analyzing denial of service traffic
+      * Reported packet counts differing by factor of 10
+      * Same data, same stated approach, completely different numbers
+    * **Root causes of inconsistency**:
+      * Different feature extraction code
+      * Different flow definitions
+      * Different metadata interpretations
+      * Differences not apparent from published descriptions
+    * **Note**: AI agents may improve this (more consistent code generation from specs)
+
+  * **nPrint: A Tool for Standardized Traffic Representation**
+    * **Core idea**: Inspired by deep learning in computer vision
+      * If models can learn from raw pixels in images
+      * Why not throw raw packets at deep learning models?
+    * **What nPrint does**:
+      * Converts packet traces (pcap files) to standardized bitmap representations
+      * Input: Packet trace
+      * Output: Fixed-width bitmap where each bit position has consistent meaning
+
+  * **nPrint Bitmap Encoding**
+    * **Three-valued representation**:
+      * **1**: Bit is set in packet header
+      * **0**: Bit is not set in packet header
+      * **-1**: Header field not present in this packet
+    * **Why -1 is critical: The Alignment Problem**
+      * Every bit position must mean the same thing across all packets
+      * Example alignments:
+        * Bits 0-3: Always IPv4 version field
+        * Bits 96-127: Always source IP address
+        * Bits 320-335: Always TCP options (even if not present)
+      * Without alignment, models cannot learn consistent patterns
+      * If bit 80 is source port in one packet but TTL in another → model fails
+    * **Size considerations**:
+      * Representation inflated by factor of ~2x
+      * Includes all possible header fields even if not present in packet
+      * Ensures alignment but increases data size
+
+  * **Using nPrint: Workflow and Command Examples**
+    * **Basic workflow**:
+      1. Generate nPrints from pcap file
+      2. Generate labels for classification task
+      3. Train classifier (can use any ML model, not just deep learning)
+      4. Analyze feature importance (which bits/header fields matter)
+      5. Experiment with different nPrint configurations
+
+    * **Command-line usage examples**:
+      ```bash
+      # Generate nPrint with first 30 bytes of payload
+      nprint -P 30 input.pcap > output.csv
+
+      # Include IPv4 and TCP headers with payload
+      nprint -P 30 -4 -t input.pcap > output.csv
+      ```
+
+    * **nPrint flags**:
+      * `-P N`: Include first N bytes of payload
+      * `-4`: Include IPv4 header
+      * `-6`: Include IPv6 header
+      * `-t`: Include TCP header
+      * Can mix and match to control which headers are included
+
+    * **Output format**:
+      * CSV file where each row = one packet
+      * Each column = one bit position in standardized representation
+      * Typically hundreds of features (bits) per packet
+      * Can load directly into pandas DataFrame
+
+  * **Example Application: Log4J Scan Detection**
+    * **Task**: Classify network traffic as "benign" or "scan"
+    * **Approach**:
+      * Generate nPrint representations of traffic
+      * Label scan traffic vs. legitimate web traffic
+      * Train random forest classifier
+      * Examine feature importance
+
+    * **Feature importance analysis revealed**:
+      * Destination port (bits corresponding to TCP destination port field)
+      * Source port (bits corresponding to TCP source port field)
+      * TCP flags (SYN, ACK, FIN bits)
+      * TCP window size (bits in window size field)
+      * Certain TCP options fields
+
+    * **Critical questions to ask**:
+      * Do these features make sense for distinguishing scans from legitimate traffic?
+      * Are port numbers genuinely informative or spuriously correlated?
+      * Are TCP options fields truly relevant or is model overfitting?
+      * This requires domain expertise even with automated feature learning
+
+  * **Benefits of nPrint Approach**
+    * **Generalization across tasks**: Same representation works for multiple problems
+      * Application identification
+      * Attack detection
+      * QoS inference
+      * Don't need to redesign feature extraction
+    * **Reproducibility**: Different researchers generate identical representations from same pcap
+      * Eliminates major source of experimental variability
+    * **Automation**: Deep learning models can identify important header fields automatically
+      * Reduces need for manual feature engineering
+    * **Feature importance analysis**: Models can reveal which specific bits drive decisions
+      * Provides interpretability even with complex models
+
+  * **Limitations and Considerations**
+    * **Representation size**:
+      * Very large (roughly 2x size of original packet headers)
+      * For millions of packets, creates storage and memory challenges
+      * Includes all possible headers even if not present
+
+    * **Spurious correlations**:
+      * nPrint includes all header fields indiscriminately
+      * Models may latch onto patterns that don't generalize
+      * Example: All training examples from one IP address range
+        * Model might learn to recognize IP range instead of application behavior
+      * Requires careful data collection, cross-validation, feature importance analysis
+
+    * **Temporal relationships not automatically encoded**:
+      * nPrint represents individual packets as independent bitmaps
+      * Doesn't inherently encode packet ordering or causality
+      * Example: Connection setup should come before connection teardown
+      * Models might learn these patterns from data, but not guaranteed
+      * Capturing temporal relationships requires:
+        * More sophisticated architectures (recurrent networks, attention mechanisms)
+        * Or explicit feature engineering to combine multiple packets
+
+    * **Not "magic pixie dust"**:
+      * Simply feeding nPrint to deep learning doesn't guarantee good results
+      * Still need proper model architecture
+      * Still need hyperparameter tuning
+      * Still need quality training data
+      * Deep learning is powerful but requires careful application
+
+  * **The Role of AI-Assisted Feature Engineering**
+    * **Historical context**: Manually writing feature extraction code was tedious
+    * **Modern reality**: AI assistants can generate code from natural language in seconds
+    * **Implications**:
+      * Overhead of custom feature engineering has decreased
+      * Still, nPrint offers advantages:
+        * Reproducibility across research groups
+        * Standardization for comparisons
+        * Discovery of unexpected features not in human/AI design space
+    * **Future likely involves hybrid approach**:
+      * Use nPrint for baseline models and reproducible comparisons
+      * Use AI-assisted feature engineering for task-specific optimization
+
+  * **nPrint Website and Resources**
+    * Website provides:
+      * Tool installation instructions (must compile from source, C language)
+      * Pre-formatted datasets for common classification tasks
+      * Example applications and benchmarks
+    * Can be used for course projects
+    * Building nPrint:
+      * Requires C compiler
+      * Uses autoconf/configure build system
+      * May need dependencies: `brew install autoconf automake pkgconfig pcap`
+      * MacOS-specific issue: May need to specify paths to pcap libraries
+
+  * **Hands-On Activity: nPrint for Scan Detection**
+    * **Part 1: Generate nPrints**
+      * Install nPrint tool (compile from source)
+      * Process pcap files to generate bitmap representations
+      * Takes ~5-10 minutes to get building properly
+
+    * **Part 2: Train Classifier**
+      * Load nPrint CSV into DataFrame
+      * Generate labels (scan vs. benign)
+      * Train random forest or other classifier
+      * Typically random forest works well
+
+    * **Part 3: Analyze Feature Importance**
+      * Examine which bit positions (header fields) were most important
+      * Interpret what those bits represent in protocol headers
+      * Ask: Does this make sense for the task?
+
+    * **Part 4: Experiment with Different Representations**
+      * Try different nPrint flags (-4, -6, -t, etc.)
+      * Compare performance with different header combinations
+      * Understand which headers contain most informative features
+
+    * **Part 5: Advanced (Optional)**
+      * Could explore PcapML (mentioned but not required)
+      * Integration with other tools
+
+  * **Future Directions: Generative Models for Traffic**
+    * **Text-to-image inspiration**: "Make me a painting in style of Picasso"
+    * **Network traffic equivalent**: "Make me traffic in style of denial of service attack"
+    * Graduate student research (Chase and others) on this topic
+    * Using diffusion models to generate traffic from nPrint representations
+    * **Challenges**:
+      * Generated traffic may have invalid checksums
+      * May lack proper connection establishment sequences
+      * Similar to early AI image generation problems (people without thumbs)
+      * Active research area
+    * Will be covered more in future session on generative AI
+
+  * **Key Takeaways**
+    * nPrint enables representation learning for network traffic
+    * Automates feature engineering but doesn't eliminate need for domain knowledge
+    * Provides reproducibility and standardization benefits
+    * Large representation size and potential spurious correlations are concerns
+    * Feature importance analysis remains critical
+    * Hybrid approaches with AI-assisted engineering may be future direction
+    * Not a silver bullet, but valuable tool in network ML toolkit
 
 ### Meeting 15
 
