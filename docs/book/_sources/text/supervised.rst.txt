@@ -408,7 +408,74 @@ interpretable: each distribution is estimated as a one-dimensional distribution
 because the probabilities of each feature occurring are assumed to be
 independent.  Unfortunately, because the Naive Bayes classifier assumes
 independence of features, it can't learn relationships between those features,
-which may sometimes be something you want to do in practice. 
+which may sometimes be something you want to do in practice.
+
+Historical Application: Spam Filtering
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+One of the first applications of machine learning in networking and security
+was spam email filtering using naive Bayes classifiers. **Spam Assassin**, an
+open-source spam filtering project that still exists today, was originally
+built entirely on a naive Bayes classifier that ran locally on users'
+machines. This was not a toy application---it was real production spam
+filtering that effectively protected millions of email users.
+
+The system was highly configurable, allowing users to tweak probability
+parameters manually. For example, if a user legitimately wanted emails
+containing certain words (e.g., pharmaceutical terms for medical professionals),
+they could adjust the :math:`P(word|class)` values to prevent those emails
+from being marked as spam.
+
+The arms race between spam filters and spammers provides an instructive example
+of adversarial machine learning. Initially, naive Bayes spam filters worked
+very well. However, attackers eventually understood the algorithm and developed
+countermeasures. One notable technique was attaching excerpts of legitimate
+text (such as Shakespeare plays) to spam emails. This had the effect of
+shifting the probability distributions: the spam email now contained many
+legitimate words, making :math:`P(email|legitimate)` higher and
+:math:`P(email|spam)` lower. Attackers became even more sophisticated,
+including this text in white font on white background---invisible to human
+readers but parsed by the classifier.
+
+Understanding why this attack works requires understanding the mathematics of
+naive Bayes. Each word in the vocabulary contributes to the product
+:math:`\\prod P(word_i|class)`. By adding many legitimate words, attackers
+effectively diluted the signal from spam-specific words like "Viagra" or
+"casino," making the classifier more likely to predict the email as legitimate.
+
+The Paradox of Naive Bayes
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+An intriguing aspect of naive Bayes is that it works surprisingly well in
+practice despite making assumptions that are clearly violated. The
+independence assumption---that the probability of seeing word "machine" is
+independent of seeing word "learning"---is obviously false. In a machine
+learning course, if you see "machine" in an email, there's approximately a 90%
+chance the next word is "learning." Yet, naive Bayes classifiers continue to
+perform effectively even with this violated assumption.
+
+This phenomenon is not fully understood, though there are theoretical
+explanations for why naive Bayes remains robust. The practical takeaway is
+that naive Bayes represents a common theme in machine learning: models often
+work despite violated assumptions. As you continue in this field, you'll
+encounter many such cases where theory and practice diverge in unexpected ways.
+
+The Zero Probability Problem
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+A critical practical issue arises when a word appears in the test data that
+never appeared in the training data for a particular class. Consider an email
+from a professor announcing an assignment on spam filtering that includes the
+instruction: "Look for specific words like 'Viagra' to identify spam." This
+legitimate instructional email would be incorrectly classified as spam if the
+word "Viagra" never appeared in legitimate emails during training, since
+:math:`P(Viagra|legitimate) = 0` and thus the entire product becomes zero.
+
+The solution is **smoothing**: never allow probabilities to be exactly zero.
+Instead, add a small value (e.g., 0.01) to ensure :math:`P(word|class)` is
+always a small but non-zero number. Scikit-learn provides parameters to
+control the amount of smoothing, allowing you to tune this behavior for your
+specific application. 
 
 
 Expectation Maximization
