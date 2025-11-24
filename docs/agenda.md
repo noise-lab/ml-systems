@@ -2319,26 +2319,227 @@
 
 ### Meeting 15
 
-* **Dimensionality Reduction**
-* **Motivation for Dimensionality Reduction**
-  * Visualization
-  * Computation/Training Time
-  * Interpretability
-  * Noise Reduction/Model Robustness
-* **Example Dimensionality Reduction Techniques**
-   * PCA
-   * t-SNE
-   * PVA vs. t-SNE - when to use which?
+* **Course Context**
+  * Week 8 of course
+  * Covering unsupervised learning techniques
+  * May skip autoencoders to cover generative AI topics instead
 
+* **Introduction to Unsupervised Learning**
+  * Definition: Models that do not rely on labels to learn or analyze
+  * Doesn't mean data doesn't have labels - just not used in training
+  * Can still evaluate with labeled data if available
+  * Focus on dimensionality reduction and clustering
+
+* **Dimensionality Reduction Overview**
+  * **Goal**: Represent high-dimensional data with smaller number of dimensions
+  * **Applications**:
+    * Understanding data better (which features are most important)
+    * Visualization (reduce to 2D or 3D for plotting)
+    * Reducing noise and compression (lossy but acceptable)
+    * Preprocessing for clustering
+    * Preprocessing for supervised learning (reduce complexity)
+
+* **Principal Component Analysis (PCA)**
+  * **Core Concept**:
+    * Change of basis - representing data as linear combination of different features
+    * Assumes linear relationships in data
+    * Find most important features/directions for describing data points
+  * **Mathematical Intuition**:
+    * Two ways to view it:
+      1. **Maximum variance**: Find direction that captures most variance in data
+      2. **Minimum projection distance**: Minimize distance when projecting points onto lower-dimensional space
+    * These are equivalent approaches
+  * **Principal Components**:
+    * First PC: Direction of maximum variance
+    * Second PC: Typically orthogonal to first, captures remaining variance
+    * Size of components (eigenvalues) indicates variance in each direction
+  * **Choosing Number of Components**:
+    * Scree plot: Plot variance explained vs. number of components
+    * Look for "elbow" or "knee" in curve
+    * Consider domain knowledge (e.g., if looking for 2 classes, try 2 components)
+    * Explained variance: How much of total variance captured by N components
+  * **Spectral Clustering with PCA**:
+    * Can use PCA for clustering
+    * Each point has components in PC1, PC2, etc.
+    * Points with more of PC1 → cluster 1, more of PC2 → cluster 2
+    * Number of PCs chosen = number of clusters
+  * **Extensions**:
+    * Kernel PCA: Handles non-linear relationships
+    * Apply functions to PCA to express non-linear patterns
+
+* **T-SNE (t-distributed Stochastic Neighbor Embedding)**
+  * **Purpose**: Non-linear dimensionality reduction
+  * **Key Features**:
+    * Works on non-linear data sets
+    * Commonly used for visualization
+    * Math classes often stop before this (hard to prove properties)
+  * **When to Use**:
+    * Try alongside PCA to see which works better
+    * Good for visualizing complex, non-linear patterns
+  * **Evaluation Challenge**:
+    * Hard to say if it "worked" without labels
+    * Did it help you understand something?
+    * Do clusters match to labels if you have them?
+  * **Example**: DNS packet visualization
+    * May or may not produce meaningful separation
+
+* **Autoencoders**
+  * **Architecture**:
+    * Deep neural network with encoder and decoder
+    * Encoder: Reduces dimensionality (drops coefficients)
+    * Bottleneck: Compressed representation (reduced dimensionality)
+    * Decoder: Attempts to reconstruct original input
+  * **Training Process**:
+    * Goal: Make output match input as closely as possible
+    * If decoder can reconstruct from bottleneck, encoder did good job
+    * Decoder is mainly for training the encoder
+  * **Advantages over PCA/t-SNE**:
+    * Don't need to think about feature engineering
+    * Can work with raw data
+    * Similar to deep learning vs. random forests in supervised learning
+  * **Disadvantages**:
+    * Much more expensive computationally
+    * Requires more data and training time
+  * **Applications**: Same as PCA/t-SNE (visualization, compression, preprocessing)
+
+* **Hands-On Activity**
+  * Notebook on dimensionality reduction
+  * May focus on clustering notebook instead if covering both topics
 
 ### Meeting 16
 
-* **Clustering**
-   * K-means
-   * GMM
-   * Hierarchical Clustering
-   * DBSCAN
-* **Hands-On Activity (#16 Clustering)**
+* **Guest Lecture: Generative AI and Diffusion Models (Chase)**
+  * **Speaker**: Chase (PhD student working on AI for networking)
+  * **Topic**: Diffusion models for generating synthetic network traffic
+
+* **Motivation and Challenges**
+  * **Network Data Scarcity Problem**:
+    * Network datasets are limited due to privacy concerns, maintenance costs, collection problems
+    * Example: Sharing UChicago network traffic could expose network topology, router hierarchy
+    * Need for synthetic data generation to address scarcity while preserving privacy
+  * **Use Cases for Synthetic Data**:
+    * Training machine learning models with insufficient real data
+    * Augmenting datasets (e.g., scaling 100 traces to 10,000)
+    * Testing hardware/software, protocol interoperability
+    * Privacy-preserving data sharing
+
+* **Early Methods for Synthetic Traffic Generation**
+  * **Simulators**: NS3, GANS, MJANG
+    * Focus on retransmitting existing traffic with modified metadata (IPs, timestamps, rates)
+    * Limited utility for ML: copies don't add variation needed for model robustness
+  * **GAN-Based Tools**: CoppoGAN, NetShare
+    * Generate realistic variations of network traffic
+    * Can simulate unseen events while maintaining statistical similarity
+    * **Limitations**:
+      * Low ML model accuracy when trained on synthetic data (e.g., NetShare)
+      * Only generate aggregated flow statistics (NetFlow-like attributes)
+      * Cannot generate packet-level details or full packet captures
+      * Don't enforce protocol rules (e.g., TCP handshake requirements)
+
+* **Diffusion Models Background**
+  * **Core Concept**: Learn to reverse a noise-adding process
+    * Forward process: Gradually add Gaussian noise to image until pure noise
+    * Reverse process: Learn to denoise, recovering original image
+  * **Inspiration**: Physical diffusion (e.g., dye drop diffusing in water)
+  * **Training**: U-Net architecture predicts noise at each step
+  * **Examples**: DALL-E, Stable Diffusion, Midjourney
+  * **Key Advantage**: Gradual denoising is more stable than GAN's single-step generation
+
+* **Conditional Generation**
+  * **Text-to-Image Models**: Stable Diffusion, etc.
+  * **Conditioning Mechanism**:
+    * Encode text prompt into embedding vector (e.g., using CLIP)
+    * Guide denoising process at each step based on prompt
+    * Enable controlled generation ("generate a horse" vs random output)
+  * **ControlNet**: Additional constraints for generation
+    * Example: Sketch as input to guide spatial structure
+    * For networks: Enforce protocol structure and field boundaries
+
+* **NetDiffusion Framework**
+  * **Step 1: Traffic to Image Conversion**
+    * Convert raw packets to standardized format with bit-level encoding
+    * Handle missing features (e.g., UDP traffic has no TCP fields → -1)
+    * Create images where each row = one packet (up to 1024 packets)
+    * Example: 1024×1088 pixel image containing up to 1024 packets
+    * Visual structure preserves inter-packet relationships
+  * **Step 2: Fine-Tuning with LoRA**
+    * Use Stable Diffusion 1.5 as pre-trained base model
+    * Apply Low Rank Adaptation (LoRA) for efficient fine-tuning
+    * Pair traffic images with text prompts (e.g., "TCP Amazon traffic")
+    * Fine-tuning vs training from scratch: much less data needed (few-shot learning)
+  * **Step 3: Conditional Generation with ControlNet**
+    * Problem: Diffusion models are "inherently creative" - may generate invalid traffic
+    * Solution: Use ControlNet to enforce structural constraints
+    * Edge detection on example traffic defines valid regions (e.g., TCP/IP layers only)
+    * Ensures generated traffic follows protocol structure
+  * **Step 4: Post-Processing with Dependency Trees**
+    * **Intra-packet rules**: Checksum consistency, field relationships within packets
+    * **Inter-packet rules**: TCP sequence numbers, handshake requirements, packet ordering
+    * Traverse dependency tree bottom-up: fix intra-packet first, then inter-packet
+    * Majority voting for fields like source/destination IP and ports
+    * Goal: Minimize modifications while ensuring protocol compliance
+
+* **Evaluation Results**
+  * **Statistical Similarity**:
+    * 30%+ improvement over baselines (NetShare) on aggregate statistics
+    * 70%+ improvement on individual field accuracy
+  * **Traffic Classification**:
+    * Train ML model entirely on synthetic data, test on real data
+    * 60%+ accuracy improvement vs baselines
+    * Attribute: Higher granularity and more features than flow-level approaches
+  * **Class Imbalance Handling**:
+    * Pad under-represented classes (Facebook, Meet, Zoom) with synthetic data
+    * Significant accuracy improvements for imbalanced classes
+    * Example use case: Assignment 3 "play music" traffic (very small portion)
+  * **Tool Compatibility**:
+    * Wireshark: Successfully parses generated PCAPs
+    * TCPreplay: No errors raised
+    * Some protocol analysis tasks (e.g., TCP flags) not 100% accurate yet
+
+* **Fidelity vs Diversity Trade-off**
+  * **Core Challenge**: Balancing similarity to real data with useful variation
+    * Zero distance: Perfect copy (useless - no new information)
+    * Maximum distance: Complete noise (useless - not representative)
+    * Need: Meaningful variation that preserves important characteristics
+  * **Open Problem**: No consensus metric for optimal fidelity-diversity balance
+
+* **Future Directions and Challenges**
+  * **Text-to-Traffic Generation**: Using autoregressive models (transformer-based)
+  * **Context Transfer**:
+    * Example: "Take this normal traffic and encrypt it with VPN"
+    * Example: "Make lab traffic look like it's from another lab"
+    * Analogous to image style transfer ("make me Batman")
+  * **Scalability**: Beyond 1024 packets
+    * Current limitation: Image size constrains packet count
+    * Potential solution: Autoregressive generation for longer traces
+
+* **Practical Insights from Chase**
+  * Knowledge of generative AI broadly applicable beyond networking
+  * Applications in other domains:
+    * Dating app: CLIP model for image-to-text conversion, latent space matching
+    * Brain wave analysis: Data-oriented approach
+    * Recommendation systems: Embedding-based similarity matching
+  * Foundation in generative models transfers across data types and domains
+
+* **Assignment Preview**
+  * **Release**: Next week (week after Thanksgiving)
+  * **No Hands-On Today**: Entire topic assigned as homework
+  * **Tasks**:
+    1. Explore converting M-Print to images (multiple approaches)
+    2. Generate traffic using provided model
+    3. Convert generated images back to M-Print
+    4. Train ML model on synthetic data, test on real data
+    5. Compare with NetDiffusion approach
+  * **Tip**: First 3-10 packets contain most useful information (TCP handshake)
+    * Later packets are mostly data transmission (less distinctive)
+
+* **Course Logistics**
+  * **Next Meeting**: Transformer architectures, state-space models (Mamba)
+  * **Midterm 2**: Two weeks from this meeting
+    * Coverage: Lectures 11-16 (inclusive)
+    * Focus on ML modeling (not data preprocessing like Midterm 1)
+    * Practice exam prompts to be provided
+  * **Final Project**: Due during finals week (likely Thursday)
 
 ### Meeting 17
 
