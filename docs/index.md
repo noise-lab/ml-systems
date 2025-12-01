@@ -55,14 +55,15 @@ Class agenda for each meeting is in the [agenda](agenda.md).
 | **Unsupervised Learning**      |                                                                                                             | Ch. 6       |
 | 15                             | Dimensionality Reduction<br> ([Dimensionality Reduction](notebooks/15-Dimensionality-Reduction-Clean.html)) |             |
 | 16                             | Clustering<br>([Clustering](notebooks/16-Clustering-Clean.html))                                            |             |
-| 17                             | Autoencoders<br>([Autoencoders](notebooks/17-Autoencoders-Clean.html))                                      |             |
 | **Generative Models**          |                                                                                                             | Ch. 7       |
-| 18                             | Transformers<br>([Large Language Models](notebooks/18-LLM-Clean.html))                                      |             |
-| 19                             | Diffusion and State-Space Models ([Diffusion Models](notebooks/19-Diffusion-Clean.html))                    |             |
+| 17                             | Diffusion Models<br>([Diffusion Models](notebooks/17-Diffusion-Clean.html))                                 |             |
+| 18                             | State-Space Models<br>([State-Space Models](https://colab.research.google.com/drive/18gZYLy7lmbCqwov1AIYTN0aFPbfhHYQn?usp=sharing)) |             |
+| 19                             | Transformers<br>([Large Language Models](notebooks/19-LLM-Clean.html))                                      |             |
 | **Bonus Topics**               |                                                                                                             | Ch. 8       |
 | 20                             | Timeseries Analysis<br>([Timeseries](notebooks/20-Timeseries-Clean.html))                                   |             |
 | 21                             | Reinforcement Learning<br>([Reinforcement Learning](notebooks/21-Reinforcement-Clean.html))                 |             |
-| 22                             | Model Performance and Maintenance                                                                           |             |
+| 22                             | Autoencoders<br>([Autoencoders](notebooks/22-Autoencoders-Clean.html))                                      |             |
+| 23                             | Model Performance and Maintenance                                                                           |             |
 
 Please come to class having done the reading.
 
