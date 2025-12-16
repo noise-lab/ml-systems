@@ -1,0 +1,207 @@
+\section*{Linear Regression}
+\vspace*{-0.15in}
+
+\prob{2} In the linear regression hands-on, we modeled packets vs. bytes per flow but had high error. Why did the linear fit perform poorly?
+
+\begin{center}
+    \begin{tabularx}{0.9\textwidth}{X X}
+        \answercircle{HTTP traffic is encrypted} &
+        \correctanswercircle{Flows mix large data and small ACK packets} \\
+        \answercircle{The pcap file was corrupted} &
+        \answercircle{Linear regression can't handle traffic data} \\
+    \end{tabularx}
+\end{center}
+\eprob
+
+\prob{2} Suggest one approach to improve the accuracy of predicting bytes from packets in the HTTP traffic regression task.
+
+\answerbox{1.15}{One approach is to separate the traffic by packet type before modeling---for example, filtering out pure ACK packets or creating separate models for data packets vs. acknowledgments. Another approach is to add features that capture the packet type distribution, such as the ratio of small packets to large packets in the flow. Polynomial basis expansion can also help by allowing the model to capture non-linear relationships between packets and bytes.}
+\eprob
+
+\prob{3} When would you use logistic regression instead of linear regression for network traffic analysis?
+
+\begin{center}
+    \begin{tabularx}{0.9\textwidth}{X X}
+        \answercircle{When input features are categorical} &
+        \correctanswercircle{When output is binary (attack vs. normal)} \\
+        \answercircle{When the dataset is very large} &
+        \answercircle{When you need faster training time} \\
+    \end{tabularx}
+\end{center}
+\eprob
+
+\section*{Decision Trees and Ensemble Methods}
+\vspace*{-0.15in}
+
+\prob{2} Which are drawbacks of decision trees that random forests address? (Select all that apply.)
+
+\begin{center}
+    \begin{tabularx}{0.9\textwidth}{X}
+        \correctanswercircle{Prone to overfitting training data} \\
+        \answercircle{Cannot handle categorical features} \\
+        \correctanswercircle{High variance (small data changes $\rightarrow$ different trees)} \\
+        \answercircle{Too slow to train on large datasets} \\
+    \end{tabularx}
+\end{center}
+\eprob
+
+\newpage
+\prob{3} Describe {\bf two specific ways} that random forests introduce randomness to create diverse trees in the ensemble.
+
+\answerbox{1.15}{Random forests introduce randomness in two ways: (1) Bootstrap sampling (bagging) - each tree is trained on a different random sample of the training data, created by sampling with replacement. This means each tree sees a slightly different dataset. (2) Random feature selection at each split - when deciding how to split a node, only a random subset of features is considered as candidates for the split, rather than considering all features. This decorrelates the trees and prevents them from all making the same splits.}
+\eprob
+
+\prob{3} In the IoT privacy hands-on with the Nest camera, what traffic feature made classifying motion events easy?
+
+\begin{center}
+    \begin{tabularx}{0.9\textwidth}{X X}
+        \answercircle{Packet header checksums} &
+        \correctanswercircle{Traffic volume changes correlated with events} \\
+        \answercircle{DNS query patterns} &
+        \answercircle{TCP sequence numbers} \\
+    \end{tabularx}
+\end{center}
+\eprob
+
+\section*{Neural Networks and Deep Learning}
+\vspace*{-0.15in}
+
+\prob{2} Deep neural networks always achieve higher accuracy than traditional ML models (like random forests) on network traffic classification tasks.
+
+\begin{center}
+    \yesnono
+\end{center}
+\eprob
+
+\prob{2} Give an example of a spurious correlation that a deep learning model might learn from network traffic data, leading to poor generalization.
+
+\answerbox{1.15}{A model might learn that traffic from a specific IP address range or AS number is always malicious, when in reality the attacks just happened to originate from that network during training. Another example: learning that certain packet sizes indicate video streaming because the training data was collected at a specific time when only video apps used those sizes. The model could also learn that encrypted traffic on port 443 from certain CDNs is always benign, which would fail when attackers use the same CDNs. These correlations are artifacts of the training data, not fundamental properties of the traffic classes.}
+\eprob
+
+\prob{3} Why might a traditional ML model (like random forests) with engineered features outperform a deep neural network for DDoS detection? (Select all that apply.)
+
+\begin{center}
+    \begin{tabularx}{0.98\textwidth}{X X}
+        \correctanswercircle{Engineered features capture distinct attack patterns} &
+        \answercircle{Deep learning can only process raw network traffic} \\
+        \correctanswercircle{Limited training data causes deep learning to overfit} &
+        \answercircle{Random forests are always more accurate} \\
+    \end{tabularx}
+\end{center}
+\eprob
+
+\prob{3} What is an advantage of using deep learning with nPrint over traditional ML with engineered features? (Select all that apply.)
+
+\begin{center}
+    \begin{tabularx}{0.9\textwidth}{X X}
+        \correctanswercircle{Same representation works across multiple tasks} &
+        \answercircle{Always achieves higher accuracy} \\
+        \correctanswercircle{No manual feature engineering needed per task} &
+        \answercircle{Requires less training data} \\
+    \end{tabularx}
+\end{center}
+\eprob
+
+\pagebreak
+\prob{2} What is a potential benefit of using nPrint's standardized bitmap representation for network traffic compared to manual feature engineering?
+
+\begin{center}
+    \begin{tabularx}{0.9\textwidth}{X X}
+        \answercircle{It always produces better classification accuracy} &
+        \correctanswercircle{It ensures reproducibility across different researchers} \\
+        \answercircle{It requires less computational resources} &
+        \answercircle{It eliminates the need for deep learning} \\
+    \end{tabularx}
+\end{center}
+\eprob
+
+\prob{3} Explain why nPrint uses a three-valued representation (1, 0, -1) for packet bits instead of just binary (1, 0).
+
+\answerbox{1.4}{nPrint uses three values to maintain consistent alignment across all packets. The value -1 indicates that a header field is not present in a particular packet. This is critical because every bit position must mean the same thing across all packets for machine learning models to learn consistent patterns. Without -1, if a TCP header is missing, all subsequent bit positions would shift, and bit position 100 might represent source port in one packet but TTL in another, making it impossible for models to learn. The -1 value ensures that bit position 100 always represents the same header field, even if that field is absent in some packets.}
+\eprob
+
+\section*{Unsupervised Learning and Anomaly Detection}
+\vspace*{-0.15in}
+
+\prob{3} In the anomaly detection hands-on activity using the Log4j dataset, attack traffic represents a small fraction of total traffic (rare events). Explain why K-means clustering struggles to detect such rare attack traffic as anomalies.
+
+\answerbox{1.4}{K-means assigns every data point to its nearest cluster centroid, which is problematic for rare events like attacks. Since attacks are infrequent, cluster centroids will be dominated by and positioned near the dense normal traffic. The rare attack points get absorbed into the nearest normal cluster rather than forming their own cluster or being flagged as outliers. K-means has no concept of ``noise'' or ``outliers''---it forces every point into a cluster. For rare attack detection, density-based methods like DBSCAN are better because they explicitly identify points in low-density regions as outliers, which is exactly what rare attack traffic typically is.}
+\eprob
+
+\prob{2} DBSCAN can identify anomalies as points that do not belong to any cluster, while K-means will always assign every point to a cluster.
+
+\begin{center}
+    \yesnoyes
+\end{center}
+\eprob
+
+\prob{2} Why can unsupervised learning detect previously unseen attacks that supervised classifiers would typically miss? (Select all that apply.)
+
+\begin{center}
+    \begin{tabularx}{0.9\textwidth}{X X}
+        \answercircle{Unsupervised models are more accurate} &
+        \correctanswercircle{Novel attacks can't exist in labeled training data} \\
+        \correctanswercircle{Unsupervised methods detect deviations from normal} &
+        \answercircle{Supervised models only work on encrypted traffic} \\
+    \end{tabularx}
+\end{center}
+\eprob
+
+\newpage
+\section*{Diffusion Models and Synthetic Traffic Generation}
+\vspace*{-0.15in}
+
+\prob{3} What is a limitation of NetDiffusion for generating synthetic traffic? (Select all that apply.)
+
+\begin{center}
+    \begin{tabularx}{0.95\textwidth}{X X}
+        \correctanswercircle{Does not capture timing or temporal relationships} &
+        \answercircle{Cannot generate valid packet headers} \\
+        \correctanswercircle{Needs post-processing for checksums/seq numbers} &
+        \answercircle{Only works for encrypted traffic} \\
+    \end{tabularx}
+\end{center}
+\eprob
+
+\prob{3} In synthetic traffic generation, {\em fidelity} measures how closely synthetic data matches real traffic, while {\em diversity} measures how much variation the synthetic data provides. Explain why both extremes of this trade-off are problematic.
+
+\answerbox{1.4}{At one extreme (maximum fidelity, zero diversity), synthetic traffic is just a perfect copy of real traffic, which is useless because it adds no new information or variation for training models---you might as well use the original data. At the other extreme (maximum diversity, zero fidelity), synthetic traffic is completely random noise that doesn't represent real network behavior at all, making it useless for testing or training realistic scenarios. The goal is to find a middle ground where synthetic traffic preserves important characteristics of real traffic (protocol structure, timing patterns) while providing meaningful variations that improve model robustness.}
+\eprob
+
+\prob{2} In NetDiffusion's post-processing step, which dependency tree rules must be applied to ensure generated traffic is protocol-compliant? (Select all that apply.)
+
+\begin{center}
+    \begin{tabularx}{0.9\textwidth}{X X}
+        \correctanswercircle{Inter-packet rules like TCP sequence numbers} &
+        \answercircle{Encryption of all packet payloads} \\
+        \answercircle{Random assignment of source IPs} &
+        \correctanswercircle{Intra-packet rules like checksum consistency} \\
+    \end{tabularx}
+\end{center}
+\eprob
+
+\prob{3} Why is synthetic traffic useful for ML-based classifiers? (Select all that apply.)
+
+\begin{center}
+    \begin{tabularx}{0.9\textwidth}{X X}
+        \answercircle{Synthetic is always more accurate than real} &
+        \correctanswercircle{Real traffic contains private/sensitive info} \\
+        \correctanswercircle{Can generate rare attacks hard to capture} &
+        \answercircle{Eliminates need for any real training data} \\
+    \end{tabularx}
+\end{center}
+\eprob
+
+\section*{Feedback}
+\vspace*{-0.15in}
+\prob{1}
+Interest (1=Boring!; 10=Amazing!):
+\shortanswerbox{0.5}{8}
+Difficulty (1=Too easy; 10=Too hard):
+\shortanswerbox{0.5}{6}
+\eprob
+\prob{1}
+1. One topic you found most interesting. 2. One suggestion for improvement:\\
+\answerbox{0.9}{1. Learning about nPrint and representation learning for network data was fascinating. 2. More hands-on activities with real network datasets would be helpful.
+}
+\eprob
