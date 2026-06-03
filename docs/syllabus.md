@@ -36,6 +36,12 @@ extensions of hands-on assignments in class. If you have a laptop, you should
 be able to complete these assignments on personal computing equipment. If you
 need computing resources, please ask.
 
+**All assignment release dates and due dates are published on the course
+schedule at the start of the term, and we adhere to that schedule**, so you can
+plan your work from day one. Each assignment includes an **up-front grading
+rubric** so you know exactly how it will be evaluated, and submission
+instructions are posted with each assignment.
+
 **Important:** Assignments will be graded primarily for completion. While we
 encourage the use of AI tools to assist with assignment completion (with proper
 acknowledgment and explanation of your prompting approach), the key learning
@@ -70,6 +76,18 @@ and deprives others of your valuable perspective. Come to class, be engaged.
 We may have occasional in-class quizzes to track your engagement with the
 material. These will be included in the participation grade, if applicable;
 don't worry if you miss one.
+
+Participation is graded on the **quality of your contribution — not on
+attendance, and not on whether your questions or answers are "right."** A
+thoughtful question or a wrong-but-honest attempt that moves the discussion
+forward earns full marks.
+
+| Component | What earns full marks |
+|---|---|
+| **In-class engagement** | Actively takes part in discussion-driven Q&A, case studies, and hands-on activities; asks and answers questions. |
+| **Quality of contribution** | Questions and comments advance the discussion and surface useful perspectives — graded on thoughtfulness and engagement, not on being correct. |
+| **Reading responses (optional)** | Thoughtful responses to assigned readings that raise good questions or connections (see below). |
+| **In-class quizzes/activities** | Good-faith participation in occasional engagement checks; missing an occasional one is fine. |
 
 **Optional Reading Responses.** Students may optionally submit reading
 responses on any of the assigned readings. These responses help me identify
@@ -115,6 +133,24 @@ assignments according to the following policy:
     count against your late period. Any other reasons for lateness—including but
     not limited to interviews, conferences, etc.—are not legitimate excuses and
     any resulting lateness will count against your grace period.
+
+## Communication and Response Times
+
+Slack is our primary channel for questions about the course and assignments.
+
+* **Post in the public course channel — it is your best bet for a fast answer.**
+  If you are wondering about something, someone else usually is too. We expect
+  students to help answer one another's questions: peer answers spread the load
+  and resolve common questions quickly, and the course staff monitors the
+  public channels and will step in as needed.
+* **We aim to respond to questions in the public channel within one business
+  day** (within 24 hours, not counting weekends and holidays). We will try to be
+  responsive but make no firm guarantee on turnaround.
+* **Direct messages carry no response-time expectation.** Reserve DMs for
+  personal matters (grades, accommodations, anything sensitive). If you want a
+  quick answer to a course or assignment question, post in the public channel
+  instead of sending a DM.
+* For anything urgent or sensitive, email the instructor directly.
 
 ## Academic Honesty and Integrity
 
