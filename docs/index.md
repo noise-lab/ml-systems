@@ -11,10 +11,15 @@ and evaluation of machine learning models and pipelines; fairness,
 interpretability, and explainability of machine learning models; and testing
 and debugging of machine learning models.
 
-The topic of machine learning for computer systems is broad. Given the
-expertise of the instructor, many of the examples this term will focus on
-applications to computer networking. Yet, many of these principles apply
-broadly, across computer systems.
+**Scope and focus.** This is a practical, hands-on introduction to the
+machine-learning *workflow* — data, features, models, evaluation, and
+deployment — taught through applications to computer systems, and **primarily
+through computer networking**, which is the instructor's area of expertise and
+the domain of the companion textbook, *Machine Learning for Networking*. The ML
+concepts are general and transfer to any systems domain, but expect the
+examples, datasets, and assignments to be **networking-centric**. If you are
+looking for a theory- or math-first ML course, or one that ranges broadly across
+operating systems, databases, and architecture, this is not that course.
 
 You can and should think of this course as a practical hands-on introduction
 to machine learning models and concepts that will allow you to apply these

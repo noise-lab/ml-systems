@@ -17,6 +17,14 @@ class.
 
 All material will be available from the Github repository.
 
+**A note on scope.** Although this course is titled *Machine Learning for
+Computer Systems*, the applications are drawn primarily from **computer
+networking** (the instructor's area, and the focus of the companion book,
+*Machine Learning for Networking*). The machine-learning concepts are general
+and transfer across systems domains; the examples, datasets, and assignments are
+networking-centric. Come for a practical command of applied ML, taught on real
+network data.
+
 ## Course Components and Grading
 
 | Component     | Amount |
