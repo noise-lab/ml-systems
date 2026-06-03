@@ -26,9 +26,19 @@ All material will be available from the Github repository.
 | Project       | 30%    |
 | Participation | 5%     |
 
-**Exam.** The course will have a midterm exam and a final exam. The goal of these exams
-will be to test your knowledge of concepts covered in class. The format and
-administration of these examinations will be announced in class.
+**Exams.** The course will have a midterm exam and a final exam. Both test your
+understanding of the concepts covered in class through a mix of multiple-choice,
+yes/no-with-explanation, and short-answer questions.
+
+**Permitted materials are the same on both exams and are printed on the exam
+itself.** Each exam is closed-book and closed-notes except for **one 8.5×11-inch
+sheet of paper with handwritten notes (both sides permitted)**. No electronic
+devices, additional pages, or other materials are permitted. This policy is set
+in advance and will not change at exam time.
+
+**Practice materials.** Past midterm and final exams from prior years are posted
+for everyone in the [`midterm/`](midterm/) and [`final/`](final/) folders of the
+course repository, so the same study materials are available to all students.
 
 **Assignments.** The course will have approximately 3-5 hands-on programming
 assignments (one every other week). These assignments will be logical

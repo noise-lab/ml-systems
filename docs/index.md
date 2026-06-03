@@ -67,6 +67,17 @@ Class agenda for each meeting is in the [agenda](agenda.md).
 
 Please come to class having done the reading.
 
+## Exams
+
+The course has a midterm and a final. The permitted-materials policy is the same
+for both and is printed on each exam: closed-book and closed-notes except for
+**one 8.5×11-inch sheet of paper with handwritten notes (both sides permitted)**;
+no electronic devices or other materials. See the [syllabus](syllabus.md) for
+details.
+
+Past exams from prior years are available to everyone as practice material:
+[past midterms](midterm/) and [past finals](final/).
+
 ## Background Videos and Readings
 
 The material below is strictly optional unless otherwise noted, although you

@@ -28,7 +28,7 @@ Create a comprehensive midterm exam that:
    - Balance difficulty appropriately
 5. Generate files in `/Users/feamster/Dropbox/Tmp/exams/ml-systems/midterm/YYYY/`:
    - `questions.tex` - The exam questions with solutions
-   - `instructions.tex` - Standard instructions and acknowledgment (without `\prob{1}`)
+   - `instructions.tex` - Standard instructions and acknowledgment (without `\prob{1}`). **Must include the standard permitted-materials statement, verbatim:** "This exam is closed-book and closed-notes except for {\bf one 8.5\,$\times$\,11-inch sheet of paper with handwritten notes (both sides permitted)}. No electronic devices, additional pages, or other materials are permitted." This policy is identical on the midterm and the final and matches the syllabus; do not change it.
    - `exam.tex` - Main LaTeX file with `\usepackage[]{feamster}` (no solution flag by default)
    - `Makefile` - Build system that creates both exam.pdf and exam-solution.pdf
    - `README.md` - Documentation for building and using the exam
