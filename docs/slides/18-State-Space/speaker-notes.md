@@ -35,7 +35,52 @@
 
 **Teaching tip**: Draw on board - show a sequence of tokens and a "state box" that gets updated
 
-## Slide 6: Background - SSMs vs Transformers
+## Slide 6: Background - Transformers - A Quick Refresher
+- **Start with what students know**: Most students have heard of ChatGPT/GPT models
+- Transformers are the dominant architecture since 2017
+- Key innovation: self-attention mechanism
+  - Every position can look at every other position
+  - No sequential constraint (unlike RNNs)
+  - Highly parallelizable during training
+- Famous examples: GPT, BERT, Vision Transformers
+- **Set up the narrative**: Transformers are powerful but have limitations we'll explore
+
+**Teaching tip**: Ask class - "Who has used ChatGPT?" to engage them with familiar examples
+
+## Slide 7: Background - The Attention Mechanism
+- **This is the core of transformers** - make sure students understand this
+- Use the Query-Key-Value analogy:
+  - **Query**: "I'm looking for information about X"
+  - **Key**: "I contain information about Y"
+  - **Value**: "Here's the actual information I have"
+- Process:
+  1. Compare query at one position with ALL keys
+  2. Get similarity scores (attention weights)
+  3. Take weighted sum of values
+- **Result**: Each position can access info from entire sequence
+
+**Teaching tip**: Use a concrete example - "the cat sat on the mat"
+- When processing "sat", attention might focus on "cat" (subject)
+- Attention learns what's relevant contextually
+
+## Slide 8: Background - Transformer Strengths and Weaknesses
+- **Set up the motivation for SSMs**
+- Strengths:
+  - Perfect memory - nothing is forgotten
+  - Parallel processing - fast training
+  - Works great for many tasks
+- Weaknesses:
+  - **O(L²) complexity** - this is the killer
+  - Walk through the numbers:
+    - 1K tokens: 1M pairwise comparisons
+    - 10K tokens: 100M comparisons
+    - 100K tokens: 10B comparisons (memory explodes!)
+- **Key point**: Network traces can be very long (100K+ tokens)
+- This naturally leads to: "What if we could get transformer-like performance with better scaling?"
+
+**Ask class**: At what sequence length does quadratic scaling become a problem?
+
+## Slide 9: Background - SSMs vs Transformers
 - **Transformers**: "Look back at everything"
   - Every token attends to every other token
   - O(L²) complexity - quadratic scaling
@@ -48,7 +93,7 @@
 
 **Ask class**: If you have a 10,000 packet trace, which approach scales better?
 
-## Slide 7: Background - The Selectivity Problem
+## Slide 10: Background - The Selectivity Problem
 - Traditional SSMs had a fatal flaw: they're "dumb" about what to remember
 - Use the selective copy example:
   - Input has markers, you need to copy only marked items
@@ -57,7 +102,7 @@
 
 **This sets up why Mamba is special**
 
-## Slide 8: Background - Mamba's Key Insight
+## Slide 11: Background - Mamba's Key Insight
 - **The breakthrough**: Let the input itself control what gets remembered
 - Parameters become input-dependent, not fixed
 - Model learns WHEN to store, ignore, or retrieve
@@ -68,7 +113,7 @@
 
 **Key point**: This is what makes Mamba work for content-aware tasks
 
-## Slide 9: Background - Why Mamba for Network Traffic?
+## Slide 12: Background - Why Mamba for Network Traffic?
 - Walk through the table - each challenge maps to a Mamba strength:
   - Long sessions → linear scaling
   - Protocol state (TCP!) → recurrent structure is natural fit
@@ -79,7 +124,7 @@
 
 ---
 
-## Slide 10: Innovation 1 - Multi-Flow Sessions
+## Slide 13: Innovation 1 - Multi-Flow Sessions
 - **This is a FIRST** - emphasize the novelty
 - Real traffic is multi-flow:
   - Netflix: CDN setup + video segments
@@ -88,7 +133,7 @@
 - Previous generators couldn't handle this reliably
 - NetSSM's recurrent structure naturally captures flow interactions
 
-## Slide 11: Innovation 2 - Length Scaling
+## Slide 14: Innovation 2 - Length Scaling
 - **Numbers matter here**: 8× longer context, 78× longer generation
 - 100,000 tokens ≈ 943 packets of context
 - Why this matters:
@@ -96,14 +141,14 @@
   - Can model entire sessions, not just setup
   - Events late in session depend on early state
 
-## Slide 12: Architecture Diagram
+## Slide 15: Architecture Diagram
 - Walk through left to right:
   1. Pre-processing: PCAP files → tokenized sequences
   2. Training: Mamba model learns patterns
   3. Generation: produces new synthetic PCAPs
 - All automatic once trained
 
-## Slide 13: Method Details
+## Slide 16: Method Details
 - Tokenization is simple: one byte = one token (256 possible values)
 - Special tokens: `<|netflix|>`, `<|pkt|>` for boundaries
 - Training is unsupervised - predict next byte
@@ -111,20 +156,20 @@
 
 ---
 
-## Slide 14: Evaluation Framework
+## Slide 17: Evaluation Framework
 - **Three dimensions** - this is comprehensive evaluation:
   1. Statistical similarity: does it look right? (traditional)
   2. ML utility: can you train on it? (practical)
   3. Semantic similarity: does it behave right? (NEW)
 - The semantic similarity is a contribution of this work
 
-## Slide 15: Results - Statistical Similarity
+## Slide 18: Results - Statistical Similarity
 - 10 apps tested: streaming, conferencing, social media
 - Jensen-Shannon Divergence: 0.02 (lower = better)
 - **8× better than NetShare, 2× better than NetDiffusion**
 - Validates basic statistical fidelity
 
-## Slide 16: Results - ML Performance
+## Slide 19: Results - ML Performance
 - **This is the money slide**
 - Random forest trained ONLY on synthetic data
 - Tested on REAL data
@@ -132,23 +177,23 @@
 - Compare: 16% NetDiffusion, 13% NetShare
 - This proves synthetic data is actually useful
 
-## Slide 17: Results - Detailed Comparison
+## Slide 20: Results - Detailed Comparison
 - Shows consistent wins across multiple metrics
 - Different applications, different measures
 - NetSSM wins across the board
 
-## Slide 18: Results - Mixing Rate
+## Slide 21: Results - Mixing Rate
 - **New result**: What if you mix synthetic and real data?
 - X-axis: proportion of synthetic data in training
 - NetSSM stays at ~97% even at 100% synthetic
 - Others degrade badly as you add more synthetic
 - **Implication**: NetSSM synthetic data can fully replace real data
 
-## Slide 19: Results - Statistical Distributions
+## Slide 22: Results - Statistical Distributions
 - KDE plots show we match real packet size distributions
 - Visual confirmation of statistical fidelity
 
-## Slide 20: Results - TCP Compliance
+## Slide 23: Results - TCP Compliance
 - Semantic similarity evaluation
 - Generated traffic follows TCP rules:
   - Correct handshakes
@@ -156,7 +201,7 @@
   - Even captures real-world quirks (partial teardowns)
 - Passes protocol validators - this is huge
 
-## Slide 21: Results - Application Patterns
+## Slide 24: Results - Application Patterns
 - Multi-flow capability shines here
 - Video streaming example:
   - CDN setup flows
@@ -166,32 +211,32 @@
 
 ---
 
-## Slide 22: Impact and Applications
+## Slide 25: Impact and Applications
 - Security: train IDS without real attack data
 - Performance testing: scale without production traffic
 - Protocol development: validate before deployment
 - **Key benefit**: No privacy/governance barriers
 
-## Slide 23: Comparison Table
+## Slide 26: Comparison Table
 - Direct head-to-head comparison
 - **Only NetSSM has multi-flow**
 - Look at the context/generation length differences
 - This is a significant advance
 
-## Slide 24: Key Takeaways
+## Slide 27: Key Takeaways
 - Three contributions:
   1. First multi-flow generator
   2. Superior performance (quantified)
   3. Semantic similarity evaluation (new)
 - Synthetic data that's similar AND useful
 
-## Slide 25: Future Directions
+## Slide 28: Future Directions
 - UDP and other protocols
 - Encrypted payload patterns
 - Integration with network simulators
 - Benchmark dataset creation
 
-## Slide 26: Summary
+## Slide 29: Summary
 - Reinforce the three innovations
 - State-space models are a good fit for network traffic
 - Results speak for themselves

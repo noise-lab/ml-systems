@@ -1,0 +1,5 @@
+/.quarto/
+**/*.quarto_ipynb
+**/slides_files/
+**/slides.html
+**/_source-extract.md

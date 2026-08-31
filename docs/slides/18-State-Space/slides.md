@@ -80,6 +80,59 @@ Think of it like a **running summary**:
 
 ---
 
+## Background: Transformers - A Quick Refresher
+
+**The dominant architecture for sequence modeling (2017-present)**
+
+**Key idea**: Process sequences using self-attention
+- Every position can "look at" every other position
+- Learn which parts of the input are relevant for each prediction
+- No inherent sequential processing required (parallelizable!)
+
+**Famous applications**:
+- GPT, Claude, ChatGPT (language models)
+- BERT (text understanding)
+- Vision Transformers (image classification)
+
+---
+
+## Background: The Attention Mechanism
+
+**Self-attention asks**: "Which parts of the input should I focus on?"
+
+**For each position in the sequence**:
+1. **Query**: "What am I looking for?"
+2. **Key**: "What do I contain?"
+3. **Value**: "What information do I have?"
+
+**Process**:
+- Compare query at position i with keys at all positions
+- Compute attention weights (how much to focus on each position)
+- Weighted sum of values produces output
+
+**Result**: Each token has access to information from the entire sequence
+
+---
+
+## Background: Transformer Strengths and Weaknesses
+
+**Strengths** ✓
+- Perfect memory: can attend to any previous token
+- Parallelizable: all positions processed simultaneously
+- Highly effective for many tasks
+
+**Weaknesses** ✗
+- **Quadratic complexity**: O(L²) in sequence length
+  - 1K tokens → 1M comparisons
+  - 10K tokens → 100M comparisons
+  - 100K tokens → 10B comparisons (infeasible!)
+- Memory usage grows quadratically
+- Expensive for long sequences (video, audio, network traces)
+
+**This limitation motivates alternative architectures like SSMs**
+
+---
+
 ## Background: SSMs vs Transformers
 
 **Transformer attention**: "Look back at everything"

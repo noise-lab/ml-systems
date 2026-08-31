@@ -1,0 +1,45 @@
+/*-- scss:defaults --*/
+// University of Chicago palette
+$uchicago-maroon: #800000;
+$uchicago-dark:   #3d3d3d;
+$uchicago-light:  #f7f5f2;
+
+$body-bg:        #ffffff;
+$body-color:     $uchicago-dark;
+$link-color:     $uchicago-maroon;
+$selection-bg:   lighten($uchicago-maroon, 60%);
+
+$presentation-heading-color: $uchicago-maroon;
+$presentation-heading-font: "Helvetica Neue", "Segoe UI", system-ui, sans-serif;
+$presentation-font-size-root: 30px;
+
+$code-block-font-size: 0.7em;
+
+/*-- scss:rules --*/
+.reveal h1, .reveal h2 { font-weight: 700; letter-spacing: -0.01em; }
+
+.reveal .title-slide h1 { color: $uchicago-maroon; }
+
+// Accent bar under section titles
+.reveal h2 {
+  border-bottom: 3px solid $uchicago-maroon;
+  padding-bottom: 0.15em;
+  margin-bottom: 0.5em;
+}
+
+.reveal .footer { color: lighten($uchicago-dark, 25%); font-size: 0.5em; }
+
+// Callout-ish emphasis for key terms
+.reveal strong { color: $uchicago-maroon; }
+
+// "current events" vignette boxes
+.reveal .vignette {
+  background: $uchicago-light;
+  border-left: 5px solid $uchicago-maroon;
+  padding: 0.5em 0.8em;
+  font-size: 0.85em;
+}
+
+// Smaller captioned images
+.reveal figure img { max-height: 460px; }
+.reveal figcaption { font-size: 0.55em; color: lighten($uchicago-dark, 20%); }

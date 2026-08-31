@@ -1,0 +1,27 @@
+# Shared Quarto config for all lecture decks.
+# Each lecture lives in NN-Name/slides.qmd and inherits these defaults.
+# Only slides.qmd files are treated as project inputs, so stray markdown
+# (e.g. legacy Marp .md still being reauthored) is ignored by `quarto render`.
+project:
+  title: "Machine Learning for Computer Systems"
+  render:
+    - "**/slides.qmd"
+
+format:
+  revealjs:
+    theme: [default, theme.scss]
+    slide-number: c/t
+    slide-level: 2
+    incremental: false
+    width: 1280
+    height: 720
+    history: false
+    transition: fade
+    footer: "Machine Learning for Computer Systems · University of Chicago"
+    code-line-numbers: true
+    highlight-style: github
+    chalkboard: false
+    link-external-newwindow: true
+
+# Inline speaker notes use ::: {.notes} blocks; press 's' in the deck for
+# presenter view.

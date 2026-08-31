@@ -1,0 +1,415 @@
+---
+title: "Decision Trees, Random Forests, and Boosting"
+subtitle: "Machine Learning for Computer Systems"
+author: "Nick Feamster · University of Chicago"
+date: last-modified
+---
+
+# From a Single Tree to a Forest {.center}
+
+> A single decision tree is easy to explain — but usually wrong.
+> An ensemble of trees is harder to explain — but usually right.
+
+::: {.notes}
+Open with the paradox of interpretability vs. accuracy that motivates this lecture. A single decision tree reads like a flowchart: "if packets_per_second > 50 AND destination_port == 443 then…" — a network operator can audit it. But it generalizes poorly. The techniques in this lecture — random forests and boosting — recover accuracy by trading away some of that legibility. See the "Decision Trees" and "Ensemble Methods" sections of Chapter 5 (Supervised Learning) in the course textbook.
+:::
+
+## Decision Trees: Core Idea
+
+- **Partition** the feature space into rectangular regions using a sequence of binary splits
+- Each **leaf node** holds a prediction: the mean (regression) or most frequent class (classification)
+- The whole structure can be drawn as a tree — every path from root to leaf is a readable **decision rule**
+
+**Example split for network traffic:**
+
+```
+packets_per_second > 50?
+  ├── YES → destination_port == 443?
+  │          ├── YES → HTTPS (benign)
+  │          └── NO  → further splits…
+  └── NO  → flow_duration < 1 s? …
+```
+
+::: {.notes}
+Emphasize the appeal: every prediction is traceable. This is exactly what a network operator or a compliance auditor wants — you can print the tree and walk through it with non-experts. Contrast with a neural network: you can't trace a prediction through millions of weights. This interpretability advantage is real and important in networking security contexts. See "Decision Trees" in the Supervised Learning chapter.
+:::
+
+## Building a Tree: Regression vs. Classification {.smaller}
+
+::: {.columns}
+::: {.column width="50%"}
+**Regression Tree**
+
+- Predict a **continuous** target (e.g., flow throughput in Mbps)
+- Split criterion: **reduces mean squared error (MSE)** most
+- Greedy recursive binary splitting — computationally feasible; not globally optimal
+- Leaf prediction: **mean** of training targets in that region
+:::
+::: {.column width="50%"}
+**Classification Tree**
+
+- Predict a **discrete** class (e.g., attack type or application)
+- Split criterion: **Gini impurity** or **entropy** — not MSE, since outcomes are discrete
+- Same greedy recursive splitting algorithm (CART)
+- Leaf prediction: **majority class** in that region
+:::
+:::
+
+The CART algorithm evaluates **every feature and every threshold** at each node; takes the split that maximizes impurity reduction; recurses on each child.
+
+::: {.notes}
+Stress that the split search is exhaustive over all features and all thresholds — this is O(n log n) per feature per node, which is tractable. The key difference between regression and classification trees is only the splitting criterion: MSE reduction for continuous targets, Gini/entropy for categorical. In networking, most interesting problems are classification (malware vs. benign, application type, attack category). Gini impurity is the CART default; entropy is C4.5's default. They usually produce the same splits. See the "Training" subsection of "Decision Trees" in the Supervised Learning chapter.
+:::
+
+## Splitting Criteria: Gini Impurity and Entropy {.smaller}
+
+For a node containing $K$ classes with proportions $p_1, \ldots, p_K$:
+
+$$\text{Gini} = 1 - \sum_{k=1}^{K} p_k^2 \qquad \text{Entropy} = -\sum_{k=1}^{K} p_k \log_2 p_k$$
+
+- Both equal **zero** for a pure node (all one class) — the ideal leaf
+- Both are maximized when classes are equally mixed — the worst split
+- In practice, Gini and entropy produce nearly identical trees
+
+**Greedy choice at each node:** select the feature $j$ and threshold $t$ that maximize the **weighted impurity reduction** across the two resulting child nodes.
+
+::: {.notes}
+The math is important for intuition. Gini impurity measures the probability that a randomly drawn pair of examples from the node belong to different classes — a pure node has probability zero. Entropy is the information-theoretic measure of disorder. Both penalize mixed nodes and reward pure ones. Cold call: if a node has 50 examples all of class 0, what is its Gini impurity? (Answer: 0.) What if it has 25 of class 0 and 25 of class 1? (Answer: 0.5, maximum for binary case.) This connects to information theory concepts the students may have seen elsewhere.
+:::
+
+## Overfitting and Pruning
+
+A **deep tree** can memorize training data — every leaf holds a single example:
+
+- Training error → 0
+- Test error → terrible (high variance)
+
+**Two approaches to control tree depth:**
+
+1. **Early stopping** — stop growing when the RSS (or Gini) improvement falls below a threshold. Problem: misses deeper splits that only become useful later in the tree.
+2. **Cost-complexity pruning (preferred)** — grow a large tree, then prune back by minimizing a penalized objective:
+
+$$\text{minimize} \; \sum_{\text{leaves}} \text{MSE}_\ell + \alpha \cdot |T|$$
+
+Tune $\alpha$ via **$K$-fold cross-validation**.
+
+::: {.notes}
+The cost-complexity pruning approach is called "weakest-link pruning" in ISL. The hyperparameter alpha (analogous to lambda in ridge regression) controls the tradeoff: alpha=0 keeps the full tree, large alpha forces a stump. The key insight for students: pruning is a regularization technique, exactly like L2 regularization for linear models, but applied to the tree structure. Cross-validation on alpha is the same procedure used everywhere: split data into K folds, evaluate the generalization error for each alpha value, pick the alpha with the lowest CV error. See the "Parameter Tuning" subsection of "Decision Trees" in the Supervised Learning chapter.
+:::
+
+## The Brittleness Problem {.smaller}
+
+Despite their interpretability advantage, single decision trees suffer a critical weakness: **brittleness**.
+
+- CART is **greedy**: it picks the locally best split at each node without backtracking
+- Change a few training examples → algorithm might choose a **different root split** → every downstream split cascades into a completely different tree
+- The final predictions may be similar; the tree structure may be **unrecognizable**
+
+**Concrete networking example:**
+
+| Training run | Root split | Result |
+|---|---|---|
+| Original dataset | `packets_per_second > 50` | Tree A |
+| +10 new flows | `inter_arrival_time < 0.3 ms` | Tree B (completely different) |
+
+This **high variance** problem motivates ensemble methods.
+
+::: {.notes}
+The brittleness problem is the most important practical takeaway from the decision tree section. Students should intuitively understand WHY it happens: the greedy root-split choice locks in the entire tree structure, so any perturbation that changes the root choice cascades. This is very different from logistic regression, where adding a few examples shifts the decision boundary slightly. The brittleness problem is covered in detail in the "The Brittleness Problem" subsection of the Supervised Learning chapter — direct students to read it. This motivates the entire second half of the lecture.
+:::
+
+## Decision Trees: Pros and Cons
+
+::: {.columns}
+::: {.column width="50%"}
+**Advantages**
+
+- **Interpretable** — every prediction has an auditable rule path
+- No feature scaling needed (no distance computations)
+- Handles **mixed feature types** (numeric, binary, nominal) natively
+- Mirrors human decision-making — easy for non-experts
+- Built-in **feature importance** from impurity reduction
+:::
+::: {.column width="50%"}
+**Limitations**
+
+- **Brittle** — high variance; small data changes → large tree changes
+- Usually **not very accurate** compared to ensemble methods
+- Can overfit badly if not pruned
+- Feature importance is **unreliable** for individual trees (too sensitive to data changes)
+:::
+:::
+
+::: {.notes}
+Bring the tradeoff home for networking contexts: a decision tree classifier for intrusion detection is easy to show a security analyst ("here's exactly why the IDS flagged this flow"), but it might miss 30% of attacks that would be caught by a random forest. In high-stakes settings, the accuracy penalty is unacceptable. The rest of the lecture shows how to keep most of the accuracy while recovering some interpretability. See the "Benefits and Drawbacks" subsection in the Supervised Learning chapter.
+:::
+
+# Ensemble Methods {.center}
+
+> One tree is brittle. A forest is robust.
+
+::: {.notes}
+The key insight of ensemble methods is the "wisdom of crowds": many diverse, simple models that each get the answer partially right can collectively outperform a single complex model. The diversity is essential — if all models make the same mistakes, aggregating them doesn't help. See the "Ensemble Methods" section of Chapter 5 (Supervised Learning) in the course textbook.
+:::
+
+## Bagging: Bootstrap Aggregation
+
+**Key idea:** reduce variance by averaging predictions over many models trained on bootstrapped datasets.
+
+1. Draw $B$ bootstrap samples of size $n$ **with replacement** from the training set
+2. Train a **separate decision tree** on each bootstrap sample (no pruning — let trees grow deep)
+3. Aggregate predictions:
+   - **Regression:** average the $B$ predictions
+   - **Classification:** majority vote across the $B$ trees
+
+Each bootstrap sample contains ~**63.2%** of unique training examples (rest are duplicates).
+
+::: {.notes}
+Recall the variance reduction math from probability: if you have n independent observations each with variance sigma^2, the mean has variance sigma^2/n. Bagging approximates this — the trees aren't truly independent (they're all drawn from the same underlying distribution) but they're decorrelated enough to substantially reduce variance. The 63.2% figure follows from the probability that any single example is NOT selected in n draws with replacement: (1 - 1/n)^n → 1/e ≈ 36.8% excluded, so 63.2% included. The excluded ~36.8% becomes the "out-of-bag" sample — free cross-validation data! See the "Bagging & Pasting" subsection of the Supervised Learning chapter.
+:::
+
+## Out-of-Bag Error Estimation
+
+Bagging gives us a **free cross-validation estimate** without additional computation:
+
+- Each tree was trained on ~63.2% of examples → the remaining ~36.8% are **out-of-bag (OOB)**
+- For each training example, average predictions only from trees that did **not** see it
+- OOB error ≈ cross-validation error; no separate validation set needed
+
+**Feature importance** is also computable from bagged trees:
+
+- For each feature, measure the average reduction in RSS (regression) or Gini (classification) across all splits on that feature, averaged over all trees
+- More stable and reliable than a single tree's feature importance
+
+::: {.notes}
+OOB estimation is a major practical advantage: in networking datasets, labeled examples are often scarce and expensive. Using OOB error means you don't have to sacrifice 20% of your labeled data for a validation set. The feature importance calculation is covered in detail in the "Evaluation" content from the source extract and the "Feature Importance in Random Forests" subsection of the book. Stress that averaging over many trees makes feature importance much more reliable than reading it from a single tree.
+:::
+
+## Random Forests: Decorrelating the Trees {.smaller}
+
+Bagging still has a problem: if one feature dominates, **all trees will split on it early** → the trees are correlated → variance reduction is limited.
+
+**Random forests** fix this with one additional tweak:
+
+> At each node, consider only a **random subset of $m$ features** (not all $M$)
+
+- Typically $m = \sqrt{M}$ for classification; $m = M/3$ for regression
+- Forces the algorithm to find good splits using **different features** in different trees
+- Trees become **decorrelated** → greater variance reduction when aggregated
+
+Final prediction: **majority vote** (classification) or **average** (regression) across all trees.
+
+::: {.notes}
+This is a subtle but crucial point. If you have one very dominant feature (say, packet_size for classifying certain attack types), bagging alone will produce hundreds of trees that all split first on packet_size — they're highly correlated, so averaging them doesn't help much. The random feature subset forces diversity. The m = sqrt(M) rule is empirically well-supported and is the default in scikit-learn. Random forests are described as "one of the best out-of-the-box classifiers" in the book — they require very little hyperparameter tuning, work with mixed feature types, don't require scaling, and are highly parallelizable. See the "Random Forests" subsection of the Supervised Learning chapter.
+:::
+
+## Why Random Forests Work So Well
+
+::: {.columns}
+::: {.column width="50%"}
+**Solving Brittleness**
+
+- Hundreds of trees each trained on different data subsets
+- Ensemble vote is **stable** even if individual trees change
+- Adding new training examples shifts some trees but not the aggregate prediction
+:::
+::: {.column width="50%"}
+**Practical Advantages**
+
+- **Minimal tuning** — mainly just "number of trees" (more is almost always better)
+- Works with **mixed feature types**; no scaling needed
+- Highly **parallelizable** — each tree is independent
+- **Competitive with deep learning** on tabular data
+:::
+:::
+
+**Bottom line:** Random forests are an excellent first model to try on any new network traffic classification problem.
+
+::: {.notes}
+The book explicitly calls random forests "one of the best out-of-the-box classifiers." The competition with deep learning on tabular data is not just hype — Grinsztajn et al. (2022) showed this systematically on benchmark datasets. In networking, most features we extract from flows (packet counts, byte rates, inter-arrival times, port numbers) are tabular, not raw bytes — this is exactly the regime where random forests shine. The key hyperparameters are: n_estimators (more is better, diminishing returns), max_features (sqrt(M) default is usually fine), and max_depth (usually None — let trees grow). See the "Why Random Forests Are One of the Best Out-of-the-Box Classifiers" subsection of the Supervised Learning chapter.
+:::
+
+## Application: IoT Privacy Inference
+
+::: {.columns}
+::: {.column width="60%"}
+A compelling networking application of random forests:
+
+- Apthorpe et al. collected **encrypted** traffic from smart home cameras
+- Features: packet sizes, timing, rates — **no content** inspected
+- Random forest classifier trained to predict: **motion detected or not?**
+- Result: high accuracy from traffic patterns alone — **metadata leaks private in-home activity**
+:::
+::: {.column width="40%"}
+**Privacy implication:**
+
+Encryption protects *content*.
+It does not protect *traffic metadata*.
+
+Random forest feature importance revealed which timing patterns were most diagnostic — providing insight, not just a black-box prediction.
+:::
+:::
+
+::: {.notes}
+This is a canonical example from the book's sidebar. The paper (Apthorpe et al. 2017) is widely cited and directly relevant to students interested in IoT security and privacy. The key teaching point is dual: (1) random forests as a research instrument — they revealed WHICH features leaked information; (2) the privacy implication — encryption alone is not sufficient to protect user behavior from network observers. This is why ISPs, network operators, and even home router firmware can infer what you're doing even over HTTPS. See the IoT Privacy sidebar in the "Random Forests" subsection of the Supervised Learning chapter.
+:::
+
+# Boosting {.center}
+
+> Bagging reduces **variance** by parallelism.
+> Boosting reduces **bias** by sequential correction.
+
+::: {.notes}
+This is the key conceptual distinction to hammer home. Bagging trains many independent models and averages — this reduces variance (the models disagree less in aggregate). Boosting trains models sequentially where each new model tries to fix the mistakes of the previous ones — this reduces bias (the aggregate model can represent more complex patterns). See the "Boosting" subsection of the Ensemble Methods section in the Supervised Learning chapter.
+:::
+
+## Gradient Boosting: Sequential Residual Fitting
+
+**Core algorithm:**
+
+1. Start with a simple prediction (e.g., the mean of all targets)
+2. Compute the **residuals** — the errors the current model makes
+3. Train a new (shallow) tree to **predict the residuals**
+4. Add this correction, scaled by a **shrinkage factor** $\lambda$, to the current model
+5. Repeat for $B$ iterations
+
+$$\hat{f}^{(b)}(\mathbf{x}) = \hat{f}^{(b-1)}(\mathbf{x}) + \lambda \cdot h_b(\mathbf{x})$$
+
+where $h_b$ is the tree fitted to the residuals at step $b$.
+
+::: {.notes}
+Gradient boosting is described as predicting "the residual between predicted labels and correct labels for the training data. Successive models predict the residual of the previous model, effectively predicting the amount of correction needed to improve the earlier model's output." (Supervised Learning chapter.) The shrinkage parameter lambda is the learning rate — small lambda means each tree contributes only a little, requiring more trees but usually giving better generalization. This is analogous to the learning rate in gradient descent. XGBoost and LightGBM are the dominant implementations; both add regularization terms, parallelism, and efficient histogram-based splitting on top of this core algorithm. See the "Boosting" subsection in the Supervised Learning chapter.
+:::
+
+## AdaBoost: Reweighting for Classification {.smaller}
+
+**AdaBoost** is boosting for classification using example reweighting:
+
+1. Start: assign equal weight to all training examples
+2. Train a **weak learner** (often a 1-level tree / "stump")
+3. **Increase weights** for examples the stump got wrong; decrease for correct ones
+4. Next stump focuses effort on the **hard examples**
+5. Final prediction: weighted majority vote of all stumps
+
+**Why it works:**
+Each successive weak learner is forced to specialize on the examples that previous learners missed. Chaining many such learners can produce a model that perfectly fits training data — and empirically, test error improves too.
+
+::: {.notes}
+AdaBoost (Freund & Schapire, 1997) was the first boosting algorithm to gain widespread use. The stump (depth-1 tree) is the canonical weak learner — it makes just one binary split. The mathematical guarantee: AdaBoost + any weak learner (anything that does better than random guessing) will eventually fit the training data perfectly. Empirically, this also improves test error — which is somewhat surprising from a theoretical standpoint and partly explains the algorithm's historical impact. The key limitation of boosting vs. bagging: it's inherently sequential, so parallelization is harder. See the "Boosting" subsection in the Supervised Learning chapter.
+:::
+
+## Boosting Parameters and Tuning {.smaller}
+
+| Parameter | Description | Practical Guidance |
+|---|---|---|
+| **Number of trees $B$** | How many sequential models to train | Use cross-validation; more trees can overfit (unlike random forests) |
+| **Shrinkage $\lambda$** | Learning rate — how much each tree contributes | Smaller $\lambda$ = more trees needed but usually better generalization |
+| **Tree depth $d$** | Complexity of each weak learner | Depth 1 (stumps) often works well; $d = 1$–$5$ typical |
+
+**Key difference from random forests:** boosting **can overfit** as $B$ grows — number of trees must be tuned via cross-validation.
+
+::: {.notes}
+This is an important practical distinction: random forests almost never overfit as you add more trees (adding trees only helps, with diminishing returns). Boosting can overfit because each new tree is deliberately targeting the residuals of the previous model — if you keep going long enough, you can memorize the training data. The shrinkage parameter is the most important tuning knob. XGBoost uses 0.1 as a default; practitioners often try 0.01–0.3. Smaller lambda with more trees usually beats larger lambda with fewer trees. See the "Parameters in Boosting" content from the source extract and the Boosting subsection in the Supervised Learning chapter.
+:::
+
+## Random Forests vs. Boosting {.smaller}
+
+::: {.columns}
+::: {.column width="50%"}
+**Random Forests**
+
+- Trees trained **in parallel** — independently on bootstrapped subsets
+- Reduces **variance** (individual trees disagree; aggregate is stable)
+- Hard to overfit by adding more trees
+- **Minimal tuning** required
+- Excellent default; strong on tabular data
+- **Parallelizable** — scales easily
+:::
+::: {.column width="50%"}
+**Gradient Boosting / XGBoost**
+
+- Trees trained **sequentially** — each corrects the previous
+- Reduces **bias** (aggregate can model complex patterns)
+- **Can overfit** — $B$ must be tuned carefully
+- More hyperparameters (learning rate, depth, regularization)
+- Often achieves **highest accuracy** on structured data competitions
+- Sequential — harder to parallelize
+:::
+:::
+
+**Rule of thumb:** Start with random forests for robustness. Try XGBoost for maximum performance.
+
+::: {.notes}
+Both methods dominate Kaggle competitions on tabular data. XGBoost won a remarkable number of competitions in 2014-2017 and remains dominant alongside LightGBM. For networking applications: if you need a fast, robust baseline that's easy to explain to a security team, use random forests. If you're squeezing out the last percentage point of detection accuracy (and have time to tune), use gradient boosting. The book notes: "Research suggests boosting methods may be effective for networking applications such as traffic classification and intrusion detection." (Supervised Learning chapter.)
+:::
+
+## Current Events: Gradient Boosting for IoT Intrusion Detection {.smaller}
+
+::: {.vignette}
+**April 2026 — Optimized Gradient Boosting IDS for IoT (Scientific Reports)**
+
+Researchers published an optimized gradient-boosting framework for IoT intrusion detection evaluated on the CICIoT2023 benchmark — a large-scale dataset with realistic IoT attack traffic. XGBoost achieved **98.54% accuracy** and **93.06% AUC-ROC** on multi-class attack classification (DoS, DDoS, Mirai, and others). The study addressed the key challenge of highly imbalanced classes (normal traffic vastly outnumbers attack traffic) and demonstrated that gradient boosting remains competitive with deep learning on structured flow-level features.
+
+*Source: "An optimized gradient boosting framework for IoT intrusion detection: a comprehensive evaluation on the CICIoT2023 dataset," Scientific Reports, April 2026. doi: 10.1038/s41598-026-47399-5*
+:::
+
+**Teaching point:** This result connects directly to three lecture themes — ensemble methods on tabular network features, class imbalance (more in the Data Preparation lecture), and the real-world deployment stakes of intrusion detection.
+
+::: {.notes}
+This is a primary-source verified 2026 result from Scientific Reports (Nature Publishing Group). The CICIoT2023 dataset is a well-known benchmark from the Canadian Institute for Cybersecurity containing realistic IoT network traffic. The 98.54% accuracy figure is the XGBoost result specifically; the class imbalance challenge is directly relevant to the Data Preparation and Evaluation lectures. Cold call: why is AUC-ROC a better metric than raw accuracy when classes are highly imbalanced? (Because a classifier that always predicts "normal" would have very high accuracy but AUC ≈ 0.5.) Re-verify this result before next year's refresh — dated hooks in Scientific Reports are durable.
+:::
+
+## Ensemble Methods and Interpretability {.smaller}
+
+A practical tension: ensemble methods improve accuracy but reduce interpretability.
+
+| Method | Interpretability | Accuracy |
+|---|---|---|
+| Single decision tree | High — readable rules | Low |
+| Random forest | Medium — feature importance only | High |
+| Gradient boosting | Medium — SHAP values help | Very high |
+
+**Addressing the gap:**
+
+- **Feature importance** (both methods): which inputs matter most?
+- **SHAP values** (SHapley Additive exPlanations): per-prediction attribution — how much did each feature contribute to **this specific prediction**?
+- Particularly valuable for networking: explain to a security analyst why **this specific flow** was flagged
+
+::: {.notes}
+SHAP (Lundberg & Lee, 2017) is now the standard interpretability tool for ensemble models. Most major gradient boosting libraries (XGBoost, LightGBM, scikit-learn) support SHAP natively. For students interested in explainable AI for security: SHAP gives you the best of both worlds — a highly accurate ensemble model with per-prediction explanations. The feature importance caveat: random forest feature importance can be misleading when features are correlated (the importance may be split arbitrarily among correlated features). SHAP addresses this more rigorously. This is worth flagging as an active research area but not drilling into deeply in this lecture.
+:::
+
+## Summary: Trees and Ensembles
+
+::: {.columns}
+::: {.column width="55%"}
+**Decision Trees**
+
+- Partition feature space into rectangular regions via greedy binary splitting
+- Interpretable, but **brittle and inaccurate** alone
+- Tune depth via cost-complexity pruning + cross-validation
+
+**Random Forests**
+
+- Bagging + random feature subsets = decorrelated trees
+- Reduces **variance**; minimal tuning; great default
+- Feature importance via OOB error + impurity reduction
+:::
+::: {.column width="45%"}
+**Boosting**
+
+- Sequential trees fitting **residuals** of previous model
+- Reduces **bias**; can overfit; tune $B$ and $\lambda$
+- XGBoost / LightGBM: dominant for tabular data
+
+**For networking:**
+
+- Tree-based models handle mixed features natively
+- Random forests = strong, robust baseline
+- XGBoost = max accuracy on structured flow data
+:::
+:::
+
+::: {.notes}
+Close with the conceptual arc: single tree (interpretable, inaccurate) → bagging (variance reduction) → random forests (decorrelated variance reduction) → boosting (bias reduction via sequential correction). The networking relevance runs throughout: feature importance for understanding which flow features matter, OOB error for evaluation when labeled data is scarce, and gradient boosting for state-of-the-art IDS performance. Remind students: the activity in the Appendix trains a random forest on IoT traffic data — directly relevant to the applications covered today. See Chapter 5 (Supervised Learning) in the course textbook for all material covered today.
+:::

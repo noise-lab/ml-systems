@@ -1,0 +1,505 @@
+---
+title: "Probabilistic and Non-Parametric Models"
+subtitle: "Machine Learning for Computer Systems"
+author: "Nick Feamster · University of Chicago"
+date: last-modified
+---
+
+# What Kind of Model Do You Need? {.center}
+
+## The Classifier Landscape
+
+Not every problem needs a deep neural network. Before we reach for
+complexity, two classes of models offer strong baselines:
+
+::: {.columns}
+::: {.column width="50%"}
+**Probabilistic models**
+
+- Estimate *probability distributions* over classes
+- Output class likelihoods, not just labels
+- Example: **Naive Bayes**
+:::
+::: {.column width="50%"}
+**Non-parametric models**
+
+- No fixed parameter count — complexity grows with data
+- No distributional assumption about the data
+- Example: **k-Nearest Neighbors (k-NN)**
+:::
+:::
+
+::: {.notes}
+Before diving in, set the stage: both Naive Bayes and k-NN are "simple" by
+deep-learning standards, but they appear constantly in production networking
+systems, in baseline evaluations, and in research papers. The goal of this
+lecture is to understand *why* they work and *when* to reach for them. See
+the "Probabilistic Models" and "Non-Parametric Models" sections of the
+Supervised Learning chapter.
+:::
+
+# Naive Bayes {.center}
+
+## The Optimal Bayes Classifier
+
+The ideal classifier: given features **X**, pick the class **Y** that
+maximizes the **posterior probability** $P(Y \mid X)$.
+
+$$\hat{Y} = \arg\max_Y \; P(Y \mid X)$$
+
+Why can't we just do this?
+
+- The true distribution $P(X)$ is **unknown**
+- Estimating $P(X \mid Y)$ in high dimensions requires **exponentially large** data
+
+**Practical solution:** assume a family of distributions and
+estimate parameters from the training data.
+
+::: {.notes}
+The "optimal Bayes classifier" is the theoretical gold standard — no
+classifier can do better if it knows the true distribution. The rest of the
+lecture is about approximating it efficiently. This framing comes directly
+from the source slides and the Probabilistic Models section of the book.
+:::
+
+## Bayes' Rule for Classification
+
+Apply Bayes' rule to flip the conditioning:
+
+$$P(Y \mid X) = \frac{P(X \mid Y) \cdot P(Y)}{P(X)}$$
+
+| Term | Name | Estimated from |
+|---|---|---|
+| $P(Y)$ | **Prior** | Class frequencies in training data |
+| $P(X \mid Y)$ | **Likelihood** | Feature distributions per class |
+| $P(X)$ | **Marginal** | Constant across classes — can ignore |
+
+Since $P(X)$ is the same for every class, we only compare:
+
+$$\hat{Y} = \arg\max_Y \; P(X \mid Y) \cdot P(Y)$$
+
+::: {.notes}
+Emphasize the practical shortcut: once you drop the denominator, training
+reduces to (a) counting class frequencies for the prior and (b) fitting
+per-feature distributions for the likelihood. Walk through the table with
+concrete numbers before the next slide. See the Supervised Learning chapter,
+"Naive Bayes" section.
+:::
+
+## The "Naive" Independence Assumption
+
+**Problem:** $P(X \mid Y)$ for a full feature vector grows exponentially with
+the number of features — infeasible to estimate directly.
+
+**Solution:** assume features are **conditionally independent** given the
+class:
+
+$$P(X \mid Y) = \prod_i P(X_i \mid Y)$$
+
+Each $P(X_i \mid Y)$ is a simple **one-dimensional** distribution estimated
+from the training data.
+
+Final prediction:
+
+$$\hat{Y} = \arg\max_Y \; P(Y) \cdot \prod_i P(X_i \mid Y)$$
+
+::: {.notes}
+"Naive" because conditional independence is almost always violated in
+practice — yet Naive Bayes still works well (more on this later). Point out
+that factoring the joint into per-feature terms is what makes training
+efficient: it's just counting and one-dimensional distribution fitting.
+See the "Probabilistic Models" section of the Supervised Learning chapter.
+:::
+
+## Choosing a Distribution Family {.smaller}
+
+For each feature, pick the distribution that matches the data type:
+
+| Feature type | Distribution | Example in networking |
+|---|---|---|
+| Continuous / numerical | **Gaussian** | Packet inter-arrival time, byte count |
+| Binary presence/absence | **Bernoulli** | Flag set? Protocol seen? |
+| Discrete counts | **Multinomial** | Word frequency, port histogram |
+
+::: {.notes}
+Walk through each row with a concrete networking example. Gaussian is the
+default for numeric flow features. Bernoulli is natural for one-hot-encoded
+categorical features (TCP SYN present? HTTP keyword found?). Multinomial
+handles word-bag representations of DNS queries or HTTP headers. The choice
+of distribution is a modeling decision — incorrect choices degrade
+calibration, but often not accuracy. See the "Important Assumptions" section
+of the source slides and the book's discussion of kernel density estimates.
+:::
+
+## The Zero-Probability Problem
+
+What if a feature value seen at test time **never appeared** in training for a
+given class?
+
+$$P(word \mid legitimate) = 0 \implies P(Y) \cdot \prod_i P(X_i \mid Y) = 0$$
+
+The entire product collapses — even one unseen word makes the class impossible.
+
+**Fix: smoothing** — add a small constant $\alpha$ so no probability is ever
+exactly zero.
+
+$$P(X_i \mid Y) \leftarrow \frac{\text{count}(X_i, Y) + \alpha}{\text{count}(Y) + \alpha \cdot |\text{vocabulary}|}$$
+
+::: {.notes}
+Give the spam example from the book: a professor's legitimate email that
+discusses spam filtering might contain words like "Viagra" as examples — if
+those words never appeared in legitimate training emails, the email gets
+misclassified as spam without smoothing. Laplace (add-1) smoothing is the
+default in scikit-learn. Smoothing is a hyperparameter worth tuning.
+See the "Zero Probability Problem" section of the Supervised Learning chapter.
+:::
+
+## Case Study: Spam Filtering and the Adversarial Arms Race
+
+::: {.vignette}
+**SpamAssassin** (still active; latest release 4.0.1, January 2025) was
+originally built entirely on a Naive Bayes classifier that ran locally on
+each user's machine. It correctly classified millions of emails per day
+worldwide. Attackers responded by appending invisible legitimate text (e.g.,
+Shakespeare excerpts in white-on-white font) to dilute the spam-word
+probabilities — an early instance of adversarial ML. The arms race between
+Naive Bayes filters and spammers is one of the most instructive case studies
+in adversarial machine learning. Source:
+[SpamAssassin project](https://spamassassin.apache.org),
+[Apache SpamAssassin 4.0.1 release notes](https://spamassassin.apache.org/downloads.cgi).
+:::
+
+**Lesson:** even a "simple" classifier under adversarial pressure exposes
+the limits of the independence assumption — attackers can manipulate the
+feature distribution.
+
+::: {.notes}
+The SpamAssassin example is from the book's "Historical Application: Spam
+Filtering" subsection. Pause here to ask: how does the white-on-white-text
+attack work mathematically? Answer: adding many $P(word_i \mid legitimate)$
+near-1 terms to the product dilutes the $P(word_j \mid spam)$ signal.
+The adversarial arms race also motivates why we later study adversarial
+robustness. See the Supervised Learning chapter, "Historical Application" and
+"The Paradox of Naive Bayes" sections.
+:::
+
+## Advantages and Disadvantages of Naive Bayes {.smaller}
+
+::: {.columns}
+::: {.column width="50%"}
+**Advantages**
+
+- **Efficient** training — just counting
+- **Scalable** — handles large feature sets
+- Works well on **small datasets**
+- **Interpretable** — each feature examined independently
+- Avoids the curse of dimensionality (1-D distributions per feature)
+- Outputs calibrated **probabilities**, not just labels
+:::
+::: {.column width="50%"}
+**Disadvantages**
+
+- **Cannot learn feature interactions** — independence assumption baked in
+- Often produces **poor probability estimates** (calibration issues)
+- Thresholds are typically good enough; raw probabilities may not be
+- Gaussian assumption may not fit skewed or multi-modal features
+:::
+:::
+
+::: {.notes}
+The "poor probability estimates but good thresholds" observation is important:
+Naive Bayes is often a good classifier but a poor probability calibrator. This
+matters when you need the actual probability (e.g., to feed into a downstream
+decision system) vs. just the most-likely class. The book's "Advantages"
+section covers these points; the source slides list them as well.
+:::
+
+## The Paradox: Why Does It Work Despite Violated Assumptions?
+
+The independence assumption is almost never true in practice:
+
+> In a machine learning course, if you see "machine" in an email, there's a
+> large chance the next word is "learning."
+
+Yet Naive Bayes classifiers continue to perform effectively. Why?
+
+- **Threshold behavior:** even if probabilities are wrong, the *rank ordering*
+  across classes can still be correct
+- **Theoretical support:** Domingos & Pazzani (1997) showed conditions under
+  which naive Bayes is optimal *despite* violated independence
+- **Practical takeaway:** many ML models work despite violated assumptions —
+  don't over-index on whether assumptions hold
+
+::: {.notes}
+This is one of the most important meta-lessons of the lecture. Students often
+expect ML models to "fail" as soon as an assumption is violated. Naive Bayes
+shows that practical performance can be robust even when the mathematical
+assumptions are wrong. This point also comes up with Gaussian mixture models,
+k-NN distance functions, and linear regression on non-linear data. See the
+"Paradox of Naive Bayes" subsection of the Supervised Learning chapter.
+:::
+
+# k-Nearest Neighbors {.center}
+
+## k-NN: No Parameters, No Training
+
+**Idea:** to classify a new example, find the *k* most similar training
+examples and take a majority vote (or average for regression).
+
+::: {.columns}
+::: {.column width="55%"}
+**Algorithm:**
+
+1. Store training data in a **k-d tree** for efficient lookup
+2. For a new point, compute **distance** to all training points
+3. Identify the *k* nearest neighbors
+4. Predict the **mode** (classification) or **mean** (regression)
+
+**Key hyperparameters:** *k* and the **distance function**
+(Euclidean, Manhattan, cosine, …)
+:::
+::: {.column width="45%"}
+**Non-parametric** means the model stores the entire training
+set — there are **no learned weights** to store separately.
+Model size grows with data size.
+:::
+:::
+
+::: {.notes}
+Stress that "training" k-NN is trivially cheap — all the work happens at
+prediction time. This inverts the usual compute budget: fast to train, slow
+to predict if the training set is large. The k-d tree data structure is an
+important implementation detail that students often overlook. See the
+"K-Nearest Neighbors" section of the Supervised Learning chapter.
+:::
+
+## Distance Functions and Feature Standardization
+
+Because k-NN is purely distance-based, **feature scale matters enormously**:
+
+- A feature measured in bytes (0–65,000) dominates one measured in
+  milliseconds (0–100) when using Euclidean distance
+- **Standardize** features to zero mean and unit variance before training k-NN
+
+Different tasks call for different distance functions:
+
+| Distance | When to use |
+|---|---|
+| Euclidean | Numeric, standardized features |
+| Manhattan | More robust to outliers |
+| Cosine | High-dimensional sparse vectors (text, bag-of-ports) |
+| Hamming | Binary / categorical features |
+
+::: {.notes}
+The standardization requirement is easy to forget in practice. Walk through
+the bytes-vs-milliseconds example to make it concrete. Cosine distance is
+especially relevant for network traffic classification using port histograms
+or protocol frequency vectors. See the "K-Nearest Neighbors" section of the
+Supervised Learning chapter.
+:::
+
+## The Curse of Dimensionality
+
+k-NN degrades as the number of features increases:
+
+- In high dimensions, **all points become equidistant** — the contrast between
+  nearest and farthest neighbors collapses
+- Distance metrics lose their discriminative power
+- Exponentially more data needed to maintain the same coverage density
+
+**Practical implications for networking:**
+
+- Flow-level features (5–20 dimensions): k-NN works well
+- Packet-byte vectors (hundreds–thousands of dimensions): k-NN struggles
+- **Feature selection before k-NN** is often essential
+
+::: {.notes}
+The curse of dimensionality is a central theme in the book and comes up in
+nearly every model discussion. Use the geometry intuition: in 1D, two points
+that are "close" are easy to identify. In 1000D, every pair of points is
+about the same distance apart. k-NN relies on meaningful distance — when
+distance loses meaning, k-NN fails. See the "K-Nearest Neighbors" section
+of the Supervised Learning chapter.
+:::
+
+## k-NN in Networking: Baseline and Fingerprinting
+
+The book documents three key networking applications of k-NN:
+
+::: {.columns}
+::: {.column width="50%"}
+**Positioning and geolocation**
+Bahl & Padmanabhan (RADAR, 2000): indoor positioning using WiFi signal
+strengths — k-NN over signal strength vectors to find the nearest
+pre-surveyed location.
+
+**Website fingerprinting**
+Wang et al. (2014): k-NN over traffic patterns to identify which website
+a Tor user is visiting, even without reading the content.
+:::
+::: {.column width="50%"}
+**Attack detection**
+Liao & Vemuri (2002): k-NN to classify network flows as normal or intrusive
+using connection features.
+
+**Baseline role:**
+k-NN often appears in research papers as a **baseline** — its simplicity
+makes it a good lower bound to beat with more complex models.
+:::
+:::
+
+::: {.notes}
+The RADAR paper is historically important — it was one of the first papers
+to apply ML to a network operations problem. The website fingerprinting
+application is ethically interesting: the same k-NN technique can be used
+offensively (de-anonymizing Tor users) or defensively (detecting unusual
+browsing patterns). Use this to connect to the security themes of the course.
+See the "K-Nearest Neighbors" section of the Supervised Learning chapter.
+:::
+
+## 2025 Research: Improved k-NN for Network Intrusion Detection
+
+::: {.vignette}
+**March 2025 — Scientific Reports:** Bao and Gao published "Network Intrusion
+Detection Based on Improved KNN Algorithm" (*Scientific Reports* 15, article
+29842). They propose a three-branch decision soft-increment k-NN that
+represents class clusters as interval sets — upper, boundary, and lower bounds
+correspond to the positive, boundary, and negative decision regions. On the
+NSL-KDD benchmark, the improved algorithm classifies Normal, DoS, and Probing
+attack types with accuracy above 85%, though U2R (user-to-root) attacks remain
+harder (average 57%). The work shows k-NN research is still active in 2025,
+driven by its interpretability advantage over deep models in high-stakes
+detection. Source: [*Scientific Reports* (2025), doi:10.1038/s41598-025-14199-2](https://www.nature.com/articles/s41598-025-14199-2)
+:::
+
+::: {.notes}
+This is the most recent peer-reviewed paper directly applying improved k-NN to
+network intrusion detection (verified March 2025, Scientific Reports). Use
+this to open discussion: why would anyone publish a k-NN paper in 2025 when
+deep learning dominates? Answer: interpretability, small-data settings, and
+auditability requirements in security contexts. Ask students: when would you
+choose a k-NN over a neural network in a production IDS?
+:::
+
+## Advantages and Disadvantages of k-NN {.smaller}
+
+::: {.columns}
+::: {.column width="50%"}
+**Advantages**
+
+- **No training phase** — trivially fast to "train"
+- **No distributional assumption** on the data
+- Naturally **multi-class** — no modification needed
+- Intuitive and easy to debug
+- Excellent **baseline** for benchmarking
+:::
+::: {.column width="50%"}
+**Disadvantages**
+
+- **Slow prediction** — must scan (or search) the entire training set
+- **Memory intensive** — stores every training example
+- Degrades in **high dimensions** (curse of dimensionality)
+- Requires **feature standardization**
+- Sensitive to **noisy / irrelevant features**
+:::
+:::
+
+::: {.notes}
+The slow prediction problem is critical in networking. Flow-level classifiers
+must operate at line rate — milliseconds per decision. k-NN with a training
+set of millions of flows fails this requirement. k-d trees help, but they
+degrade in high dimensions too. This motivates the linear models and tree
+ensembles covered in the next lectures. See the "K-Nearest Neighbors" section
+of the Supervised Learning chapter.
+:::
+
+# Comparing the Two Models {.center}
+
+## Naive Bayes vs. k-NN: When to Use Each {.smaller}
+
+| | **Naive Bayes** | **k-NN** |
+|---|---|---|
+| **Training cost** | Low (counting) | Trivial (store data) |
+| **Prediction cost** | Low | High (distance to all training points) |
+| **Assumption** | Feature independence | Nothing (non-parametric) |
+| **Small datasets** | Works well | Struggles (sparse neighborhoods) |
+| **High dimensions** | Handles well (1-D per feature) | Degrades (curse of dimensionality) |
+| **Interpretability** | High (per-feature contributions) | Medium (look at neighbors) |
+| **Output** | Calibrated probabilities | Class label (or vote fraction) |
+| **Best use** | Text, spam, categorical features | Baseline, geolocation, fingerprinting |
+
+::: {.notes}
+Use this table as a decision guide. The key asymmetry: Naive Bayes handles
+high dimensions well because the independence assumption breaks the joint
+distribution into independent 1-D pieces. k-NN pays the full price of
+high-dimensional distance computation. Both are most useful as baselines or
+in resource-constrained settings. See the Supervised Learning chapter for
+more on when to prefer each model type.
+:::
+
+## Common Pitfalls in Networking Applications
+
+::: {.columns}
+::: {.column width="50%"}
+**Naive Bayes pitfalls**
+
+- **Correlated features** (e.g., packet count and byte count are not
+  independent) — violates assumption but usually still works
+- **Class imbalance** (rare attacks, common benign traffic) — prior
+  dominates; consider reweighting
+- **Feature scaling to Gaussian** when the actual distribution is
+  heavy-tailed (e.g., flow sizes)
+:::
+::: {.column width="50%"}
+**k-NN pitfalls**
+
+- **Not standardizing features** — one large-scale feature dominates all
+  distances
+- **Choosing k=1** — highly sensitive to noise and mislabeled training data
+- **Large training sets** — prediction latency grows unless approximate
+  nearest-neighbor structures are used
+- **Concept drift** — stored training data goes stale as traffic patterns evolve
+:::
+:::
+
+::: {.notes}
+Walk through at least one pitfall from each column with a concrete network
+example. The concept drift pitfall for k-NN is especially important in
+security: an IDS trained on last year's attack patterns stores last year's
+data — and its "neighborhoods" in feature space no longer reflect today's
+traffic. The Naive Bayes imbalance pitfall also recurs in the anomaly
+detection lecture. See the Supervised Learning chapter.
+:::
+
+## Summary
+
+::: {.columns}
+::: {.column width="50%"}
+**Naive Bayes**
+
+- Uses **Bayes' rule** + conditional independence to estimate posteriors
+- Training = counting + fitting 1-D distributions per feature
+- Distribution families: **Gaussian**, **Bernoulli**, **multinomial**
+- Handles high dimensions well; poor at feature interactions
+- Classic networking use: **spam filtering** (SpamAssassin)
+:::
+::: {.column width="50%"}
+**k-Nearest Neighbors**
+
+- Stores training data; predicts by **majority vote** among *k* neighbors
+- No distributional assumption; model complexity grows with data
+- Requires **feature standardization**; degrades in high dimensions
+- Classic networking uses: **geolocation**, **fingerprinting**, **IDS baseline**
+:::
+:::
+
+**Both models reward understanding *why* they work** — their failure modes
+illuminate exactly what more complex models need to improve.
+
+::: {.notes}
+Close by asking students: given a new network classification task (e.g.,
+classifying DNS traffic as benign or malicious), which model would they
+start with and why? The answer should involve: dataset size, feature
+dimensionality, latency requirements, and interpretability needs. See the
+Supervised Learning chapter of "Machine Learning for Networking."
+:::
