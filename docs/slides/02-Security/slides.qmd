@@ -192,7 +192,22 @@ Key infrastructure signals:
 - **CMS fingerprint:** 82% of disinformation sites use WordPress vs. ~20% of news sites; disinformation sites prefer cheap, generic themes
 
 ::: {.notes}
-The disinformation infrastructure work extends the DNS/registration approach. The key pedagogical point: the *content* of disinformation is hard to evaluate automatically (what is "false"?), but the *infrastructure* used to host and distribute it differs measurably from legitimate news infrastructure. Domain lifespan CDF (s32-i27.png) shows disinformation domains cluster below 10 years; news domains extend to 30+ years. The certificate SAN finding is counterintuitive — large SAN counts suggest shared certificate management infrastructure, which news organizations use, not disinformation operators.
+The disinformation infrastructure work extends the DNS/registration approach. The key pedagogical point: the *content* of disinformation is hard to evaluate automatically (what is "false"?), but the *infrastructure* used to host and distribute it differs measurably from legitimate news infrastructure. The two CDFs on the next slide make the lifespan and SAN findings concrete.
+:::
+
+## Infrastructure Signals: Lifespan and Certificates {.smaller}
+
+::: {.columns}
+::: {.column width="48%"}
+![CDF of domain lifespan (registration to expiration). Disinformation domains cluster below 10 years; legitimate news domains extend to 30+ years.](images/s32-i27.png)
+:::
+::: {.column width="48%"}
+![CDF of certificate SAN count by site category. Legitimate news organizations show a long tail of large SAN counts — shared certificate management infrastructure that disinformation operators lack.](images/s34-i29.png)
+:::
+:::
+
+::: {.notes}
+Walk through both CDFs. Left: domain lifespan separates the classes cleanly — news organizations register domains for decades; disinformation domains are short-lived commodities. Right: the SAN-count finding is counterintuitive — you might expect disinformation sites to pile many domains onto one cheap certificate, but it is the legitimate news organizations (with large multi-domain certificate management operations) that have the long tail of SAN counts. Ask students: which of these features could an adversary cheaply forge? (Registering a domain for 10 years costs money up front — the feature has adversarial cost, like the network-level spam features earlier.)
 :::
 
 # Part 2: Security of ML Systems {.center}

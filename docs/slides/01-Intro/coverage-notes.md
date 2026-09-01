@@ -56,10 +56,17 @@ Refresh the dated content below per `../TEMPLATE.md` → "Annual current-events 
 - `images/s04-i01.png`: **Used.** The ML pipeline diagram (Data Ingestion → ... →
   Deployment) from the original slide 4. This is the single most important teaching
   figure in the deck; it recurs twice (pipeline overview and dedicated pipeline slide).
-  Credit: Alex Gray (per source extract).
+  Credit: Alex Gray (per source extract). Its caption on the "ML Control Loop" slide
+  was corrected (2026-09) to describe the image as the pipeline, not the control loop.
 - `images/s04-i02.png`: **Used.** Text slide emphasizing "80%+ of effort is in data
   preparation." Reinforces the pipeline slide and is readable as a figure.
 - No other images in `images/` — only two were extracted from the source pptx.
+  Verified 2026-09: every file in `images/` is referenced in `slides.qmd`, every
+  reference resolves on disk, no `.wmf` files present, and the deck renders cleanly.
+  The original pptx's diagrams on slides 6 ("Measure, Model, Control"), 7 ("ML
+  Control Loop"), and 9 ("Network Management Cycle") were built from native
+  PowerPoint shapes, not embedded images, so no image files exist for them; their
+  content is carried textually by the "ML Control Loop" and "Gap" slides.
 - Suggested addition for a future rebuild: the `ml-loop.png` figure from the book's
   `figures/` directory (referenced in `intro.rst` as `fig-ml-loop`) would replace the
   pipeline figure on the "ML Control Loop" slide with a cleaner, book-consistent

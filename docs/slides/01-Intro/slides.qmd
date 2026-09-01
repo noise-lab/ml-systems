@@ -62,7 +62,7 @@ Networks produce rich, continuous data:
 Machine learning sits between **measurement** and **control**.
 :::
 ::: {.column width="45%"}
-![ML control loop: measure → infer → control](images/s04-i01.png)
+![The ML pipeline that implements the loop: data ingestion through deployment](images/s04-i01.png)
 :::
 :::
 

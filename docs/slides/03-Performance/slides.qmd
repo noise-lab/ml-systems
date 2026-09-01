@@ -261,6 +261,19 @@ The practical message for network policy: simply upgrading broadband speed tiers
 provides diminishing returns to video quality above roughly 50 Mbps.
 :::
 
+## The Finding Made Headlines
+
+![WSJ (Aug 21, 2019): "The Truth About Faster Internet: It's Not Worth It" — the article's startup-delay and resolution estimates came from these predictive models.](images/s29-i66.png){width=70%}
+
+::: {.notes}
+The deployment finding crossed over into the mainstream press: the Wall Street
+Journal partnered with the researchers, and the article's front-page conclusion —
+typical households don't use most of their bandwidth while streaming and get
+marginal gains from upgrading — was based directly on the inference models from
+this lecture. Nice concrete example of measurement research informing public
+debate about broadband policy and ISP marketing claims.
+:::
+
 # Beyond Video-on-Demand {.center}
 
 ::: {.notes}
@@ -341,6 +354,20 @@ focus is also timely given the growth of IM-based video calling.
 Cold-call: ask students to identify what a service-specific model can exploit that
 an agnostic model cannot (e.g., DNS-to-IP mapping, known segment sizes, CDN patterns).
 Source: https://arxiv.org/abs/2504.14720
+:::
+
+## Challenge: Fast Model Serving
+
+![AC-DC framework: offline, train a pool of classifiers with varying feature requirements (and thus different performance–efficiency trade-offs); online, a dynamic scheduler picks the classifier and batch size to match current traffic rate and memory availability.](images/s27-i64.png){width=95%}
+
+::: {.notes}
+Inference has to run at line rate, and feature extraction cost varies enormously
+(recall: transport-layer features require per-flow state). The AC-DC idea: instead
+of one model, curate an ensemble of classifiers spanning the accuracy-vs-cost
+frontier, then schedule among them dynamically based on system constraints
+(traffic rate, memory). This previews the model-serving and systems lectures
+later in the course — the "real-time inference at line rate" open problem on the
+next slides.
 :::
 
 # Lessons and Open Problems {.center}

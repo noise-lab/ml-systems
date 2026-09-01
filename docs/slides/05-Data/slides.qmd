@@ -172,6 +172,12 @@ As link speeds grow, the **bottleneck moves**:
 - High-throughput users: bottleneck shifts to **home Wi-Fi**
 - Very fast plans (>1 Gbps): device CPU can limit measured throughput
 
+And the test itself gets more expensive:
+
+- Conventional tests must transfer **more data** to saturate faster links
+- Real applications rarely saturate access capacity — so "speed" matters
+  less to user experience than the test implies
+
 **Implication for ML:** the "measured speed" feature is not a property
 of the ISP alone — it is a function of the entire measurement path and
 the measurement tool itself.
@@ -417,6 +423,8 @@ passive, but it can also inject traffic for active tests.)
 
 - Richer data can yield **higher accuracy** models
 - But richer data is harder to **collect, store, and train on**
+- Traffic Refinery **profiles cost per feature group** (state, CPU) so
+  you can weigh each feature's cost against its accuracy contribution
 - *Domain knowledge* is essential: which features actually matter for
   your task?
 

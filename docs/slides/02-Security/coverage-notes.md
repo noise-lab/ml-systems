@@ -88,6 +88,12 @@ Refresh the dated content below per `../TEMPLATE.md` → "Annual current-events 
 - `s29-i25.png` — Disinformation infrastructure timeline (Domain Registration →
   Certificate Issuance → Website Deployment → Content Publication → Distribution).
   Clean diagram, used on the "Disinformation Infrastructure Detection" slide.
+- `s32-i27.png` — Domain lifespan CDF (Disinfo vs. News vs. Other). Added on the
+  "Infrastructure Signals: Lifespan and Certificates" slide — the slide text cites the
+  lifespan finding, and the chart carries the class separation the text alone cannot.
+- `s34-i29.png` — CDF of certificate SAN count by site category. Added on the same
+  slide; the counterintuitive SAN finding (news orgs have the long tail) is much
+  clearer as a chart.
 
 **Dropped:**
 
@@ -101,11 +107,15 @@ Refresh the dated content below per `../TEMPLATE.md` → "Annual current-events 
 - `s09-i05.png`, `s09-i06.png` — Additional spam message screenshots. Dropped.
 - `s11-i07.png` — Clip-art envelope icons. Decorative; dropped.
 - `s11-i09.png` — Screenshot of a pharmacy spam message. Old (2005); dropped.
-- `s14-i10.wmf` — WMF vector file; cannot be rendered in Quarto/HTML without conversion.
+- `s11-i08.wmf` — WMF vector file; cannot be rendered in Quarto/HTML without conversion.
+- `s14-i10.wmf` — WMF vector file; same issue. (This was the k-NN IP-space sender
+  distance figure — the key result for the "Coordination" feature. Convert to PNG if a
+  figure is wanted there.)
 - `s15-i11.wmf` — WMF vector file; same issue.
 - `s15-i12.png` — MIT Technology Review article screenshot about SNARE (2009).
   Interesting provenance but not a teaching diagram; referenced in speaker notes only.
-- `s15-i13.png` — Additional SNARE result figure; covered textually.
+- `s15-i13.png` — McAfee logo (not a result figure, despite earlier notes). Decorative;
+  dropped.
 - `s20-i16.png` — DNS lookup clustering figure. Small and low-res; the key idea is
   explained textually.
 - `s22-i17.png` — Browser address bar showing "cheaprx.com". Decorative example; dropped.
@@ -117,13 +127,8 @@ Refresh the dated content below per `../TEMPLATE.md` → "Annual current-events 
 - `s26-i22.png`, `s27-i23.png`, `s28-i24.png` — Additional Twitter analysis figures.
   Dropped with that section.
 - `s29-i26.png` — Alternate disinformation timeline diagram; superseded by s29-i25.png.
-- `s32-i27.png` — Domain lifespan CDF (Disinfo vs. News vs. Other). Useful diagram; not
-  included in the rebuilt deck to keep slide count lean, but worth re-adding if the
-  disinformation section is expanded.
 - `s33-i28.png` — Feature table (domain features for disinformation detection). Dense
   table; summarized textually on the Domain Features slide.
-- `s34-i29.png` — CDF of SAN count by site category. Useful; summarized textually on the
-  Disinformation Infrastructure slide.
 - `s35-i30.png`, `s37-i31.png` — Certificate and hosting feature tables. Summarized
   textually; dropped to keep slides lean.
 

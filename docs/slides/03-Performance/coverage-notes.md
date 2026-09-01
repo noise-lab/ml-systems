@@ -83,6 +83,14 @@ refresh" (web-verify; swap only for something fresher and confirmed):
 - `s46-i96.png` — Packet size difference CDF for VCA frame-boundary detection.
 - `s47-i97.png` — VCA feature table (flow, IP/UDP, RTP categories).
 - `s48-i98.png` — FPS inference error boxplots (Meet, Teams, Webex).
+- `s27-i64.png` — AC-DC ensemble framework diagram (fast model serving,
+  source slide 27). Added on image-coverage pass: only graphic covering the
+  model-serving challenge; pairs with the "real-time inference at line rate"
+  open problem.
+- `s29-i66.png` — WSJ headline "The Truth About Faster Internet: It's Not
+  Worth It" (source slide 29). Added on image-coverage pass as the
+  representative of the three WSJ clippings (`s29-i65` masthead and
+  `s29-i67` caption text omitted as fragments of the same visual).
 
 **Dropped:**
 - `s11-i12.png` through `s11-i16.png` — loading spinner and decorative icons.
@@ -97,8 +105,19 @@ refresh" (web-verify; swap only for something fresher and confirmed):
   `s10-i11.png` — decorative or unidentifiable visuals.
 - `s26-i62.png`, `s26-i63.png` — nPrint-encoded pcap pixel representation
   (belongs to Lecture 14 on nPrint, not this performance inference deck).
-- `s29-i65.png` through `s35-i91.png` — duplicates of already-used plots or
-  additional clips from the same PowerPoint animation sequences.
+- `s22-i57.png`, `s23-i59.png` — "vs. measured speed" companions to the used
+  "vs. nominal speed" plots (`s22-i56`, `s23-i58`); redundant on the slide.
+- `s24-i60.png` — feature importance for the all-features model (throughput
+  dominates); the used `s40-i94` (Net+App model, segment size dominates) makes
+  the pedagogical point.
+- `s25-i61.png` — earlier version of the VCA FPS-error boxplot; superseded by
+  the used `s48-i98`.
+- `s29-i65.png`, `s29-i67.png` — WSJ masthead and caption fragments; the
+  headline `s29-i66` (now used) represents the visual.
+- `s30-i68.png` through `s35-i91.png` — clip-art animation layers, exact
+  duplicates of already-used plots (`s31-i80` = `s12-i17`, `s32-i81` =
+  `s11-i12`), same-family variants of used deployment plots (`s33-i83/84`),
+  and blank US/Europe map backgrounds (`s35-i85` through `s35-i91`).
 - `s50-i99.png` — lab exercise screenshot, not a teaching diagram.
 
 ## Source
