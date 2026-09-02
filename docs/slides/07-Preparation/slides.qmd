@@ -65,6 +65,38 @@ Cold call: which representation would you pick for DDoS detection vs. applicatio
 identification? Why might they differ?
 :::
 
+## Looking Ahead: Representation Shapes Model Choice {.smaller}
+
+The representation you choose constrains the models you can use later:
+
+::: {.columns}
+::: {.column width="50%"}
+**Non-temporal models (simple detectors)**
+
+- Random forest, SVM, convolutional neural networks
+- Work well on volume-based and binned representations
+- *Limitation:* do not capture temporal features
+:::
+::: {.column width="50%"}
+**Temporal models (more complex detectors)**
+
+- Long Short-Term Memory (LSTM), Gated Recurrent Units (GRU)
+- Capture temporal information from sequential features
+- *Cost:* more data, more compute, harder to interpret
+:::
+:::
+
+Consider problems with different levels of complexity — match the representation and
+model to the problem, not the other way around.
+
+::: {.notes}
+See "(Looking Ahead) Modeling: Model Selection" (slide 5 source). This is a preview —
+model families get full treatment in later lectures. The point today: representation and
+model choice are coupled decisions. A volume-binned representation throws away exact
+timing, so pairing it with an LSTM wastes the LSTM's strength; conversely, a random
+forest on raw packet sequences cannot exploit the ordering.
+:::
+
 # Feature Engineering {.center}
 
 > Features are the **domain knowledge** you encode for your model.
@@ -96,10 +128,13 @@ networking systems where explainability matters.
 ::: {.column width="50%"}
 **Encoding**
 
-- **One-hot / dummy encoding** — categorical → binary vectors
+- **One-hot / dummy encoding** — categorical → binary vectors (one-vs.-all;
+  variants: grouped categories, presence vs. absence)
 - **Ordinal encoding** — ordered categories → integers
 - **Discretization** — equal-width, equal-size, entropy-based, or
   domain-specific bins
+- **Missing-value indicators** — a binary "was this missing?" feature alongside
+  imputation
 
 **Normalization**
 
@@ -117,9 +152,11 @@ networking systems where explainability matters.
 **Aggregation and Interaction**
 
 - Date / time deltas (days since last event)
-- Aggregates over time windows or spatial locality
+- Aggregates over time windows or spatial locality; **relative** aggregates
+  (compared to the average); **seasonality**
 - **Interaction features** — products of two features capture non-linear
-  relationships in linear models
+  relationships in linear models; random forests are one way of *discovering*
+  useful interactions
 :::
 :::
 
@@ -135,6 +172,29 @@ A raw 1 MB flow and a 1 GB flow look like a rounding error without log-scale.
 ## Normalization Formula
 
 ![Standardization (z-score): rescale each feature to zero mean, unit variance](images/s10-i06.png){width=50%}
+
+## Transformation Curves
+
+::: {.columns}
+::: {.column width="33%"}
+![Log: compresses large values](images/s11-i07.png)
+:::
+::: {.column width="33%"}
+![Square root: gentler compression](images/s11-i08.png)
+:::
+::: {.column width="33%"}
+![Square ($y = x^2$): amplifies large values](images/s11-i09.png)
+:::
+:::
+
+Each transformation reshapes a feature's marginal utility — pick the one
+whose curve matches how the quantity actually behaves.
+
+::: {.notes}
+Figures from source slide 11 (converted from TIFF). Log and square root
+compress heavy tails (byte counts, durations); squaring amplifies
+differences, useful when large values should dominate.
+:::
 
 Always fit normalization parameters on the **training set only**, then apply them to the
 test set — computing them on combined data leaks test-set statistics into training.

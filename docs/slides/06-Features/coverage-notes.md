@@ -67,6 +67,17 @@ Refresh the dated content below per `../TEMPLATE.md` → "Annual current-events 
   slides with minimal graphics; the two images above represent the full
   extractable visual content.
 
+## Audit vs. source pptx (2026-09-02)
+
+- Verified slide-by-slide against `_source-extract.md` (7 slides): all substantive
+  pptx content is present in `slides.qmd` — Motivation (slide 3), STAT features
+  including the "how might each be useful" prompt (slide 4), SIZES/IAT/SAMP-NUM/
+  SAMP-SIZE with the δt sampling-rate framing (slide 5), the feature-use table
+  (slide 6, via `s06-i01.png`), and Summary (slide 7). No missing content.
+- Verified the pptx media inventory directly (`ppt/media/`): exactly two images,
+  matching `s06-i01.png` and `s07-i02.png` by byte size. Both are referenced in
+  the deck and exist on disk. No `.wmf` files in the source.
+
 ## Source
 
 - Rebuilt from `_source-extract.md` (7 slides) — the original pptx was sparse,

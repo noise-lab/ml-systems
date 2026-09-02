@@ -92,9 +92,34 @@ Images dropped:
 - `s16-i11.png` — citation text image for Norvig et al. "The Unreasonable
   Effectiveness of Data": not referenced in the rebuilt deck directly, but the
   underlying idea is covered via the Banko & Brill plot.
-- `s11-i07.tiff`, `s11-i08.tiff`, `s11-i09.tiff` — TIFF format; could not verify
-  content. The LIME explanation image (s19-i13.png) already covers the husky-wolf
-  example visually.
+- `s11-i07.tiff`, `s11-i08.tiff`, `s11-i09.tiff` — converted to PNG via `sips`
+  (2026-09): they are the log, square-root, and $y=x^2$ transformation curves,
+  now displayed on the "Transformation Curves" slide.
+
+## Audit against source pptx (2026-09)
+
+Content restored during the coverage audit:
+
+- **Slide 5 source, "(Looking Ahead) Modeling: Model Selection":** was entirely
+  missing. Restored as a new slide "Looking Ahead: Representation Shapes Model
+  Choice" (after "Why Data Representation Matters") covering non-temporal detectors
+  (random forest, SVM, CNN — work on volume-based representations but do not
+  capture temporal features) vs. temporal models (LSTM, GRU).
+- **Slide 7 source, "Features for missing values":** added a missing-value
+  indicator bullet to the feature-operations taxonomy.
+- **Slide 8 source, "Groups" and "Presence vs. Absence":** added as variants under
+  the one-hot/dummy encoding bullet.
+- **Slide 12 source, relative aggregates and seasonality:** added to the
+  aggregation bullet in the taxonomy.
+- **Slide 13 source, "Random Forests discover useful interactions":** added to the
+  interaction-features bullet.
+
+Graphics adjudication (unchanged from initial build): all unreferenced images are
+decorative or unusable — s02-i01..05 (clip-art pipeline icons), s16-i11 (citation
+text image; idea covered by the Banko & Brill plot). s11-i07/08/09 were TIFFs,
+since converted to PNG and placed on a new "Transformation Curves" slide (log,
+square root, and square curves from the "Feature Transformations" source slide).
+No .wmf files in this deck. All referenced images exist on disk.
 
 ## Source
 

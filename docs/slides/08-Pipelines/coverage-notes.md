@@ -30,6 +30,19 @@ Instructor-facing companion to `slides.qmd`. Not shown to students.
   slides did). The rebuilt deck uses the book's term "hyperparameter tuning" or
   "hyperparameter optimization" instead.
 
+## Audit pass (2026-09)
+
+- Verified all 25 source slides against the qmd. All substantive pptx content is present
+  or documented above as an intentional restructuring. One genuine gap found and fixed:
+  original slide 19 ("The Threshold Itself Can Vary") — the operating-point concept
+  (threshold tuned per application to trade detection rate against false positives) was
+  not stated anywhere. Restored as a bullet on the "ROC vs. Precision-Recall" slide,
+  with expanded speaker notes.
+- Re-verified the five dropped s02 images visually: all are generic icons (document
+  stack, neural-net outline/filled, 3×3 grid, gear/cycle) — correctly dropped.
+- All image references in slides.qmd (s06-i06.png, s20-i07.png, s21-i08.png) resolve on
+  disk. No .wmf files in this deck.
+
 ## Suggested missing coverage on broad themes
 
 - **Temporal/distributional shift in network ML:** the book mentions it, but a dedicated

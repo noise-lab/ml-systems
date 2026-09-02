@@ -500,10 +500,18 @@ Reference: Fawcett (2006), "An Introduction to ROC Analysis," Pattern Recognitio
 **Guideline:** when the positive class is rare (attacks, fraud, faults), prefer
 **precision-recall** curves over ROC. Both curves together give the fullest picture.
 
+**The threshold itself is a tuning knob:** some problems demand high detection even at
+the cost of more false positives (or vice versa). Evaluate the classifier across the
+range of thresholds, then pick the **operating point** that matches your cost tradeoff.
+
 ::: {.notes}
 The book explicitly recommends looking at multiple metrics. The key insight: for a
 dataset where positives are 1 in 10,000, you can have AUC = 0.95 but precision near
 zero because TN dominates the denominator of FPR. PR curves do not have this problem.
+Threshold/operating-point selection (original slide 19): a medical screen or a
+mission-critical IDS may deliberately run at a low threshold to maximize recall,
+accepting more false alarms; a system feeding scarce analyst attention may do the
+opposite. The ROC and PR curves show all achievable operating points at once.
 :::
 
 # Common Evaluation Pitfalls {.center}
