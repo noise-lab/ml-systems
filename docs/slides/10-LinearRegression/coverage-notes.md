@@ -12,6 +12,27 @@ Instructor-facing companion to `slides.qmd`. Not shown to students.
   Gradient Boosting, and XGBoost for KPI prediction — a real, dated example of
   linear regression used as a baseline in network engineering research.
 
+## Audit restorations (2026-09)
+
+Content present in the source pptx but missing from the qmd, restored during the
+coverage audit:
+
+- **Slide 4 "Problem Framing"** — the list of input sources (quantitative inputs,
+  transformations such as log/sqrt/square, basis expansions, numeric coding of
+  qualitative inputs, interactions between variables) was absent. Restored as a new
+  slide "Problem Framing: Where Do Inputs Come From?" immediately after "What Is a
+  Linear Model?".
+- **Slide 20 "Inductive Bias"** — the concrete two-function (f/g) example showing
+  that two hypotheses can agree on all training data yet give opposite answers on
+  all unseen data was absent. Restored as its own "Inductive Bias" slide; the prior
+  inductive-bias slide (restriction/preference bias, No Free Lunch) was retitled
+  "Inductive Bias and Assumptions About Data" to match source slide 21.
+
+Graphics audit: no additional images added. All unreferenced images are formula
+renders (replaced by inline LaTeX) or the slide-6 journal header (decorative),
+as adjudicated in the table below. No .wmf or .tiff files exist for this deck,
+and every image referenced in slides.qmd exists on disk.
+
 ## Suggested missing coverage on broad themes (point 3)
 
 - **Logistic regression:** The book's Chapter 5 covers logistic regression

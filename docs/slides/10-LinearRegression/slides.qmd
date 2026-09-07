@@ -23,6 +23,22 @@ $$\hat{y} = b + w_1 x_1 + w_2 x_2 + \cdots + w_N x_N = \mathbf{w}^T \mathbf{x}$$
 Walk students through the dot-product form. The "bias" plays the same role as the intercept in $y = mx + b$. Stress that this extends naturally to N dimensions — the same line idea, but in higher-dimensional space. See the "Linear Models" section of the supervised learning chapter.
 :::
 
+## Problem Framing: Where Do Inputs Come From?
+
+**Given** a vector of inputs, **predict** a real-valued output. The inputs can come from many sources:
+
+- **Quantitative inputs** — raw measurements (packet counts, RTTs)
+- **Transformations** of quantitative inputs — log, square root, square
+- **Basis expansions** — square, cube, etc. (previewed later this lecture)
+- **Numeric coding** of qualitative inputs — e.g., protocol type as 0/1 columns
+- **Interactions** between variables — e.g., $x_1 \cdot x_2$
+
+The model stays linear *in the coefficients* regardless of where the inputs came from.
+
+::: {.notes}
+This framing matters: students often assume "linear regression" means the features must be raw measurements. In fact any derived quantity works — logs of heavy-tailed features (flow sizes!), one-hot encodings of protocols, and interaction terms. This foreshadows basis expansion in the second part of the lecture. See "Problem Framing" in the source slides.
+:::
+
 ## A Concrete Example: Scatter and Fit
 
 ::: {.columns}
@@ -206,7 +222,22 @@ Network flows are not vectors by default. You need to decide: average packet siz
 
 Fitting the data well is not the same as generalizing to new data.
 
-## Inductive Bias
+## Inductive Bias {.smaller}
+
+Learning assumes some structure in the data we *have* seen (training) — and the data we *have not* (test).
+
+Consider two functions built from the same training set:
+
+- $f(x') = 1$ if some $x$ with label 1 matches $x'$ in the dataset, $0$ otherwise
+- $g(x') = 0$ if some $x$ with label 0 matches $x'$ in the training set, $1$ otherwise
+
+Both are perfectly consistent with the training data — yet they give **exactly opposite answers** on every datapoint *not* in the training set. Data alone cannot choose between them; the learner's **assumptions** must.
+
+::: {.notes}
+This is the classic argument for why learning is impossible without bias. Both f and g memorize the training data and agree on it completely, but disagree everywhere else. Any preference for one over the other is an assumption the algorithm brings, not something the data provides. See "Inductive Bias" in the source slides.
+:::
+
+## Inductive Bias and Assumptions About Data
 
 Every learning algorithm must **make assumptions** about unseen data:
 

@@ -52,8 +52,9 @@ Why can't we just do this?
 - The true distribution $P(X)$ is **unknown**
 - Estimating $P(X \mid Y)$ in high dimensions requires **exponentially large** data
 
-**Practical solution:** assume a family of distributions and
-estimate parameters from the training data.
+**Practical solution:** treat classification as **density estimation** —
+assume a family of distributions for each class, estimate its parameters
+from the training data, and classify with the estimated densities.
 
 ::: {.notes}
 The "optimal Bayes classifier" is the theoretical gold standard — no
@@ -77,6 +78,10 @@ $$P(Y \mid X) = \frac{P(X \mid Y) \cdot P(Y)}{P(X)}$$
 Since $P(X)$ is the same for every class, we only compare:
 
 $$\hat{Y} = \arg\max_Y \; P(X \mid Y) \cdot P(Y)$$
+
+This makes Naive Bayes a **probabilistic classifier** — it predicts a
+likelihood across the set of classes, not just a label. (Logistic
+regression, covered later, is also a probabilistic classifier.)
 
 ::: {.notes}
 Emphasize the practical shortcut: once you drop the denominator, training

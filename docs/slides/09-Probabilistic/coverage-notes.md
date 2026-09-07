@@ -56,12 +56,30 @@ refresh" (web-verify; swap only for something fresher and confirmed).
 
 - **No images used.** The `images/` directory for this deck is empty —
   the original PowerPoint had no extractable diagrams that would illustrate the
-  concepts better than the mathematical notation in the slides. The book's
+  concepts better than the mathematical notation in the slides.
+- **Audit (2026):** the source pptx embeds ~150 small PNGs, all confirmed by
+  inspection to be handwritten-ink fragments (individual symbols and strokes
+  of hand-drawn equations on slides 2, 3, 5, 6, 9, and 10 — Bayes' rule,
+  argmax expressions, distribution notes). Their mathematical content is fully
+  typeset in LaTeX in `slides.qmd`, so none were carried over. No `.wmf` or
+  `.tiff` files exist in the source deck. The book's
   kNN-classifier figure (two-panel KernelPCA projection) would be excellent
   here if it can be exported from the book build artifacts.
 - **Recommended addition (future):** export `fig-knn_classifier` from the
   book's supervised chapter (supervised.rst → inline/supervised_knn-classifier.rst)
   and add it to the k-NN applications slide.
+
+## Content audit vs. source pptx (2026)
+
+- Restored the "classification as density estimation" framing from source
+  slide 2 ("Kernel Density Classification") on the "Optimal Bayes Classifier"
+  slide — previously only present in speaker notes.
+- Restored the source slide 4 aside that Naive Bayes is a probabilistic
+  classifier and that logistic regression is also probabilistic, on the
+  "Bayes' Rule for Classification" slide.
+- All other source-slide content (popularity/advantages, distribution
+  assumptions, independence assumption, advantages/disadvantages, summary)
+  was already covered; remaining differences are rewording/reordering only.
 
 ## Source
 
