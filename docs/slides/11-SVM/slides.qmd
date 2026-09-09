@@ -43,8 +43,10 @@ $$\beta_0 + \boldsymbol{\beta}^\top \mathbf{x} > 0 \quad \text{vs.} \quad \beta_
 
 Assign class labels based on which half-space a point falls in.
 
+**Example:** the hyperplane $1 + 2X_1 + 3X_2 = 0$ is a line in the $(X_1, X_2)$ plane — points where $1 + 2X_1 + 3X_2 > 0$ fall on one side; points where it is $< 0$ fall on the other.
+
 ::: {.notes}
-Emphasize that the hyperplane itself has measure zero — the interesting action is on either side. For networking: think of a flow feature vector $\mathbf{x}$ (packet rates, byte counts, inter-arrival times). The hyperplane is a threshold rule in that feature space. For two features this is literally a line on a scatterplot.
+Emphasize that the hyperplane itself has measure zero — the interesting action is on either side. Worked example (from the original slides / ISL Fig. 9.1): the hyperplane $1 + 2X_1 + 3X_2 = 0$ splits the plane into a region where $1 + 2X_1 + 3X_2 > 0$ and a region where it is $< 0$ — evaluate the sign at any test point to see which side it lands on. For networking: think of a flow feature vector $\mathbf{x}$ (packet rates, byte counts, inter-arrival times). The hyperplane is a threshold rule in that feature space. For two features this is literally a line on a scatterplot.
 :::
 
 ## Many Hyperplanes Exist: Which Is Best?

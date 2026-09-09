@@ -34,6 +34,20 @@ packets_per_second > 50?
 Emphasize the appeal: every prediction is traceable. This is exactly what a network operator or a compliance auditor wants — you can print the tree and walk through it with non-experts. Contrast with a neural network: you can't trace a prediction through millions of weights. This interpretability advantage is real and important in networking security contexts. See "Decision Trees" in the Supervised Learning chapter.
 :::
 
+## Representing the Feature Space {.smaller}
+
+Two equivalent views of the same model (the classic *Hitters* example — predicting a baseball player's salary from years played and hits):
+
+![A regression tree (left) and the corresponding partition of the feature space (right): each leaf is a rectangular region $R_1, R_2, R_3$ with its own predicted value](images/s06-i01.png){width="75%"}
+
+**Recursive binary splitting:** choose the feature $j$ and cutpoint $s$ defining regions $R_1(j,s) = \{X \mid X_j < s\}$ and $R_2(j,s) = \{X \mid X_j \geq s\}$ that minimize the total RSS:
+
+$$\sum_{i:\, x_i \in R_1(j,s)} (y_i - \hat{y}_{R_1})^2 \;+\; \sum_{i:\, x_i \in R_2(j,s)} (y_i - \hat{y}_{R_2})^2$$
+
+::: {.notes}
+This figure (restored from the original whiteboard slide) is the single most useful picture for building tree intuition: the tree view and the feature-space view are the same model. Walk both directions: follow a path down the tree ("Years > 4.5? no → predict R1's mean") and point to the corresponding rectangle; then pick a point in the tree map and trace which leaf it lands in. The numbers on the left are the mean log-salary in each region — the leaf predictions. The split objective below the figure is the regression-tree criterion from ISL: at every node, search all features j and all cutpoints s, and take the pair that minimizes the summed squared error of the two children. This exhaustive-but-greedy search is what "recursive binary splitting" means.
+:::
+
 ## Building a Tree: Regression vs. Classification {.smaller}
 
 ::: {.columns}
@@ -70,11 +84,22 @@ $$\text{Gini} = 1 - \sum_{k=1}^{K} p_k^2 \qquad \text{Entropy} = -\sum_{k=1}^{K}
 - Both equal **zero** for a pure node (all one class) — the ideal leaf
 - Both are maximized when classes are equally mixed — the worst split
 - In practice, Gini and entropy produce nearly identical trees
+- A third criterion — the **classification error rate** (fraction of the node not in its majority class) — is too insensitive for growing trees; it's used mainly when *pruning* them
 
 **Greedy choice at each node:** select the feature $j$ and threshold $t$ that maximize the **weighted impurity reduction** across the two resulting child nodes.
 
 ::: {.notes}
 The math is important for intuition. Gini impurity measures the probability that a randomly drawn pair of examples from the node belong to different classes — a pure node has probability zero. Entropy is the information-theoretic measure of disorder. Both penalize mixed nodes and reward pure ones. Cold call: if a node has 50 examples all of class 0, what is its Gini impurity? (Answer: 0.) What if it has 25 of class 0 and 25 of class 1? (Answer: 0.5, maximum for binary case.) This connects to information theory concepts the students may have seen elsewhere.
+:::
+
+## Worked Example: Choosing a Split {.smaller}
+
+Which candidate split is better? Compute the **weighted Gini index** of the children for each:
+
+![Comparing two candidate root splits by weighted Gini impurity: splitting on "after 8 pm" (left) leaves highly mixed children (weighted Gini ≈ 0.58); splitting on "neighborhood" (right) produces much purer children (weighted Gini ≈ 0.39) — the lower-impurity split wins](images/s11-i01.png){width="72%"}
+
+::: {.notes}
+Worked example restored from the original whiteboard slide. The setting: classifying observations using two candidate splits. For each candidate, compute the Gini impurity of each child node (for a binary node with class proportions p and 1-p, Gini = 2p(1-p), equivalently sum of p_k(1-p_k)), then weight each child's impurity by the fraction of examples that fall into it. Left split ("after 8 pm"): children have Gini ≈ 0.57 and ≈ 0.6, weighted average ≈ 0.58 — barely better than an unsplit node. Right split ("neighborhood"): children have Gini ≈ 0.24 and ≈ 0.46, weighted average ≈ 0.39 — a much larger impurity reduction, so CART chooses it (the checkmark). Walk through at least one of the four Gini computations by hand on the board; this is the mechanical skill exams tend to test.
 :::
 
 ## Overfitting and Pruning
@@ -152,10 +177,12 @@ Bring the tradeoff home for networking contexts: a decision tree classifier for 
 The key insight of ensemble methods is the "wisdom of crowds": many diverse, simple models that each get the answer partially right can collectively outperform a single complex model. The diversity is essential — if all models make the same mistakes, aggregating them doesn't help. See the "Ensemble Methods" section of Chapter 5 (Supervised Learning) in the course textbook.
 :::
 
-## Bagging: Bootstrap Aggregation
+## Bagging: Bootstrap Aggregation {.smaller}
 
 **Key idea:** reduce variance by averaging predictions over many models trained on bootstrapped datasets.
 
+::: {.columns}
+::: {.column width="60%"}
 1. Draw $B$ bootstrap samples of size $n$ **with replacement** from the training set
 2. Train a **separate decision tree** on each bootstrap sample (no pruning — let trees grow deep)
 3. Aggregate predictions:
@@ -163,6 +190,11 @@ The key insight of ensemble methods is the "wisdom of crowds": many diverse, sim
    - **Classification:** majority vote across the $B$ trees
 
 Each bootstrap sample contains ~**63.2%** of unique training examples (rest are duplicates).
+:::
+::: {.column width="40%"}
+![Bagging: resample the training set $D$ into bootstrap samples $D_1, \ldots, D_4$ (each the same size as $D$), train a tree on each, and aggregate into the bagged ensemble](images/s16-i01.png){width="80%"}
+:::
+:::
 
 ::: {.notes}
 Recall the variance reduction math from probability: if you have n independent observations each with variance sigma^2, the mean has variance sigma^2/n. Bagging approximates this — the trees aren't truly independent (they're all drawn from the same underlying distribution) but they're decorrelated enough to substantially reduce variance. The 63.2% figure follows from the probability that any single example is NOT selected in n draws with replacement: (1 - 1/n)^n → 1/e ≈ 36.8% excluded, so 63.2% included. The excluded ~36.8% becomes the "out-of-bag" sample — free cross-validation data! See the "Bagging & Pasting" subsection of the Supervised Learning chapter.
@@ -189,6 +221,8 @@ OOB estimation is a major practical advantage: in networking datasets, labeled e
 
 Bagging still has a problem: if one feature dominates, **all trees will split on it early** → the trees are correlated → variance reduction is limited.
 
+::: {.columns}
+::: {.column width="58%"}
 **Random forests** fix this with one additional tweak:
 
 > At each node, consider only a **random subset of $m$ features** (not all $M$)
@@ -198,6 +232,11 @@ Bagging still has a problem: if one feature dominates, **all trees will split on
 - Trees become **decorrelated** → greater variance reduction when aggregated
 
 Final prediction: **majority vote** (classification) or **average** (regression) across all trees.
+:::
+::: {.column width="42%"}
+![Random forest = bagging (bootstrap samples $D_1, \ldots, D_4$) plus a random feature subset at each split, yielding decorrelated trees $T_1, \ldots, T_4$ that vote](images/s17-i01.png){width="78%"}
+:::
+:::
 
 ::: {.notes}
 This is a subtle but crucial point. If you have one very dominant feature (say, packet_size for classifying certain attack types), bagging alone will produce hundreds of trees that all split first on packet_size — they're highly correlated, so averaging them doesn't help much. The random feature subset forces diversity. The m = sqrt(M) rule is empirically well-supported and is the default in scikit-learn. Random forests are described as "one of the best out-of-the-box classifiers" in the book — they require very little hyperparameter tuning, work with mixed feature types, don't require scaling, and are highly parallelizable. See the "Random Forests" subsection of the Supervised Learning chapter.
@@ -285,6 +324,8 @@ Gradient boosting is described as predicting "the residual between predicted lab
 
 **AdaBoost** is boosting for classification using example reweighting:
 
+::: {.columns}
+::: {.column width="55%"}
 1. Start: assign equal weight to all training examples
 2. Train a **weak learner** (often a 1-level tree / "stump")
 3. **Increase weights** for examples the stump got wrong; decrease for correct ones
@@ -293,6 +334,11 @@ Gradient boosting is described as predicting "the residual between predicted lab
 
 **Why it works:**
 Each successive weak learner is forced to specialize on the examples that previous learners missed. Chaining many such learners can produce a model that perfectly fits training data — and empirically, test error improves too.
+:::
+::: {.column width="45%"}
+![Two successive stumps (vertical split on income, horizontal split on credit): the circled points are examples each stump misclassifies — they get **more weight** in the next round](images/s20-i01.png)
+:::
+:::
 
 ::: {.notes}
 AdaBoost (Freund & Schapire, 1997) was the first boosting algorithm to gain widespread use. The stump (depth-1 tree) is the canonical weak learner — it makes just one binary split. The mathematical guarantee: AdaBoost + any weak learner (anything that does better than random guessing) will eventually fit the training data perfectly. Empirically, this also improves test error — which is somewhat surprising from a theoretical standpoint and partly explains the algorithm's historical impact. The key limitation of boosting vs. bagging: it's inherently sequential, so parallelization is harder. See the "Boosting" subsection in the Supervised Learning chapter.

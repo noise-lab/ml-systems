@@ -50,9 +50,22 @@ Refresh the dated content below per `../TEMPLATE.md` → "Annual current-events 
   (survived=0 / died=1 vs. x). Good illustration of the logistic fit.
 - `images/s06-i03.png` — **Used.** Shows a linear regression line applied to binary
   labels — the classic "why linear regression fails" contrast image.
-- `images/s05-i01.tiff` — **Dropped.** TIFF format; content not confirmed useful
-  (could not read as image). Dropped to avoid render issues; re-evaluate if the TIFF
-  can be converted to PNG and its content identified as pedagogically valuable.
+- `images/s05-i01.png` — **Used** (converted from `s05-i01.tiff` via `sips`,
+  audit Sep 2026). The classic sigmoid curve with the formula
+  $p(X) = 1/(1+e^{-X})$ annotated — the key graphic from source slide 5
+  ("Mapping Inputs to [0,1] Space: Logistic Function"). Now on the
+  "The Sigmoid Function: Squashing to [0,1]" slide. The original `.tiff`
+  remains on disk but is unreferenced.
+
+## Audit vs. source pptx (Sep 2026)
+
+- **Content restored:** Newton's method (source slide 9, "Option 2") was only in
+  speaker notes; promoted onto the "Solving Logistic Regression: Gradient Descent"
+  slide as a brief alternative-solver note.
+- All other source-slide content verified present: MLE framing (s3), Bernoulli (s4),
+  sigmoid (s5), decision boundaries (s6), relationship to linear regression (s7),
+  log likelihood (s8), GD/SGD (s9), summary incl. multinomial extension (s10).
+- No `.wmf` files in this deck; all referenced images exist on disk.
 
 ## Source
 

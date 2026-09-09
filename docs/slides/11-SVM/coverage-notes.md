@@ -66,6 +66,16 @@ Images dropped:
   `s17-i01.png` which shows multiple hyperplanes and better motivates the "which one is best?"
   question. Dropped for concision.
 
+## Content-audit pass (source-vs-qmd diff)
+
+- Restored source slide 15 ("Example Hyperplane"): the concrete worked example
+  $1 + 2X_1 + 3X_2 = 0$ with its two half-planes (ISL Fig. 9.1) was missing. Added as a text
+  example on the "Hyperplanes: The Decision Boundary" slide, with the original speaker-note
+  description folded into that slide's notes. The figure itself was not extracted from the pptx
+  (no `s15-*` image exists), so the example is text-only.
+- All other source slides (11–14, 16–27) verified present in the qmd; no other gaps found.
+- No `.wmf` or `.tiff` files in `images/`; all four referenced images exist on disk.
+
 ## Source
 
 - Rebuilt from `_source-extract.md` (18 slides from 11-LogisticRegression.pptx, slides 11–27)

@@ -30,10 +30,22 @@ Stronger alternative vignettes that were considered but not used:
 
 ## Curated images
 
-- The `images/` directory in this folder is **empty** at time of authoring — no images were extracted from the source PPTX.
-- The source extract (Slide 6) references a "Tree Map" figure; no image file was found. The deck does not reference any images.
-- If images are later extracted from `12-Trees-Ensembles.pptx`, candidates for inclusion would be: a decision tree diagram showing a network traffic classification example, a random forest architecture diagram (parallel trees → vote), and a boosting diagram (sequential trees → residuals). These would be placed on slides "Core Idea", "Random Forests", and "Gradient Boosting" respectively.
+- **2026-09 audit:** the source PPTX stores its figures as *hand-drawn ink*, with each pen stroke saved as a separate tiny PNG (300–600 of them, all under ~8 KB) — which is why the original extraction found "no images." The strokes were programmatically re-composited at their stored slide offsets into per-slide figures, cropped, and saved to `images/`:
+  - `images/s06-i01.png` (source Slide 6): regression tree + feature-space partition (the classic *Hitters* example, regions R1/R2/R3). Placed on new slide "Representing the Feature Space".
+  - `images/s11-i01.png` (source Slide 11 — listed as *empty* in `_source-extract.md` because it was all ink): a full worked example comparing two candidate splits by weighted Gini index (≈0.58 vs. ≈0.39). Restored as new slide "Worked Example: Choosing a Split". Note: the earlier "8 dropped" count treated this as an empty slide; it was actually substantive content.
+  - `images/s16-i01.png` (source Slide 16): bagging diagram (D → bootstrap samples D1–D4 → bagged trees). Placed on "Bagging: Bootstrap Aggregation".
+  - `images/s17-i01.png` (source Slide 17): random forest diagram (bagging + random feature subsets → trees T1–T4 → vote). Placed on "Random Forests: Decorrelating the Trees".
+  - `images/s20-i01.png` (source Slide 20): income/credit scatter with two stump splits and circled misclassified points. Placed on "AdaBoost: Reweighting for Classification".
+- Ink content judged redundant and **not** restored as images: Slide 5 note ("very intuitive: start at root, work down" — covered by Core Idea slide); Slide 7 handwritten RSS split objective (typeset in LaTeX on "Representing the Feature Space" instead); Slide 8 handwritten cost-complexity objective (already typeset on "Overfitting and Pruning"); Slide 10 handwritten Gini/entropy formulas (already typeset on "Splitting Criteria"); Slide 12 C4.5 sketch (slide intentionally dropped, see above).
+- No `.wmf` or `.tiff` files exist in the source PPTX (all media are PNG stroke fragments).
 - Do **not** include the title slide chrome, the "Trees and Ensembles" section divider slide (Slide 2), or any decorative logo images.
+
+## 2026-09 content audit additions
+
+- Added "Representing the Feature Space" slide: tree ↔ tree-map duality figure (source Slide 6) plus the recursive-binary-splitting RSS objective (source Slide 7), typeset in LaTeX.
+- Added "Worked Example: Choosing a Split" slide: weighted-Gini split comparison (source Slide 11).
+- Added the classification-error-rate bullet (third splitting criterion, too insensitive for growing; used in pruning) to "Splitting Criteria" — this was on source Slide 10 but missing from the rebuild.
+- Added figures to the Bagging, Random Forests, and AdaBoost slides (see "Curated images" above); those slides were reflowed into two-column layouts.
 
 ## Source
 

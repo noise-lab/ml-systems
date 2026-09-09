@@ -103,6 +103,8 @@ marginal distribution. See *Machine Learning for Networking*, Chapter 5.
 
 ## The Sigmoid Function: Squashing to [0,1]
 
+::: {.columns}
+::: {.column width="50%"}
 $$\sigma(z) = \frac{1}{1 + e^{-z}}, \quad z = \mathbf{w}^T\mathbf{x}$$
 
 Key properties of the sigmoid:
@@ -115,6 +117,11 @@ Key properties of the sigmoid:
 The **logistic regression model** is then:
 
 $$P(y=1 \mid \mathbf{x}) = \sigma(\mathbf{w}^T\mathbf{x}) = \frac{1}{1 + e^{-\mathbf{w}^T\mathbf{x}}}$$
+:::
+::: {.column width="50%"}
+![The logistic (sigmoid) function: maps any real-valued score to a probability in $[0,1]$, crossing $0.5$ at $z=0$](images/s05-i01.png)
+:::
+:::
 
 ::: {.notes}
 Draw the S-curve and walk through the three regimes. Emphasize that the sigmoid
@@ -241,6 +248,10 @@ $$\mathbf{w} \leftarrow \mathbf{w} - \alpha \cdot \nabla_\mathbf{w}\mathcal{L}$$
 | **Batch GD** | Full dataset per step; exact but slow for large $m$ |
 | **Stochastic GD (SGD)** | One example per step; fast but noisy |
 | **Mini-batch SGD** | Subset per step; balances speed and stability |
+
+**Alternative — Newton's method:** Taylor-expand the loss around the current
+weights, take the gradient, set to zero. Second-order → faster convergence,
+but requires the Hessian.
 
 ::: {.notes}
 The gradient formula looks identical to linear regression — this is not a
