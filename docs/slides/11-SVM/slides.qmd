@@ -39,7 +39,7 @@ A **hyperplane** in $d$ dimensions is a flat, affine subspace of dimension $d - 
 
 A hyperplane divides $d$-dimensional space into two half-spaces:
 
-$$\beta_0 + \boldsymbol{\beta}^\top \mathbf{x} > 0 \quad \text{vs.} \quad \beta_0 + \boldsymbol{\beta}^\top \mathbf{x} < 0$$
+In words: plug a point into the hyperplane expression; a positive value puts it on one side, a negative value on the other. *(Equation in the appendix.)*
 
 Assign class labels based on which half-space a point falls in.
 
@@ -84,29 +84,13 @@ The **margin** is the total width of the gap between the two classes.
 - The points *on* the dashed lines are the **support vectors** — they alone determine the hyperplane's position.
 
 All other training points are irrelevant once support vectors are identified.
+
+*(Finding this hyperplane is a convex optimization problem — see the appendix.)*
 :::
 :::
 
 ::: {.notes}
 Point out the arrows in the figure indicating the perpendicular distance from each support vector to the solid decision boundary. Stress the key robustness property: if you collected more data but none of it fell within the margin band, the hyperplane would not move. This is why SVMs generalize well on small datasets — a common scenario in network security research where labeled traffic datasets are expensive to collect. See the "Max-Margin Classifiers" section in the Supervised Learning chapter.
-:::
-
-## Finding the Maximum Margin: The Optimization {.smaller}
-
-Maximize the margin $M$ subject to the constraint that every training point falls outside the margin band:
-
-$$\max_{\boldsymbol{\beta}, M} \; M \quad \text{subject to} \quad \|\boldsymbol{\beta}\| = 1$$
-
-$$y_i(\beta_0 + \boldsymbol{\beta}^\top \mathbf{x}_i) \geq M \quad \forall \; i$$
-
-where $y_i \in \{-1, +1\}$ is the class label.
-
-- The constraint ensures each point is at least $M$ away from the hyperplane, on the correct side.
-- The problem is **convex** — it has a unique global optimum, solvable efficiently via quadratic programming.
-- Only the **support vectors** (points closest to the boundary) have non-zero influence on the solution.
-
-::: {.notes}
-The $\|\boldsymbol{\beta}\| = 1$ normalization is what makes the inner product equal the signed perpendicular distance. You don't need to derive the dual form here, but note that the quadratic program is solved reliably even for thousands of features — relevant for high-dimensional flow feature vectors. Cold call: what happens to the margin if we move a non-support-vector point further away from the hyperplane? (Answer: nothing — the support vectors already determine the margin.)
 :::
 
 ## The Problem with Hard Margins
@@ -119,25 +103,10 @@ The maximal margin classifier assumes data is **perfectly linearly separable** �
 
 **Solution:** relax the constraint. Allow some training examples to be on the wrong side of the margin (or even the wrong side of the decision boundary). This is the **support vector classifier** (soft margin).
 
+Each violation is measured by a *slack variable*, and a budget **$C$** caps the total slack allowed. *(Optimization in the appendix.)*
+
 ::: {.notes}
 This slide is the pivot from the theoretically clean to the practically useful. In network traffic datasets, mislabeled flows, transient anomalies, and feature noise routinely produce a few points on the "wrong" side. Insisting on hard separation would either fail completely or produce a razor-thin margin that generalizes poorly.
-:::
-
-## Support Vector Classifier: Soft Margins {.smaller}
-
-Add **slack variables** $\xi_i \geq 0$ that allow violations:
-
-$$\max_{\boldsymbol{\beta}, \xi_i, M} \; M \quad \text{subject to} \quad \|\boldsymbol{\beta}\| = 1$$
-
-$$y_i(\beta_0 + \boldsymbol{\beta}^\top \mathbf{x}_i) \geq M(1 - \xi_i) \quad \forall \; i, \quad \sum_i \xi_i \leq C$$
-
-- $\xi_i = 0$: point correctly classified, outside the margin.
-- $0 < \xi_i \leq 1$: point inside the margin (on the correct side of the boundary).
-- $\xi_i > 1$: point on the **wrong side** of the decision boundary.
-- **$C$**: budget for total violation — the key tuning parameter.
-
-::: {.notes}
-Note (from the original speaker notes): C is a tuning parameter typically chosen by cross-validation. The slack variables let us pose a single convex program even when the data aren't separable. Emphasize the physical meaning of the slack: $\xi_i$ measures how far inside the margin (or how far on the wrong side) observation $i$ falls. The sum $\sum \xi_i \leq C$ caps the total amount of misbehavior allowed.
 :::
 
 ## Tuning C: Bias–Variance Tradeoff
@@ -291,4 +260,52 @@ Only the **support vectors** — the training points closest to the boundary —
 
 ::: {.notes}
 Close with the conceptual arc: from the elegant geometric idea of maximum margin to the practical flexibility of kernel methods. SVMs are not the dominant method for large-scale production systems (that's gradient boosting and neural networks), but they remain the method of choice when you have a small, carefully labeled dataset and you need a classifier that won't overfit — exactly the scenario in network security research. Pointer for reading: see the "Support Vector Machines" section in Chapter 5 (Supervised Learning) of the course textbook.
+:::
+
+# Appendix: The Math {.center}
+
+## The Separating Hyperplane {.smaller}
+
+$$\beta_0 + \boldsymbol{\beta}^\top \mathbf{x} > 0 \quad \text{vs.} \quad \beta_0 + \boldsymbol{\beta}^\top \mathbf{x} < 0$$
+
+| Symbol | Meaning |
+|---|---|
+| $\mathbf{x}$ | a point in $d$-dimensional feature space |
+| $\boldsymbol{\beta} = (\beta_1, \ldots, \beta_d)$ | normal vector of the hyperplane (its orientation) |
+| $\beta_0$ | intercept — offset of the hyperplane from the origin |
+| $\beta_0 + \boldsymbol{\beta}^\top \mathbf{x} = 0$ | the hyperplane itself; the sign of the left side picks the half-space, hence the class |
+
+## Finding the Maximum Margin: The Optimization {.smaller}
+
+Maximize the margin $M$ subject to the constraint that every training point falls outside the margin band:
+
+$$\max_{\boldsymbol{\beta}, M} \; M \quad \text{subject to} \quad \|\boldsymbol{\beta}\| = 1$$
+
+$$y_i(\beta_0 + \boldsymbol{\beta}^\top \mathbf{x}_i) \geq M \quad \forall \; i$$
+
+where $y_i \in \{-1, +1\}$ is the class label.
+
+- The constraint ensures each point is at least $M$ away from the hyperplane, on the correct side.
+- The problem is **convex** — it has a unique global optimum, solvable efficiently via quadratic programming.
+- Only the **support vectors** (points closest to the boundary) have non-zero influence on the solution.
+
+::: {.notes}
+The $\|\boldsymbol{\beta}\| = 1$ normalization is what makes the inner product equal the signed perpendicular distance. You don't need to derive the dual form here, but note that the quadratic program is solved reliably even for thousands of features — relevant for high-dimensional flow feature vectors. Cold call: what happens to the margin if we move a non-support-vector point further away from the hyperplane? (Answer: nothing — the support vectors already determine the margin.)
+:::
+
+## Support Vector Classifier: Soft Margins {.smaller}
+
+Add **slack variables** $\xi_i \geq 0$ that allow violations:
+
+$$\max_{\boldsymbol{\beta}, \xi_i, M} \; M \quad \text{subject to} \quad \|\boldsymbol{\beta}\| = 1$$
+
+$$y_i(\beta_0 + \boldsymbol{\beta}^\top \mathbf{x}_i) \geq M(1 - \xi_i) \quad \forall \; i, \quad \sum_i \xi_i \leq C$$
+
+- $\xi_i = 0$: point correctly classified, outside the margin.
+- $0 < \xi_i \leq 1$: point inside the margin (on the correct side of the boundary).
+- $\xi_i > 1$: point on the **wrong side** of the decision boundary.
+- **$C$**: budget for total violation — the key tuning parameter.
+
+::: {.notes}
+Note (from the original speaker notes): C is a tuning parameter typically chosen by cross-validation. The slack variables let us pose a single convex program even when the data aren't separable. Emphasize the physical meaning of the slack: $\xi_i$ measures how far inside the margin (or how far on the wrong side) observation $i$ falls. The sum $\sum \xi_i \leq C$ caps the total amount of misbehavior allowed.
 :::

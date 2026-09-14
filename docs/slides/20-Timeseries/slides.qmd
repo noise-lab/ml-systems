@@ -76,13 +76,8 @@ Replace $X_t$ with $X_t - X_{t-1}$.
 ::: {.column width="50%"}
 **Seasonal decomposition**
 
-Decompose into:
-
-$$X_t = T_t + S_t + R_t$$
-
-- $T_t$: trend component
-- $S_t$: seasonal component
-- $R_t$: residual (stationary)
+A series is a trend plus a seasonal pattern plus a residual; differencing
+removes the trend. *(Equation in the appendix.)*
 
 Model the residual; add trend/season back at prediction time.
 :::
@@ -94,56 +89,9 @@ Differencing is the "I" in ARIMA. Seasonal decomposition is the diagnostic tool 
 
 # Classical Models: ARMA and ARIMA {.center}
 
-## Autoregressive Models (AR)
-
-An **AR(p)** model predicts the current value as a linear combination of the past $p$ values:
-
-$$X_t = \sum_{i=1}^{p} \varphi_i X_{t-i} + \varepsilon_t$$
-
-![AR(p) formula](images/s05-i04.png)
-
-- $\varphi_i$: learned coefficients (how much each lag matters)
-- $\varepsilon_t$: white noise at time $t$
-- $p$: the **lag order** — how far back we look
-
-::: {.notes}
-The image shows the AR equation rendered cleanly. The intuition: tomorrow's traffic is mostly like today's (high $\varphi_1$) plus a little noise. Key assumption: the series is *stationary* and future values are a linear function of the past. Stress "implicitly assumes the future resembles the past" — a point worth questioning for bursty attack traffic.
-:::
-
-## Moving-Average Models (MA)
-
-An **MA(q)** model predicts the current value as a linear combination of the past $q$ *error terms*:
-
-$$X_t = \mu + \sum_{i=1}^{q} \theta_i \varepsilon_{t-i} + \varepsilon_t$$
-
-![MA(q) formula](images/s05-i03.png)
-
-- $\theta_i$: learned coefficients on past shocks
-- $\varepsilon_{t-i}$: previous white-noise errors ("random shocks")
-- $q$: the **moving-average order** — how many past shocks matter
-
-::: {.notes}
-MA models are about *shock propagation*. A sudden DDoS volley at time $t$ creates an error $\varepsilon_t$; an MA(q) model says that shock ripples through the next $q$ time steps. Contrast with AR: AR depends on past *values* (slow-moving trends), MA depends on past *errors* (sudden shocks). The two are complementary.
-:::
-
-## ARMA: Putting It Together
-
-**ARMA(p, q)** combines both polynomials:
-
-$$X_t = \varepsilon_t + \sum_{i=1}^{p} \varphi_i X_{t-i} + \sum_{i=1}^{q} \theta_i \varepsilon_{t-i}$$
-
-![ARMA(p,q) combined formula](images/s05-i02.png)
-
-| Component | Symbol | Captures |
-|---|---|---|
-| Autoregressive | $p$ | long-term trends via past values |
-| Moving average | $q$ | short-term shocks via past errors |
-
-::: {.notes}
-Show the image: it is the full ARMA equation. Walk through: the first sum is the AR part (memory of past values), the second sum is the MA part (memory of past errors). Together they model both slow trends and sudden shocks. Requires stationarity — hence the extension to ARIMA.
-:::
-
 ## ARIMA: Adding Integration (Differencing)
+
+**ARMA(p, q)** = an **AR** part (weighted sum of the past $p$ values) plus an **MA** part (weighted sum of the past $q$ shocks). *(AR, MA, and ARMA equations in the appendix.)*
 
 **ARIMA(p, d, q)** extends ARMA with $d$ rounds of differencing to enforce stationarity:
 
@@ -479,3 +427,70 @@ Close with the two-column summary as a synthesis. Ask: "When would you choose cl
 **Generative models** for network data: beyond prediction, toward *synthesis* — generating realistic synthetic traffic, traces, and configurations.
 
 See Chapter 7 of "Machine Learning for Networking."
+
+# Appendix: The Math {.center}
+
+## Seasonal Decomposition
+
+The additive decomposition behind "Making a Series Stationary":
+
+$$X_t = T_t + S_t + R_t$$
+
+- $T_t$: trend component
+- $S_t$: seasonal component
+- $R_t$: residual (stationary)
+
+Model the residual; add trend/season back at prediction time.
+
+::: {.notes}
+Seasonal decomposition is the diagnostic tool that precedes fitting a SARIMA model (the book's Seasonal ARIMA discussion). Decomposing first reveals which components actually need to be modeled, preventing you from fitting a trend into the AR terms. Differencing (the "I" in ARIMA) is the alternative when only the trend needs removing.
+:::
+
+## Autoregressive Models (AR)
+
+An **AR(p)** model predicts the current value as a linear combination of the past $p$ values:
+
+$$X_t = \sum_{i=1}^{p} \varphi_i X_{t-i} + \varepsilon_t$$
+
+![AR(p) formula](images/s05-i04.png)
+
+- $\varphi_i$: learned coefficients (how much each lag matters)
+- $\varepsilon_t$: white noise at time $t$
+- $p$: the **lag order** — how far back we look
+
+::: {.notes}
+The image shows the AR equation rendered cleanly. The intuition: tomorrow's traffic is mostly like today's (high $\varphi_1$) plus a little noise. Key assumption: the series is *stationary* and future values are a linear function of the past. Stress "implicitly assumes the future resembles the past" — a point worth questioning for bursty attack traffic.
+:::
+
+## Moving-Average Models (MA)
+
+An **MA(q)** model predicts the current value as a linear combination of the past $q$ *error terms*:
+
+$$X_t = \mu + \sum_{i=1}^{q} \theta_i \varepsilon_{t-i} + \varepsilon_t$$
+
+![MA(q) formula](images/s05-i03.png)
+
+- $\theta_i$: learned coefficients on past shocks
+- $\varepsilon_{t-i}$: previous white-noise errors ("random shocks")
+- $q$: the **moving-average order** — how many past shocks matter
+
+::: {.notes}
+MA models are about *shock propagation*. A sudden DDoS volley at time $t$ creates an error $\varepsilon_t$; an MA(q) model says that shock ripples through the next $q$ time steps. Contrast with AR: AR depends on past *values* (slow-moving trends), MA depends on past *errors* (sudden shocks). The two are complementary.
+:::
+
+## ARMA: Putting It Together
+
+**ARMA(p, q)** combines both polynomials:
+
+$$X_t = \varepsilon_t + \sum_{i=1}^{p} \varphi_i X_{t-i} + \sum_{i=1}^{q} \theta_i \varepsilon_{t-i}$$
+
+![ARMA(p,q) combined formula](images/s05-i02.png)
+
+| Component | Symbol | Captures |
+|---|---|---|
+| Autoregressive | $p$ | long-term trends via past values |
+| Moving average | $q$ | short-term shocks via past errors |
+
+::: {.notes}
+Show the image: it is the full ARMA equation. Walk through: the first sum is the AR part (memory of past values), the second sum is the MA part (memory of past errors). Together they model both slow trends and sudden shocks. Requires stationarity — hence the extension to ARIMA.
+:::

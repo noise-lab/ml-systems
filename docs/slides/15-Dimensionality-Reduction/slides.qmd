@@ -144,49 +144,15 @@ After rotation the two PCs become the coordinate axes. The data "rotates"
 rather than changes shape — it is the same information in a new **orthogonal
 basis**.
 
+In practice the PCs are the eigenvectors of the data's covariance matrix, ranked by
+eigenvalue — the variance each one captures. *(Algorithm and equations in the appendix.)*
+
 ::: {.notes}
 Stress that PCA does not remove data points; it re-expresses them. After
 the change of basis, PC1 explains the most variance (the long axis of the
 cloud), PC2 the next most. To reduce dimensionality, you simply discard the
 lower-variance components. This is the "change of basis" that the book
 describes. See Chapter 6 of *Machine Learning for Networking*.
-:::
-
-## How to Compute Principal Components {.smaller}
-
-**Given** an $n \times p$ dataset $X$. **Want** $n \times m$ vectors ($m \ll p$) that
-capture most variance.
-
-**Algorithm:**
-
-1. **Center** each feature: subtract the column mean
-2. **Covariance matrix:** $\Sigma = \frac{1}{n} X^T X$
-3. **Eigendecomposition:** $\Sigma = V \Lambda V^T$
-   — eigenvectors $V$ are the PC directions
-   — eigenvalues $\Lambda$ give the variance each PC captures
-4. **Sort** eigenvectors by eigenvalue (descending)
-5. **Project:** $Z = X V_m$, where $V_m$ keeps the top $m$ eigenvectors
-
-::: {.columns}
-::: {.column width="50%"}
-**First PC loading equation:**
-
-![First PC as a weighted combination of original features](images/s07-i04.png)
-:::
-::: {.column width="50%"}
-**Optimization objective:**
-
-![Maximize variance of projected scores subject to unit-norm constraint](images/s07-i05.png)
-:::
-:::
-
-::: {.notes}
-Walk through each step. Centering is essential — un-centered PCA picks up
-the mean as a "component." The eigendecomposition of the covariance matrix
-is equivalent to SVD of $X$ (mention SVD for students who prefer that route).
-The loading images come directly from the source slides. See Chapter 6 of
-*Machine Learning for Networking*; see also the sklearn PCA documentation for
-a hands-on reference.
 :::
 
 ## Choosing the Number of Components: Scree Plot
@@ -648,3 +614,43 @@ try multiple methods, compare outputs, and validate against domain knowledge.
 The "right" dimensionality is rarely obvious without experimentation. See the
 Summary section of Chapter 6 of *Machine Learning for Networking*.
 :::
+
+# Appendix: The Math {.center}
+
+## How to Compute Principal Components {.smaller}
+
+**Given** an $n \times p$ dataset $X$. **Want** $n \times m$ vectors ($m \ll p$) that
+capture most variance.
+
+**Algorithm:**
+
+1. **Center** each feature: subtract the column mean
+2. **Covariance matrix:** $\Sigma = \frac{1}{n} X^T X$
+3. **Eigendecomposition:** $\Sigma = V \Lambda V^T$
+   — eigenvectors $V$ are the PC directions
+   — eigenvalues $\Lambda$ give the variance each PC captures
+4. **Sort** eigenvectors by eigenvalue (descending)
+5. **Project:** $Z = X V_m$, where $V_m$ keeps the top $m$ eigenvectors
+
+::: {.columns}
+::: {.column width="50%"}
+**First PC loading equation:**
+
+![First PC as a weighted combination of original features](images/s07-i04.png)
+:::
+::: {.column width="50%"}
+**Optimization objective:**
+
+![Maximize variance of projected scores subject to unit-norm constraint](images/s07-i05.png)
+:::
+:::
+
+::: {.notes}
+Walk through each step. Centering is essential — un-centered PCA picks up
+the mean as a "component." The eigendecomposition of the covariance matrix
+is equivalent to SVD of $X$ (mention SVD for students who prefer that route).
+The loading images come directly from the source slides. See Chapter 6 of
+*Machine Learning for Networking*; see also the sklearn PCA documentation for
+a hands-on reference.
+:::
+

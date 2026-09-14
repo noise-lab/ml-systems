@@ -40,12 +40,10 @@ Two equivalent views of the same model (the classic *Hitters* example — predic
 
 ![A regression tree (left) and the corresponding partition of the feature space (right): each leaf is a rectangular region $R_1, R_2, R_3$ with its own predicted value](images/s06-i01.png){width="75%"}
 
-**Recursive binary splitting:** choose the feature $j$ and cutpoint $s$ defining regions $R_1(j,s) = \{X \mid X_j < s\}$ and $R_2(j,s) = \{X \mid X_j \geq s\}$ that minimize the total RSS:
-
-$$\sum_{i:\, x_i \in R_1(j,s)} (y_i - \hat{y}_{R_1})^2 \;+\; \sum_{i:\, x_i \in R_2(j,s)} (y_i - \hat{y}_{R_2})^2$$
+**Recursive binary splitting:** at each node, try every feature and every cutpoint, and keep the split whose two child regions have the smallest total squared error. *(Equation in the appendix.)*
 
 ::: {.notes}
-This figure (restored from the original whiteboard slide) is the single most useful picture for building tree intuition: the tree view and the feature-space view are the same model. Walk both directions: follow a path down the tree ("Years > 4.5? no → predict R1's mean") and point to the corresponding rectangle; then pick a point in the tree map and trace which leaf it lands in. The numbers on the left are the mean log-salary in each region — the leaf predictions. The split objective below the figure is the regression-tree criterion from ISL: at every node, search all features j and all cutpoints s, and take the pair that minimizes the summed squared error of the two children. This exhaustive-but-greedy search is what "recursive binary splitting" means.
+This figure (restored from the original whiteboard slide) is the single most useful picture for building tree intuition: the tree view and the feature-space view are the same model. Walk both directions: follow a path down the tree ("Years > 4.5? no → predict R1's mean") and point to the corresponding rectangle; then pick a point in the tree map and trace which leaf it lands in. The numbers on the left are the mean log-salary in each region — the leaf predictions. The split objective (equation in the appendix) is the regression-tree criterion from ISL: at every node, search all features j and all cutpoints s, and take the pair that minimizes the summed squared error of the two children. This exhaustive-but-greedy search is what "recursive binary splitting" means.
 :::
 
 ## Building a Tree: Regression vs. Classification {.smaller}
@@ -71,25 +69,10 @@ This figure (restored from the original whiteboard slide) is the single most use
 
 The CART algorithm evaluates **every feature and every threshold** at each node; takes the split that maximizes impurity reduction; recurses on each child.
 
+*(Gini and entropy formulas in the appendix.)*
+
 ::: {.notes}
 Stress that the split search is exhaustive over all features and all thresholds — this is O(n log n) per feature per node, which is tractable. The key difference between regression and classification trees is only the splitting criterion: MSE reduction for continuous targets, Gini/entropy for categorical. In networking, most interesting problems are classification (malware vs. benign, application type, attack category). Gini impurity is the CART default; entropy is C4.5's default. They usually produce the same splits. See the "Training" subsection of "Decision Trees" in the Supervised Learning chapter.
-:::
-
-## Splitting Criteria: Gini Impurity and Entropy {.smaller}
-
-For a node containing $K$ classes with proportions $p_1, \ldots, p_K$:
-
-$$\text{Gini} = 1 - \sum_{k=1}^{K} p_k^2 \qquad \text{Entropy} = -\sum_{k=1}^{K} p_k \log_2 p_k$$
-
-- Both equal **zero** for a pure node (all one class) — the ideal leaf
-- Both are maximized when classes are equally mixed — the worst split
-- In practice, Gini and entropy produce nearly identical trees
-- A third criterion — the **classification error rate** (fraction of the node not in its majority class) — is too insensitive for growing trees; it's used mainly when *pruning* them
-
-**Greedy choice at each node:** select the feature $j$ and threshold $t$ that maximize the **weighted impurity reduction** across the two resulting child nodes.
-
-::: {.notes}
-The math is important for intuition. Gini impurity measures the probability that a randomly drawn pair of examples from the node belong to different classes — a pure node has probability zero. Entropy is the information-theoretic measure of disorder. Both penalize mixed nodes and reward pure ones. Cold call: if a node has 50 examples all of class 0, what is its Gini impurity? (Answer: 0.) What if it has 25 of class 0 and 25 of class 1? (Answer: 0.5, maximum for binary case.) This connects to information theory concepts the students may have seen elsewhere.
 :::
 
 ## Worked Example: Choosing a Split {.smaller}
@@ -112,9 +95,7 @@ A **deep tree** can memorize training data — every leaf holds a single example
 **Two approaches to control tree depth:**
 
 1. **Early stopping** — stop growing when the RSS (or Gini) improvement falls below a threshold. Problem: misses deeper splits that only become useful later in the tree.
-2. **Cost-complexity pruning (preferred)** — grow a large tree, then prune back by minimizing a penalized objective:
-
-$$\text{minimize} \; \sum_{\text{leaves}} \text{MSE}_\ell + \alpha \cdot |T|$$
+2. **Cost-complexity pruning (preferred)** — grow a large tree, then prune back by minimizing a penalized objective: the leaves' total error plus a penalty $\alpha$ for every leaf the tree keeps. *(Equation in the appendix.)*
 
 Tune $\alpha$ via **$K$-fold cross-validation**.
 
@@ -312,9 +293,7 @@ This is the key conceptual distinction to hammer home. Bagging trains many indep
 4. Add this correction, scaled by a **shrinkage factor** $\lambda$, to the current model
 5. Repeat for $B$ iterations
 
-$$\hat{f}^{(b)}(\mathbf{x}) = \hat{f}^{(b-1)}(\mathbf{x}) + \lambda \cdot h_b(\mathbf{x})$$
-
-where $h_b$ is the tree fitted to the residuals at step $b$.
+After each round the model is the previous model plus a small, shrunken copy of the new residual tree. *(Equation in the appendix.)*
 
 ::: {.notes}
 Gradient boosting is described as predicting "the residual between predicted labels and correct labels for the training data. Successive models predict the residual of the previous model, effectively predicting the amount of correction needed to improve the earlier model's output." (Supervised Learning chapter.) The shrinkage parameter lambda is the learning rate — small lambda means each tree contributes only a little, requiring more trees but usually giving better generalization. This is analogous to the learning rate in gradient descent. XGBoost and LightGBM are the dominant implementations; both add regularization terms, parallelism, and efficient histogram-based splitting on top of this core algorithm. See the "Boosting" subsection in the Supervised Learning chapter.
@@ -458,4 +437,69 @@ SHAP (Lundberg & Lee, 2017) is now the standard interpretability tool for ensemb
 
 ::: {.notes}
 Close with the conceptual arc: single tree (interpretable, inaccurate) → bagging (variance reduction) → random forests (decorrelated variance reduction) → boosting (bias reduction via sequential correction). The networking relevance runs throughout: feature importance for understanding which flow features matter, OOB error for evaluation when labeled data is scarce, and gradient boosting for state-of-the-art IDS performance. Remind students: the activity in the Appendix trains a random forest on IoT traffic data — directly relevant to the applications covered today. See Chapter 5 (Supervised Learning) in the course textbook for all material covered today.
+:::
+
+# Appendix: The Math {.center}
+
+## Splitting Criteria: Gini Impurity and Entropy {.smaller}
+
+For a node containing $K$ classes with proportions $p_1, \ldots, p_K$:
+
+$$\text{Gini} = 1 - \sum_{k=1}^{K} p_k^2 \qquad \text{Entropy} = -\sum_{k=1}^{K} p_k \log_2 p_k$$
+
+- Both equal **zero** for a pure node (all one class) — the ideal leaf
+- Both are maximized when classes are equally mixed — the worst split
+- In practice, Gini and entropy produce nearly identical trees
+- A third criterion — the **classification error rate** (fraction of the node not in its majority class) — is too insensitive for growing trees; it's used mainly when *pruning* them
+
+**Greedy choice at each node:** select the feature $j$ and threshold $t$ that maximize the **weighted impurity reduction** across the two resulting child nodes.
+
+::: {.notes}
+The math is important for intuition. Gini impurity measures the probability that a randomly drawn pair of examples from the node belong to different classes — a pure node has probability zero. Entropy is the information-theoretic measure of disorder. Both penalize mixed nodes and reward pure ones. Cold call: if a node has 50 examples all of class 0, what is its Gini impurity? (Answer: 0.) What if it has 25 of class 0 and 25 of class 1? (Answer: 0.5, maximum for binary case.) This connects to information theory concepts the students may have seen elsewhere.
+:::
+
+## Regression-Tree Split Criterion
+
+**Recursive binary splitting:** choose the feature $j$ and cutpoint $s$ defining regions $R_1(j,s) = \{X \mid X_j < s\}$ and $R_2(j,s) = \{X \mid X_j \geq s\}$ that minimize the total RSS:
+
+$$\sum_{i:\, x_i \in R_1(j,s)} (y_i - \hat{y}_{R_1})^2 \;+\; \sum_{i:\, x_i \in R_2(j,s)} (y_i - \hat{y}_{R_2})^2$$
+
+- $x_i, y_i$ — training example $i$'s features and target
+- $R_1(j,s), R_2(j,s)$ — the two child regions produced by splitting feature $j$ at cutpoint $s$
+- $\hat{y}_{R_1}, \hat{y}_{R_2}$ — the mean target in each child region (the leaf predictions)
+
+::: {.notes}
+Companion to "Representing the Feature Space." This is the regression-tree criterion from ISL: at every node, search all features $j$ and all cutpoints $s$, and take the pair that minimizes the summed squared error of the two children. The search is exhaustive at each node but greedy across nodes — it never revisits an earlier split. For classification trees the same search is run with Gini or entropy in place of RSS (previous appendix slide).
+:::
+
+## Cost-Complexity Pruning
+
+Grow a large tree $T_0$, then choose the subtree $T \subseteq T_0$ that minimizes a penalized objective:
+
+$$\text{minimize} \; \sum_{\text{leaves}} \text{MSE}_\ell + \alpha \cdot |T|$$
+
+- $\text{MSE}_\ell$ — mean squared error of the training examples in leaf $\ell$ (Gini or entropy for classification)
+- $|T|$ — number of leaves in the subtree
+- $\alpha \geq 0$ — complexity penalty per leaf; $\alpha = 0$ keeps the full tree, large $\alpha$ collapses it to a stump
+
+Tune $\alpha$ via $K$-fold cross-validation.
+
+::: {.notes}
+Companion to "Overfitting and Pruning." ISL calls this weakest-link pruning. $\alpha$ plays the role that $\lambda$ plays in ridge regression: it is a regularization knob on the tree's structure rather than on coefficient size. Cross-validation over $\alpha$ is the standard procedure — split into $K$ folds, estimate generalization error for each $\alpha$, keep the one with the lowest CV error.
+:::
+
+## Gradient Boosting Update
+
+At step $b$, fit a shallow tree $h_b$ to the current residuals and add a shrunken copy of it to the model:
+
+$$\hat{f}^{(b)}(\mathbf{x}) = \hat{f}^{(b-1)}(\mathbf{x}) + \lambda \cdot h_b(\mathbf{x})$$
+
+- $\hat{f}^{(b)}$ — the ensemble after $b$ rounds; $\hat{f}^{(0)}$ is a constant (e.g., the mean target)
+- $h_b$ — the tree fitted at step $b$ to the residuals $y_i - \hat{f}^{(b-1)}(\mathbf{x}_i)$
+- $\lambda$ — shrinkage (learning rate); small $\lambda$ needs more rounds $B$ but usually generalizes better
+
+After $B$ rounds the final model is $\hat{f}^{(B)} = \hat{f}^{(0)} + \lambda \sum_{b=1}^{B} h_b$.
+
+::: {.notes}
+Companion to "Gradient Boosting: Sequential Residual Fitting." Fitting a tree to residuals is gradient descent in function space: for squared-error loss the residual is exactly the negative gradient of the loss with respect to the current prediction, which is where the name comes from. XGBoost and LightGBM add regularization terms and histogram-based split finding on top of this update.
 :::

@@ -51,61 +51,11 @@ is a great motivating dataset because students can reason about it from first
 principles. See *Machine Learning for Networking*, Chapter 5: Supervised Learning.
 :::
 
-## Recap: Maximum Likelihood and Linear Regression
-
-**Probabilistic framing of linear regression:**
-
-- Assume observations $y$ are drawn i.i.d. from a **Gaussian** centered at
-  $\hat{y} = \mathbf{w}^T \mathbf{x}$
-- Goal: find $\mathbf{w}$ that **maximizes likelihood** of the observed data
-- Gaussian log-likelihood → **minimizing mean squared error**
-
-$$\hat{y} = \mathbf{w}^T \mathbf{x}, \quad \text{Loss} = \frac{1}{m}\sum_{i=1}^{m}(\hat{y}_i - y_i)^2$$
-
-**For binary labels**, a Gaussian is the wrong noise model:
-
-- Outputs must lie in $[0, 1]$ — Gaussian is unbounded
-- Labels are 0 or 1, not real-valued residuals
-
-::: {.notes}
-This slide connects logistic regression back to the maximum-likelihood framing
-students saw for linear regression. The key insight is that the choice of
-noise model determines the loss function. Changing from Gaussian to Bernoulli
-noise gives us the cross-entropy loss and the sigmoid function. See the
-*Machine Learning for Networking* book, Chapter 5, Linear Models subsection.
-:::
-
-## The Bernoulli Distribution for Binary Labels {.smaller}
-
-For binary observations ($y \in \{0, 1\}$), the natural distribution is
-**Bernoulli** — a biased coin with parameter $\mu \in [0,1]$:
-
-$$P(y \mid \mu) = \mu^{y}\,(1-\mu)^{1-y}$$
-
-| $y$ | Probability |
-|-----|-------------|
-| 1   | $\mu$       |
-| 0   | $1 - \mu$   |
-
-**Key idea:** Let $\mu$ be a *function of the input*: $\mu = f(\mathbf{x})$
-
-**Problem:** $\mathbf{w}^T\mathbf{x}$ ranges over all reals — we need $\mu \in [0,1]$
-
-**Solution:** Compose the linear score with a function that squashes it into $[0,1]$
-
-::: {.notes}
-The Bernoulli PMF is familiar to students who've seen coin-flip probability.
-Make the connection: each training label is like a coin flip with a
-bias that we're trying to estimate. The parameter μ has to depend on the
-input features — that's what makes this a *model* rather than just a
-marginal distribution. See *Machine Learning for Networking*, Chapter 5.
-:::
-
 ## The Sigmoid Function: Squashing to [0,1]
 
 ::: {.columns}
 ::: {.column width="50%"}
-$$\sigma(z) = \frac{1}{1 + e^{-z}}, \quad z = \mathbf{w}^T\mathbf{x}$$
+The **sigmoid** $\sigma(z)$ maps any real-valued score $z$ — here the linear score $\mathbf{w}^T\mathbf{x}$ — to a number between 0 and 1. *(Equation in the appendix.)*
 
 Key properties of the sigmoid:
 
@@ -114,9 +64,7 @@ Key properties of the sigmoid:
 - $\sigma(0) = 0.5$ — **decision boundary**, maximum uncertainty
 - Smooth, differentiable S-curve
 
-The **logistic regression model** is then:
-
-$$P(y=1 \mid \mathbf{x}) = \sigma(\mathbf{w}^T\mathbf{x}) = \frac{1}{1 + e^{-\mathbf{w}^T\mathbf{x}}}$$
+The **logistic regression model** is then: the probability of class 1 is the sigmoid of the linear score. *(Equation in the appendix — along with why this is the maximum-likelihood model for Bernoulli labels.)*
 :::
 ::: {.column width="50%"}
 ![The logistic (sigmoid) function: maps any real-valued score to a probability in $[0,1]$, crossing $0.5$ at $z=0$](images/s05-i01.png)
@@ -175,7 +123,7 @@ motivation. Ask students: what's the decision boundary for the top plot?
 - **DNS responses** are typically **larger** (returning IP addresses, records)
 - A single feature — **packet size** — provides approximate **linear separability**
 
-$$P(\text{response} \mid \text{size}) = \sigma(w \cdot \text{size} + b)$$
+The model: the probability that a packet is a response is the sigmoid of a weighted packet size plus an offset. *(Equation in the appendix.)*
 
 The book's activity uses packet size to classify queries vs. responses —
 logistic regression achieves high accuracy with a single feature.
@@ -191,7 +139,7 @@ Recall from linear regression: ACK packets form a distinct cluster. One approach
 Classification as a *preprocessing step* for better regression — a common
 pattern in network traffic analysis.
 
-See the appendix activity for a hands-on implementation.
+See the book's appendix activity for a hands-on implementation.
 :::
 :::
 
@@ -202,65 +150,6 @@ the protocol, (2) the feature selection is obvious, (3) it works. Use this
 to bridge from theory to the actual activity in the appendix. The pipeline
 example reconnects to the ACK packet problem from the linear regression
 lecture — show how logistic regression is the glue between the two models.
-:::
-
-## Expressing the Loss: Cross-Entropy
-
-**Maximum likelihood with Bernoulli targets** gives us the **cross-entropy loss**:
-
-$$\mathcal{L}(\mathbf{w}) = -\frac{1}{m}\sum_{i=1}^{m}\Big[y_i \log \hat{\mu}_i + (1-y_i)\log(1-\hat{\mu}_i)\Big]$$
-
-where $\hat{\mu}_i = \sigma(\mathbf{w}^T\mathbf{x}_i)$.
-
-**Log-likelihood interpretation:**
-
-- When $y_i = 1$: penalize if $\hat{\mu}_i$ is small (model says "probably 0" but truth is 1)
-- When $y_i = 0$: penalize if $\hat{\mu}_i$ is large (model says "probably 1" but truth is 0)
-
-**Good news:** the cross-entropy loss is **convex** in $\mathbf{w}$ → gradient descent
-finds the **global optimum**.
-
-::: {.notes}
-Derive the log-likelihood step by step: take the log of the Bernoulli
-likelihood, simplify using y and (1-y) as indicator selectors, negate to
-get a minimization problem. The convexity result is important — it distinguishes
-logistic regression from neural networks and means we're guaranteed to converge.
-See *Machine Learning for Networking*, Chapter 5, "The Price of Non-Linearity."
-:::
-
-## Solving Logistic Regression: Gradient Descent {.smaller}
-
-Unlike linear regression, **no closed-form solution** exists for logistic regression.
-We use iterative optimization.
-
-**Gradient of the cross-entropy loss:**
-
-$$\frac{\partial \mathcal{L}}{\partial \mathbf{w}} = \frac{1}{m}\sum_{i=1}^{m}(\hat{\mu}_i - y_i)\mathbf{x}_i$$
-
-This has the same form as the linear regression gradient — only $\hat{\mu}$ differs.
-
-**Update rule (gradient descent):**
-
-$$\mathbf{w} \leftarrow \mathbf{w} - \alpha \cdot \nabla_\mathbf{w}\mathcal{L}$$
-
-| Variant | Description |
-|---|---|
-| **Batch GD** | Full dataset per step; exact but slow for large $m$ |
-| **Stochastic GD (SGD)** | One example per step; fast but noisy |
-| **Mini-batch SGD** | Subset per step; balances speed and stability |
-
-**Alternative — Newton's method:** Taylor-expand the loss around the current
-weights, take the gradient, set to zero. Second-order → faster convergence,
-but requires the Hessian.
-
-::: {.notes}
-The gradient formula looks identical to linear regression — this is not a
-coincidence. It's a consequence of the choice of loss and the exponential
-family structure of both models. In practice, sklearn uses a more efficient
-solver (L-BFGS or liblinear), but the gradient descent framing is useful for
-intuition. Newton's method (second-order) also works and converges faster
-but requires computing the Hessian. See *Machine Learning for Networking*,
-Chapter 5, and the source extract's notes on SGD.
 :::
 
 ## Relationship to Linear Regression {.smaller}
@@ -281,6 +170,8 @@ Chapter 5, and the source extract's notes on SGD.
 | Loss | MSE | cross-entropy |
 | Solution | closed-form | iterative |
 | Convexity | yes | yes |
+
+*(Cross-entropy loss and gradient descent details in the appendix.)*
 :::
 ::: {.column width="50%"}
 **Regularized logistic regression:**
@@ -310,7 +201,7 @@ appears again. See *Machine Learning for Networking*, Chapter 5, "Regularization
 
 Logistic regression is binary ($K = 2$). For $K > 2$ classes, use **softmax regression**:
 
-$$P(y = k \mid \mathbf{x}) = \frac{e^{\mathbf{w}_k^T\mathbf{x}}}{\sum_{j=1}^{K} e^{\mathbf{w}_j^T\mathbf{x}}}$$
+Each class gets its own weight vector; the probability of class $k$ is its exponentiated score divided by the sum of every class's exponentiated score. *(Equation in the appendix.)*
 
 - Outputs a **probability distribution** over all $K$ classes (sums to 1)
 - Reduces to sigmoid when $K = 2$
@@ -408,4 +299,148 @@ probability for a categorical outcome.) Preview: if the data is not linearly
 separable, we need decision trees or ensembles (next lecture). Reiterate the
 book pointer: see Chapter 5 of *Machine Learning for Networking* for the full
 logistic regression activity using DNS packet sizes.
+:::
+
+# Appendix: The Math {.center}
+
+## The Sigmoid and the Logistic Model {.smaller}
+
+**Sigmoid:**
+
+$$\sigma(z) = \frac{1}{1 + e^{-z}}, \quad z = \mathbf{w}^T\mathbf{x}$$
+
+**Logistic regression model:**
+
+$$P(y=1 \mid \mathbf{x}) = \sigma(\mathbf{w}^T\mathbf{x}) = \frac{1}{1 + e^{-\mathbf{w}^T\mathbf{x}}}$$
+
+**DNS instance** (one feature, packet size):
+
+$$P(\text{response} \mid \text{size}) = \sigma(w \cdot \text{size} + b)$$
+
+| Symbol | Meaning |
+|---|---|
+| $\mathbf{x}$, $\mathbf{w}$ | feature vector; weight vector |
+| $z = \mathbf{w}^T\mathbf{x}$ | linear score (the log-odds) |
+| $\sigma(z)$ | sigmoid (logistic) function, valued in $(0, 1)$ |
+| $y \in \{0, 1\}$ | binary label |
+| $w$, $b$ | weight on packet size and bias in the one-feature DNS model |
+
+## Softmax {.smaller}
+
+$$P(y = k \mid \mathbf{x}) = \frac{e^{\mathbf{w}_k^T\mathbf{x}}}{\sum_{j=1}^{K} e^{\mathbf{w}_j^T\mathbf{x}}}$$
+
+| Symbol | Meaning |
+|---|---|
+| $K$ | number of classes |
+| $\mathbf{w}_k$ | weight vector for class $k$ |
+| $\mathbf{w}_k^T\mathbf{x}$ | linear score for class $k$ |
+| denominator | normalizer, so the $K$ probabilities sum to 1 |
+
+## Recap: Maximum Likelihood and Linear Regression
+
+**Probabilistic framing of linear regression:**
+
+- Assume observations $y$ are drawn i.i.d. from a **Gaussian** centered at
+  $\hat{y} = \mathbf{w}^T \mathbf{x}$
+- Goal: find $\mathbf{w}$ that **maximizes likelihood** of the observed data
+- Gaussian log-likelihood → **minimizing mean squared error**
+
+$$\hat{y} = \mathbf{w}^T \mathbf{x}, \quad \text{Loss} = \frac{1}{m}\sum_{i=1}^{m}(\hat{y}_i - y_i)^2$$
+
+**For binary labels**, a Gaussian is the wrong noise model:
+
+- Outputs must lie in $[0, 1]$ — Gaussian is unbounded
+- Labels are 0 or 1, not real-valued residuals
+
+::: {.notes}
+This slide connects logistic regression back to the maximum-likelihood framing
+students saw for linear regression. The key insight is that the choice of
+noise model determines the loss function. Changing from Gaussian to Bernoulli
+noise gives us the cross-entropy loss and the sigmoid function. See the
+*Machine Learning for Networking* book, Chapter 5, Linear Models subsection.
+:::
+
+## The Bernoulli Distribution for Binary Labels {.smaller}
+
+For binary observations ($y \in \{0, 1\}$), the natural distribution is
+**Bernoulli** — a biased coin with parameter $\mu \in [0,1]$:
+
+$$P(y \mid \mu) = \mu^{y}\,(1-\mu)^{1-y}$$
+
+| $y$ | Probability |
+|-----|-------------|
+| 1   | $\mu$       |
+| 0   | $1 - \mu$   |
+
+**Key idea:** Let $\mu$ be a *function of the input*: $\mu = f(\mathbf{x})$
+
+**Problem:** $\mathbf{w}^T\mathbf{x}$ ranges over all reals — we need $\mu \in [0,1]$
+
+**Solution:** Compose the linear score with a function that squashes it into $[0,1]$
+
+::: {.notes}
+The Bernoulli PMF is familiar to students who've seen coin-flip probability.
+Make the connection: each training label is like a coin flip with a
+bias that we're trying to estimate. The parameter μ has to depend on the
+input features — that's what makes this a *model* rather than just a
+marginal distribution. See *Machine Learning for Networking*, Chapter 5.
+:::
+
+## Expressing the Loss: Cross-Entropy
+
+**Maximum likelihood with Bernoulli targets** gives us the **cross-entropy loss**:
+
+$$\mathcal{L}(\mathbf{w}) = -\frac{1}{m}\sum_{i=1}^{m}\Big[y_i \log \hat{\mu}_i + (1-y_i)\log(1-\hat{\mu}_i)\Big]$$
+
+where $\hat{\mu}_i = \sigma(\mathbf{w}^T\mathbf{x}_i)$.
+
+**Log-likelihood interpretation:**
+
+- When $y_i = 1$: penalize if $\hat{\mu}_i$ is small (model says "probably 0" but truth is 1)
+- When $y_i = 0$: penalize if $\hat{\mu}_i$ is large (model says "probably 1" but truth is 0)
+
+**Good news:** the cross-entropy loss is **convex** in $\mathbf{w}$ → gradient descent
+finds the **global optimum**.
+
+::: {.notes}
+Derive the log-likelihood step by step: take the log of the Bernoulli
+likelihood, simplify using y and (1-y) as indicator selectors, negate to
+get a minimization problem. The convexity result is important — it distinguishes
+logistic regression from neural networks and means we're guaranteed to converge.
+See *Machine Learning for Networking*, Chapter 5, "The Price of Non-Linearity."
+:::
+
+## Solving Logistic Regression: Gradient Descent {.smaller}
+
+Unlike linear regression, **no closed-form solution** exists for logistic regression.
+We use iterative optimization.
+
+**Gradient of the cross-entropy loss:**
+
+$$\frac{\partial \mathcal{L}}{\partial \mathbf{w}} = \frac{1}{m}\sum_{i=1}^{m}(\hat{\mu}_i - y_i)\mathbf{x}_i$$
+
+This has the same form as the linear regression gradient — only $\hat{\mu}$ differs.
+
+**Update rule (gradient descent):**
+
+$$\mathbf{w} \leftarrow \mathbf{w} - \alpha \cdot \nabla_\mathbf{w}\mathcal{L}$$
+
+| Variant | Description |
+|---|---|
+| **Batch GD** | Full dataset per step; exact but slow for large $m$ |
+| **Stochastic GD (SGD)** | One example per step; fast but noisy |
+| **Mini-batch SGD** | Subset per step; balances speed and stability |
+
+**Alternative — Newton's method:** Taylor-expand the loss around the current
+weights, take the gradient, set to zero. Second-order → faster convergence,
+but requires the Hessian.
+
+::: {.notes}
+The gradient formula looks identical to linear regression — this is not a
+coincidence. It's a consequence of the choice of loss and the exponential
+family structure of both models. In practice, sklearn uses a more efficient
+solver (L-BFGS or liblinear), but the gradient descent framing is useful for
+intuition. Newton's method (second-order) also works and converges faster
+but requires computing the Hessian. See *Machine Learning for Networking*,
+Chapter 5, and the source extract's notes on SGD.
 :::

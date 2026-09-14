@@ -92,9 +92,9 @@ See Chapter 7 of *Machine Learning for Networking* for the full arc.
   discriminator tries to catch it
 - Training ends when neither can improve — Nash equilibrium
 
-**Training objective:**
-
-$$\min_G \max_D \; \mathbb{E}[\log D(x)] + \mathbb{E}[\log(1 - D(G(z)))]$$
+**Training objective:** the discriminator is trained to maximize its accuracy at
+telling real from fake, while the generator is trained to minimize it.
+*(Equation in the appendix.)*
 :::
 ::: {.column width="45%"}
 ![GAN generator–discriminator flow](images/s23-i29.png)
@@ -373,9 +373,9 @@ and Embeddings."
 ::: {.column width="55%"}
 **Two core components:**
 
-**Attention layer** — each token attends to all others:
-
-$$\text{Attention}(Q, K, V) = \text{softmax}\!\left(\frac{QK^\top}{\sqrt{d_k}}\right)V$$
+**Attention layer** — each token attends to all others: its output is a weighted
+average of the values, with weights set by how well its query matches every key.
+*(Equation in the appendix.)*
 
 - Query $Q$: what am I looking for?
 - Key $K$: what do I offer?
@@ -442,7 +442,7 @@ sites, clusters correspond to distinct failure modes. See Chapter 7,
 
 **Critical bottleneck** for applying transformers to network traffic:
 
-$$\text{Attention cost} = O(n^2) \text{ operations for sequence length } n$$
+**Attention cost grows as O(n²) in the sequence length n.**
 
 ::: {.columns}
 ::: {.column width="50%"}
@@ -495,9 +495,9 @@ architecture survey. See Chapter 7, "State Space Models."
 ## State Space Models and Mamba
 
 **Core idea:** instead of O(n²) pairwise attention, maintain a
-**hidden state** $h_t$ that summarizes all past inputs:
-
-$$h_t = \mathbf{A} h_{t-1} + \mathbf{B} x_t \qquad y_t = \mathbf{C} h_t$$
+**hidden state** $h_t$ that summarizes all past inputs: each step updates the
+state from the previous state and the current input, and the output is read
+off the state. *(Equation in the appendix.)*
 
 ::: {.columns}
 ::: {.column width="55%"}
@@ -645,7 +645,7 @@ significantly influences model outputs (Dwork et al., 2014).
 
 **The fundamental tension:**
 
-$$\text{Privacy} \uparrow \implies \text{Noise} \uparrow \implies \text{Data Quality} \downarrow$$
+**More privacy → more noise → lower data quality**
 
 Stronger privacy guarantees degrade statistical fidelity; weaker guarantees
 risk leaking real user behavior.
@@ -772,4 +772,61 @@ generate data?) and map each architecture to the use cases it serves best.
 Leave students with the three-way trade-off: fidelity, diversity, privacy.
 All three chapters of this arc (GANs, Diffusion, Transformers/SSMs) will
 appear on the final exam.
+:::
+
+# Appendix: The Math {.center}
+
+## GAN Objective
+
+The generator $G$ and discriminator $D$ play a two-player minimax game
+(see "Generative Adversarial Networks"):
+
+$$\min_G \max_D \; \mathbb{E}[\log D(x)] + \mathbb{E}[\log(1 - D(G(z)))]$$
+
+- $x$: a real sample; $z$: random noise; $G(z)$: a generated sample
+- $D(\cdot)$: the discriminator's estimated probability that its input is real
+
+::: {.notes}
+Explain the minimax objective: the discriminator maximizes the probability it
+assigns to real data while minimizing the probability it assigns to fakes;
+the generator minimizes the probability the discriminator is right. Training
+ends when neither can improve — a Nash equilibrium. See Chapter 7, "Early
+Approaches: Generative Adversarial Networks."
+:::
+
+## Scaled Dot-Product Attention
+
+The attention layer from "The Transformer Architecture":
+
+$$\text{Attention}(Q, K, V) = \text{softmax}\!\left(\frac{QK^\top}{\sqrt{d_k}}\right)V$$
+
+- $Q$, $K$, $V$: query, key, and value matrices (one row per token)
+- $QK^\top$: pairwise query–key similarity scores; $\sqrt{d_k}$ keeps them well-scaled
+- softmax turns scores into weights; the result is a weighted sum of the values
+- Multi-head attention runs several of these in parallel with different projections
+
+::: {.notes}
+Vaswani et al. (2017), "Attention Is All You Need." For networking: in a TLS
+handshake, the query for the ciphersuite token attends to the protocol version
+and certificate chain tokens — exactly the relationships we want to detect
+misconfiguration. See Chapter 7, "The Transformer Architecture."
+:::
+
+## State-Space Recurrence
+
+The hidden-state update behind "State Space Models and Mamba":
+
+$$h_t = \mathbf{A} h_{t-1} + \mathbf{B} x_t \qquad y_t = \mathbf{C} h_t$$
+
+- $h_t$: hidden state; $x_t$: current input; $y_t$: output
+- $\mathbf{A}$ carries the previous state forward, $\mathbf{B}$ writes the input in, $\mathbf{C}$ reads the output out
+- In Mamba, $\mathbf{A}, \mathbf{B}, \mathbf{C}$ are functions of $x_t$ (selective), not fixed matrices
+
+::: {.notes}
+The SSM equations look like a discrete linear dynamical system. Mamba's key
+innovation: A, B, C are functions of the current input x_t, not fixed
+matrices. This lets the model selectively discard irrelevant packets (e.g.,
+background traffic from another flow) and retain relevant ones (e.g., the
+SYN that initiated this connection). See Chapter 7, "State Space Models" and
+"How State Space Models Work."
 :::

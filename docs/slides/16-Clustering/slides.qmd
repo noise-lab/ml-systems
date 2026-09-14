@@ -72,9 +72,8 @@ This table is the lecture roadmap. Return to it after each algorithm and fill in
 4. **M-step:** move each centroid to the **mean** of its assigned points
 5. Repeat steps 3–4 until centroids stop moving (**convergence**)
 
-**Convergence criterion:** no re-assignments, or SSE below threshold
-
-$$\text{SSE} = \sum_{j=1}^{K} \sum_{x \in C_j} \text{dist}(x,\, m_j)^2$$
+**Convergence criterion:** no re-assignments, or SSE below threshold — the goal is to
+minimize the total squared distance from each point to its centroid. *(Equation in the appendix.)*
 
 ::: {.notes}
 The "means" in K-means literally refers to step 4 — moving each centroid to the arithmetic mean of its cluster. The algorithm always converges (SSE is non-increasing) but may reach a local minimum. See book Chapter 6, K-Means section. Ask: "What happens to SSE as K increases?"
@@ -360,4 +359,24 @@ This decision table is a practical takeaway. Emphasize the last row: clustering 
 
 ::: {.notes}
 Close with the anomaly detection framing — it ties every algorithm back to the practical networking motivation. Remind students that the choice of algorithm depends on what they know about the data structure in advance. Assignment hook: the appendix activity in the book applies all four algorithms to a packet capture with mixed attack and benign traffic. Book Chapter 6, Summary section.
+:::
+
+# Appendix: The Math {.center}
+
+## k-Means Objective
+
+The quantity k-means minimizes (see "How K-Means Works"), the **sum of squared errors**:
+
+$$\text{SSE} = \sum_{j=1}^{K} \sum_{x \in C_j} \text{dist}(x,\, m_j)^2$$
+
+- $K$: number of clusters; $C_j$: the set of points assigned to cluster $j$
+- $m_j$: the centroid (mean) of cluster $j$
+- Each E-step and M-step can only lower SSE, so the algorithm always converges
+
+::: {.notes}
+The "means" in K-means literally refers to the M-step — moving each centroid
+to the arithmetic mean of its cluster, which is the choice of $m_j$ that
+minimizes SSE for a fixed assignment. The algorithm always converges (SSE is
+non-increasing) but may reach a local minimum. See book Chapter 6, K-Means
+section. Ask: "What happens to SSE as K increases?"
 :::

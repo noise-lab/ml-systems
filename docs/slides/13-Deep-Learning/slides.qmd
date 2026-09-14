@@ -60,9 +60,9 @@ more data and compute. See *Machine Learning for Networking*, Chapter 5.
 
 ## The Artificial Neuron
 
-**The basic unit:** multiply, sum, activate.
-
-$$\text{output} = f\!\left(\sum_{i} w_i x_i + b\right)$$
+**The basic unit:** multiply, sum, activate. Each input is multiplied by its weight,
+the products are summed together with a bias, and the sum passes through an
+activation function.
 
 - $x_i$ — input features
 - $w_i$ — learned **weights** (one per input)
@@ -72,6 +72,8 @@ $$\text{output} = f\!\left(\sum_{i} w_i x_i + b\right)$$
 A single neuron with a sigmoid activation $\Rightarrow$ logistic regression.
 
 Stack many neurons into layers → **neural network**.
+
+*(Equation in the appendix.)*
 
 ::: {.notes}
 The analogy to logistic regression is exact: one neuron with sigmoid
@@ -134,8 +136,10 @@ Layers of neurons, data flowing **one direction** (input → output):
 The architecture — number of layers, neurons per layer — is a
 **design hyperparameter** (not learned).
 
-Each hidden layer computes:
-$$\mathbf{h}^{(l)} = f\!\left(\mathbf{W}^{(l)}\mathbf{h}^{(l-1)} + \mathbf{b}^{(l)}\right)$$
+Each hidden layer multiplies the previous layer's outputs by a weight matrix,
+adds a bias vector, and applies the activation element-wise.
+
+*(Equation in the appendix.)*
 :::
 ::: {.column width="50%"}
 ![Feedforward network: inputs on left, hidden neurons in middle, outputs on right](images/s25-i31.png)
@@ -170,9 +174,11 @@ Apply the **chain rule** to propagate the loss gradient back through all
 layers, computing $\frac{\partial \mathcal{L}}{\partial w}$ for every weight.
 
 **Weight update (gradient descent):**
-$$w \leftarrow w - \eta \cdot \frac{\partial \mathcal{L}}{\partial w}$$
+nudge every weight a small step against its gradient.
 
-$\eta$ = **learning rate** — critical hyperparameter.
+The step size $\eta$ is the **learning rate** — critical hyperparameter.
+
+*(Equation in the appendix.)*
 :::
 ::: {.column width="50%"}
 **Mini-batch training:**
@@ -751,4 +757,69 @@ Reiterate the book pointer: Chapter 5 has activities for training an MLP
 on IoT attack traffic and comparing to simpler models. The nPrint/nPrintML
 case study is the cleanest example in the course of representation learning
 solving a real systems problem at scale.
+:::
+
+# Appendix: The Math {.center}
+
+## The Neuron, Formally
+
+**A single neuron** computes a weighted sum of its inputs, adds a bias, and applies
+an activation function:
+
+$$\text{output} = f\!\left(\sum_{i} w_i x_i + b\right)$$
+
+- $x_i$ — input features; $w_i$ — learned weights; $b$ — bias; $f(\cdot)$ — activation
+- With $f = \sigma$ (sigmoid) this is exactly logistic regression
+
+**A layer** applies many neurons at once. Writing the weights of layer $l$ as a matrix
+$\mathbf{W}^{(l)}$ and the biases as a vector $\mathbf{b}^{(l)}$, the layer's output is
+
+$$\mathbf{h}^{(l)} = f\!\left(\mathbf{W}^{(l)}\mathbf{h}^{(l-1)} + \mathbf{b}^{(l)}\right), \qquad \mathbf{h}^{(0)} = \mathbf{x}$$
+
+with $f$ applied element-wise. A network with $L$ layers is the composition
+$\mathbf{h}^{(L)} = f(\mathbf{W}^{(L)} f(\mathbf{W}^{(L-1)} \cdots f(\mathbf{W}^{(1)}\mathbf{x} + \mathbf{b}^{(1)}) \cdots + \mathbf{b}^{(L-1)}) + \mathbf{b}^{(L)})$.
+
+::: {.notes}
+Companion to "The Artificial Neuron" and "Multi-Layer Perceptron" slides. The
+composition form is the reason non-linear activations matter: with $f$ the identity,
+the whole stack collapses to a single matrix $\mathbf{W}^{(L)} \cdots \mathbf{W}^{(1)}$
+and one bias, i.e. a linear model. See *Machine Learning for Networking*, Chapter 5,
+"Artificial Neuron" and "Multi-Layer Perceptron."
+:::
+
+## Gradient Descent and Backpropagation {.smaller}
+
+**Gradient descent.** After each mini-batch, every weight moves a small step against
+the gradient of the loss $\mathcal{L}$:
+
+$$w \leftarrow w - \eta \cdot \frac{\partial \mathcal{L}}{\partial w}$$
+
+$\eta$ is the learning rate. Adam replaces the single global $\eta$ with a per-parameter
+step size adapted from running gradient moments.
+
+**Backpropagation** computes $\partial \mathcal{L} / \partial w$ for *every* weight in
+one backward pass by applying the chain rule layer by layer. With pre-activation
+$\mathbf{z}^{(l)} = \mathbf{W}^{(l)}\mathbf{h}^{(l-1)} + \mathbf{b}^{(l)}$ and
+$\boldsymbol{\delta}^{(l)} = \partial \mathcal{L} / \partial \mathbf{z}^{(l)}$:
+
+$$\boldsymbol{\delta}^{(l)} = \left(\mathbf{W}^{(l+1)\top} \boldsymbol{\delta}^{(l+1)}\right) \odot f'\!\left(\mathbf{z}^{(l)}\right),
+\qquad
+\frac{\partial \mathcal{L}}{\partial \mathbf{W}^{(l)}} = \boldsymbol{\delta}^{(l)} \left(\mathbf{h}^{(l-1)}\right)^{\top},
+\qquad
+\frac{\partial \mathcal{L}}{\partial \mathbf{b}^{(l)}} = \boldsymbol{\delta}^{(l)}$$
+
+The error signal $\boldsymbol{\delta}$ starts at the output layer (from the loss) and
+is passed backward; each layer reuses the next layer's $\boldsymbol{\delta}$ rather
+than recomputing from scratch.
+
+::: {.notes}
+Companion to "Training: Forward and Backward Propagation." Backpropagation was a key
+insight that made deep learning feasible: one backward pass computes gradients for
+*all* weights simultaneously via the chain rule. Without it, training even modestly
+deep networks would require separate computation for each weight. The mini-batch
+framing also ties directly to GPU parallelism. The $f'(\mathbf{z}^{(l)})$ factor in
+the recursion is where vanishing gradients come from: for a saturated sigmoid it is
+near zero, and the product of many such factors shrinks the early-layer gradient to
+nothing; ReLU's derivative is exactly 1 for positive inputs. See *Machine Learning
+for Networking*, Chapter 5, "Training Neural Networks."
 :::

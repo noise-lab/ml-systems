@@ -333,11 +333,9 @@ The feature-space / problem-space gap is one of the most important networking-sp
 
 Given **white-box** access, the attacker exploits differentiability.
 
-**Fast Gradient Sign Method (FGSM):**
+**Fast Gradient Sign Method (FGSM):** perturb each input feature a tiny step in the direction that increases the loss.
 
-$$x_{\text{adv}} = x + \epsilon \cdot \text{sign}(\nabla_x L(\theta, x, y))$$
-
-Take the gradient of the loss w.r.t. the input; step in the direction that increases loss.
+Take the gradient of the loss w.r.t. the input; step in the direction that increases loss. *(Equation in the appendix.)*
 
 **Stronger variants:**
 
@@ -347,7 +345,7 @@ Take the gradient of the loss w.r.t. the input; step in the direction that incre
 **Black-box alternative:** craft adversarial examples against a *surrogate model*; exploit *transferability* to fool the unknown target.
 
 ::: {.notes}
-Walk through the FGSM formula carefully. The sign function means every feature gets perturbed by exactly ±ε, making the attack cheap to compute. PGD is just iterated FGSM with a projection step — it generally finds stronger adversarial examples. C&W is the gold standard for evaluation: if a defense cannot withstand C&W, it is not robust. For networking applications, remind students of the problem-space constraint: FGSM may suggest setting "mean packet size" to a fractional value, which is meaningless in a real network.
+Walk through the FGSM formula (see the appendix) carefully. The sign function means every feature gets perturbed by exactly ±ε, making the attack cheap to compute. PGD is just iterated FGSM with a projection step — it generally finds stronger adversarial examples. C&W is the gold standard for evaluation: if a defense cannot withstand C&W, it is not robust. For networking applications, remind students of the problem-space constraint: FGSM may suggest setting "mean packet size" to a fractional value, which is meaningless in a real network.
 :::
 
 ## Poisoning and Backdoor Attacks
@@ -402,7 +400,7 @@ No single defense provides permanent protection — this is an arms race.
 ::: {.column width="50%"}
 **Adversarial training**
 
-$$\min_\theta \; \mathbb{E}_{(x,y)} \left[ \max_{\|\delta\| \leq \epsilon} L(\theta, x + \delta, y) \right]$$
+Train on the worst-case perturbation within a small budget. *(Equation in the appendix.)*
 
 Generate adversarial examples during training (PGD); add to training set with correct labels. Forces the model to be robust to worst-case perturbations.
 
@@ -472,4 +470,41 @@ FedAvg is the foundational algorithm — McMahan et al. 2017. The non-IID challe
 
 ::: {.notes}
 Close with the arms-race framing: every defense gets broken, every attack gets patched. The goal is not perfect robustness but making attacks costly enough that they are not worth attempting against your specific system. For students building production systems: (1) threat-model everything, (2) evaluate on adversarial inputs not just benign test sets, (3) treat training data provenance as a security-sensitive input, and (4) build in retraining pipelines for concept drift. See the Security and Privacy chapter for further reading suggestions.
+:::
+
+# Appendix: The Math {.center}
+
+## Fast Gradient Sign Method
+
+**FGSM** (Goodfellow et al., 2015) builds an adversarial example in one step:
+
+$$x_{\text{adv}} = x + \epsilon \cdot \text{sign}(\nabla_x L(\theta, x, y))$$
+
+- $x, y$ — a clean input and its true label
+- $\theta$ — the (known, white-box) model parameters
+- $L(\theta, x, y)$ — the training loss; $\nabla_x L$ is its gradient with respect to the *input*, not the weights
+- $\text{sign}(\cdot)$ — element-wise sign, so every feature moves by exactly $\pm\epsilon$
+- $\epsilon$ — the perturbation budget (an $\ell_\infty$ bound)
+
+**PGD** iterates this with a smaller step $\alpha$ and projects back onto the $\epsilon$-ball after each step:
+$x^{(k+1)} = \Pi_{\|x' - x\|_\infty \le \epsilon}\!\left(x^{(k)} + \alpha \cdot \text{sign}(\nabla_x L(\theta, x^{(k)}, y))\right)$.
+
+::: {.notes}
+Companion to "Adversarial Evasion: Gradient-Based Attacks." The sign function means every feature gets perturbed by exactly $\pm\epsilon$, making the attack cheap to compute — one backward pass. PGD is just iterated FGSM with a projection step and generally finds stronger adversarial examples. For networking applications, remind students of the problem-space constraint: FGSM may suggest setting "mean packet size" to a fractional value, which is meaningless in a real network.
+:::
+
+## Adversarial Training Objective
+
+**Adversarial training** (Madry et al., 2018) replaces the usual loss with a min–max objective:
+
+$$\min_\theta \; \mathbb{E}_{(x,y)} \left[ \max_{\|\delta\| \leq \epsilon} L(\theta, x + \delta, y) \right]$$
+
+- **Inner max** — the attacker: find the perturbation $\delta$ within budget $\epsilon$ that hurts most (approximated with PGD)
+- **Outer min** — the defender: choose parameters $\theta$ that minimize loss on those worst-case inputs
+- $\mathbb{E}_{(x,y)}$ — averaged over the training distribution
+
+In practice: each mini-batch is attacked with PGD, and the model is updated on the attacked batch with the correct labels.
+
+::: {.notes}
+Companion to "Defenses: Raising the Cost of Attacks." The min-max formulation is the clearest way to state what "robust model" means: you want a model that minimizes loss even against the worst-case perturbation within the allowed budget $\epsilon$. Robustness is only guaranteed within that budget and that norm — an attacker who can move outside the $\epsilon$-ball, or who perturbs in problem space rather than feature space, is not covered. For networking, adversarial examples must also satisfy protocol constraints, not just feature-space bounds.
 :::

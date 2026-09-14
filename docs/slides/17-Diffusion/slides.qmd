@@ -151,15 +151,15 @@ Models" section of Chapter 7 and the DDPM paper (Ho et al., 2020).
 **Phase 1 — Forward (diffusion):**
 
 Starting from a real data sample $x_0$, add small Gaussian noise at each
-of $T$ timesteps:
-
-$$q(x_t | x_{t-1}) = \mathcal{N}(x_t;\, \sqrt{1-\beta_t}\, x_{t-1},\, \beta_t I)$$
+of $T$ timesteps: each step adds a little Gaussian noise following a fixed schedule.
 
 - By step $T$, the original signal is completely destroyed
 - The forward process is **fixed** — the model never learns it
 - Noise schedule $\beta_t$ controls how fast structure is erased
 
 The model only needs to learn the **reverse** direction.
+
+*(Equations in the appendix.)*
 :::
 ::: {.column width="45%"}
 ![Forward diffusion: original image → pure noise](images/s13-i08.png)
@@ -182,7 +182,7 @@ A neural network $\epsilon_\theta$ is trained to predict the noise added at
 each step. During generation:
 
 1. Sample $x_T \sim \mathcal{N}(0, I)$ (pure noise)
-2. Subtract predicted noise at each step: $x_{t-1} \leftarrow x_t - \epsilon_\theta(x_t, t)$
+2. At each step, the network predicts the noise present and subtracts it
 3. Repeat until $x_0$ is recovered
 
 **Why this beats GANs:**
@@ -190,6 +190,8 @@ each step. During generation:
 - **No adversarial training** — stable, predictable convergence
 - **No mode collapse** — each denoising step is an independent supervised task
 - **High diversity** — stochastic noise at each step introduces variation
+
+*(Equations in the appendix.)*
 
 ::: {.notes}
 The training objective is a simple mean-squared-error loss: predict the noise that was
@@ -624,4 +626,54 @@ See the Chapter 7 summary. End with a preview: the next lecture covers state spa
 models (Mamba / NetSSM), which address the sequence-length and state-modeling
 limitations highlighted today. Students should read the "State Space Models" section
 of Chapter 7 before that session.
+:::
+
+# Appendix: The Math {.center}
+
+## Forward Process: Equations
+
+**One step** of the forward (diffusion) process adds Gaussian noise with variance
+$\beta_t$ from a fixed schedule:
+
+$$q(x_t \mid x_{t-1}) = \mathcal{N}\!\left(x_t;\; \sqrt{1-\beta_t}\, x_{t-1},\; \beta_t I\right)$$
+
+**Closed form.** Because each step is Gaussian, any $x_t$ can be sampled directly
+from $x_0$ without simulating the chain. With $\alpha_t = 1 - \beta_t$ and
+$\bar{\alpha}_t = \prod_{s=1}^{t} \alpha_s$:
+
+$$q(x_t \mid x_0) = \mathcal{N}\!\left(x_t;\; \sqrt{\bar{\alpha}_t}\, x_0,\; (1-\bar{\alpha}_t) I\right)
+\qquad\Longleftrightarrow\qquad
+x_t = \sqrt{\bar{\alpha}_t}\, x_0 + \sqrt{1-\bar{\alpha}_t}\, \epsilon,\;\; \epsilon \sim \mathcal{N}(0, I)$$
+
+As $t \to T$, $\bar{\alpha}_t \to 0$ and $x_T$ is (nearly) pure noise.
+
+::: {.notes}
+Companion to "The Forward Process" slide. The closed form is what makes training
+cheap: to build a training example you pick a random real sample, a random timestep
+$t$, and a random $\epsilon$, and produce $x_t$ in one shot. See the DDPM paper
+(Ho et al., 2020) and the "Diffusion Models" section of Chapter 7.
+:::
+
+## Reverse Process: Equations
+
+**Noise-prediction objective.** A network $\epsilon_\theta(x_t, t)$ is trained to
+recover the noise $\epsilon$ that produced $x_t$ from $x_0$ — a plain mean-squared-error
+loss:
+
+$$\mathcal{L}(\theta) = \mathbb{E}_{x_0,\, t,\, \epsilon}\left[\, \big\| \epsilon - \epsilon_\theta\!\left(\sqrt{\bar{\alpha}_t}\, x_0 + \sqrt{1-\bar{\alpha}_t}\, \epsilon,\; t\right) \big\|^2 \right]$$
+
+**Sampling update.** Starting from $x_T \sim \mathcal{N}(0, I)$, each step subtracts
+the predicted noise and re-injects a little fresh noise ($z \sim \mathcal{N}(0, I)$; $z = 0$ at $t = 1$):
+
+$$x_{t-1} = \frac{1}{\sqrt{\alpha_t}}\left(x_t - \frac{\beta_t}{\sqrt{1-\bar{\alpha}_t}}\, \epsilon_\theta(x_t, t)\right) + \sigma_t z$$
+
+The main-flow slide summarizes this as "predict the noise and subtract it"; the compact
+form $x_{t-1} \leftarrow x_t - \epsilon_\theta(x_t, t)$ drops the scaling factors and the fresh-noise term.
+
+::: {.notes}
+Companion to "The Reverse Process" slide. Each training iteration samples a random
+timestep and a random real example, so the model sees a huge variety of partially
+noised inputs; there is no adversary to balance, which is why diffusion training is
+stable compared with GANs. $\sigma_t^2$ is usually set to $\beta_t$. See Ho et al.
+(2020), Algorithms 1 and 2.
 :::

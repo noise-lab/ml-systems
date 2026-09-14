@@ -45,7 +45,7 @@ Supervised Learning chapter.
 The ideal classifier: given features **X**, pick the class **Y** that
 maximizes the **posterior probability** $P(Y \mid X)$.
 
-$$\hat{Y} = \arg\max_Y \; P(Y \mid X)$$
+In words: predict whichever class is most probable given the observed features. *(Equation in the appendix.)*
 
 Why can't we just do this?
 
@@ -63,34 +63,6 @@ lecture is about approximating it efficiently. This framing comes directly
 from the source slides and the Probabilistic Models section of the book.
 :::
 
-## Bayes' Rule for Classification
-
-Apply Bayes' rule to flip the conditioning:
-
-$$P(Y \mid X) = \frac{P(X \mid Y) \cdot P(Y)}{P(X)}$$
-
-| Term | Name | Estimated from |
-|---|---|---|
-| $P(Y)$ | **Prior** | Class frequencies in training data |
-| $P(X \mid Y)$ | **Likelihood** | Feature distributions per class |
-| $P(X)$ | **Marginal** | Constant across classes — can ignore |
-
-Since $P(X)$ is the same for every class, we only compare:
-
-$$\hat{Y} = \arg\max_Y \; P(X \mid Y) \cdot P(Y)$$
-
-This makes Naive Bayes a **probabilistic classifier** — it predicts a
-likelihood across the set of classes, not just a label. (Logistic
-regression, covered later, is also a probabilistic classifier.)
-
-::: {.notes}
-Emphasize the practical shortcut: once you drop the denominator, training
-reduces to (a) counting class frequencies for the prior and (b) fitting
-per-feature distributions for the likelihood. Walk through the table with
-concrete numbers before the next slide. See the Supervised Learning chapter,
-"Naive Bayes" section.
-:::
-
 ## The "Naive" Independence Assumption
 
 **Problem:** $P(X \mid Y)$ for a full feature vector grows exponentially with
@@ -99,14 +71,12 @@ the number of features — infeasible to estimate directly.
 **Solution:** assume features are **conditionally independent** given the
 class:
 
-$$P(X \mid Y) = \prod_i P(X_i \mid Y)$$
+In words: the probability of the whole feature vector, given the class, is just the product of the per-feature probabilities. *(Equation in the appendix.)*
 
 Each $P(X_i \mid Y)$ is a simple **one-dimensional** distribution estimated
 from the training data.
 
-Final prediction:
-
-$$\hat{Y} = \arg\max_Y \; P(Y) \cdot \prod_i P(X_i \mid Y)$$
+Final prediction: multiply the **class prior** $P(Y)$ by each per-feature probability and pick the class with the largest product — this follows from Bayes' rule. *(Equation and derivation in the appendix.)*
 
 ::: {.notes}
 "Naive" because conditional independence is almost always violated in
@@ -141,14 +111,12 @@ of the source slides and the book's discussion of kernel density estimates.
 What if a feature value seen at test time **never appeared** in training for a
 given class?
 
-$$P(word \mid legitimate) = 0 \implies P(Y) \cdot \prod_i P(X_i \mid Y) = 0$$
-
-The entire product collapses — even one unseen word makes the class impossible.
+That one probability is zero, so the entire product collapses — even one unseen word makes the class impossible. *(Equation in the appendix.)*
 
 **Fix: smoothing** — add a small constant $\alpha$ so no probability is ever
 exactly zero.
 
-$$P(X_i \mid Y) \leftarrow \frac{\text{count}(X_i, Y) + \alpha}{\text{count}(Y) + \alpha \cdot |\text{vocabulary}|}$$
+In words: add $\alpha$ to every count (and $\alpha$ times the vocabulary size to the denominator), so every estimated probability is strictly positive — *Laplace smoothing*. *(Equation in the appendix.)*
 
 ::: {.notes}
 Give the spam example from the book: a professor's legitimate email that
@@ -508,3 +476,72 @@ start with and why? The answer should involve: dataset size, feature
 dimensionality, latency requirements, and interpretability needs. See the
 Supervised Learning chapter of "Machine Learning for Networking."
 :::
+
+# Appendix: The Math {.center}
+
+## Bayes Classifier and the Naive Assumption {.smaller}
+
+**Optimal Bayes classifier** — pick the most probable class given the features:
+
+$$\hat{Y} = \arg\max_Y \; P(Y \mid X)$$
+
+**Naive (conditional independence) assumption:**
+
+$$P(X \mid Y) = \prod_i P(X_i \mid Y)$$
+
+**Naive Bayes prediction:**
+
+$$\hat{Y} = \arg\max_Y \; P(Y) \cdot \prod_i P(X_i \mid Y)$$
+
+| Symbol | Meaning |
+|---|---|
+| $X = (X_1, \ldots, X_n)$ | feature vector; $X_i$ is a single feature |
+| $Y$, $\hat{Y}$ | class label; predicted class |
+| $P(Y \mid X)$ | posterior probability of the class given the features |
+| $P(Y)$ | class prior — class frequency in the training data |
+| $P(X_i \mid Y)$ | per-feature likelihood — a one-dimensional distribution per class |
+
+## Bayes' Rule for Classification
+
+Apply Bayes' rule to flip the conditioning:
+
+$$P(Y \mid X) = \frac{P(X \mid Y) \cdot P(Y)}{P(X)}$$
+
+| Term | Name | Estimated from |
+|---|---|---|
+| $P(Y)$ | **Prior** | Class frequencies in training data |
+| $P(X \mid Y)$ | **Likelihood** | Feature distributions per class |
+| $P(X)$ | **Marginal** | Constant across classes — can ignore |
+
+Since $P(X)$ is the same for every class, we only compare:
+
+$$\hat{Y} = \arg\max_Y \; P(X \mid Y) \cdot P(Y)$$
+
+This makes Naive Bayes a **probabilistic classifier** — it predicts a
+likelihood across the set of classes, not just a label. (Logistic
+regression, covered later, is also a probabilistic classifier.)
+
+::: {.notes}
+Emphasize the practical shortcut: once you drop the denominator, training
+reduces to (a) counting class frequencies for the prior and (b) fitting
+per-feature distributions for the likelihood. Walk through the table with
+concrete numbers before the next slide. See the Supervised Learning chapter,
+"Naive Bayes" section.
+:::
+
+## Laplace Smoothing {.smaller}
+
+**The zero-probability problem** — one unseen feature value zeroes the whole product:
+
+$$P(word \mid legitimate) = 0 \implies P(Y) \cdot \prod_i P(X_i \mid Y) = 0$$
+
+**Smoothed estimate:**
+
+$$P(X_i \mid Y) \leftarrow \frac{\text{count}(X_i, Y) + \alpha}{\text{count}(Y) + \alpha \cdot |\text{vocabulary}|}$$
+
+| Symbol | Meaning |
+|---|---|
+| $\text{count}(X_i, Y)$ | training examples of class $Y$ with feature value $X_i$ |
+| $\text{count}(Y)$ | training examples of class $Y$ |
+| $\alpha$ | smoothing constant ($\alpha = 1$ is Laplace / add-one smoothing) |
+| $\lvert \text{vocabulary} \rvert$ | number of distinct feature values |
