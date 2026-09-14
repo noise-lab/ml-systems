@@ -33,7 +33,7 @@ machine learning models in practice.
 
 More details are in the [course syllabus](syllabus.md).
 
-Class agenda for each meeting is in the [agenda](agenda.md).
+Class agenda for each meeting is in the [agenda](agenda.md) (one file per term; the current term is [Summer 2026](agenda/2026-summer.md)).
 
 ## Schedule
 
