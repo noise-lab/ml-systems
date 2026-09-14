@@ -85,6 +85,12 @@ Refresh the dated content below per `../TEMPLATE.md` → "Annual current-events 
   slide.
 - `s19-i15.png` — DNS query volume vs. domain age; malicious spike vs. flat legitimate
   baseline. Used on the same slide.
+- `snare-knn-ip-distance.png` — Average IP-space distance to the k nearest senders,
+  spam vs. ham (extracted from `s14-i10.wmf`). Used on "Network-Level Features That
+  Persist".
+- `snare-rulefit-confusion.png` — SNARE/RuleFit confusion matrix (70% detection,
+  0.44% false positives; extracted from `s15-i11.wmf`). Used on "SNARE: Combining
+  Features".
 - `s29-i25.png` — Disinformation infrastructure timeline (Domain Registration →
   Certificate Issuance → Website Deployment → Content Publication → Distribution).
   Clean diagram, used on the "Disinformation Infrastructure Detection" slide.
@@ -108,10 +114,10 @@ Refresh the dated content below per `../TEMPLATE.md` → "Annual current-events 
 - `s11-i07.png` — Clip-art envelope icons. Decorative; dropped.
 - `s11-i09.png` — Screenshot of a pharmacy spam message. Old (2005); dropped.
 - `s11-i08.wmf` — WMF vector file; cannot be rendered in Quarto/HTML without conversion.
-- `s14-i10.wmf` — WMF vector file; same issue. (This was the k-NN IP-space sender
-  distance figure — the key result for the "Coordination" feature. Convert to PNG if a
-  figure is wanted there.)
-- `s15-i11.wmf` — WMF vector file; same issue.
+- `s14-i10.wmf`, `s15-i11.wmf` — WMF wrappers around EMF with an embedded bitmap.
+  The bitmaps were extracted to `snare-knn-ip-distance.png` and
+  `snare-rulefit-confusion.png` (see "Used" above); the .wmf originals are kept but
+  unused.
 - `s15-i12.png` — MIT Technology Review article screenshot about SNARE (2009).
   Interesting provenance but not a teaching diagram; referenced in speaker notes only.
 - `s15-i13.png` — McAfee logo (not a result figure, despite earlier notes). Decorative;

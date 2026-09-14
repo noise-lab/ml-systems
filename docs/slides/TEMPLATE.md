@@ -73,7 +73,7 @@ NN-Name/
 ## Content approach (the three asks)
 
 1. **Agenda alignment.** Build from `_source-extract.md` **and** the matching section(s)
-   of `../../agenda.md` (the detailed record of what was *actually* covered, by
+   of `../../agenda/<term>.md` (e.g. `../../agenda/2025-autumn.md`) (the detailed record of what was *actually* covered, by
    Meeting). Prefer what was actually taught over the old slide order. If the deck's
    topic spans part of a Meeting, scope to its theme.
 2. **Update examples to current events.** Replace dated examples with current ones
@@ -99,7 +99,7 @@ NN-Name/
 ## Curated images
 - which images were used / dropped and why
 ## Source
-- rebuilt from _source-extract.md (N slides) + agenda.md Meeting M
+- rebuilt from _source-extract.md (N slides) + agenda/<term>.md Meeting M
 ```
 
 The **Next-year refresh notes** section is the to-do list the annual refresh (below)

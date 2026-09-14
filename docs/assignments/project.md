@@ -35,10 +35,9 @@ for completing the project:
 
 ## Parameters
 
-* You can work in groups of up to three. I prefer groups of one or two.
-  However, I will permit groups of three. If you have a group of three, I
-  expect a clear delineation of who is responsible for what tasks in your
-  project report.
+* Work in groups of up to three. Groups of four are allowed if the project
+  warrants it; in that case I expect a clear delineation of who is
+  responsible for what in your project report.
   
 * Let me know by the end of Week 5 what your project idea is. Turn in a **one
   page** PDF that outlines the following:
@@ -51,17 +50,18 @@ for completing the project:
 
 ## Deliverables
 
-I expect each project to be turned in as follows:
+Turn in, committed to your course repository:
 
-1. **Clean** Jupyter notebook, that I can run, end-to-end, with your analysis
-   and code inline.
-2. A project report, formatted in Sphinx, that I can read, end-to-end, with
-   the relevant parts of your code inline. ([How To](https://docs.readthedocs.io/en/stable/guides/jupyter.html))
+1. **Code that I can run end to end** to reproduce your results, with a clear
+   entry point (a notebook with "restart kernel and run all" is the easiest
+   way to guarantee this, but a script plus a README that says how to run it
+   is fine too). Include, or point to, every data file it needs.
+2. **A written report** in any reasonable format (Markdown, PDF, a rendered
+   notebook) that I can read end to end, with the relevant parts of your code
+   or results inline.
 
-The notebook must run, and it needs to be clean. Presentation of your results
-is as important as achieving them. To test that your notebook runs, make sure
-you try "restart kernel and run all" before turning it in. Also make sure you
-have included (or point to!) all data files needed to run your notebook.
+The code must run, and it needs to be clean. Presentation of your results is
+as important as achieving them.
 
 The writeup has no "expected length", but it needs to be clear. Imagine that
 you want to use this as a portfolio for a job interview (something you did as
@@ -71,9 +71,12 @@ class).
 
 ## Grading Rubric
 
-* If I can run everything above with one-click, and everything is clearly
+* If I can run everything above with one click, and everything is clearly
   documented in such a way that you (or I) could show it to someone else and
   they could reasonably understand it, that will get you an A.
+
+Acknowledge collaborators, outside sources, and any AI tools you used, in the
+report.
 * If you clearly did the assignment and got some good results, but your code
   doesn't run properly, is messy, or there are other things that are
   incomplete or unclear that will get you a B.

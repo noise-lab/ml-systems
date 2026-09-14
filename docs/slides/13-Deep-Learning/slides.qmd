@@ -641,6 +641,70 @@ representation, AutoGluon often picks a random forest over a DNN for
 smaller datasets.
 :::
 
+## Case Study: DDoS Detection for Consumer IoT {.smaller}
+
+Doshi, Apthorpe, Feamster, "Machine Learning DDoS Detection for Consumer Internet of Things Devices," IEEE S&P Workshops (DLS) 2018
+
+::: {.columns}
+::: {.column width="52%"}
+**Pipeline**
+
+1. **Capture** packets at the home router: src/dst IP and port, protocol, size, timestamp
+2. **Split by device** (source IP), then into **10-second time bins**
+3. **Per-packet features**
+   - *Stateless:* packet size, inter-packet interval (ΔT, dΔT/dt, d²ΔT/dt²), protocol (one-hot TCP/UDP/HTTP/other)
+   - *Stateful (per bin):* bandwidth, number of distinct destination IPs, change in distinct-destination count
+4. **Binary classification:** attack vs. normal
+:::
+::: {.column width="48%"}
+**Data**
+
+- Normal traffic: WeMo smart switch, YI home camera, Android phone
+- Attack traffic: Mirai-style **TCP SYN flood, UDP flood, HTTP GET flood**
+- 491,855 packets (459,565 attack / 32,290 benign), 85/15 train–test split
+
+**Classifiers compared**
+
+k-NN · linear SVM · decision tree · random forest · 4-layer neural net
+:::
+:::
+
+::: {.notes}
+This is the hands-on you are about to do. The feature design is driven by domain knowledge about IoT devices: they talk to a small, fixed set of endpoints and send at regular intervals, so a flood shows up as tiny packets, near-zero inter-arrival times, and a jump in destination count. Every feature is derivable from flow-level headers — no payload inspection — so the whole thing can run on a home gateway. Note the class imbalance (about 14:1 attack to benign): always-predict-attack already gets 0.93 accuracy, so look at per-class F1, not just accuracy.
+:::
+
+## Result: You Often Don't Need Deep Learning {.smaller}
+
+::: {.columns}
+::: {.column width="50%"}
+**Test-set performance (all features)**
+
+| | k-NN | LSVM | DT | RF | NN |
+|---|---|---|---|---|---|
+| Accuracy | 0.999 | 0.991 | 0.999 | 0.999 | 0.999 |
+| F1 (normal) | 0.995 | 0.927 | 0.994 | 0.998 | 0.986 |
+| F1 (attack) | 0.999 | 0.995 | 0.996 | 0.999 | 0.999 |
+
+**Stateless features only, F1 (normal):** k-NN 0.967 · LSVM 0.920 · DT 0.977 · RF 0.981 · NN 0.939
+
+Top Gini importance: packet size (0.51), then protocol flags and ΔT.
+:::
+::: {.column width="50%"}
+**Takeaways**
+
+- **Simple stateless features suffice:** packet size alone carries most of the signal
+- **Tree ensembles and k-NN match the DNN** at a fraction of the training and inference cost — and run on a router
+- Only the *linear* SVM lags: the problem is non-linear, but only mildly so
+- **DNNs earn their keep** when features are unknown (raw bytes, nPrint) or interactions are genuinely non-linear and data is plentiful
+
+*Start with the random-forest baseline; reach for deep learning when it is beaten.*
+:::
+:::
+
+::: {.notes}
+This is the hands-on you are about to do; spoiler: RF ≈ NN. Numbers are from Tables I and III of the paper (arXiv:1804.04159). Point out that the "wrong" way to read the table is "everything is 0.99, so it doesn't matter" — the F1 on the minority (normal) class is where the models separate, and the random forest is best there. Connect back to the previous slide's practical strategy: the paper is a worked example of step 1 (RF baseline on hand-crafted features) being good enough. Also connect forward: the paper's own future-work section says deep learning should help for subtler attacks than floods, with more data — which is exactly the regime where nPrint-style representations matter.
+:::
+
 ## Summary {.smaller}
 
 ::: {.columns}

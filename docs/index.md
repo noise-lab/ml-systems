@@ -15,7 +15,8 @@ and debugging of machine learning models.
 machine-learning *workflow* — data, features, models, evaluation, and
 deployment — taught through applications to computer systems, and **primarily
 through computer networking**, which is the instructor's area of expertise and
-the domain of the companion textbook, *Machine Learning for Networking*. The ML
+the domain of the companion textbook, [*Machine Learning for
+Networking*](https://noise-lab.net/ml-networking/). The ML
 concepts are general and transfer to any systems domain, but expect the
 examples, datasets, and assignments to be **networking-centric**. If you are
 looking for a theory- or math-first ML course, or one that ranges broadly across
@@ -34,6 +35,8 @@ machine learning models in practice.
 More details are in the [course syllabus](syllabus.md).
 
 Class agenda for each meeting is in the [agenda](agenda.md) (one file per term; the current term is [Summer 2026](agenda/2026-summer.md)).
+
+**Current term:** the three-week Paris offering has its own rules (one combined exam, two assignments, project dates). They are on the [Summer 2026 term page](terms/2026-summer.md).
 
 ## Schedule
 
@@ -74,14 +77,15 @@ Please come to class having done the reading.
 
 ## Exams
 
-The course has a midterm and a final. The permitted-materials policy is the same
-for both and is printed on each exam: closed-book and closed-notes except for
+The nine-week course has a midterm and a final; short terms have one combined
+exam (see the term page). The permitted-materials policy is the same for every
+exam and is printed on it: closed-book and closed-notes except for
 **one 8.5×11-inch sheet of paper with handwritten notes (both sides permitted)**;
-no electronic devices or other materials. See the [syllabus](syllabus.md) for
-details.
+no electronic devices or other materials. Details in [exams](assignments/exams.md).
 
 Past exams from prior years are available to everyone as practice material:
-[past midterms](midterm/) and [past finals](final/).
+[past midterms](midterm/) and [past finals](final/). You can also generate your
+own practice exams from the agenda with [`generate-exam.md`](generate-exam.md).
 
 ## Background Videos and Readings
 
@@ -89,6 +93,7 @@ The material below is strictly optional unless otherwise noted, although you
 may find it useful.
 
 * [Resource List](ml.md)
+* [The book, *Machine Learning for Networking*](https://noise-lab.net/ml-networking/)
 * [Board Notes](https://www.dropbox.com/s/fef5y9enms6djlr/ML%20for%20Systems.pdf?dl=0)
 
 

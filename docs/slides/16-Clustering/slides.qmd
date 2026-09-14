@@ -171,6 +171,8 @@ The key insight: K-means is a special case of GMM where all covariances are equa
 
 ## DBSCAN: Density-Based Clustering
 
+**DBSCAN** = **D**ensity-**B**ased **S**patial **C**lustering of **A**pplications with **N**oise (Ester et al., KDD 1996)
+
 **Core idea:** a region with high density belongs to the same cluster; sparse regions are **noise**
 
 ::: {.columns}

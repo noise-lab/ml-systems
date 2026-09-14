@@ -125,6 +125,70 @@ Three behavioral invariants that spammers cannot easily hide:
 SNARE: Spatio-temporal Network-level Automatic Reputation Engine. Hao, Feamster, Gray, Krasser 2009. The key pedagogical point: features derived from the network layer (BGP, DNS, IP topology) are much harder for spammers to forge than application-layer content, because changing them has operational cost. The k-NN IP-space clustering finding is counterintuitive — why would botnets cluster in IP space? Because ISPs assign contiguous blocks to customers, so a single infected ISP creates a dense cluster.
 :::
 
+## Network-Level Features That Persist {.smaller}
+
+Content and sender IPs change daily; *how* a spammer sends is much harder to change.
+
+::: {.columns}
+::: {.column width="50%"}
+**Features visible from a single SMTP connection (no message body):**
+
+- **Sending pattern:** number of recipient domains and messages per sender; message-size distribution and burstiness
+- **AS / BGP route:** sender's AS, and whether the prefix is *ephemeral* (announced briefly, then withdrawn)
+- **Geographic distance** between sender and recipient mail server
+- **Spatiotemporal clustering:** distance to the *k* nearest senders in IP space, and whether those neighbours are also sending now
+
+**Why these persist:** changing them costs the spammer real infrastructure, not just a new template.
+:::
+::: {.column width="50%"}
+![Average numerical distance (IP space, log scale) to the *k* nearest senders. Spammers' neighbours are 1–2 orders of magnitude closer than legitimate senders' — many compromised hosts sit on the same network blocks.](images/snare-knn-ip-distance.png)
+:::
+:::
+
+::: {.notes}
+This is the "how, not what" idea made concrete. Each feature maps to one of the three invariants from the previous slide: ephemeral BGP routes → agility; message-size/recipient patterns and geographic distance → exposure; k-nearest-sender distance → coordination. The figure is from the original SNARE analysis: for each sender, compute the average IP-space distance to its k nearest neighbours that sent mail in the same window. Certain-spam senders sit roughly 10–30× closer to their neighbours than certain-ham senders at every k. Ask: which of these features could a spammer cheaply forge? (Geographic distance and AS are essentially unforgeable; message size and recipient count could be adjusted at the cost of throughput.)
+:::
+
+## SNARE: Combining Features {.smaller}
+
+**Spatio-temporal Network-level Automatic Reputation Engine** — Hao, Feamster, Gray, Krasser, USENIX Security 2009
+
+::: {.columns}
+::: {.column width="55%"}
+- Input: **only network-level features** from the previous slide, computed from one day of query logs at a large spam-filtering appliance provider
+- Classifier: **RuleFit** — an ensemble of decision-tree rules combined in a sparse linear model, so the learned rules are inspectable
+- Evaluated with 10-fold cross-validation
+- Reputation can be assigned on a **single query**, before the message body is accepted
+
+**Takeaway:** about 70% of spam caught with roughly 0.4% false positives, using no content at all — a cheap first-stage filter in front of content analysis.
+:::
+::: {.column width="45%"}
+![SNARE confusion matrix: 70% of spam is classified as spam; 0.44% of legitimate mail is misclassified.](images/snare-rulefit-confusion.png)
+:::
+:::
+
+::: {.notes}
+Builds on Ramachandran, Feamster, Vempala, "Filtering Spam with Behavioral Blacklisting," ACM CCS 2007. RuleFit (Friedman and Popescu) fits many shallow decision trees, treats each root-to-leaf path as a binary rule, then fits an L1-regularised linear model over the rules plus the raw features; that is why the result is interpretable. The 70% / 0.44% numbers are the headline result from the paper's Table. Emphasise the cost argument: this decision is made at connection time from a handful of features, so it scales to a mail-appliance provider's full volume, and the 30% it misses goes on to the (expensive) content filter. Also worth noting the class imbalance: 0.44% false positives sounds tiny but is a lot of legitimate mail at scale, which is why SNARE was framed as a reputation signal rather than a hard block.
+:::
+
+## Going Back Earlier in Time {.smaller}
+
+Each step earlier in the attack lifecycle gives cheaper, more robust detection — and a bigger head start.
+
+| When we detect | What we see | Example |
+|---|---|---|
+| **Message time** | Content, URLs, attachments | Bayesian / content filters |
+| **Connection time** | Sender IP, AS, route, timing, neighbours | SNARE (previous slide) |
+| **Domain-registration time** | Registrar, nameservers, early DNS lookups | Next slides |
+
+- Attackers use **URLs and domains** to propagate scams and malware; those domains must be registered, and DNS records established, *before* any message is sent
+- **Problem:** reputation for a brand-new domain? Prior work waited to observe record changes, which takes time
+- **Alternative:** look at query and registration patterns within a short window after registration
+
+::: {.notes}
+This is the bridge to the DNS material. The theme of the whole section is moving detection left: content → connection → registration. Ask students what the attacker has to commit to at each stage and how expensive it is to change (a template: free; a bot's IP: cheap; a registered domain with nameservers: costs money and leaves a paper trail). The next two slides show what "early DNS behaviour" looks like empirically (Hao, Feamster, Pandrangi, IMC 2011).
+:::
+
 ## Predictive Analytics and DNS {.smaller}
 
 Spammers must register domains before they can send spam. DNS lookups precede attacks.
