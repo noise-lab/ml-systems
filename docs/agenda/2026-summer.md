@@ -798,3 +798,56 @@ inaudible the entry says so rather than guessing.
   * Only ~12 minutes left; try k-means on the data set; DBSCAN and GMM at the end of the notebook if time permits
   * Autoencoder lecture skipped for time
   * Instructor staying after class for questions
+
+### Meeting 9 (Tue Sep 15)
+
+* **Logistics and Announcements**
+  * Exam Thu Sep 17: one combined final; one 8.5×11 cheat sheet, both sides; full period available
+    * Instructor departs midday; Samuel proctors and collects; scanned and graded in Gradescope, results quickly
+  * Project talks Wed Sep 16: informal go-around, slides optional, not expected to be finished; written feedback on proposals coming
+  * Exam prompt directory `docs/prompts/` now in the repo; `generate-summer-final.md` will be updated with today's discussion; past exams (LaTeX, with solutions) are buildable practice material
+  * Board notes to be posted in Slack and folded into the slides
+  * NetSSM Colab notebook link needs fixing (not found where linked); diffusion hands-on skipped since the assignment covered it
+
+* **Exam Review: Walk-Through of the Term Agenda (Meetings 1–8)**
+  * Ground rules: no definition regurgitation (Mitchell), no history, no logistics, no attack trivia ("what is drop-catching"), no computing PCA/t-SNE by hand, no ridge-vs-lasso details; short answers graded on keywords, write legibly
+  * Format: yes/no followed by "why or why not" is the favorite (binary check plus a chance to explain); draft has too many short answers, will shift toward select-all and yes/no
+  * Flagged as good questions
+    * Raw packet capture vs. aggregated statistics: pluses and minuses of each
+    * Negative round-trip latencies in a data set: which pipeline stage handles it and how (drop, impute, find the cause)
+    * "Do you need ML at all?": attacks from a few networks → IP block list; advantages and disadvantages vs. a model
+    * Which applications benefit from real-time prediction (bitrate, attack mitigation) vs. not (provisioning, digging a trench)
+    * Why DNS data is a useful source for detecting attacks (malware behavior vs. human behavior)
+    * Two separate security challenges: adversaries adapt (evasion, e.g. defeating Naive Bayes with hidden Shakespeare) vs. the world changes (drift, e.g. COVID traffic)
+    * Predicting attacks before they happen (registration-time signals) as the concept, not the details
+    * What-if questions where ML applies: search response time after deploying a front end; capacity provisioning
+    * No single best traffic representation; what can and cannot be seen under encryption (trend: less visible over time; TLS 1.3 hides the server name)
+    * **Throughput vs. latency**: "if you graduate unable to explain the difference, I have failed you"; likely a small fake trace asking for both, possibly on every future exam
+    * nPrint pluses and minuses: no feature engineering, but huge, and you are at the mercy of whatever features get learned; check them (spurious correlations)
+    * Aggregation timescale trade-offs (five-minute bins smooth away spikes)
+    * Why think twice about IP address as a feature
+    * Purpose of the validation set; train/validation/test split roles
+    * Bias/variance in plain words: training error vs. sensitivity to the training set; knobs that raise complexity (polynomial degree, tree depth, lower λ)
+    * Confusion matrix → compute precision, recall, false-positive rate; why precision over accuracy; put the formulas on the cheat sheet
+    * PR/ROC curve for two models: which is better; choosing an operating point is a design decision with no single right answer (under-13 user detection litigation example: too aggressive removes real users, too lax leaves minors)
+    * Is this data suitable for logistic regression (linear separability)
+    * Given a tree, draw the region map or the reverse ("OK question, maybe")
+    * Why an ensemble over a single tree; trees handle mixed feature types
+    * When a simpler model beats deep learning (on past exams) and when it does not (little labeled data, engineerable features, linear separability)
+    * How to pick the number of PCA components (scree plot) and k in k-means (elbow); when k-means fails
+    * Hierarchical clustering: cut a dendrogram for N clusters, list them ("super easy to ask, super easy to grade")
+  * Draft exam shown on screen: about 22 questions, five pages; the what-if evaluator yes/no read aloud as an example ("a freebie") and its wording debated (answer: No, changing RTT changes other inputs); instructor will edit the draft this evening
+
+* **Generative Models (Lectures 17 and 19)**
+  * Why synthetic data: real traces are scarce (privacy and legal review, collection infrastructure breaks, you get what you get); uses: augment small training sets (would have been used for the video QoE work), what-if evaluation (still a pipe dream), privacy-preserving sharing, training intrusion detectors on shared data
+  * Fidelity vs. diversity trade-off ("I love that question"); a model trained on the data gives you more of the same
+  * GANs: generator vs. discriminator; first networking applications at CMU generated flow-level statistics; convergence and generalization issues; flow level only
+  * Diffusion models: add noise forward, learn to denoise; training objective is predicting the added noise; stable, no mode collapse, diverse; text-conditioned (stable diffusion)
+  * NetDiffusion: student idea born from nPrint bitmaps looking like images; text prompt → fine-tuned diffusion → traffic bitmap; "one of the bigger ideas in networking in a decade"
+    * Limitations: protocol compliance (checksums, handshake before data, DNS before connect) patched post hoc; limited sequence length; no notion of state; open questions on model transfer to other traffic types and on the right data format for what-if generation
+  * Privacy: membership inference; synthetic data can leak the real data it was trained on
+  * Open question: does a foundation model for network traffic make sense, or task-specific generators?
+  * Transformers: tokens and embeddings, next-token prediction, attention over context; quadratic cost in context length (why you clear your coding-agent context); no explicit network state
+  * State-space models (Mamba, NetSSM): fixed-size hidden state updated per step summarizing all past input; linear complexity; long traces; state makes protocol compliance natural rather than patched; "advantages of SSMs over diffusion" flagged as a possible question
+  * Hands-on: NetSSM Colab (needs GPU) could not be located; deferred to Wed
+
