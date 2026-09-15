@@ -19,8 +19,8 @@ will get questions built from exactly the same inputs.
 | Assignments | Assignment 1 (Video Quality Inference) and the project proposal — at least one question on each |
 | Hands-ons | 01 packet capture, 02 scanning, 03 QoE, 06 netml features, 08 pipeline (HTTP/log4j), 10 linear regression + basis expansion, 12 IoT trees/ensembles, 13 DDoS neural net, 15 PCA, 16 k-means |
 | Past exams to imitate | `2025/` here and `../midterm/2025/` (one final, one midterm: the combined exam mixes both) |
-| Length | 6 pages, **75 points** (the on-campus exams are 4 pages / 50 points and designed for 30–40 minutes; this one is ~30% longer, designed for 45–50 minutes with the full period available) |
-| Question mix | roughly a third multiple choice (select all that apply), a third yes/no with "Why or why not?", a third short answer; ends with a 2-point feedback section |
+| Length | 6 pages (7 if the feedback item spills), **75 points** (the on-campus exams are 4 pages / 50 points and designed for 30–40 minutes; this one is ~30% longer, designed for 45–50 minutes with the full period available) |
+| Question mix | mostly select-all / multiple choice and yes/no with "Why or why not?"; keep pure short answers to a handful (the instructor grades by keyword and wants few of them); where a question has two parts, make one part MC and one a box; ends with a 2-point feedback section |
 
 ## Coverage (proportional to time spent)
 
@@ -76,4 +76,4 @@ From the Meeting 9 review:
 
 ## Validation
 
-As in `generate-exam.md`: `make all`, then check `pdfinfo exam.pdf | grep Pages` gives 6 and the `\prob{}` points sum to 75; open the PDF and look for overflowing option text or answer boxes that broke across pages.
+As in `generate-exam.md`: `make all`, then check `pdfinfo exam.pdf | grep Pages` gives 6 or 7 and the `\prob{}` points sum to 75; open the PDF and look for overflowing option text or answer boxes that broke across pages.
