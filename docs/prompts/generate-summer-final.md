@@ -4,7 +4,7 @@ description: Generate the Summer 2026 (Paris) combined final exam — or a pract
 
 This is the term-specific recipe used to draft the **Summer 2026 combined final**
 (Thu Sep 17, 2026). It instantiates the general prompt in
-[`../generate-exam.md`](../generate-exam.md); read that first for the LaTeX
+[`generate-exam.md`](generate-exam.md); read that first for the LaTeX
 conventions, then apply the parameters below. Students: run this yourself to make
 practice exams. You will not get the same questions the instructor got, but you
 will get questions built from exactly the same inputs.

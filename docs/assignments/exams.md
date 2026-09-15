@@ -24,6 +24,6 @@ exam.
 
 ## Practice exams
 
-The exam is drafted with the prompt in [`generate-exam.md`](../generate-exam.md)
+The exam is drafted with the prompt in [`prompts/generate-exam.md`](../prompts/generate-exam.md) (and the per-exam variants next to it)
 from the agenda and the past exams, then edited by hand. You have all of those
 inputs, so you can generate as many practice exams as you like the same way.

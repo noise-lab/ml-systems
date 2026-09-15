@@ -23,7 +23,7 @@ your repo.
 ## Practice exams
 
 The exam is drafted from the class agenda and past exams with the prompt in
-[`generate-exam.md`](../generate-exam.md). You have all of the inputs, so you can
+[`prompts/generate-summer-final.md`](../prompts/generate-summer-final.md). You have all of the inputs, so you can
 generate your own practice exams the same way: point the prompt at
 [`agenda/2026-summer.md`](../agenda/2026-summer.md) and the [past midterms](../midterm/)
 and [finals](../final/).
