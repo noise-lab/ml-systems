@@ -39,9 +39,12 @@ order. This term the meetings went:
 | 2 | Tue Sep 1 | 2 Security | 02 Scanning |
 | 3 | Wed Sep 2 | 3 Performance, 4 Resource optimization | 03 QoE inference |
 | 4 | Thu Sep 3 | 6 Feature extraction (incl. nPrint), start of 7 | 06 netml features |
+| — | Fri Sep 4 | *Excursion: Inria Nancy (no class)* | |
 | 5 | Mon Sep 7 | 8 Model training and evaluation | 08 Full pipeline (HTTP/log4j) |
+| — | Tue Sep 8 | *Excursion: Huawei France HQ (no class)* | |
 | 6 | Wed Sep 9 | 10 Linear regression, 11 Logistic regression, 12 Trees and ensembles | 10 Linear regression + basis expansion |
 | 7 | Thu Sep 10 | 13 Deep learning (with 14 nPrint recap) | 12 IoT trees/ensembles, 13 DDoS neural net |
+| — | Fri Sep 11 | *Excursion: ENS de Lyon (no class)* | |
 | 8 | Mon Sep 14 | 15 Dimensionality reduction (incl. autoencoders), 16 Clustering | 15 PCA, 16 k-means |
 | 9 | Tue Sep 15 | Exam review walk-through; 17 Diffusion / NetDiffusion, 19 Transformers and state-space models | 18 NetSSM walkthrough (Colab, GPU) — link fixed on the course page |
 | 10–12 | Sep 16–18 | Project show-and-tell (Wed), exam (Thu, proctored by Samuel), wrap-up | |
@@ -55,5 +58,12 @@ generative-models discussion. Bonus topics 20–23 were not covered.
 
 ## Excursions
 
-Huawei Paris research lab (Tue Sep 8, morning) and Lyon with Francesco Bronzino,
-co-author of the video QoE assignment (Fri Sep 11).
+Three course excursions, organized by the John W. Boyer Center in Paris with a
+student coordinator on each. Bring government ID; the hosts check names against
+the participant list.
+
+| Date | Where | What |
+|---|---|---|
+| **Fri Sep 4** | **Inria Nancy – Grand Est / LORIA**, Université de Lorraine, Nancy | 6:00 am pickup at the Mease residence for the morning train from Gare de l'Est. Presentation and tour of the Inria technology-development hub; meetings with the center's director (Isabelle Chrisment) and several research and development teams; lunch hosted by the university; guided walking tour of historic Nancy; 4:24 pm train back to Paris (arrives 6:03 pm). |
+| **Tue Sep 8** | **Huawei France headquarters**, Boulogne-Billancourt | 8:40 am pickup at the Mease house; visit from about 10:00 am to 12:30 pm, hosted by Dario Rossi. Afternoon free; class was not held that morning. |
+| **Fri Sep 11** | **ENS de Lyon**, Lyon | 6:30 am pickup at the Mease residence for the TGV. Talk and lab presentation by Francesco Bronzino (co-author of the video QoE assignment) and colleagues, campus tour, lunch, walking tour of Vieux Lyon; evening train back (arrives 8:10 pm). |
