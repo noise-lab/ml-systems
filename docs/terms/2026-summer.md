@@ -43,7 +43,7 @@ order. This term the meetings went:
 | 6 | Wed Sep 9 | 10 Linear regression, 11 Logistic regression, 12 Trees and ensembles | 10 Linear regression + basis expansion |
 | 7 | Thu Sep 10 | 13 Deep learning (with 14 nPrint recap) | 12 IoT trees/ensembles, 13 DDoS neural net |
 | 8 | Mon Sep 14 | 15 Dimensionality reduction (incl. autoencoders), 16 Clustering | 15 PCA, 16 k-means |
-| 9 | Tue Sep 15 | Exam review walk-through; 17 Diffusion / NetDiffusion, 19 Transformers and state-space models | (NetSSM Colab deferred) |
+| 9 | Tue Sep 15 | Exam review walk-through; 17 Diffusion / NetDiffusion, 19 Transformers and state-space models | 18 NetSSM walkthrough (Colab, GPU) — link fixed on the course page |
 | 10–12 | Sep 16–18 | Project show-and-tell (Wed), exam (Thu, proctored by Samuel), wrap-up | |
 
 Skipped or merged this term, and therefore **not on the exam**: 5 Data
