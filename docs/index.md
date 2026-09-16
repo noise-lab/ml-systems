@@ -70,7 +70,7 @@ Class agenda for each meeting is in the [agenda](agenda.md) (one file per term; 
 | **Bonus Topics**               |                                                                                                             | Ch. 8       |
 | 20                             | Timeseries Analysis<br>([Timeseries](notebooks/20-Timeseries-Clean.html))                                   |             |
 | 21                             | Reinforcement Learning<br>([Reinforcement Learning](notebooks/21-Reinforcement-Clean.html))                 |             |
-| 22                             | Autoencoders<br>([Autoencoders](notebooks/22-Autoencoders-Clean.html))                                      |             |
+| 22                             | Autoencoders (covered within Lecture 15)                                                                    |             |
 | 23                             | Model Performance and Maintenance                                                                           |             |
 
 Please come to class having done the reading.
