@@ -71,7 +71,7 @@ Class agenda for each meeting is in the [agenda](agenda.md) (one file per term; 
 | 20                             | Timeseries Analysis<br>([Timeseries](notebooks/20-Timeseries-Clean.html))                                   |             |
 | 21                             | Reinforcement Learning<br>([Reinforcement Learning](notebooks/21-Reinforcement-Clean.html))                 |             |
 | 22                             | Autoencoders (covered within Lecture 15)                                                                    |             |
-| 23                             | Model Performance and Maintenance                                                                           |             |
+| 23                             | Model Performance and Maintenance<br>([slides](slides/23-Maintenance/slides.html) · [speaker notes](slides/23-Maintenance/speaker-notes.md))     |             |
 
 Please come to class having done the reading.
 

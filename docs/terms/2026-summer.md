@@ -47,14 +47,15 @@ order. This term the meetings went:
 | — | Fri Sep 11 | *Excursion: ENS de Lyon (no class)* | |
 | 8 | Mon Sep 14 | 15 Dimensionality reduction (incl. autoencoders), 16 Clustering | 15 PCA, 16 k-means |
 | 9 | Tue Sep 15 | Exam review walk-through; 17 Diffusion / NetDiffusion, 19 Transformers and state-space models | 18 NetSSM walkthrough (Colab, GPU) — link fixed on the course page |
-| 10–12 | Sep 16–18 | Project show-and-tell (Wed), exam (Thu, proctored by Samuel), wrap-up | |
+| 10 | Wed Sep 16 | Project show-and-tell; 20 Timeseries; 23 Model Performance and Maintenance (new deck: LEAF, CATO, AC-DC, ServeFlow) | NetSSM Colab |
+| 11–12 | Sep 17–18 | Exam (Thu, proctored by Samuel), wrap-up | |
 
 Skipped or merged this term, and therefore **not on the exam**: 5 Data
 acquisition (covered only in passing), 9 Naive Bayes (the spam example in
 lecture 2 is fair game), the SVM half of 11, the separate nPrint hands-on (14),
 and the standalone autoencoder lecture (22; the autoencoder material in lecture
 15 is fair game). Lecture 18 (state-space models) was covered inside Meeting 9's
-generative-models discussion. Bonus topics 20–23 were not covered.
+generative-models discussion. Bonus lectures 20 (Timeseries) and 23 (Model Performance and Maintenance) were given on Wed Sep 16 after the exam draft was set; they are **not on the exam**. 21 and 22 were not covered.
 
 ## Excursions
 
