@@ -1,0 +1,403 @@
+\section*{Machine Learning for Networks}
+\vspace*{-0.18in}
+\prob{2}
+Which of these problems {\em benefit from a real-time prediction or decision}, as opposed to an offline analysis? Select all that apply.
+
+\begin{center}\vspace*{-0.08in}
+\begin{tabularx}{0.9\textwidth}{X X}
+\correctanswercircle{Choosing the next video segment's bitrate} &
+\answercircle{Siting a new data center}
+\\
+\correctanswercircle{Mitigating a DDoS attack in progress} &
+\answercircle{Provisioning next year's capacity}
+\\
+\correctanswercircle{Blocking a phishing domain at lookup time} &
+\answercircle{Post-mortem of last month's outages}
+\end{tabularx}\vspace*{-0.08in}
+\end{center}
+\eprob
+
+\prob{3}
+You receive a data set of network measurements and notice that some rows have {\em negative} round-trip latencies. (a) At which stage of the ML pipeline should this be addressed?
+
+\begin{center}\vspace*{-0.08in}
+\begin{tabularx}{0.9\textwidth}{X X}
+\answercircle{Model selection} &
+\correctanswercircle{Data understanding and cleaning}
+\\
+\answercircle{Hyperparameter tuning} &
+\answercircle{Deployment and monitoring}
+\end{tabularx}\vspace*{-0.08in}
+\end{center}
+
+(b) Name two different ways you could address it.
+
+\answerbox{0.83}{Drop the rows; treat the values as missing and impute them; or investigate the cause (for example clock skew between the hosts that timestamped the packets) and correct it. Any two.}
+\eprob
+
+\prob{2}
+Which characteristics of network {\em security} problems make them hard for machine learning? Select all that apply.
+
+\begin{center}\vspace*{-0.08in}
+\begin{tabularx}{0.9\textwidth}{X X}
+\correctanswercircle{Class imbalance (attacks are rare)} &
+\answercircle{Attack traffic is always encrypted}
+\\
+\correctanswercircle{Adversaries adapt to evade the model} &
+\correctanswercircle{Decisions needed in real time, not offline}
+\\
+\correctanswercircle{Heterogeneous data formats} &
+\answercircle{Models cannot read packet headers}
+\end{tabularx}\vspace*{-0.08in}
+\end{center}
+\eprob
+
+\section*{Security Applications}
+\vspace*{-0.18in}
+\prob{3}
+You observe that an attack tends to come from a few particular networks, so you put those networks on an IP {\em block list} instead of training a model. Is the block list an adequate long-term defense?
+\framebox{
+\yesnono
+}
+
+Why or why not? (Say what the block list does well, too.)
+
+\answerbox{1.03}{No. Simple, fast, interpretable, no training needed, and it stops the attack you have seen. But it does not generalize: the next attack comes from newly compromised hosts, it blocks legitimate users on those networks, and the address says nothing about what attack traffic looks like.}
+\eprob
+
+\prob{3}
+A spammer defeats a content-based filter by changing the message (for example, hiding Shakespeare in white-on-white text). Can the spammer {\em as easily} change the network-level behavioral features that a system like SNARE relies on (ephemeral routes, geographic distance from sender to recipient, sender neighborhoods in IP address space, sending bursts across many recipient domains)?
+\framebox{
+\yesnono
+}
+
+Why or why not?
+
+\answerbox{0.93}{No. Content is free to change; the network-level behaviors come from the botnet infrastructure and from what a campaign must do (send at volume, from many hosts, to many domains). Ephemeral routes, geographic distance, and sender neighborhoods cost real infrastructure to change, so they persist.}
+\eprob
+
+\section*{Performance Inference and Resource Allocation}
+\vspace*{-0.18in}
+\prob{4}
+A client sends a 100-byte request at $t = 0.000$~s. The first byte of the server's response arrives at $t = 0.050$~s, and the last byte of the 1{,}000{,}000-byte response arrives at $t = 0.850$~s. (a) What is the request--response {\em latency}? (b) What {\em throughput} did the transfer achieve, in megabits per second? (c) If the link capacity were doubled and nothing else changed, which of the two would you expect to change most?
+
+\answerbox{1.13}{(a) 50 ms (time from sending the request to the first byte of the response; the round-trip time). (b) $1{,}000{,}000$ bytes in $0.850 - 0.050 = 0.8$ s $= 1.25$ MB/s $= 10$ Mb/s (accept 9.4 Mb/s if the full 0.85 s is used; the point is bytes per unit time). (c) Throughput. Latency is set by propagation and queueing delay and does not fall when capacity increases; throughput scales with capacity (up to what the sender can push).}
+\eprob
+
+\prob{4}
+In Assignment 1 you inferred Netflix resolution from encrypted traffic. (a) With payloads encrypted, can you still recover the boundaries between video {\em segments} from the packet trace?
+\framebox{
+\yesnoyes
+}
+
+Why or why not?
+
+\answerbox{0.83}{Yes. Adaptive streaming fetches video in fixed-duration chunks; each arrives as a burst of packets followed by an idle gap while the player's buffer drains, so a gap in packet timing marks a segment boundary. Only sizes and timestamps are needed, not payloads.}
+
+(b) Which of the following is the most {\em direct} indicator of a video's encoded bitrate, and hence its resolution?
+
+\begin{center}\vspace*{-0.08in}
+\begin{tabularx}{0.9\textwidth}{X X}
+\correctanswercircle{Bytes per segment, per second of video} &
+\answercircle{Average session throughput}
+\\
+\answercircle{Number of DNS lookups in the session} &
+\answercircle{Average packet size}
+\end{tabularx}\vspace*{-0.08in}
+\end{center}
+\eprob
+
+\prob{2}
+The ``what-if scenario evaluator'' predicted Google search response time with a simple regression over features such as round-trip time (RTT). Suppose a new front-end server would lower RTT for some users. Is it valid to predict the new response time by changing {\em only} the RTT input to the trained model and leaving the other inputs at their old values?
+\framebox{
+\yesnono
+}
+
+Why or why not?
+
+\answerbox{0.83}{No. The inputs are not independent: lowering RTT changes other features too (servers involved, loss, timing), so the model must learn and propagate those dependencies; otherwise it predicts for a feature combination that never occurs.}
+\eprob
+
+\section*{Data Representation and Features}
+\vspace*{-0.18in}
+\prob{2}
+Most web traffic is encrypted. Which of the following are {\em still observable} to a passive observer in the middle of the network? Select all that apply.
+
+\begin{center}\vspace*{-0.08in}
+\begin{tabularx}{0.9\textwidth}{X X}
+\correctanswercircle{Packet sizes} &
+\answercircle{The URL of the page being requested}
+\\
+\correctanswercircle{Packet inter-arrival times} &
+\correctanswercircle{Source and destination IP addresses}
+\end{tabularx}\vspace*{-0.08in}
+\end{center}
+\eprob
+
+\prob{2}
+nPrint turns each packet into a fixed-width bitmap that can be fed straight to a model. Which of the following are true of this approach compared with hand-crafted features? Select all that apply.
+
+\begin{center}\vspace*{-0.08in}
+\begin{tabularx}{0.9\textwidth}{X X}
+\correctanswercircle{No per-task feature engineering is needed} &
+\answercircle{It always gives higher accuracy}
+\\
+\correctanswercircle{The same representation serves many tasks} &
+\answercircle{Encodes inter-packet timing by default}
+\\
+\correctanswercircle{Learned features may be spurious} &
+\correctanswercircle{Much larger than a feature vector}
+\end{tabularx}\vspace*{-0.08in}
+\end{center}
+\eprob
+
+\prob{3}
+Which of the following are good reasons to think twice before using the {\em source IP address} as a feature in a traffic classifier? Select all that apply.
+
+\begin{center}\vspace*{-0.08in}
+\begin{tabularx}{0.9\textwidth}{X X}
+\correctanswercircle{Learns the attacker, not the attack} &
+\answercircle{Addresses cannot be made numeric}
+\\
+\correctanswercircle{Next attack comes from other hosts} &
+\answercircle{IP headers are encrypted}
+\\
+\correctanswercircle{May be personally identifiable} &
+\correctanswercircle{Addresses get reassigned and shared}
+\end{tabularx}\vspace*{-0.08in}
+\end{center}
+\eprob
+
+\section*{Model Training and Evaluation}
+\vspace*{-0.18in}
+\prob{3}
+You standardize (z-score) every feature using the mean and standard deviation of the {\em whole} data set, and only then split it 80/20 into training and test sets. Is this a correct procedure?
+\framebox{
+\yesnono
+}
+
+Why or why not? What should be done instead?
+
+\answerbox{0.93}{No. This is data leakage: the test set's statistics have influenced the training data, so the measured performance is optimistic. Split first, compute the normalization parameters from the training set only, then apply those same parameters to the test set (and to validation folds inside cross-validation).}
+\eprob
+
+\prob{4}
+An attack detector was evaluated on 1{,}000 flows: 100 were attacks and 900 were benign. It flagged 120 flows as attacks, of which 90 really were. Compute (a) precision, (b) recall, and (c) the false-positive rate. (d) A ``detector'' that always outputs {\em benign} would score 90\% accuracy on this data. Which of (a)--(c) exposes it as useless, and what value would it take?
+
+\answerbox{1.33}{TP $= 90$, FP $= 30$, FN $= 10$, TN $= 870$. (a) Precision $= 90/120 = 0.75$. (b) Recall $= 90/100 = 0.90$. (c) False-positive rate $= 30/900 \approx 0.033$. (d) Recall: the always-benign detector has recall $0$ (it catches no attacks); its precision is undefined (no positive predictions) and its false-positive rate is 0, which is why accuracy and FPR alone are misleading on imbalanced data.}
+\eprob
+
+\prob{3}
+A classifier's threshold sets an operating point on the trade-off between detection rate and false-positive rate. Give one application where you would accept a {\em lower} detection rate in order to keep the false-positive rate very low, and one where you would tolerate {\em more} false positives to maximize detection. Briefly justify each.
+
+\answerbox{1.13}{Low FPR preferred: a spam filter (a lost job offer costs more than a stray spam) or auto-blocking traffic (a false positive cuts off a real user). High detection preferred: alerts reviewed by an analyst, where a miss is costly and an alert only costs time (intrusion/DDoS alerts, medical screening). Any reasonable pair with a cost argument.}
+\eprob
+
+\section*{Supervised Learning}
+\vspace*{-0.18in}
+\prob{3}
+In the linear-regression hands-on you predicted bytes per flow from packets per flow, and the least-squares fit was poor. (a) Why?
+
+\begin{center}\vspace*{-0.08in}
+\begin{tabularx}{0.9\textwidth}{X X}
+\answercircle{The pcap was too small to train on} &
+\correctanswercircle{Flows mix large data packets and tiny ACKs}
+\\
+\answercircle{Integer features are not allowed} &
+\answercircle{The features were not standardized}
+\end{tabularx}\vspace*{-0.08in}
+\end{center}
+
+(b) Give one way to improve the fit.
+
+\answerbox{0.83}{Separate models for data-heavy and ACK-heavy flows (or a feature for the fraction of small packets); a log transform of bytes and packets; a robust loss such as Huber; or a polynomial basis expansion.}
+\eprob
+
+\prob{3}
+Each of the following models has a knob that controls its complexity. For each one, name the knob and say which way you turn it to make the model {\em more} complex: (a) linear regression with a polynomial basis expansion; (b) a decision tree; (c) ridge regression with regularization strength $\lambda$. (d) What happens to bias and variance as complexity increases?
+
+\answerbox{1.13}{(a) Raise the polynomial degree (more basis functions). (b) Increase the maximum tree depth (or reduce pruning / minimum leaf size). (c) Decrease $\lambda$: it penalizes non-zero weights, so a smaller $\lambda$ lets more coefficients carry weight; $\lambda = 0$ is ordinary least squares. (d) Bias (training error) goes down, variance (sensitivity to the training set) goes up; past the sweet spot, test error rises because the model overfits.}
+\eprob
+
+
+\prob{2}
+A random forest differs from a single decision tree in which of the following ways? Select all that apply.
+
+\begin{center}\vspace*{-0.08in}
+\begin{tabularx}{0.9\textwidth}{X X}
+\correctanswercircle{Each tree sees a bootstrap sample} &
+\answercircle{Each tree sees different labels}
+\\
+\correctanswercircle{Each split considers a random feature subset} &
+\answercircle{Trees are grown much shallower}
+\\
+\correctanswercircle{Prediction is a vote or average over trees} &
+\answercircle{Features must be scaled to one range}
+\end{tabularx}\vspace*{-0.08in}
+\end{center}
+\eprob
+
+
+\section*{Deep Learning}
+\vspace*{-0.18in}
+\prob{3}
+In the IoT DDoS-detection hands-on (and the paper it came from), did the neural network substantially outperform the random forest and $k$-nearest-neighbors classifiers?
+\framebox{
+\yesnono
+}
+
+Why or why not, and when {\em would} you expect deep learning to be worth its cost?
+
+\answerbox{1.13}{No: all reached about 99\% accuracy; RF and $k$-NN matched the net at a fraction of the cost, because the stateless features (size, inter-arrival time, protocol, destination counts) already separate floods. Deep learning pays off when features are unknown (raw bytes, nPrint), relationships are non-linear, and labeled data is plentiful; not for small, well-understood, near-separable data.}
+\eprob
+
+\prob{4}
+In the Nest Cam hands-on, an eavesdropper outside the home sees only encrypted packets, yet can tell when the camera detects motion. (a) Which single traffic feature gives it away? (b) Which of the following defenses from ``Closing the Blinds'' would make this inference harder? Select all that apply.
+
+\begin{center}\vspace*{-0.08in}
+\begin{tabularx}{0.9\textwidth}{X X}
+\correctanswercircle{Shaping/padding traffic to a constant rate} &
+\answercircle{Encrypting the packet payloads}
+\\
+\correctanswercircle{Injecting cover traffic} &
+\answercircle{Changing the camera's IP address}
+\\
+\correctanswercircle{Tunneling all home traffic via a VPN} &
+\correctanswercircle{Rate-limiting the device's traffic}
+\end{tabularx}\vspace*{-0.08in}
+\end{center}
+
+\answerbox{0.60}{(a) The camera's send rate (bytes or packets per second): motion events appear as spikes.}
+\eprob
+
+\section*{Unsupervised Learning}
+\vspace*{-0.18in}
+\prob{3}
+Which of the following statements about choosing the number of components in PCA and the number of clusters $k$ in $k$-means are correct? Select all that apply.
+
+\begin{center}\vspace*{-0.08in}
+\begin{tabularx}{0.9\textwidth}{X X}
+\correctanswercircle{Scree plot: explained variance vs.\ components} &
+\answercircle{Scree plot: within-cluster error vs.\ $k$}
+\\
+\correctanswercircle{Keep components until variance plateaus} &
+\answercircle{Always keep exactly two components}
+\\
+\correctanswercircle{Elbow plot: cluster SSE vs.\ $k$; pick the elbow} &
+\answercircle{Larger $k$ is always better}
+\end{tabularx}\vspace*{-0.08in}
+\end{center}
+\eprob
+
+\prob{4}
+(a) A data set has two compact clusters plus one point far away from both. Will $k$-means with $k=2$ recover the two clusters cleanly?
+\framebox{
+\yesnono
+}
+
+Why or why not?
+
+\answerbox{0.83}{No. $k$-means minimizes squared distance with no notion of noise, so the outlier pulls a centroid toward itself and the two real clusters end up merged under the other.}
+
+(b) DBSCAN handles that outlier, but has a weakness of its own. With which kind of data does DBSCAN struggle most?
+
+\begin{center}\vspace*{-0.08in}
+\begin{tabularx}{0.9\textwidth}{X X}
+\correctanswercircle{Clusters of very different density} &
+\answercircle{Irregular, non-spherical clusters}
+\\
+\answercircle{Data containing outliers} &
+\answercircle{Unknown number of clusters}
+\end{tabularx}\vspace*{-0.08in}
+\end{center}
+\eprob
+
+\prob{3}
+The dendrogram below shows a hierarchical clustering of seven points, a--g (height = distance at which two groups merge). If you want exactly {\bf four} clusters, at what height do you cut, and which points end up together?
+
+\begin{center}
+\begin{tikzpicture}[x=0.85cm,y=0.30cm]
+  \draw[->] (0,0) -- (0,6) node[above] {\footnotesize height};
+  \foreach \h in {1,2,3,4,5} { \draw (-0.1,\h) -- (0.1,\h) node[left=3pt] {\footnotesize \h}; }
+  \foreach \n/\x in {a/1,b/2,c/3,d/4,e/5,f/6,g/7} { \node[below] at (\x,0) {\footnotesize \n}; }
+  % a,b merge at 1.5
+  \draw (1,0) -- (1,1.5) -- (2,1.5) -- (2,0);
+  % f,g merge at 1
+  \draw (6,0) -- (6,1) -- (7,1) -- (7,0);
+  % e joins (f,g) at 2
+  \draw (5,0) -- (5,2) -- (6.5,2) -- (6.5,1);
+  % c joins (a,b) at 3
+  \draw (3,0) -- (3,3) -- (1.5,3) -- (1.5,1.5);
+  % d joins (e,f,g) at 3.5
+  \draw (4,0) -- (4,3.5) -- (5.75,3.5) -- (5.75,2);
+  % final merge at 5
+  \draw (2.25,3) -- (2.25,5) -- (4.875,5) -- (4.875,3.5);
+\end{tikzpicture}
+\end{center}
+
+\answerbox{0.60}{Cut between heights 2 and 3: \{a, b\}, \{c\}, \{d\}, \{e, f, g\}.}
+\eprob
+
+\section*{Generative Models}
+\vspace*{-0.18in}
+\prob{3}
+Why would a network researcher or operator want {\em synthetic} network traffic? Select all that apply.
+
+\begin{center}\vspace*{-0.08in}
+\begin{tabularx}{0.9\textwidth}{X X}
+\correctanswercircle{Real traces are scarce (privacy, legal)} &
+\answercircle{Synthetic is always more realistic than real}
+\\
+\correctanswercircle{To augment a small training set} &
+\answercircle{Removes the need for any real data}
+\\
+\correctanswercircle{To share data without exposing real users} &
+\correctanswercircle{Rare attacks are hard to capture}
+\end{tabularx}\vspace*{-0.08in}
+\end{center}
+\eprob
+
+\prob{2}
+Which of the following are limitations of NetDiffusion, as discussed in class and in the assignment? Select all that apply.
+
+\begin{center}\vspace*{-0.08in}
+\begin{tabularx}{0.9\textwidth}{X X}
+\correctanswercircle{Protocol compliance patched post hoc} &
+\answercircle{Generates only flow-level statistics}
+\\
+\correctanswercircle{Limited to short sequences} &
+\answercircle{Needs no real training data}
+\\
+\correctanswercircle{No explicit notion of protocol state} &
+\answercircle{Suffers GAN-style mode collapse}
+\end{tabularx}\vspace*{-0.08in}
+\end{center}
+\eprob
+
+\prob{3}
+Compared with diffusion models and transformers, why is a {\em state-space model} (e.g., Mamba) an attractive fit for generating network traffic? Select all that apply.
+
+\begin{center}\vspace*{-0.08in}
+\begin{tabularx}{0.9\textwidth}{X X}
+\correctanswercircle{Fixed-size hidden state summarizes the past} &
+\answercircle{Needs no training}
+\\
+\correctanswercircle{Linear, not quadratic, in sequence length} &
+\answercircle{Generates only flow-level statistics}
+\\
+\correctanswercircle{Protocol state built in, not patched} &
+\answercircle{Guarantees no training-data leakage}
+\end{tabularx}\vspace*{-0.08in}
+\end{center}
+\eprob
+
+\section*{Feedback}
+\vspace*{-0.18in}
+\prob{2}
+Interest (1=Boring!; 10=Amazing!):
+\shortanswerbox{0.5}{8}
+Difficulty (1=Too easy; 10=Too hard):
+\shortanswerbox{0.5}{6}
+One topic you found most interesting, and one suggestion for improvement:\\
+\answerbox{0.55}{Inferring video quality from encrypted traffic. More time on the hands-on activities.}
+\eprob
