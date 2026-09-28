@@ -11,9 +11,9 @@ Each lecture will follow the following format:
   Activities will have an accompanying Jupyter Notebook with
   example applications from computer systems to make the concepts more concrete.
 
-Please do the reading before class. Notes (in the form of slides, whiteboard
-notes, code, or whatever is most appropriate) will be posted after each
-class.
+Please do the reading before class. Slides and hands-on notebooks are in the
+GitHub repository, and a per-meeting [agenda](agenda.md) of what was actually
+covered is posted after each class.
 
 All material will be available from the Github repository.
 

@@ -36,7 +36,7 @@ More details are in the [course syllabus](syllabus.md).
 
 Class agenda for each meeting is in the [agenda](agenda.md) (one file per term; the current term is [Autumn 2026](agenda/2026-autumn.md)).
 
-**Current term:** the three-week Paris offering has its own rules (one combined exam, two assignments, project dates). They are on the [Summer 2026 term page](terms/2026-summer.md).
+**Current term (Autumn 2026, Chicago):** the standard nine-week course as described in the syllabus: four assignments, a midterm, a final, and a group project. Dates are in the pinned sheet in Slack. Past terms with their own rules: [Summer 2026 (Paris)](terms/2026-summer.md).
 
 ## Schedule
 
@@ -94,7 +94,6 @@ may find it useful.
 
 * [Resource List](ml.md)
 * [The book, *Machine Learning for Networking*](https://noise-lab.net/ml-networking/)
-* [Board Notes](https://www.dropbox.com/s/fef5y9enms6djlr/ML%20for%20Systems.pdf?dl=0)
 
 
 
