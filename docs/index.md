@@ -34,7 +34,7 @@ machine learning models in practice.
 
 More details are in the [course syllabus](syllabus.md).
 
-Class agenda for each meeting is in the [agenda](agenda.md) (one file per term; the current term is [Summer 2026](agenda/2026-summer.md)).
+Class agenda for each meeting is in the [agenda](agenda.md) (one file per term; the current term is [Autumn 2026](agenda/2026-autumn.md)).
 
 **Current term:** the three-week Paris offering has its own rules (one combined exam, two assignments, project dates). They are on the [Summer 2026 term page](terms/2026-summer.md).
 

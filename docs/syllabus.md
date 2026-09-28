@@ -115,15 +115,12 @@ grade.
 
 ## Prerequisites
 
-The only pre-requisite for the course is **Introduction to Computer Systems**. In
-this course, we assume basic knowledge of computer networking. The course will
-review some of these topics, particularly as they pertain to network
-measurement/management and data collection. 
-
-The course will **not** cover basic concepts in networking or systems,
-including basic network protocols and operating systems. If you are not
-familiar with those topics or need a refresher, please see the resources at
-the bottom of this page.
+There are **no prerequisites** for this course. Some familiarity with
+programming (Python) and with basic computer networking concepts is helpful,
+and the course reviews the networking background it needs, particularly as it
+pertains to network measurement/management and data collection. If you want a
+refresher on networking or systems basics, see the resources at the bottom of
+this page.
 
 ## Late Policy
 
