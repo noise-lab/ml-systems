@@ -62,26 +62,36 @@ was partly inaudible the entry says so rather than guessing.
 
 ### Meeting 2 (Fri Oct 2)
 
-*Plan for today. This entry is replaced with what was actually covered once the class transcript is in.*
-
-* **Housekeeping**
-    * Course staff: TAs are Anagha Tiwari and Taveesh Sharma (correcting what was said Monday); office hours to be announced
-    * Repo setup check: private repo created, `feamster` invited, intake form filled out
-    * Assignment 1 (Video Quality Inference) goes out Monday Oct 5; dates sheet is pinned in Slack
-* **Finish the Introduction (Lecture 1)**
-    * Why data representation matters: the same traffic can be represented many ways, with different costs and accuracy
-    * The data-preparation reality: most of the effort and most of the errors are before the model
-    * Tools and setup: course repo cloned, notebooks load locally
-* **Hands-On 1: Packet Capture Basics**
-    * Capture or load a trace, look at it in Wireshark
-    * Packets to pandas: load a pcap into a dataframe and do first-pass analysis
-* **Security (Lecture 2), Part 1: ML applied to network security**
-    * Two directions: ML for security, and the security of ML systems
-    * The measure, model, control loop
-    * Spam and phishing: behavioral and network-level features (SNARE), and why they persist when content features do not
-    * Moving earlier in time: predicting malicious domains from DNS registration features
-* **Hands-On 2: Security (Scanning)**
-    * Start in class; finish on your own before Monday
-* **Preview of Monday**
-    * Security, Part 2 (attacks on ML systems: evasion, poisoning, privacy), then Performance (Lecture 3)
-
+* **Hands-On 1: Packet Capture Basics** (instructor walk-through, then about 25 minutes in pairs)
+    * Wireshark: capture on the Wi-Fi interface, with a capture filter restricting the trace to one host (the CS department web server). Find the server's address with `dig +short`, start the capture, reload the page, stop, and save
+    * The first hands-ons use CSV exports; soon everything will use the raw packet-capture format (pcap)
+    * The habit being built: do not hand a data set to a model before looking at it. Garbage in, garbage out. Ask whether the capture makes sense
+    * Reading the trace
+        * Each row is a packet. Length is in bytes. Sorting by length shows the large packets all flow from server to client, as expected for a download
+        * Large packets top out near 1,400 to 1,500 bytes because packets have a maximum size. A negative length or a 10,000-byte packet would mean something is wrong with the data. (The exact numbers are not exam material; the sanity-checking habit is)
+        * Opening sequence: the TCP three-way handshake, then the TLS client hello and server hello, then the data transfer, visible where the packets get large. TCP and TLS details are background, not exam material
+        * A packet is layered. Link-layer headers (Wi-Fi, Ethernet) are not used in this course. The IP header carries source and destination addresses and length. The TCP header carries more fields
+    * What becomes a feature: timing, packet length, direction, and header fields
+        * Header fields are built differently by different operating systems, so they can identify the operating system or device (the idea behind `nmap`). Past exams ask when using such fields as model input is a good or a bad idea
+    * The payload is encrypted, so the application data cannot be read from the trace. Good for privacy, and the reason inference is needed
+        * This is Assignment 1: before encryption, video resolution, rebuffering, and startup delay could be read directly from traffic. Now a network operator who wants to know whether users are having a bad streaming experience has to infer it from data like this
+    * Notebook steps 3 and 4: compute summary statistics (mean and median packet size) and visualize (histogram, cumulative distribution)
+    * Using coding agents for syntax is encouraged. Hands-ons are not submitted, but exams can ask about them; solutions will be posted
+    * Questions that came up during the hands-on
+        * Estimating round-trip time: match a data packet's sequence number to the acknowledgment for it and subtract the timestamps. Assuming adjacent packets pair up is the sloppy version
+        * Sanity-checking the result: about 41 ms was observed, high for a nearby server. A cross-country round trip is roughly 80 ms; a ping to a data center across the street was 3 to 4 ms
+        * Latency varies with congestion, Wi-Fi, and server response time. Working out which is itself an inference problem. Plot the distribution rather than trusting one number
+        * Two students doing the same task captured very different numbers of packets. Possible causes include retransmissions and different network conditions; left as an open question
+    * Where this sits: the start of the pipeline, acquiring data, checking it, and cleaning it. Feature construction comes next
+* **Security (Lecture 2), first part only**
+    * The course framework applied to security: measure, model, then act (block, rate-limit)
+    * Email spam was one of the first real-world applications of machine learning anywhere: naive Bayes on the words of the message (naive Bayes is covered around week 3)
+    * Content-based filters can be evaded. Attackers hid innocuous text in the message (white-on-white text in HTML email) to confuse the classifier. A classic adversarial machine learning problem
+    * Behavioral, network-level signals persist regardless of content: timing, sizes, and where the traffic goes
+    * Predicting an attack before it happens: attacks need setup, and setup is observable. Example: many similar domain names registered at once is a feature that an attack is coming
+    * The remaining slides in the deck were not covered
+* **Preview of Hands-On 2 (Monday)**
+    * Two traces: an ordinary page load and an attacker scanning a web server for a known vulnerability. Compare timing and size characteristics, as a step toward features and classification
+* **Logistics**
+    * Hands-On 2 was not reached today. All three use cases (security, performance, resource management) will be done by the end of next week
+    * Assignment 1 goes out next week
