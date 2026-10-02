@@ -59,3 +59,29 @@ was partly inaudible the entry says so rather than guessing.
   * Practical pitfalls: overfitting, label scarcity, concept drift, privacy
 
 * **Homework for Friday:** clone the course repo and make sure the Hands-On 1 (packet capture) notebook loads locally. No hands-on today; Friday will start with Hands-On 1 (possibly two hands-ons) and Lecture 2, Security
+
+### Meeting 2 (Fri Oct 2)
+
+*Plan for today. This entry is replaced with what was actually covered once the class transcript is in.*
+
+* **Housekeeping**
+  * Course staff: TAs are Anagha Tiwari and Taveesh Sharma (correcting what was said Monday); office hours to be announced
+  * Repo setup check: private repo created, `feamster` invited, intake form filled out
+  * Assignment 1 (Video Quality Inference) goes out Monday Oct 5; dates sheet is pinned in Slack
+* **Finish the Introduction (Lecture 1)**
+  * Why data representation matters: the same traffic can be represented many ways, with different costs and accuracy
+  * The data-preparation reality: most of the effort and most of the errors are before the model
+  * Tools and setup: course repo cloned, notebooks load locally
+* **Hands-On 1: Packet Capture Basics**
+  * Capture or load a trace, look at it in Wireshark
+  * Packets to pandas: load a pcap into a dataframe and do first-pass analysis
+* **Security (Lecture 2), Part 1: ML applied to network security**
+  * Two directions: ML for security, and the security of ML systems
+  * The measure, model, control loop
+  * Spam and phishing: behavioral and network-level features (SNARE), and why they persist when content features do not
+  * Moving earlier in time: predicting malicious domains from DNS registration features
+* **Hands-On 2: Security (Scanning)**
+  * Start in class; finish on your own before Monday
+* **Preview of Monday**
+  * Security, Part 2 (attacks on ML systems: evasion, poisoning, privacy), then Performance (Lecture 3)
+
