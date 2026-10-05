@@ -95,3 +95,24 @@ was partly inaudible the entry says so rather than guessing.
 * **Logistics**
     * Hands-On 2 was not reached today. All three use cases (security, performance, resource management) will be done by the end of next week
     * Assignment 1 goes out next week
+
+### Meeting 3 (Mon Oct 5)
+
+*Plan for today. This entry is replaced with what was actually covered once the class transcript is in.*
+
+* **Housekeeping**
+    * Assignment 1 (Video Quality Inference) is out today: copy the notebook from the public template repository into your private course repo; due date on the pinned dates sheet
+    * Anyone whose private repo is still not set up: fix it today
+* **Security (Lecture 2), Part 2: security of ML systems**
+    * Threat model for a deployed model; the gap between feature space and problem space
+    * Adversarial evasion, poisoning and backdoors, privacy attacks on what models remember; defenses raise the attacker's cost
+* **Hands-On 2: Security (scanning)**
+    * Two traces: an ordinary page load and a vulnerability scan; compare timing and size characteristics as a step toward features
+* **Performance (Lecture 3): inferring quality of experience from encrypted traffic**
+    * Video dominates traffic; more speed does not mean better experience; the encryption wall
+    * The inference pipeline: service identification, feature extraction (segment boundaries are visible), model training; segment size dominates
+    * Beyond video on demand: video conferencing
+* **Hands-On 3: QoE inference**
+    * Start in class; it is the warm-up for Assignment 1
+* **Preview of Friday**
+    * Resource optimization (Lecture 4), the third use case
