@@ -98,21 +98,47 @@ was partly inaudible the entry says so rather than guessing.
 
 ### Meeting 3 (Mon Oct 5)
 
-*Plan for today. This entry is replaced with what was actually covered once the class transcript is in.*
-
 * **Housekeeping**
-    * Assignment 1 (Video Quality Inference) is out today: copy the notebook from the public template repository into your private course repo; due date on the pinned dates sheet
-    * Anyone whose private repo is still not set up: fix it today
-* **Security (Lecture 2), Part 2: security of ML systems**
-    * Threat model for a deployed model; the gap between feature space and problem space
-    * Adversarial evasion, poisoning and backdoors, privacy attacks on what models remember; defenses raise the attacker's cost
+    * Assignment 1 (Video Quality Inference) is officially out: the notebook and a rubric are in the public template; copy them into your private repo
+    * Office hours: a TA holds them Wednesdays at 3 pm on Zoom; the instructor's are Tuesday evenings by sign-up, details to be announced
+    * Intake form and private repo: most are set; anyone with problems should say so
+* **Security (Lecture 2), ML applied to network security**
+    * Two directions: ML *for* security, and security *of* ML systems. This course does the first. The second has its own course (adversarial machine learning) and is not covered here, except that a detector's designer must expect attackers to try to evade it
+    * Detecting attacks is a classic machine learning problem. Other examples: detecting malware infections from a device's abnormal behavior; attacks built on the domain name system (malicious domain registrations, phishing); anomaly detection in traffic in general (unusual volume, unusual time of day, unexpected destinations, devices that should not be on the network). Anomalies can be failures or misconfigurations as well as attacks
+    * **Why security is an especially hard ML problem**
+        * The things to detect are rare and often new, so there is little or no training data
+        * Attacks are often one of a kind; the next one looks different
+        * Class imbalance: unlimited normal traffic, very few examples of the attack. Generative models can help by synthesizing more attack examples (covered around week 8)
+        * Concept drift: a deployed model stops working, because conditions change (the seasonal cellular example) or because adversaries adapt
+        * Many data formats in practice; this term uses a small number on purpose
+        * Real-time constraints: time to detection matters for closed-loop operation, not only accuracy on a test set
+    * **Spam, revisited**
+        * Email spam filtering was one of the first practical applications of machine learning; naive Bayes on message words (naive Bayes is covered in a couple of weeks)
+        * Content filters are cheap to evade (stuffing innocuous text into the message). Behavioral and network-level signals are costlier to evade: sending volume (hundreds of messages in a short time), unusual hours, many recipients per message, connection rate, recipients per session, connection duration
+        * The detailed slides on that work are not exam material; the idea that sending behavior is a signal independent of content is
+    * **Predicting attacks before they happen**
+        * A spam campaign needs a website, which needs a registered domain. With access to registration data, bursts of related registrations are a signal before any spam is sent
+        * The same idea was applied to botnets and to disinformation campaigns: newly registered domains that imitate news sites, hosted somewhere that makes no sense for the intended audience
+    * **Midterm flag:** given a kind of attack or unusual behavior (a botnet, a phishing campaign, a disinformation campaign), what features would you look for and what data would you need to detect it? Feature design and data collection, not a specific paper
 * **Hands-On 2: Security (scanning)**
-    * Two traces: an ordinary page load and a vulnerability scan; compare timing and size characteristics as a step toward features
-* **Performance (Lecture 3): inferring quality of experience from encrypted traffic**
-    * Video dominates traffic; more speed does not mean better experience; the encryption wall
-    * The inference pipeline: service identification, feature extraction (segment boundaries are visible), model training; segment size dominates
-    * Beyond video on demand: video conferencing
-* **Hands-On 3: QoE inference**
-    * Start in class; it is the warm-up for Assignment 1
-* **Preview of Friday**
-    * Resource optimization (Lecture 4), the third use case
+    * Two traces supplied in the course data: an ordinary web page fetch and a scan of a web server for the Log4j vulnerability. Same questions as Hands-On 1: packet count, duration, packet-length distribution, protocol types, inter-arrival times, number of unique destinations
+    * What the traces show: scanning sessions are much shorter, there is little large server-to-client content, and the unique-destination counts and inter-arrival times differ. Charts to be posted
+    * Clarified in class: you will not be asked to write Python functions; work cell by cell and use coding help for syntax. Only a few students have trained a model with scikit-learn before, which is fine
+* **Performance (Lecture 3): inferring quality of experience**
+    * Network operators have limited visibility into the user's experience on an application they do not control, yet their decisions affect it, and they need to know when a bad experience is their failure to fix
+    * Video is the dominant traffic
+    * **Speed is not experience.** A speed-test number does not map to what a user feels. A 2013 study for a regulator plotted page load time against throughput: beyond a point, more throughput does not load pages faster
+        * Why: latency, not throughput, is the bottleneck. Server processing time, propagation delay (speed of light), queueing
+        * Road analogy: lanes are throughput (cars per minute); trip time is latency. Adding lanes does not shorten the trip
+    * **Video QoE metrics** (the subject of Assignment 1): startup delay, resolution, resolution switches, rebuffering
+        * The same question, asked by journalists a few years later: does more speed mean better video? Same flattening. The finding ran on the front page of a national newspaper in August 2019
+    * **The encryption wall.** As video took off around 2015 to 2016, traffic became encrypted. Operators cannot see resolution, startup, or rebuffering from the traffic. That turns QoE into an inference problem on timings, sizes, inter-arrival times, and the number of parallel connections (one player opens more connections under poor conditions, itself a possible signal)
+    * **The pipeline used in that study**, broader than the assignment
+        * Service identification: find the video traffic among everything else in a home, using DNS lookups for the video servers' domain names
+        * Features: bytes per second, packets per second, packet-size statistics, retransmissions, latency
+        * Segments: adaptive streaming (DASH) fetches video in segments whose size reflects the chosen resolution; segment boundaries are visible as gaps in the download, and segment sizes become features. Assignment 1 does exactly this
+* **Hands-On 3: QoE inference** (started, about eight minutes)
+    * Step 1: from the supplied capture, identify the video traffic by DNS lookups to the video server domains. Next: find segment downloads and their sizes from gaps in the traffic. Finish at the start of Friday's class
+    * Demo: the browser's developer tools (Inspect, Network tab) show the same video server domains and the byte-range request for each segment. The session can be saved as an HTTP archive (HAR) file, another useful data source; not exam material
+* **For Friday**
+    * Finish Hands-On 3, then the third use case: resource optimization (how players and networks adapt)
