@@ -142,3 +142,17 @@ was partly inaudible the entry says so rather than guessing.
     * Demo: the browser's developer tools (Inspect, Network tab) show the same video server domains and the byte-range request for each segment. The session can be saved as an HTTP archive (HAR) file, another useful data source; not exam material
 * **For Friday**
     * Finish Hands-On 3, then the third use case: resource optimization (how players and networks adapt)
+
+### Meeting 4 (Fri Oct 9)
+
+*Plan, written before class. It will be replaced with what was actually covered once the recording is transcribed.*
+
+* **Housekeeping:** Assignment 1 is due Friday October 23; project proposals are due Monday October 26; the in-class midterm is Friday October 30 (30 minutes); TA office hours are Thursdays 3:00 to 4:30 pm on Zoom
+* **Hands-On 3, finished:** count traffic to each video server, then infer segment downloads and their sizes from gaps in the download
+* **Lecture 4: Resource optimization** (chapter 2.3)
+    * Two timescales: milliseconds to seconds (congestion control, adaptive bitrate) and hours to months (what-if prediction, provisioning)
+    * Adaptive bitrate streaming and Pensieve: ABR as reinforcement learning over local state
+    * Remy: computer-generated congestion control, offline optimization; whether learned congestion control has shipped
+    * WISE: answering what-if deployment questions from operational data; predicting the whole response-time distribution
+    * Capacity forecasting, and the COVID-19 shock as a case of model drift
+* **For Monday:** data acquisition (chapter 3.2 to 3.3), where the data in the hands-ons actually comes from

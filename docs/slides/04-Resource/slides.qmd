@@ -193,6 +193,42 @@ trade-offs of offline optimization vs. online RL?" (offline: faster at run time,
 not generalize; online: adapts but has training cost in production).
 :::
 
+## Reality Check: Has Learned Congestion Control Shipped? {.smaller}
+
+::: {.columns}
+::: {.column width="50%"}
+**Wide area: not yet.**
+
+An October 2025 experimental study (University of Sussex, arXiv 2510.25105) pitted
+reinforcement-learning congestion controllers against the two protocols that actually
+carry today's traffic, **Cubic** and **BBRv3**.
+
+Verdict: learned schemes win on some paths and lose on others, are fragile when the
+path changes, and are "in their early days" for real deployment.
+:::
+::: {.column width="50%"}
+**Data center: yes, with a twist.**
+
+NVIDIA ran an RL congestion controller on ConnectX-6Dx NICs across a 64-host cluster
+(arXiv 2207.02295). The neural policy took about **450 µs** per decision, far too slow,
+so they **distilled it into decision trees**: about **0.9 µs**, a 500× speedup, and the
+policy still generalized to unseen workloads.
+:::
+:::
+
+The lesson for this course: the model that ships is rarely the model that was trained.
+Inference cost and robustness decide deployment, not test-set accuracy.
+
+::: {.notes}
+Read first: https://arxiv.org/abs/2510.25105 (Learning-Based vs Human-Derived
+Congestion Control, Oct 2025). Second: https://arxiv.org/abs/2207.02295 (NVIDIA RL-CC
+on NICs). Teaching point: twelve years after Remy, the production congestion controllers
+are still human-designed (Cubic is the Linux default; BBR is Google's). Where learned
+control has shipped, it is inside a single operator's data center, where the environment
+is controlled, and the deployed artifact is a decision tree, not a neural network. Connect
+to the "Lightweight architectures" bullet later in the deck and to the drift discussion.
+:::
+
 # Longer-Timescale: "What-If" Prediction {.center}
 
 ## Performance Prediction and "What-If" Scenarios {.smaller}
