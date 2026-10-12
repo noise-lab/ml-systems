@@ -173,15 +173,42 @@ was partly inaudible the entry says so rather than guessing.
 
 ### Meeting 5 (Mon Oct 12, on Zoom)
 
-*Plan, written before class. It will be replaced with what was actually covered once the recording is transcribed.*
-
-* **Housekeeping:** class is on Zoom today; Assignment 1 due Friday October 23; project proposal due Monday October 26; in-class midterm Friday October 30; office hours by sign-up (Tuesday evenings)
-* **Hands-On 3 wrap-up and Assignment 1 questions**
-* **Lecture 5: Data acquisition** (chapter 3.2 to 3.3), the first step of the ML pipeline
-    * Why measurement comes first; active versus passive measurement
-    * Active: speed tests, traceroute, what "speed" means, measurement accuracy
-    * Passive: flows and flow records (IPFIX, NetFlow), sampling, packet capture (tcpdump, BPF), high-speed links, eBPF
-    * From packets to features: the accuracy and cost tradeoff, DNS-based service identification and its limits, netml, nPrint
-    * Pitfalls and sound measurement practice
-* **Hands-On 5: Data acquisition** ([notebook](../notebooks/05-Data-Acquisition-Clean.html)): load a trace, compute per-flow statistics (flows, bytes, packets, duration), bytes and packets per second
-* **For Friday:** from data to analysis, feature extraction (chapter 3.4)
+* **Housekeeping**
+    * Class met on Zoom; back in person on Friday.
+    * Assignment 1 due Friday October 23. Project proposal due Monday October 26. In-class midterm Friday October 30.
+    * Office hours are by sign-up on Tuesday evenings; the first session is Tuesday October 13.
+* **Hands-On 3 wrap-up**
+    * Recap of what the hands-on did: take a traffic capture, use DNS to identify the service, then use properties of the traffic to find segment boundaries, so that features such as segments per second or segment size become possible.
+    * Today's hands-on is probably the last one that does not use the netml library; later hands-ons build on it.
+* **Lecture 5: Data acquisition** (chapter 3.2 to 3.3)
+    * Data acquisition is the first stage of the ML pipeline: get data out of the network, turn it into features, feed those to models. In networking this is called network measurement or Internet measurement; it is a research area of its own (the Internet Measurement Conference) and the course spends one day on it.
+    * Why measure, by use case:
+        * Performance and operations: detect and diagnose outages and performance degradations (full outage versus intermittent degraded bandwidth or quality of experience); generate reports for customers and operators, including service level agreements (SLAs). An SLA such as "five nines" means 99.999% availability, about 5 minutes of downtime per year (correction: "maybe 30 seconds" was said in class). An enterprise like the University buying upstream service would expect an SLA from its provider.
+        * Tune configuration to actual traffic: after a failure or an unexpected traffic increase, operators may want to adjust; the first step in any what-if evaluation (Meeting 4) is measuring that the scenario exists. Capacity planning, as discussed earlier.
+        * Security: attack detection from logs or the traffic itself; characterizing anomalous behavior so it can be detected later; fingerprinting devices and services (example: finding legacy devices older than ten years that need upgrading); gathering normal and attack traffic to feed intrusion detection.
+    * **Active versus passive measurement**
+        * Active: inject synthetic traffic (probes) into the network and observe how endpoints respond. A speed test was run live in class: it picks a server, downloads as much as it can, then uploads, and reports download and upload throughput, idle latency, latency under download and upload, packet loss, and jitter. Ping to a well-known site and a DNS lookup (with its query time) were also shown as active measurements; the specific commands will not be asked.
+        * Passive: capture existing traffic as it traverses the network and infer properties from it. Wireshark and Assignment 1 are both passive measurement.
+        * **Midterm flag:** given a description of a measurement you have not seen before, say whether it is active or passive. Also a common question: the design trade-offs between the two.
+        * Trade-offs. Active is easy to deploy (you need a server to measure against, though it can be someone else's), has no real privacy concern because the traffic is yours, but may not reflect real user experience and adds load to the network. Passive reflects actual user behavior at the time of the problem (if a user complained about Zoom half an hour ago, the log has it), but requires capture infrastructure and raises privacy concerns because all traffic is being captured. An active test run after the fact may not reproduce a transient problem.
+        * A student asked what "capture infrastructure" means and whether active measurement does not also need infrastructure. Passive capture infrastructure is anything that captures bytes on the wire (tcpdump, Wireshark, libpcap, eBPF) plus whatever aggregates packets into flows; capturing someone else's traffic requires significant access. Active measurement needs a server to measure against, but ping, a DNS lookup, or a speed test need nothing deployed by the person measuring.
+        * A student asked how, given full access to the network, you tell a network problem from a bad user device. Answer: with active measurement you often do not know what you are measuring: the access link, the home Wi-Fi, the user's device, or something else. A plot was shown in which circle size is the downstream speed measured by a speed test: with high ISP speeds the home Wi-Fi is usually the bottleneck, with low ISP speeds the access link usually is. Passive end-to-end measurement has the same limitation: you can see that a download was slow, not why.
+        * Pitfall anecdote: speed-test data from phones was used to argue that an ISP never delivered more than 100 Mbps, but the phones' radios at the time could not exceed 100 Mbps, so the tests were measuring the phone, not the ISP. Lesson: be clear about the conditions under which data was gathered and what is actually being measured.
+    * **Dimensions of an active measurement:** upload and download throughput ("speed"); idle latency (nothing else going on, as with ping); latency under load, also called responsiveness (latency while an upload or download is running); packet loss; jitter. Road analogy: idle latency is the drive downtown at 3 a.m., latency under load is rush hour, and road width only matters once there is load. Traceroute was skipped.
+    * **Passive measurement: flow-level records**
+        * Instead of a packet-by-packet log, summarize traffic per flow: packet and byte counts, start and end times (duration), whether any TCP flags were seen (a binary did-you-see-it), per direction, often in time windows.
+        * A flow is the set of packets sharing a five-tuple key: source IP, destination IP, source port, destination port, protocol (commonly TCP). Packets are hashed into buckets by that key. Whether the reverse direction goes in the same bucket or a separate flow is a design choice. Conventionally a router ends a flow after a period of silence, about 15 to 30 seconds (30 is the usual default), and later packets start a new flow; post-process if that does not suit the problem.
+        * **Midterm flag:** the precise definition of a flow is an easy question to ask and check.
+        * Flow export is standardized (IPFIX, an IETF RFC), so any network hardware can export flow records; it is usually implemented on routers or line cards in the middle of the network where full packet capture is impractical. Standard records also carry the type-of-service byte, the input interface, and the next hop (not used in this course).
+        * Aggregates are much lower volume than packet captures but lose most timing information; the netml library developed for the course keeps some timing and size information (for example inter-arrival times), which the course's own research found useful for security-motivated anomaly detection.
+        * On very high-speed links flow records may be computed from sampled packets (for example every tenth packet); not something that arises with the end-host captures used in this class.
+        * eBPF (extended Berkeley Packet Filter): custom, verified packet filters pushed safely into the kernel so feature-like statistics can be computed at high speed without passing every packet to user space. It replaced the old trade-off between flexible-but-slow software and fast-but-expensive capture hardware, and is standard in large industry networks. **Will not be asked:** how eBPF works or is implemented, or the capture hardware.
+    * Preview: the two ways to represent a pcap for learning are aggregating into flow records (the netml approach) or feeding the whole capture, as bits, to a neural network. More on feature representation Friday.
+    * A netml enhancement is listed as a possible course project.
+* **Hands-On 5: Data acquisition** ([notebook](../notebooks/05-Data-Acquisition-Clean.html))
+    * Load a packet trace and generate per-flow statistics by hand: bucket packets by source IP, destination IP, source port, and destination port (protocol can be omitted here because the trace is all UDP on port 53), then compute bytes, packets, and duration per flow, and bytes and packets per second.
+    * This is the last time packets are manipulated without a library; netml does this automatically from Hands-On 6 and in Assignment 1. The point is to see what decisions aggregation involves.
+    * Students worked in self-selected Zoom breakout rooms for about 15 minutes; the breakout work was not captured.
+    * On return a student asked about flows with zero duration. These are one-packet flows; whether their duration is zero, the round-trip time, or something else is a design decision, and when someone hands you a flow dataset you do not know which decision they made.
+* **Key takeaways named at the end:** the active versus passive trade-offs, what a flow is, and the design decisions involved in producing and consuming flow data.
+* **For Friday (in person):** turning the extracted flow data into features (chapter 3.4); Hands-On 6 uses netml.
