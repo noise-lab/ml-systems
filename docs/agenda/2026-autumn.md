@@ -170,3 +170,18 @@ was partly inaudible the entry says so rather than guessing.
     * **Model drift / concept drift**, seeded for later (around week 8 or 9): a deployed model works until conditions change, as with seasonality in the cellular example and with COVID
     * Not covered: the Remy and Pensieve details, the "reality check" slide on learned congestion control, and the drift-mitigation list
 * **For Monday (on Zoom):** a new module begins, the ML pipeline, starting with data acquisition (chapter 3.2 to 3.3). Class ended a few minutes early
+
+### Meeting 5 (Mon Oct 12, on Zoom)
+
+*Plan, written before class. It will be replaced with what was actually covered once the recording is transcribed.*
+
+* **Housekeeping:** class is on Zoom today; Assignment 1 due Friday October 23; project proposal due Monday October 26; in-class midterm Friday October 30; office hours by sign-up (Tuesday evenings)
+* **Hands-On 3 wrap-up and Assignment 1 questions**
+* **Lecture 5: Data acquisition** (chapter 3.2 to 3.3), the first step of the ML pipeline
+    * Why measurement comes first; active versus passive measurement
+    * Active: speed tests, traceroute, what "speed" means, measurement accuracy
+    * Passive: flows and flow records (IPFIX, NetFlow), sampling, packet capture (tcpdump, BPF), high-speed links, eBPF
+    * From packets to features: the accuracy and cost tradeoff, DNS-based service identification and its limits, netml, nPrint
+    * Pitfalls and sound measurement practice
+* **Hands-On 5: Data acquisition** ([notebook](../notebooks/05-Data-Acquisition-Clean.html)): load a trace, compute per-flow statistics (flows, bytes, packets, duration), bytes and packets per second
+* **For Friday:** from data to analysis, feature extraction (chapter 3.4)
