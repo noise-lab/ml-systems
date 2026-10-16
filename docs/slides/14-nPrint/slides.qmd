@@ -47,6 +47,23 @@ Ask students: what features would you pick for application ID? For DoS detection
 Point out that the answers differ — and that is exactly the problem nPrint is solving.
 :::
 
+## Two Problems, Two Pipelines {.smaller}
+
+<!-- recovered from docs/slides/14-nPrint.pptx slide 3 -->
+![](images/bespoke-pipelines.png){width="88%" fig-align="center"}
+
+- Application identification and anomaly detection start from the same raw pcap, yet each gets its **own** pipeline
+- The **Engineer Features ⇄ Train Models** loop is where the time goes: every model result sends you back to the feature code
+- Nothing in the first three stages is shared, so the next problem starts from scratch
+
+::: {.notes}
+Static recovery of the original drawn figure; walk it left to right. Point at the
+two-headed arrow between Engineer Features and Train Models: that is the
+iteration loop the rest of the lecture tries to remove. Ask which boxes could be
+shared across the two rows (hypothesize, gather, process) and which cannot
+(features, in the bespoke world).
+:::
+
 ## Feature Engineering Is Expensive
 
 - **Time** — iterative experimentation with domain experts
@@ -59,6 +76,29 @@ Concrete example from the book: two research teams analyzed the DARPA'98 intrusi
 detection dataset and reported DoS packet counts differing by a factor of ten
 (McHugh 2000). Not fraud — just undocumented preprocessing choices. This is the
 reproducibility crisis hiding in plain sight inside networking ML.
+:::
+
+## Diverging Branches {.smaller}
+
+::: {.columns}
+::: {.column width="62%"}
+<!-- recovered from docs/slides/14-nPrint.pptx slide 7 (bent connectors redrawn straight for the headless render) -->
+![](images/diverging-branches.png)
+:::
+::: {.column width="38%"}
+- One released dataset: a pcap plus a metadata CSV
+- Two teams attach the metadata differently (A vs. B), then write different feature extractors (A–D)
+- Each extractor feeds the same model families, so "Model A" in paper 1 and "Model A" in paper 2 are trained on **different inputs**
+- The highlighted boxes are the two numbers that end up compared in a related-work table
+:::
+:::
+
+::: {.notes}
+This is the mechanism behind the KDD'98 and CICIDS2017 tables on the next two
+slides. Walk the tree from the left: the fork happens twice before any model is
+trained, at metadata attachment and at feature extraction, and neither fork is
+usually documented. The two highlighted models are the ones that get compared
+in papers as if they shared a starting point.
 :::
 
 ## The Reproducibility Crisis in Traffic Datasets {.smaller}
@@ -127,6 +167,21 @@ of protocol combination. See the "Learning Traffic Representations with nPrint"
 section of Chapter 3 in *Machine Learning for Networking*.
 :::
 
+## Collapsing the Pipeline {.smaller}
+
+<!-- recovered from docs/slides/14-nPrint.pptx slide 6 -->
+![](images/automated-pipeline.png){width="85%" fig-align="center"}
+
+- The hypothesize and gather stages stay; **Engineer Features** disappears into **Automated Traffic Analysis**
+- The blue arrow marks the step nPrint standardizes: one data-processing function, the same for every problem
+- What is left for the human is choosing which headers to include and which model to run
+
+::: {.notes}
+Contrast with the two-row figure from earlier: four boxes instead of five, and
+no loop back to feature code. The claim is not that models get better, it is
+that the part of the pipeline that was bespoke is now a fixed transformation.
+:::
+
 ## The nPrint Bitmap Representation
 
 ![Each packet is encoded as a fixed-width row. IPv4 gets 480 columns, TCP gets 480, UDP gets 64, ICMP gets 64, plus an optional payload block. Value 1 = bit set, 0 = bit not set, −1 = field absent in this packet type.](images/s13-i39.png)
@@ -165,6 +220,22 @@ application ID, malware detection, and scan detection — no re-engineering.
 Contrast with IPFIX/NetFlow: aggregated, lossy, and task-specific. nPrint
 goes the other direction — raw and complete — and lets the model decide what
 to aggregate.
+:::
+
+## Alignment, Illustrated {.smaller}
+
+<!-- recovered from docs/slides/14-nPrint.pptx slide 17 -->
+![](images/nprint-aligned.png){width="92%" fig-align="center"}
+
+- The box spans the **IPv4 and TCP columns of both rows**: the same column index means the same header bit in a TCP packet and in a UDP packet
+- In the UDP row those TCP columns are all −1, so a model sees "absent," not a shifted or missing field
+- Because the width is fixed per problem, the matrix can go straight into any classifier with no per-protocol parsing
+
+::: {.notes}
+This is the single property to leave students with. Point at one column inside
+the box and ask what bit it is in the top row and in the bottom row: same
+answer. Then point at a UDP column and ask the same question. The −1 is doing
+the work that padding or a protocol flag would do in a hand-built pipeline.
 :::
 
 ## Using nPrint: A Typical Workflow
@@ -382,6 +453,52 @@ among the most vivid examples of how a classifier can achieve F1 = 0.99 on a
 dataset and fail completely in deployment. The lesson: representation is one
 piece; the data it is derived from must also be representative.
 See the "Data Collection Strategies" section of Chapter 3.
+:::
+
+## The TTL Artifact, Seen in the Tree {.smaller}
+
+::: {.columns}
+::: {.column width="58%"}
+<!-- recovered from docs/slides/14-nPrint.pptx slide 26; tree from Beltiukov et al., "In Search of netUnicorn" (CCS 2023), highlight boxes from the original slide -->
+![Decision tree trained on nPrint features of CIC-IDS2017. Figure from Beltiukov et al., *In Search of netUnicorn* (ACM CCS 2023).](images/cicids-ttl-tree.png)
+:::
+::: {.column width="42%"}
+- The reported result on this dataset was **F1 = 0.99**
+- The top two splits (boxed) are on **IPv4 TTL bits** of the first two packets, not on anything attack-specific
+- All attackers sat outside the "internal" network, so their TTL was 63/127 while victims showed 64/128
+- The tree learned the lab topology; the fix is a data-collection change (attackers inside, benign traffic from outside), not a modeling change
+:::
+:::
+
+::: {.notes}
+Read the tree top-down: the root asks about a TTL bit, the next node asks about
+another TTL bit, and only below that do TCP options appear. That is a
+classifier recovering where machines were plugged in. Tie back to the
+"spurious correlations" limitation of nPrint: the representation faithfully
+exposed the TTL bits, and the model took them.
+:::
+
+## The Heartbleed Artifact, Seen in the Histogram {.smaller}
+
+::: {.columns}
+::: {.column width="58%"}
+<!-- media from docs/slides/14-nPrint.pptx slide 30; figure from Beltiukov et al., "In Search of netUnicorn" (CCS 2023) -->
+![Backward inter-arrival-time total for Heartbleed flows versus everything else in CIC-IDS2017. Figure from Beltiukov et al., *In Search of netUnicorn* (ACM CCS 2023).](images/s30-i56.png)
+:::
+::: {.column width="42%"}
+- Heartbleed detection used 78 pre-computed flow features and again reported **F1 = 0.99**
+- One feature separates the classes almost alone: total backward inter-arrival time above about 1.1 × 10⁸
+- The attack tool never closed its TCP connection between requests, so one flow accumulated huge gaps
+- Close the connection after each response and the signal vanishes; the model had learned the harness
+:::
+:::
+
+::: {.notes}
+Pair this with the tree slide: there the artifact was in the packet headers,
+here it is in a flow statistic, and both came from how the data was collected
+rather than from the attack. The pipeline fix (close the connection) is a one-line
+change in the collection script, which is the argument for making collection
+code modular and re-runnable.
 :::
 
 ## Key Takeaways
