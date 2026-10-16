@@ -18,6 +18,31 @@ particular — can close that gap. See the "Generative Models" chapter (Chapter 
 the course textbook.
 :::
 
+## Network Trace Datasets: What and Why
+
+::: {.columns}
+::: {.column width="60%"}
+<!-- recovered from docs/slides/17-Diffusion.pptx slide 2 -->
+![](images/trace-datasets-what-why.png)
+:::
+::: {.column width="40%"}
+- A **trace dataset** is either aggregated flow records (NetFlow/IPFIX) or
+  raw packet captures (pcap)
+- The same dataset feeds several consumers: ML training for anomaly
+  detection and activity recognition, hardware and software testing, and more
+- Each consumer wants something different from the data, which is why
+  synthetic generation must get the *format* right, not just the statistics
+:::
+:::
+
+::: {.notes}
+Recovered from the original pptx (slide 2), where the boxes and arrows built
+one by one. Walk it left to right: first the two kinds of dataset, then the
+arrows to the three consumers. The point to land is that "a dataset" means
+different things to a classifier and to a device under test; the next slide
+explains why both kinds are scarce.
+:::
+
 ## The Network Data Problem {.smaller}
 
 ::: {.columns}
@@ -200,6 +225,29 @@ added. The elegance is that each training iteration picks a *random* timestep an
 Compare with GAN training where the two networks must be carefully balanced.
 :::
 
+## Forward and Reverse in One Picture
+
+<!-- recovered from docs/slides/17-Diffusion.pptx slide 15 (Ho, Jain, and Abbeel, "Denoising Diffusion Probabilistic Models", NeurIPS 2020, Figure 2) -->
+![Figure 2 of Ho, Jain, and Abbeel, *Denoising Diffusion Probabilistic Models* (NeurIPS 2020)](images/ddpm-markov-chain.png){width=100%}
+
+- Read the **dashed arrow** right to left: $q(x_t \mid x_{t-1})$ is the fixed forward
+  step that adds noise, taking the face at $x_0$ to pure noise at $x_T$
+- Read the **solid arrow** left to right: $p_\theta(x_{t-1} \mid x_t)$ is the learned
+  reverse step, one denoising move per timestep
+- Both are **Markov chains** over the same states $x_T, \ldots, x_t, x_{t-1}, \ldots, x_0$;
+  the model only ever learns the solid arrow
+- Generation is the whole solid chain run once, starting from a fresh noise sample
+
+::: {.notes}
+Recovered from the original pptx (slide 15); the picture is Figure 2 of the
+DDPM paper, so credit Ho et al. when showing it. Walk the two arrows between
+$x_t$ and $x_{t-1}$: the dashed one is what we did on the forward slide, the
+solid one is what the network learns. Then point out that the whole chain is
+just that pair repeated $T$ times, which is why sampling is slow (a forward
+pass per step) but training is cheap (any single step can be built from the
+closed form in the appendix).
+:::
+
 ## Conditional Generation with Text Prompts
 
 **Unconditional diffusion** generates realistic but uncontrolled samples.
@@ -247,6 +295,27 @@ This figure (s17-i09.png) is the key architecture diagram from the NetDiffusion 
 Walk through each component from left to right. The central insight is that existing
 powerful text-to-image infrastructure can be repurposed for network traffic once you
 have a good image representation of packets.
+:::
+
+## The Four Steps at a Glance
+
+<!-- recovered from docs/slides/17-Diffusion.pptx slide 26 -->
+![](images/netdiffusion-four-step-pipeline.png){width=100%}
+
+- **Gray boxes** are the lecture's Steps 1 to 3: encode real pcaps as images and
+  label-derived prompts, fine-tune a text-to-image model, then generate under
+  ControlNet constraints
+- **Orange boxes** are Step 4: the generated image is an encoded pcap in disguise, and
+  the last box turns it back into packets
+- Everything the diffusion model touches is an image; the networking happens only at
+  the two ends of the strip
+
+::: {.notes}
+Recovered from the original pptx (slide 26), the final state of a strip that grew
+one box per slide across Steps 1 through 4. Use it as the map for the next four
+slides: point at the box you are about to explain each time. The color split is
+the thing to stress, since students tend to assume the model emits packets; it
+emits a picture, and the orange boxes are the bridge back.
 :::
 
 ## Step 1: Traffic-to-Image Conversion {.smaller}
