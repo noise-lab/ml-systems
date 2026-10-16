@@ -212,3 +212,19 @@ was partly inaudible the entry says so rather than guessing.
     * On return a student asked about flows with zero duration. These are one-packet flows; whether their duration is zero, the round-trip time, or something else is a design decision, and when someone hands you a flow dataset you do not know which decision they made.
 * **Key takeaways named at the end:** the active versus passive trade-offs, what a flow is, and the design decisions involved in producing and consuming flow data.
 * **For Friday (in person):** turning the extracted flow data into features (chapter 3.4); Hands-On 6 uses netml.
+
+### Meeting 6 (Fri Oct 16)
+
+*Plan, written before class. It will be replaced with what was actually covered once the recording is transcribed.*
+
+* **Housekeeping:** Assignment 1 due Friday October 23; project proposal due Monday October 26; in-class midterm Friday October 30; office hours by sign-up
+* **Hands-On 5 wrap-up and Assignment 1 questions**
+* **Lecture 6: Feature extraction and representation** (chapter 3.4)
+    * From packets to a feature matrix: parse into flows, aggregate, represent
+    * Statistical representations: STAT, SIZE, IAT, SAMP-NUM, SAMP-SIZE, and the sampling interval trade-off
+    * Which representation for which task
+    * What encryption (TLS 1.3, QUIC, ECH, DoH) takes away and what remains observable
+    * Representation learning and nPrint, briefly
+    * Granularity, privacy, and deployment constraints
+* **Hands-On 6: Feature extraction with netml** ([notebook](../notebooks/06-Feature-Extraction-Clean.html))
+* **Next (Mon Oct 19):** data preparation and representation (chapter 4.1)
