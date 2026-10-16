@@ -113,6 +113,34 @@ motivation. Ask students: what's the decision boundary for the top plot?
 "When Logistic Regression Works (and When It Doesn't)."
 :::
 
+## Reading the Decision Boundary {.smaller}
+
+::: {.columns}
+::: {.column width="60%"}
+<!-- recovered from docs/slides/11-LogisticRegression.pptx slide 6 (lecture ink overlay, title stripped) -->
+![Top: separable data with the raw linear score (green) and its sigmoid (red). Bottom: overlapping classes, where no single threshold on $x$ separates them.](images/decision-boundary-annotated.png){width="100%"}
+:::
+::: {.column width="40%"}
+- The **green line** is the raw linear score $\mathbf{x}^T\boldsymbol{\beta}$: unbounded, and it crosses 0 and 1 at arbitrary places
+- The **red curve** is $\sigma(\mathbf{x}^T\boldsymbol{\beta})$: same score, squashed into $[0,1]$
+- The boundary is where the red curve crosses $0.5$, i.e. where the green line crosses $0$ (here $x \approx 16$)
+- **Bottom plot:** the classes overlap, so the fitted sigmoid stays shallow and there is **no single 1-D decision boundary**; more features, or a non-linear model, are needed
+:::
+:::
+
+::: {.notes}
+Static capture of the annotated plots from the original lecture; walk it rather
+than build it. Start with the green line: it is the linear regression fit to 0/1
+labels, and it says "1.3" for a large packet. Then the red curve: same score,
+passed through the sigmoid, so the prediction lives in [0,1] and the crossing
+at 0.5 is the only place the two curves agree on the label. Ask the room where
+the boundary is (about x = 16). Then drop to the bottom plot and ask the same
+question. There is no good answer, which is the point: with overlapping classes
+a one-feature logistic model can only hedge, and the fix is more features
+(a hyperplane in higher dimension) or a non-linear boundary, which is the
+next lecture.
+:::
+
 ## Networking Example: DNS Query vs. Response {.smaller}
 
 ::: {.columns}
@@ -195,6 +223,27 @@ formula being the same is a deep result from exponential families in statistics.
 The regularization discussion connects to the book's regularization subsection
 and to later lectures on deep learning where weight decay (L2 regularization)
 appears again. See *Machine Learning for Networking*, Chapter 5, "Regularization."
+:::
+
+## Same Linear Score, Different Noise Model {.smaller}
+
+<!-- recovered from docs/slides/11-LogisticRegression.pptx slide 7 (lecture ink) -->
+![Linear regression assumes Gaussian noise around $\mathbf{x}^T\boldsymbol{\beta}$; logistic regression assumes a Bernoulli label whose mean is $\sigma(\mathbf{x}^T\boldsymbol{\beta})$.](images/likelihood-gaussian-vs-bernoulli.png){fig-align="center" width="78%"}
+
+- Both likelihoods are built on the **same linear score** $\mathbf{x}^T\boldsymbol{\beta}$; only the distribution wrapped around it changes
+- **Gaussian** on the left: a real-valued $y$ with variance $\sigma^2$, which is why maximum likelihood becomes least squares
+- **Bernoulli** on the right: the sigmoid turns the score into the coin's bias, and setting $y = 1$ recovers $P(y=1 \mid \mathbf{x}) = 1/(1+e^{-\mathbf{x}^T\boldsymbol{\beta}})$
+
+::: {.notes}
+Hand-drawn side-by-side from the original lecture, captured as a static image;
+narrate it left to right. The left column is the probabilistic view of linear
+regression from last time: Gaussian noise around the line, so maximizing the
+likelihood minimizes squared error. The right column keeps the exact same
+linear score and swaps the Gaussian for a Bernoulli whose mean is the sigmoid
+of that score. The red lines are the special case y = 1, which is the
+two-class model we actually use. The single idea to land: changing the noise
+model is what changes the loss, from MSE to cross-entropy; the linear part
+never changed. The same comparison is typeset as a table on the previous slide.
 :::
 
 ## Extending to Multi-Class: Softmax Regression {.smaller}
