@@ -50,6 +50,25 @@ The pipeline applies to both supervised and unsupervised learning, but this lect
 focuses on supervised learning.
 :::
 
+## The Pipeline, End to End
+
+<!-- recovered from 08-Pipelines.pptx slide 2 -->
+![](images/ml-framework-pipeline.png){width=100%}
+
+- Raw **packets** are transformed into a **data representation** (a feature matrix); compressing that representation is optional and trades fidelity for speed
+- **Labels** enter only at the training step; everything upstream is the same for supervised and unsupervised learning
+- Each arrow has a cost (collection, transformation, training) that constrains the cost-accuracy tradeoff
+
+::: {.notes}
+Walk the picture left to right. This is the original framework diagram from the
+PowerPoint deck: packets in, a trained model out, labels feeding in from above at the
+training step. Point out that the previous lecture (data preparation) lives in the first
+two arrows, and that this lecture is about the last two plus the evaluation loop that the
+picture does not show. The optional compression step is the hook for the "what if we want
+the representation even smaller" question: faster training and faster transformation at
+some cost in accuracy.
+:::
+
 ## Understanding Your Data First
 
 Before training anything, explore the dataset:
@@ -189,6 +208,28 @@ This section covers the "Dividing Data" and "Validation Sets" sections of the bo
 The golden rule is stated explicitly in the book — worth reading the exact phrasing aloud.
 :::
 
+## Training vs. Testing: The Flow
+
+::: {.columns}
+::: {.column width="62%"}
+<!-- recovered from 08-Pipelines.pptx slide 3 (instructor's ink annotations, composited from the stroke images) -->
+![](images/training-vs-testing-flow.png){width=100%}
+:::
+::: {.column width="38%"}
+- **Training:** features and labels from the training data both go into **fit**, which produces the model
+- **Testing:** only the *features* of the test data go into **predict**
+- The test *labels* are held back and compared with the predictions to produce the **evaluation metric**
+- The model never sees a test label
+:::
+:::
+
+::: {.notes}
+This is the whiteboard sketch from the original lecture, drawn live over an otherwise
+empty slide. Walk it top to bottom: the top row is fit, the bottom row is predict. The key
+visual is that the test labels bypass the model entirely and meet the predictions only at
+the evaluation metric on the far right. That is the whole reason the test set exists.
+:::
+
 ## Why Split at All?
 
 **The problem:** after training, you have no labeled examples left to measure
@@ -207,6 +248,28 @@ measure final performance.
 Motivate this carefully. Students often ask: why not just use all the data for training
 and evaluate on it? The answer: training error is optimistically biased — the model saw
 all those examples. We need held-out data to get an unbiased estimate of generalization.
+:::
+
+## Train / Validation / Test, Drawn
+
+::: {.columns}
+::: {.column width="62%"}
+<!-- recovered from 08-Pipelines.pptx slide 10 (instructor's ink annotations, composited from the stroke images) -->
+![](images/train-validation-test-split.png){width=100%}
+:::
+::: {.column width="38%"}
+- One labeled dataset, cut into three contiguous pieces
+- **Training data** fits the model parameters
+- **Validation data** tunes the hyperparameters; it is carved out of what would otherwise be training data
+- **Test data** is touched once, at the end, for the reported number
+:::
+:::
+
+::: {.notes}
+Whiteboard sketch from the original deck. Draw attention to the proportions: the
+validation slice comes out of the training share, which is the practical cost of
+hyperparameter tuning and the motivation for cross-validation in the next section. The
+test slice is the one students are tempted to peek at; say out loud that it is used once.
 :::
 
 ## How to Split: Random vs. Temporal {.smaller}
@@ -242,6 +305,28 @@ This maps to the "Training and Testing Sets" section of the book. The i.i.d. cav
 crucial for networking: traffic patterns drift over time (new applications, new attacks,
 changing user behavior). A temporal split evaluates the model on data it would realistically
 encounter after deployment.
+:::
+
+## Random vs. Temporal Split, Drawn
+
+::: {.columns}
+::: {.column width="62%"}
+<!-- recovered from 08-Pipelines.pptx slide 9 (instructor's ink annotations, composited from the stroke images) -->
+![](images/random-vs-temporal-split.png){width=100%}
+:::
+::: {.column width="38%"}
+- **Random split:** test examples (shaded) are scattered through the dataset; fine when examples are i.i.d.
+- **Temporal split:** the dataset is ordered by time and the test set is the most recent slice
+- A random split on time-ordered traffic lets the model see "the future" of every test flow
+- The temporal split matches deployment: train on the past, predict the future
+:::
+:::
+
+::: {.notes}
+Whiteboard sketch from the original deck. The top bar has the test samples sprinkled
+through the data; the bottom bar has the time arrow and the test set at the end. Ask the
+room which one a deployed intrusion detector actually faces, then tie it back to the
+January-to-October / November-to-December example on the previous slide.
 :::
 
 ## The Bias-Variance Tradeoff
