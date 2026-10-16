@@ -404,6 +404,28 @@ final test number — that still requires the held-out test set. For neural netw
 full K-fold CV is often impractical; a single train/validation/test split is common.
 :::
 
+## K-Fold Cross-Validation, Drawn
+
+::: {.columns}
+::: {.column width="58%"}
+<!-- recovered from 08-Pipelines.pptx slide 12 (instructor's ink annotations, composited from the stroke images) -->
+![](images/k-fold-cross-validation-sketch.png){width=100%}
+:::
+::: {.column width="42%"}
+- Top bar: the data is cut into folds **A, B, C, D** plus a **test slice** that is set aside for good
+- Each lower bar is one round: three folds train the model, the shaded fold validates it
+- Every fold takes a turn as the validation set, so no single partition decides the hyperparameters
+- Average the four validation scores; the test slice is still untouched
+:::
+:::
+
+::: {.notes}
+Whiteboard sketch from the original deck, drawn with K = 4. Walk it top to bottom: the
+first bar is the one-time split that pulls out the test data; the four bars below rotate
+which fold is held out. The thing to say out loud is that the test slice never reappears
+in any of the rounds. Leave-one-out is the same picture with one example per fold.
+:::
+
 ## Overfitting Can Happen in Meta-Learning Too
 
 Even when using a **validation set**, repeated hyperparameter tuning can overfit to that
@@ -515,6 +537,25 @@ incorporate TN, so it is most useful when true negatives are hard to count (info
 retrieval, rare event detection).
 :::
 
+## The Four Metrics, Drawn {.smaller}
+
+<!-- recovered from 08-Pipelines.pptx slide 17 (instructor's ink annotations, composited from the stroke images; printed bullets and table stripped) -->
+![](images/evaluation-metrics-sketch.png){width=88%}
+
+- Left, top to bottom: **accuracy** is the fraction of predictions correct; **precision** the fraction of detections correct; **recall** correct answers over the positive class; **specificity** correct answers over the negative class
+- Right: the box is everything, the dashed line separates actual positives from actual negatives, and the ellipse is what the detector flagged; TP and FP sit inside it, FN and TN outside
+
+::: {.notes}
+Whiteboard annotations from the original "Evaluation Metrics" slide, with the printed
+formulas and table removed so the handwriting stands alone; the formulas are on the
+previous slide. Walk the right-hand box first: positives on the left of the dashed
+line, negatives on the right, the "detected" ellipse straddling both. Then read the
+four handwritten definitions and point at the box for each denominator: all four
+cells for accuracy, the ellipse for precision, the left half for recall, the right half
+for specificity. The little coloured squares beside each line are the same box shaded
+to show the numerator and denominator.
+:::
+
 ## Precision-Recall: The Imbalance Problem
 
 **Scenario:** 99% of traffic flows are benign; 1% are attacks.
@@ -540,6 +581,25 @@ every attack it catches correctly.
 This is the most practically important point for students working on network security.
 The IDS false alarm problem is real: SOC analysts are overwhelmed by alert fatigue.
 A system with 99% recall but 10% precision will cry wolf nine times for every real alert.
+:::
+
+## Precision-Recall: A Worked Example {.smaller}
+
+<!-- recovered from 08-Pipelines.pptx slide 18 (instructor's ink annotations, composited from the stroke images) -->
+![](images/precision-recall-worked-example.png){width=92%}
+
+- A screening test that is **99% accurate** with a false positive rate under 1%, on 1000 people: 990 correct, 10 wrong
+- Confusion matrix: **TP = 50, FN = 5, FP = 5, TN = 940**; precision = recall = 50 / 55, about 90%
+- Now lower the prevalence to 1%: roughly 10 true positives against the same handful of false positives, and precision collapses toward 50%
+
+::: {.notes}
+Whiteboard worked example from the original deck. Walk it left to right: the setup on
+the left (prevalence 5%, 99% accuracy, FPR under 1%), the 1000-person tally at the top,
+then the drawn confusion matrix. The circled column is the predicted-positive column,
+TP + FP, which is the precision denominator; the sketch labels the 50/55 as recall, and
+in this example recall is also 50/55, so both numbers are right. The point to land is the
+last bullet: hold the false positive rate fixed and shrink the prevalence, and the false
+positives start to outnumber the true ones. Ask the room to redo the matrix for 1 in 1000.
 :::
 
 ## ROC Curve and AUC
