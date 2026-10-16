@@ -126,6 +126,29 @@ Latency under load (bufferbloat) is a fifth dimension now included in
 many modern tests.
 :::
 
+## How Traceroute Works
+
+::: {.columns}
+::: {.column width="60%"}
+<!-- recovered from docs/slides/05-Data.pptx slide 16 -->
+![Probes with TTL 1, 2, 3 expire one hop further each time; the expiring router answers with ICMP "time exceeded"](images/traceroute-ttl-probes.png)
+:::
+::: {.column width="40%"}
+- Send probes with **increasing TTL** values
+- Each router on the IP path decrements TTL by one
+- When TTL hits 0, that router discards the probe and returns ICMP **"time exceeded"**
+- The source address of each reply reveals one hop of the path
+:::
+:::
+
+::: {.notes}
+Walk the picture left to right: the orange probe dies at hop 1, the red
+one at hop 2, the black one at hop 3. The dotted return arc is the ICMP
+reply that names the hop. The original slide built these arcs one click
+at a time; narrate it the same way. Then ask what the reply's source
+address actually identifies — that sets up the next slide's pitfalls.
+:::
+
 ## Active Measurement Pitfall: Traceroute
 
 ::: {.columns}
@@ -247,6 +270,48 @@ client to the same server on the same port — same 5-tuple but different
 time windows — become different flow records.
 :::
 
+## Aggregating Packets into Flows
+
+<!-- recovered from docs/slides/05-Data.pptx slide 28 -->
+![A packet stream grouped into four flows; flows 2 and 4 share a 5-tuple but are split by a time gap](images/packets-into-flows.png){width="100%"}
+
+- **Criterion 1 — belong together:** same source/destination addresses and ports, same protocol (and ToS bits, router interfaces if known)
+- **Criterion 2 — close in time:** a maximum inter-packet gap, typically 15–30 seconds
+- Flows 2 and 4 match on every header field but are **separate records** because of the gap
+- Interleaving is normal: flow 3's packets arrive in between flow 2's
+
+::: {.notes}
+Static version of an animated slide; walk it. Point at the two dark-red
+groups: identical 5-tuple, but the gap between the last packet of flow 2
+and the first packet of flow 4 exceeds the timeout, so the router exports
+two records. Then point at the green packets interleaved with the red to
+make the point that the flow table holds many flows at once — which is
+why routers need a flow cache and why that cache can overflow.
+:::
+
+## Exporting Flow Records
+
+::: {.columns}
+::: {.column width="60%"}
+<!-- recovered from docs/slides/05-Data.pptx slide 26 -->
+![A router at the network edge aggregates packets into flow records and exports them in UDP datagrams to a collector](images/ipfix-export-collector.png)
+:::
+::: {.column width="40%"}
+- Aggregation happens **on the router** (line card), not at the collector
+- Records are batched into ~1500-byte datagrams, 20–50 records each
+- Export frequency rises with traffic: more flows, more datagrams
+- The collector PC stores and indexes records for later analysis
+:::
+:::
+
+::: {.notes}
+This is the physical picture behind "IPFIX": the yellow circle is the
+exporting router, the red arrow is the export stream, and the collector
+is just a PC. Two things to emphasize: the router does the aggregation
+work, so the collector sees only summaries; and export is UDP, so under
+load records can be lost in transit — one more silent-drop pitfall.
+:::
+
 ## IPFIX Flow Records {.smaller}
 
 ::: {.columns}
@@ -314,6 +379,56 @@ count is n/N but variance grows with n. For small flows (n < N) the
 sampled count is very likely zero. ML models trained on sampled data
 need to account for this or they will mis-estimate the importance of
 small flows.
+:::
+
+## Packet Sampling Can Split a Flow
+
+::: {.columns}
+::: {.column width="60%"}
+<!-- recovered from docs/slides/05-Data.pptx slide 29 -->
+![Packets of one long transfer (top); only sampled packets reach the flow cache, so a gap larger than the timeout produces two flow records](images/sampled-netflow-split-flow.png)
+:::
+::: {.column width="40%"}
+- Top row: packets of **one** long transfer over time
+- Only sampled packets (arrows) update the flow cache
+- Unsampled packets stretch the **gap** between cache updates
+- If the gap exceeds the inactivity timeout, the router exports **two records** for one flow
+:::
+:::
+
+::: {.notes}
+Counter-intuitive overhead case from the original deck: sampling is
+supposed to reduce records, but for a long transfer it can increase
+them. Walk the purple flow: two early packets sampled, then a run of
+unsampled ones (the red one is the example), the cache times out, and
+the later purple packets start a new record. For ML this means a single
+session can appear as several rows with the wrong duration and byte
+counts.
+:::
+
+## Flow-Level Sampling: Weight the Heavy Hitters
+
+::: {.columns}
+::: {.column width="60%"}
+<!-- recovered from docs/slides/05-Data.pptx slide 31 -->
+![Six flows of very different sizes; the largest is always kept, medium flows sampled at 10%, tiny flows at 0.1%](images/stratified-flow-sampling.png)
+:::
+::: {.column width="40%"}
+- Sample **records**, not packets, when flows are evicted from the cache
+- **Stratify by size:** keep every heavy flow, sample the small ones
+- The 5 MB flow carries almost all the bytes, so it is sampled at 100%
+- A 40-byte flow is sampled at 0.1%, so most such records vanish — but little traffic volume is lost
+:::
+:::
+
+::: {.notes}
+Compare with the previous slide: packet sampling makes the flow sizes
+themselves uncertain, whereas flow-level sampling keeps exact sizes for
+the flows it retains. Stratifying by size means the traffic-volume
+estimate stays accurate even though the record count drops sharply. The
+cost is that anything that lives in small flows — scans, DNS, C&C
+beacons — is mostly gone, which matters for the security tasks later in
+the course.
 :::
 
 ## Packet Capture: tcpdump and BPF {.smaller}
@@ -438,6 +553,58 @@ This table is the key take-away from Chapter 3. The book (Bronzino et
 al. 2022, Traffic Refinery) frames this as a joint optimization problem:
 maximize model performance subject to a collection cost budget. The next
 few slides show what features you can extract from each level.
+:::
+
+## Traffic Refinery: Searching the Cost–Performance Space
+
+::: {.columns}
+::: {.column width="60%"}
+<!-- recovered from docs/slides/05-Data.pptx slide 36 -->
+![Traffic Refinery sits on a tap in the network and feeds a store; the target models are those in the intersection of the performance and cost constraints](images/traffic-refinery-cost-performance.png)
+:::
+::: {.column width="40%"}
+- Deployed on a **passive tap** inside the network, exporting to a store
+- Each candidate representation is **profiled** for state, CPU, and storage cost
+- The target models are the **intersection**: good enough *and* cheap enough
+- Exploration is joint and online, not "pick features, then measure cost"
+:::
+:::
+
+::: {.notes}
+Bronzino et al. (2022), Traffic Refinery, PoPETs. The Venn diagram is
+the one-picture summary of the previous table: the left ellipse is the
+accuracy axis, the right ellipse is the cost axis, and the shaded lens is
+what you actually deploy. Walk it: the dotted line from the Traffic
+Refinery box down to the lens says the system itself is what lets you
+locate that lens, by profiling cost while you train. Challenges listed
+on the original slide: maximum flexibility in representation, keeping up
+with link speeds, realistic (in-situ) profiling.
+:::
+
+## Traffic Refinery: Architecture {.smaller}
+
+::: {.columns}
+::: {.column width="55%"}
+<!-- recovered from docs/slides/05-Data.pptx slide 22 -->
+![Three stages: traffic categorization (DNS signatures to an IP-to-service map), packet processing (service-based processing into a flow cache), long-term storage (stats collection into a database)](images/traffic-refinery-architecture.png)
+:::
+::: {.column width="45%"}
+1. **Service-driven packet processing:** DNS traffic updates an IP-to-service map; each packet is looked up and routed to the processing routine for its service
+2. **Real-time processing:** service-specific routines update a flow cache; early packets can be discarded, work scales across cores
+3. **Built-in profiling:** every feature group is profiled for state, processing, and storage cost in isolation
+:::
+:::
+
+::: {.notes}
+Figure from Bronzino et al. (2022), Traffic Refinery; the coverage notes
+flagged this as the diagram the deck was missing because the archived
+copy was WMF. Walk it top to bottom: the DNS arrow on the right feeds
+the signatures that populate the map; the rest of the traffic hits the
+service-based processing boxes (stacked, one per service); the flow
+cache is periodically collected into long-term storage. The grey
+"profiling routines" tag is the point of the system: cost is measured
+per routine, which is what makes the previous slide's lens findable.
+The next slide shows the service specification that drives stage 1.
 :::
 
 ## DNS-Based Service Identification {.smaller}
