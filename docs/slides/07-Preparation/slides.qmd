@@ -39,6 +39,35 @@ See the "Data Engineering" section of the pipeline chapter. Emphasize that the p
 is sequential and that errors early propagate to every downstream stage.
 :::
 
+## The Pipeline in One Picture {.smaller}
+
+<!-- recovered from docs/slides/07-Preparation.pptx slide 2 -->
+![](images/ml-pipeline-packets-to-model.png){width="100%" fig-alt="Pipeline from input packets through packet transformation, data representation, optional representation compression, and model training (with labels entering at training) to the output trained model"}
+
+- **Input is raw packets**; everything to the right of the first arrow is a choice you make, and every choice has a cost
+- **Packet transformation and data representation** are where today's lecture lives: this is where features are born
+- **Representation compression** is optional; it trades fidelity for scale, which is why it sits in the middle
+- **Labels enter only at model training**; leakage is any path by which they, or the test set, sneak in earlier
+
+::: {.notes}
+Recovered from the original PowerPoint (slide 2, "Machine Learning Framework"); the
+icons and arrows were drawn in PowerPoint, so the earlier text-and-media extraction
+dropped them. The figure is static; walk it left to right.
+
+Walk the picture: packets in; a transformation step (parsing, flow assembly,
+filtering); a representation step (the grid: rows are examples, columns are features);
+an optional compression step (sampling, binning, dimensionality reduction); training,
+with labels coming in from above; a trained model out. Each arrow is a cost (compute,
+storage, latency, engineering time) and the goals on the original slide were to explore
+the general capabilities of traffic analysis and to make the cost-accuracy tradeoff
+explicit at each step.
+
+Point at the "Labels" arrow now and say that it is the only place labels are allowed
+to touch the pipeline; the data-leakage section later is about the ways they leak in
+further left. Also note that representation shapes model choice (the slide after
+next).
+:::
+
 ## Why Data Representation Matters {.smaller}
 
 - Network data arrives as raw packets; models need **structured features**
