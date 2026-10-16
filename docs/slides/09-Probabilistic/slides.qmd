@@ -63,6 +63,55 @@ lecture is about approximating it efficiently. This framing comes directly
 from the source slides and the Probabilistic Models section of the book.
 :::
 
+## Bayes' Rule: Dropping the Denominator {.smaller}
+
+::: {.columns}
+::: {.column width="62%"}
+<!-- recovered from docs/slides/09-Probabilistic.pptx slide 5 -->
+![](images/naive-bayes-drop-denominator.png){fig-alt="Hand-drawn derivation: y-hat equals argmax over y of P(y|x), labelled max posterior probability; Bayes' rule rewrites it as P(x|y)P(y) over P(x); a dashed arrow labelled drop denominator leads to argmax over y of P(x|y)P(y)"}
+:::
+::: {.column width="38%"}
+- Start from the **maximum posterior**: pick the class $y$ that maximizes $P(y \mid x)$
+- **Bayes' rule** rewrites that posterior as likelihood times prior, divided by the marginal $P(x)$
+- $P(x)$ is the same for every class, so **drop the denominator**: the argmax does not change
+- What remains, $P(x \mid y)\,P(y)$, is what Naive Bayes actually computes
+:::
+:::
+
+::: {.notes}
+Hand-drawn derivation recovered from the original slides. The original built
+it up in stages; the static picture shows the whole chain, so walk it: left
+to right along the top line (posterior, then Bayes' rule with the numerator
+circled), then follow the dashed red arrow down to the bottom line where the
+denominator is gone. The one thing to say out loud: dropping $P(x)$ is legal
+only because we compare classes for the *same* observation $x$. The typeset
+version is on the "Bayes' Rule for Classification" appendix slide.
+:::
+
+## Which Term Is Hard to Estimate? {.smaller}
+
+::: {.columns}
+::: {.column width="62%"}
+<!-- recovered from docs/slides/09-Probabilistic.pptx slide 9 -->
+![](images/naive-bayes-which-term-estimated.png){fig-alt="Hand-drawn annotation of y-hat equals argmax over y of P(x|y)P(y): an arrow from P(x|y) is labelled probability of observing a set of x_i given y, requires estimation; an arrow from P(y) is labelled likelihood of y (prior), easy"}
+:::
+::: {.column width="38%"}
+- The **prior** $P(y)$ is easy: count how often each class appears in the training data
+- The **likelihood** $P(x \mid y)$ is the probability of the *whole* feature vector given the class, and it **requires estimation**
+- With $n$ features that is an $n$-dimensional distribution: far too much to estimate from finite data
+- The independence assumption on the next slide exists to make this one term tractable
+:::
+:::
+
+::: {.notes}
+Recovered from the original hand-annotated slide. Point at the two arrows:
+the right-hand term is a class frequency and takes one pass over the labels;
+the left-hand term is the entire difficulty of the method. This is the
+motivation for the "naive" assumption that follows, so land the asymmetry
+before advancing. If students ask why we cannot just histogram $x$, give the
+exponential-growth answer from the Optimal Bayes Classifier slide.
+:::
+
 ## The "Naive" Independence Assumption
 
 **Problem:** $P(X \mid Y)$ for a full feature vector grows exponentially with
