@@ -58,8 +58,34 @@ representation. Deep learning removes that requirement — at the cost of
 more data and compute. See *Machine Learning for Networking*, Chapter 5.
 :::
 
+## Where Deep Learning Sits
+
+::: {.columns}
+::: {.column width="60%"}
+<!-- recovered from 13-Deep-Learning.pptx slide 3 -->
+![Machine learning contains representation learning, which contains deep learning](images/deep-learning-nested-circles.png)
+:::
+::: {.column width="40%"}
+- **Machine learning:** features are defined by hand; the designer hunts for a good representation
+- **Representation learning:** the algorithm learns the representation itself
+- **Deep learning:** learns *complex, layered* feature representations
+- Everything in this lecture lives in the inner two rings
+:::
+:::
+
+::: {.notes}
+Hand-drawn in the original lecture; the animation is gone, so walk the three
+rings outward-in. Outer ring: classic ML as taught so far, where a human picks
+packet size, inter-arrival time, and so on. Middle ring: the algorithm finds the
+representation. Inner ring: deep learning, where the representation is itself a
+stack of learned transformations. nPrint later in the deck is the networking
+version of moving from the outer ring to the inner one.
+:::
+
 ## The Artificial Neuron
 
+::: {.columns}
+::: {.column width="45%"}
 **The basic unit:** multiply, sum, activate. Each input is multiplied by its weight,
 the products are summed together with a bias, and the sum passes through an
 activation function.
@@ -74,6 +100,12 @@ A single neuron with a sigmoid activation $\Rightarrow$ logistic regression.
 Stack many neurons into layers → **neural network**.
 
 *(Equation in the appendix.)*
+:::
+::: {.column width="55%"}
+<!-- recovered from 13-Deep-Learning.pptx slide 5 -->
+![Weighted inputs and a bias feed a summation node, whose output passes through an activation function](images/neuron-sum-activation.png)
+:::
+:::
 
 ::: {.notes}
 The analogy to logistic regression is exact: one neuron with sigmoid
@@ -121,6 +153,22 @@ layers the gradient signal shrinks to nothing. ReLU keeps the gradient
 at exactly 1 for all positive inputs. Cold-call: "What is the gradient of
 ReLU at z = −2?" (Zero — that's the dying ReLU problem.) See *Machine
 Learning for Networking*, Chapter 5, "Activation Functions."
+:::
+
+## Activation Functions, Sketched
+
+<!-- recovered from 13-Deep-Learning.pptx slide 7 -->
+![Sigmoid, tanh, and ReLU drawn side by side](images/activation-functions-sketch.png)
+
+- **Sigmoid** squashes to (0, 1); **tanh** squashes to (−1, 1); both go flat at the extremes, so the gradient there is near zero
+- **ReLU** is zero for negative inputs and the identity line $y = x$ for positive ones; the slope is exactly 1 wherever it is on
+- The flat tails are the vanishing gradient; ReLU's straight line is why it trains deep stacks
+
+::: {.notes}
+Hand-drawn in the original lecture. Point at the flat tails on sigmoid and tanh
+and ask what the derivative is there. Then point at the ReLU line and ask the
+same question on either side of zero: 1 to the right, 0 to the left, which is
+the dying-ReLU caveat from the previous slide.
 :::
 
 ## Multi-Layer Perceptron (Feedforward Neural Network)
@@ -202,6 +250,30 @@ via the chain rule. Without it, training even modestly deep networks
 would require separate computation for each weight. The mini-batch
 framing also ties directly to GPU parallelism. See *Machine Learning
 for Networking*, Chapter 5, "Training Neural Networks."
+:::
+
+## Gradient Descent, Pictured
+
+::: {.columns}
+::: {.column width="55%"}
+<!-- recovered from 13-Deep-Learning.pptx slide 11 -->
+![Loss as a bowl-shaped function of one weight, with gradient descent stepping toward the bottom](images/gradient-descent-loss-bowl.png)
+:::
+::: {.column width="45%"}
+- Fix every weight but one and plot the loss $\mathcal{L}$ against that weight $w_i$: a bowl
+- The gradient $\partial \mathcal{L} / \partial w_i$ is the slope where you stand; step a little way *downhill* and repeat
+- Backpropagation is how you get that slope for every weight at once (chain rule)
+- A real network has millions of these axes, and the surface is not convex: you find *a* valley, not necessarily *the* valley
+:::
+:::
+
+::: {.notes}
+Hand-drawn in the original lecture. Walk the picture: pick a starting point on
+the left wall, draw the tangent, step down, repeat. Then say the honest part out
+loud: this bowl is one weight; the real surface has as many dimensions as there
+are weights and is full of local minima and saddle points. That is the "does not
+assume convexity" caveat from the original slides, and why Adam and mini-batches
+matter in practice.
 :::
 
 ## Challenges in Training Deep Networks {.smaller}
@@ -316,6 +388,38 @@ it across every downstream task. See the nPrint / nPrintML papers and
 slides 14–30 of the source extract.
 :::
 
+## Bespoke Solutions: One Pipeline per Problem {.smaller}
+
+<!-- recovered from 13-Deep-Learning.pptx slide 16 -->
+![Two copies of the same five-step pipeline, one for application identification and one for anomaly detection](images/bespoke-pipelines.png){width="85%" fig-align="center"}
+
+- Application identification and anomaly detection each rebuild the **same five steps** from scratch
+- Only the first two steps are genuinely problem-specific; data processing, feature engineering, and training are repeated effort
+- Every repetition re-encodes a human guess about which features matter
+
+::: {.notes}
+This is the original lecture's motivation figure, animated row by row. Read the
+top row, then say "now a different problem" and read the bottom row, which is
+identical. Ask the room which boxes actually depend on the problem; they will
+land on the first two, which sets up the next slide.
+:::
+
+## Generalizable Solutions?
+
+<!-- recovered from 13-Deep-Learning.pptx slide 17 -->
+![The pipeline again, with a bracket spanning data processing through model training](images/generalizable-pipeline.png)
+
+- The bracketed span is what a **standard representation plus automated training** could replace
+- Hypothesizing the problem and gathering traffic stay with the analyst
+- If data processing, feature engineering, and model training were the same for every problem, a new task would cost only new data
+
+::: {.notes}
+Same drawing as the previous slide with the bracket added. The bracket is the
+claim: everything from data processing through training can be shared. nPrint
+is the shared representation and AutoML is the shared training step, and the
+nPrintML figure later closes this loop.
+:::
+
 ## nPrint: A Universal Packet Representation
 
 **Core idea:** encode every packet as a fixed-length bit vector that
@@ -359,6 +463,22 @@ OS fingerprint) plus things they didn't know (which TCP option bits
 matter). Show the heatmap and ask: "What does a bright cell mean?"
 (That feature bit has high importance for the classification task.)
 See Holland et al., CCS 2021.
+:::
+
+## nPrintML in One Picture
+
+<!-- recovered from 13-Deep-Learning.pptx slide 25 -->
+![Packets flow through nPrint (packet transformation, data representation) and AutoML (feature selection, model selection, parameter tuning) to an optimized model](images/nprintml-pipeline.png){width="82%" fig-align="center"}
+
+- **nPrint** covers the left half: transform packets, emit the fixed-size representation
+- **AutoML** covers the right half: pick features, pick a model class, tune its parameters
+- Together they are the bracketed span from the "Generalizable Solutions?" slide, now filled in
+
+::: {.notes}
+Point back to the bracket on the generalizable-solutions slide and show that the
+two black spans here are exactly that bracket, split into representation and
+training. The only input is packets; the only output is a model. That is the
+whole pitch of nPrintML.
 :::
 
 ## nPrintML: Combining nPrint with AutoML {.smaller}
@@ -416,6 +536,22 @@ distant ones. CNNs exploit that spatial / sequential locality. See
 Networks."
 :::
 
+## Convolution as a Weighted Average
+
+<!-- recovered from 13-Deep-Learning.pptx slide 32 -->
+![A noisy signal x(t) convolved with a kernel w(t) yields a smoothed signal](images/convolution-as-smoothing.png)
+
+- $s(t) = \int x(a)\,w(t-a)\,da$: slide the kernel $w$ along the input $x$ and take a weighted average at each position
+- A hump-shaped kernel smooths: the noisy red signal becomes the smooth blue one
+- A CNN **learns** the kernel weights instead of fixing them, so the "smoothing" becomes "pattern detection"
+
+::: {.notes}
+Hand-drawn in the original lecture. Before any neural-network vocabulary, show
+that convolution is just a sliding weighted average from signal processing. The
+only new idea in a CNN is that the weights in the kernel are learned. Then move
+to the next slide for the filter and feature-map terminology.
+:::
+
 ## How Convolutions Work
 
 **Core operation:** a small matrix of **learned weights** (a *filter*
@@ -442,6 +578,43 @@ insight is parameter sharing: the filter that detects "SYN burst" is
 the same weights applied to every position, not a separate set of
 weights per position. See *Machine Learning for Networking*, Chapter 5,
 "How Convolutions Work."
+:::
+
+## A Convolution Layer, by the Numbers
+
+<!-- recovered from 13-Deep-Learning.pptx slide 36 -->
+![A 5 by 5 by 3 filter slides over a 32 by 32 by 3 input and produces a 28 by 28 by 1 activation map](images/conv-layer-dimensions.png)
+
+- Input: a 32 × 32 image with 3 color channels; filter: 5 × 5 × 3, matching the channel depth
+- Sliding the filter over every spatial position gives a 28 × 28 × 1 **activation map** (32 − 5 + 1 = 28)
+- One filter, one map; $k$ filters stack into a 28 × 28 × $k$ tensor for the next layer
+- Same arithmetic in 1D: a length-$N$ packet sequence and a width-$m$ filter give $N - m + 1$ outputs
+
+::: {.notes}
+Hand-drawn in the original lecture. Do the arithmetic on the board: 32 minus 5
+plus 1 is 28. Then translate to networking: replace the image with a sequence of
+nPrint rows and the 5 by 5 window with a window of a few consecutive packets.
+:::
+
+## Max Pooling, by Example
+
+::: {.columns}
+::: {.column width="55%"}
+<!-- recovered from 13-Deep-Learning.pptx slide 37 -->
+![A 4 by 4 grid max-pooled with a 2 by 2 window into a 2 by 2 grid](images/max-pooling-example.png)
+:::
+::: {.column width="45%"}
+- Each 2 × 2 colored block sends only its **largest** value forward: 6, 8, 3, 4
+- The output is a quarter the size, which cuts parameters downstream
+- Small shifts in where a pattern sits no longer change the output: **translational invariance**
+- Think of it as zooming out of the image
+:::
+:::
+
+::: {.notes}
+Hand-drawn in the original lecture. Ask the room to read off the four maxima
+before you reveal them. Then ask what happens if the 8 moves one cell to the
+left: nothing, which is the invariance point.
 :::
 
 ## CNN Architecture: Layers and Hierarchy {.smaller}
