@@ -79,6 +79,25 @@ ML for security fits the same closed-loop architecture as network management:
 Draw the connection to the general network control loop introduced in the first lecture. The three stages map cleanly onto security operations: a lightweight threshold triggers deep-packet inspection (measure escalation); a trained classifier scores each flow (model); a firewall rule or rate-limiter acts (control). The ML pipeline here is the same one the rest of the course covers — the domain-specific challenge is the adversarial environment.
 :::
 
+## The Loop in One Picture
+
+::: {.columns}
+::: {.column width="60%"}
+<!-- recovered from docs/slides/02-security.pptx slide 4 -->
+![](images/measure-model-control-loop.png)
+:::
+::: {.column width="40%"}
+- **Measure** (orange, up): the operational network yields topology and configuration, failures and attacks, and traffic demands
+- **Model**: those feed a network-wide "what if" model, which is where inference and ML live
+- **Control** (orange, down): the model's output becomes changes to the network, which closes the loop
+- For security, "failures/attacks" is the input that matters and "changes" means block, rate-limit, or quarantine
+:::
+:::
+
+::: {.notes}
+Recovered from the original deck; the picture is static, so walk it in order. Start at the cloud: everything begins with measurement of the operational network. Three kinds of measurement go up into the model: what the network looks like (topology, configuration), what is going wrong (failures, attacks), and what it is being asked to carry (traffic demands). The model box is where this course lives: protocol modeling and statistical inference, which today mostly means ML. The output comes back down as changes to the network. Then map it onto the table from the previous slide: for security the attack signal is the measurement, the classifier is the model, and the firewall rule or rate limiter is the control. Ask: which arrow does an adversary attack? (Both the measurement arrows, by poisoning what is observed, and the model, by evasion; this foreshadows Part 2.)
+:::
+
 ## Spam and Phishing: What's Different
 
 Content filters and IP blacklists are the baseline — they fail predictably:
@@ -171,6 +190,19 @@ This is the "how, not what" idea made concrete. Each feature maps to one of the 
 Builds on Ramachandran, Feamster, Vempala, "Filtering Spam with Behavioral Blacklisting," ACM CCS 2007. RuleFit (Friedman and Popescu) fits many shallow decision trees, treats each root-to-leaf path as a binary rule, then fits an L1-regularised linear model over the rules plus the raw features; that is why the result is interpretable. The 70% / 0.44% numbers are the headline result from the paper's Table. Emphasise the cost argument: this decision is made at connection time from a handful of features, so it scales to a mail-appliance provider's full volume, and the 30% it misses goes on to the (expensive) content filter. Also worth noting the class imbalance: 0.44% false positives sounds tiny but is a lot of legitimate mail at scale, which is why SNARE was framed as a reputation signal rather than a hard block.
 :::
 
+## A Lot Happens Before Spam Is Sent {.smaller}
+
+<!-- recovered from docs/slides/02-security.pptx slide 11 -->
+![](images/spam-lifecycle-before-send.png){width="78%" fig-align="center"}
+
+- Read right to left along the time arrow: domains are registered (registrar, registry, ICANN), then DNS and web hosting are set up, and only then does a botnet send mail
+- Each stage leaves a trace in a different dataset: registration records, DNS and hosting, then SMTP connections and content
+- Detecting earlier means a longer head start and a signal the attacker paid real money to create
+
+::: {.notes}
+Recovered from the original deck; the time arrow runs right to left, so narrate from the right-hand column. First the spammer acquires network resources: registers .com domains through a registrar, which goes to the registry (VeriSign for .com) under ICANN policy. Then the hosting infrastructure: a DNS server to resolve the names and a web server for the spam-advertised page. Only at the end does the botnet distribute the messages, which is the first point where a content filter sees anything. The whole section after this slide works leftward along the arrow: SNARE at connection time, then the DNS and registration work. Ask the room which of the three columns is the cheapest for the attacker to rebuild after being caught, and which leaves the most durable paper trail.
+:::
+
 ## Going Back Earlier in Time {.smaller}
 
 Each step earlier in the attack lifecycle gives cheaper, more robust detection — and a bigger head start.
@@ -239,6 +271,31 @@ These features fire at registration time — before the domain is ever used for 
 
 ::: {.notes}
 Walk through the edit-distance idea concretely: insertion (abcdef → abcHdef), deletion (abcHdef → abcdef), substitution (abCdef → abHdef). Spammers often create domain names that are slight misspellings of trusted brands. Batch cohesion is a property of individual domains — a domain that was registered in a cohesive batch is suspect even if its own name looks clean.
+:::
+
+## Registration-Time Features: Two Examples {.smaller}
+
+::: {.columns}
+::: {.column width="50%"}
+**Edit distance to known-bad domains**
+
+<!-- recovered from docs/slides/02-security.pptx slide 23 -->
+![](images/edit-distance-operations.png)
+
+- One insertion, deletion, or substitution each cost one; typo-squats and brand look-alikes sit at distance one or two from a known name
+:::
+::: {.column width="50%"}
+**Name cohesiveness within a registration batch**
+
+<!-- recovered from docs/slides/02-security.pptx slide 25 -->
+![](images/registration-batch-cohesion.png)
+
+- Domains registered together that are permutations of the same tokens (ask, lender, home) are a cohesive batch; a batch of unrelated names is not
+:::
+:::
+
+::: {.notes}
+Both pictures are recovered from the original deck and make the two name-based features on the previous slide concrete. Left: edit distance counts the minimum number of single-character insertions, deletions, and substitutions to turn one string into another, so a candidate domain that is one edit away from a blacklisted name or a well-known brand gets a high suspicion score. Right: batch cohesion is a feature of the registration event, not of the single name. The cohesive example is real: asklenderhome.com and askhomelendersnow.com registered in the same window are shuffles of the same three tokens, which is how a campaign manufactures many names cheaply. The uncohesive batch (stationary.com, bestcooks.com) is what ordinary registrations look like. Point out that a domain whose own name looks clean still inherits suspicion from the batch it arrived in.
 :::
 
 ## Disinformation Infrastructure Detection {.smaller}
