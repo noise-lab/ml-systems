@@ -91,6 +91,34 @@ If you have access to a player SDK (e.g., through a streaming partner) you can m
 these directly; without that access, ML inference is the only path.
 :::
 
+## Where the Passive Monitor Sits
+
+::: {.columns}
+::: {.column width="62%"}
+<!-- recovered from docs/slides/03-performance.pptx slide 12 (Netflix scatter overlay stripped) -->
+![](images/vantage-point-architecture.png)
+:::
+::: {.column width="38%"}
+- A **passive monitor** inside the ISP sees every flow between the
+  home and the service, in both directions
+- Video arrives from the **service servers** across an IXP, or from
+  **interconnect caches** placed inside the ISP
+- The monitor sees packets, not player state: encryption hides
+  everything above the transport header
+- Every result in this lecture is inferred from this one vantage point
+:::
+:::
+
+::: {.notes}
+Walk the picture left to right: laptop on home Wi-Fi, home router, the
+ISP access router, the passive monitor sitting on the ISP side of the
+access link, then the IXP and the service's own servers, with the
+interconnect caches as the short path most video actually takes.
+In the original deck the Netflix scatter plot on the next slide flew in
+on top of this diagram; the build is gone, so say "and here is what that
+monitor actually sees" as you advance.
+:::
+
 ## What Encrypted Traffic Looks Like
 
 ![A Netflix session: colored points = different TCP flows; red = audio.
@@ -109,6 +137,30 @@ from this pattern to the QoE metrics.
 ::: {.notes}
 Transition slide. Now we go step by step: identify which service, extract features,
 train and validate a model, deploy.
+:::
+
+## The Pipeline in One Picture {.smaller}
+
+<!-- recovered from docs/slides/03-performance.pptx slide 13 (dotted elbow connector stripped) -->
+![](images/inference-pipeline-stages.png){width=90%}
+
+- Five stages, left to right; every inference system in this lecture
+  follows them
+- The three highlighted stages, **collection, cleaning, and feature
+  engineering**, are where most of the engineering effort and most of
+  the accuracy come from
+- Model choice (random forest here) matters less than the features it
+  is given
+- Testing must mirror deployment: the lab-versus-field gap returns
+  later as domain adaptation
+
+::: {.notes}
+Static version of the pipeline flowchart from the original deck. Point
+at each box and name the concrete instance for video QoE: packet traces
+from the passive monitor; cleaning out sessions with missing labels;
+segment-size and inter-arrival features; random forest; precision and
+recall on held-out sessions. The red outlines are the original
+emphasis: the data-side stages are the ones students underestimate.
 :::
 
 ## Step 1: Service Identification
@@ -160,6 +212,34 @@ Transport features are expensive to track at line rate; application features are
 cheaper and more informative.
 :::
 
+## What the Monitor Can Read in Each Packet {.smaller}
+
+::: {.columns}
+::: {.column width="60%"}
+<!-- recovered from docs/slides/03-performance.pptx slide 17 -->
+![](images/feature-layers-at-monitor.png)
+:::
+::: {.column width="40%"}
+- Each packet passing the monitor carries **Ethernet, IP, and TCP
+  headers in the clear**; only the application payload is locked
+- Network-layer features come straight from the IP header: bytes,
+  packets, flows
+- Transport-layer features need per-flow TCP state: retransmissions,
+  RTT, window size
+- Application-layer features are *inferred* from the pattern of locked
+  payloads: segment sizes and request timing
+:::
+:::
+
+::: {.notes}
+Same vantage-point diagram as before, now with the header stack above
+it. Trace the two thin lines: the Ethernet and IP headers are read
+directly off the wire, the padlock on APP is what encryption took away.
+The red and blue packets along the path are the stream of segment
+downloads; the build in the original revealed the header stack one
+layer at a time, so narrate it in that order.
+:::
+
 ## Segment Boundaries Are Visible in Encrypted Traffic
 
 ![Upstream TCP packets (x-marks) mark segment request boundaries; gaps separate segments.](images/s19-i45.png){width=85%}
@@ -169,6 +249,28 @@ This is a key empirical finding: even in HTTPS traffic, the upstream request for
 each video segment is visible as a small TCP packet. Downstream bursts are separated
 by pauses (the player's buffer state allows it to wait). These segment boundaries
 give us the most informative features — essentially the "receipt slips" for video data.
+:::
+
+## Acquiring Labeled Data: The Lab Rig {.smaller}
+
+<!-- recovered from docs/slides/03-performance.pptx slide 21 -->
+![](images/labeled-data-collection-rig.png){width=85%}
+
+- A **Selenium-driven** browser plays sessions from the four services
+  automatically, around the clock
+- A **Chrome extension** reads player state (resolution, startup time,
+  buffer) to produce the ground-truth labels
+- The router runs **tc** to shape bandwidth, latency, and loss so
+  training covers varied network conditions
+- Result: about 13 k labeled sessions captured at the same point in
+  the network as deployment, so features match
+
+::: {.notes}
+Left to right: the automated client with the labeling extension, the
+shaping router, the Internet, the four services. Emphasize that labels
+come from the player, not from the network, and that the capture point
+matches where the monitor will sit in deployment. Ask the room what
+breaks if a service changes its player or its CDN after collection.
 :::
 
 ## Step 3: Model Training — Design Choices {.smaller}
@@ -239,6 +341,38 @@ Right: the *excluded* model result (AP=0.29) is the most important practical
 finding: training data must include every target service. A truly general
 model remains an open problem. The composite model is useful but requires
 labeled data from all services you care about.
+:::
+
+## Time-Bin Alignment: Lab Features vs. Field Features {.smaller}
+
+::: {.columns}
+::: {.column width="50%"}
+<!-- recovered from docs/slides/03-performance.pptx slide 42, aligned-bin build state -->
+![Lab: bins start at the first packet of the session](images/time-bins-aligned.png)
+:::
+::: {.column width="50%"}
+<!-- recovered from docs/slides/03-performance.pptx slide 42, offset-bin build state -->
+![Field: the monitor's clock starts the bins earlier](images/time-bins-offset.png)
+:::
+:::
+
+- Training data is binned from the session start ($F_0, F_1, \ldots$); a
+  deployed monitor bins on its own clock, so every window is shifted
+  ($F'_0, F'_1, \ldots$)
+- The startup burst lands in a different bin and segment counts per bin
+  change, so the feature distribution seen in the field differs from
+  training
+- Fixes: train on many random offsets, or build models that carry their
+  own error estimate
+
+::: {.notes}
+The original slide animated this: bins aligned to the session start,
+then the same session re-binned with an offset, then two more offsets
+on top. Walk it: point at the red startup burst sitting at the left
+edge of F0 on the left, then partly inside a bin that started earlier
+on the right. Same session, different features, and the model was
+trained only on the left-hand kind. This is lesson 5 on the Key Lessons
+slide.
 :::
 
 ## Surprising Result: More Speed Doesn't Mean Better Video
