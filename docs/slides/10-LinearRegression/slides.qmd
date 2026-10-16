@@ -137,6 +137,19 @@ The model is still **linear in $\beta$** — so the same closed-form solution ap
 This is the central insight of basis expansion: we change the form of the data, not the form of the function. After transforming X into a new feature matrix, you hand the result to the exact same linear regression solver. The model is linear in parameters even though it is nonlinear in the original inputs. Emphasize this point clearly — it is what makes polynomial regression not a separate algorithm.
 :::
 
+## Same Fit, New Design Matrix {.smaller}
+
+<!-- recovered from docs/slides/10-LinearRegression.pptx slide 15 (pen ink drawn in lecture) -->
+![Hand-drawn comparison: the original design matrix of raw inputs versus the basis-expanded one](images/basis-expansion-design-matrix.png){width="78%" fig-align="center"}
+
+- **Left:** the original model, $y = X^T\beta$, pairs each coefficient with a raw input: $1, x_1, \ldots$
+- **Right:** after transformation, $y = \beta^T \Phi(x)$, the *same* coefficient vector multiplies a column of basis values $\phi_1(x_1), \phi_2(x_1), \ldots$
+- The fitting procedure never sees the difference: swap the matrix, keep the solver
+
+::: {.notes}
+Walk the picture left to right. On the left, the row vector of coefficients multiplies the raw observation (with the leading 1 for the intercept). On the right, every observation has been pushed through the basis functions, one row per observation and one column per basis function, and the coefficient vector is unchanged in form. The point to land: the transformation is applied to each observation, producing a new design matrix, and least squares runs exactly as before. Drawn by hand in the 2020 lecture; this is the static capture of that board work.
+:::
+
 ## Common Basis Functions
 
 ::: {.columns}
