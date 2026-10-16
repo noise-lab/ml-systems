@@ -48,6 +48,36 @@ but fundamental. The book's intro chapter distinguishes ML from "standard"
 algorithms in exactly this way — it is worth dwelling on.
 :::
 
+## How Networks Run: Measure, Model, Control
+
+::: {.columns}
+::: {.column width="60%"}
+<!-- recovered from docs/slides/01-intro.pptx slide 6 -->
+![Measure the network, model a change, control the network](images/measure-model-control.png)
+:::
+::: {.column width="40%"}
+- Operators **measure** the running network: topology and configuration,
+  failures and attacks, traffic demands
+- A network-wide **"what if" model** predicts the effect of a change before
+  it is made
+- The chosen change goes back to the network as **control**
+- The model is where **inference / ML** enters: protocol modeling and
+  statistical inference
+:::
+:::
+
+::: {.notes}
+Static figure recovered from the original deck; walk it by hand. Start at the
+bottom: the operational network is the only ground truth. Orange arrows going
+up are measurement (three kinds of input: what the network looks like, what is
+going wrong, what users are asking of it). Those feed a network-wide "what if"
+model, which historically was analytical (queueing, closed-form) and is now
+increasingly statistical. The output of the model is a proposed change, and
+the orange arrows coming back down are control. The orange box is the point:
+ML is not a new loop, it replaces the model in a loop operators have always
+run. This sets up the next two slides.
+:::
+
 ## The ML Control Loop
 
 ::: {.columns}
@@ -72,6 +102,35 @@ Walk through each box: data ingestion → fusion → cleaning → feature creati
 → representation → modeling → deployment. The key insight is that 80%+ of
 the effort is in data preparation — not modeling. See Figure 1 (ml-loop) in
 the book's Introduction chapter.
+:::
+
+## The Control Loop, Drawn
+
+::: {.columns}
+::: {.column width="58%"}
+<!-- recovered from docs/slides/01-intro.pptx slide 7 -->
+![Measurement feeds machine learning; control closes the loop](images/ml-control-loop.png)
+:::
+::: {.column width="42%"}
+- **Measurement** draws on raw traffic, flow records, summary statistics,
+  and user feedback
+- The learned model's output feeds a **control** step that changes the network
+- The dashed box is where most deployed systems stop: measure and infer
+- The arrow back into the network is the hard part, and the course's
+  recurring theme
+:::
+:::
+
+::: {.notes}
+Static figure, no build; narrate it. The dashed box bounds measurement plus
+machine learning, which is what nearly every "ML for networking" paper and
+product actually does: collect, train, predict, show a dashboard. The Control
+box sits outside the dashed line on purpose. Closing that loop means the
+model's output changes routing, rate limits, placement, and the network you
+then measure is no longer the one you trained on. Ask: what breaks when the
+loop closes with no human in it? Feedback oscillation, adversarial drift,
+training on your own actions. Come back to this picture in the Gap slide and
+again in the deployment lectures.
 :::
 
 ## A 2025 Milestone: Self-Driving Networks Ship {.smaller}
@@ -180,6 +239,35 @@ the course projects. The left column = what a good practitioner can do today.
 The right column = open problems. Ask students which gap interests them most;
 it often predicts their project direction. See the "State of the Art" material
 in the source extract.
+:::
+
+## Closing the Cycle: What Programmability Enables
+
+::: {.columns}
+::: {.column width="58%"}
+<!-- recovered from docs/slides/01-intro.pptx slide 9 -->
+![Monitoring, inference, and control over a programmable data plane](images/network-management-cycle.png)
+:::
+::: {.column width="42%"}
+- **Monitoring:** finer-grained, programmable measurement from the data plane
+- **Inference:** streaming, distributed models rather than offline batch jobs
+- **Control:** customizable actions pushed back into the data plane
+- Programmable, protocol-independent data planes are what make all three
+  possible at once
+:::
+:::
+
+::: {.notes}
+This was an animated build in the original; the still shows the final state,
+so walk it clockwise. The grey cloud is the data plane. Up the left arc:
+monitoring, which programmable switches and streaming telemetry now make
+fine-grained and on demand. The top box, inference, is the ML; the red
+annotation says the enabler is streaming and distributed inference rather
+than offline analysis on a trace. Down the right arc: control as customizable
+actions, which programmable data planes can apply at line rate. Tie each red
+box to the right column of the Gap slide: these are the technologies that
+turn "what we still need" into something buildable, and they are why the
+"Why Now?" history table ends where it does.
 :::
 
 # The Machine Learning Pipeline {.center}
