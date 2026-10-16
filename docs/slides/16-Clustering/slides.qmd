@@ -26,6 +26,25 @@ Open with the observation that clustering is the entry point to unsupervised lea
 Unsupervised learning is the dominant paradigm in networking because labeled datasets are scarce and expensive. The three bullet tasks all appear in the Chapter 6 framing; this deck focuses on clustering. Cold-call: "Name one network dataset you've heard of — does it come with labels?"
 :::
 
+## The Unsupervised Learning Landscape
+
+::: {.columns}
+::: {.column width="62%"}
+<!-- recovered from docs/slides/16-Clustering.pptx slide 4 (pen ink) -->
+![](images/unsupervised-learning-taxonomy.png)
+:::
+::: {.column width="38%"}
+- Two branches: **dimensionality reduction** (PCA, NMF; Lecture 15) and **clustering**
+- Clustering splits into **hierarchical** (single / complete / average linkage) and **partitional**
+- Partitional methods differ in what they assume: a **distribution** (EM / GMM), a **mode** (k-means, mean-shift), **density** (DBSCAN), or a **graph**
+- This lecture walks the right-hand side, left to right
+:::
+:::
+
+::: {.notes}
+This is the board sketch from the original lecture, drawn live; it is a static image now, so walk it with the pointer. Start at the top: everything here has no labels. The left branch is last lecture. On the right, hierarchical versus partitional is the first fork; the partitional leaves are the four algorithms in the roadmap table on the next slides. Point out that k-means sits under "mode seeking", which is why it fails when clusters are not blobs around a mode.
+:::
+
 ## Clustering in Networking: Motivating Examples
 
 ::: {.columns}
@@ -79,6 +98,19 @@ minimize the total squared distance from each point to its centroid. *(Equation 
 The "means" in K-means literally refers to step 4 — moving each centroid to the arithmetic mean of its cluster. The algorithm always converges (SSE is non-increasing) but may reach a local minimum. See book Chapter 6, K-Means section. Ask: "What happens to SSE as K increases?"
 :::
 
+## K-Means, Step by Step
+
+<!-- recovered from docs/slides/16-Clustering.pptx slides 6, 7, 8, 9, 11, 12 (composited) -->
+![](images/kmeans-steps.png){width="96%"}
+
+- Centers start **anywhere**; the first assignment is already a partition, just a poor one
+- Each M-step drags a center toward the mean of its points, and each E-step then **re-colors** the points that changed sides
+- After two rounds the three centers sit where the eye would put them; nothing moves on the next pass, so the loop stops
+
+::: {.notes}
+Six frames from the original animated walkthrough, now one static panel: read them left to right, top to bottom. Frame 1 is random seeds; frame 2 colors each point by nearest seed; frame 3 shows the arrows of the first M-step; frame 4 is the second E-step, where a few points switch clusters; frames 5 and 6 are the second M-step and its result. Ask the room which frame the SSE drops the most in (frame 3) and why the final frame is a local, not necessarily global, minimum (depends on frame 1).
+:::
+
 ## Choosing K: The Elbow Method
 
 - Run K-means for K = 1, 2, 3, …
@@ -122,6 +154,19 @@ This is the most practical advice for practitioners. The elbow heuristic is the 
 The image (s22-i01.png) shows a K-means result on data with elongated, diagonally-oriented clusters. The spherical assumption causes the four centroids to split clusters incorrectly. This is a teaching moment: K-means is not wrong — it's doing its best under its assumptions. The fix is to use GMM or DBSCAN. Standardize features before running K-means; forgetting this is the most common practical mistake.
 :::
 
+## Two Shapes K-Means Cannot Split
+
+<!-- recovered from docs/slides/16-Clustering.pptx slide 14 (pen ink) -->
+![](images/kmeans-failure-sketch.png){width="88%"}
+
+- **Concentric rings:** the two true clusters share a centroid, so any straight boundary (green) cuts both
+- **A line plus two outliers:** two centroids split the long cluster in half rather than isolating the two stray points
+- Both are density problems, not distance problems; this is the hand-off to DBSCAN
+
+::: {.notes}
+Board sketch from the original lecture. The green line is the k-means decision boundary for K = 2 in each panel. Left: a ring around a core; the centroids of both clusters are at the same spot, so k-means has nothing to separate them with. Right: a single elongated cluster and two outliers; with K = 2, k-means prefers to bisect the long cluster because that lowers SSE more than isolating two points. Pair this with the matplotlib example on the previous slide: the elongated clusters there are the same failure in real data.
+:::
+
 # Gaussian Mixture Models {.center}
 
 ## GMM: Beyond Centroids
@@ -150,6 +195,39 @@ The image (s22-i01.png) shows a K-means result on data with elongated, diagonall
 The book's packet-length example is excellent: model packet length as a mixture of two Gaussians, one for scans and one for legitimate traffic. Then P(scan | length=64) is high, P(web | length=64) is low. This is a generative model — you can also *sample* from it to augment a dataset. See Chapter 6, GMM section.
 :::
 
+## GMM: A Mixture, Drawn
+
+<!-- recovered from docs/slides/16-Clustering.pptx slide 25 (pen ink) -->
+![](images/gmm-mixture-sketch.png){width="88%"}
+
+- **Left:** the density you actually observe, bumpy and asymmetric
+- **Right:** the generative story behind it, three Gaussians $p(x_i \mid z_i = k)$ with their own $\mu_k, \sigma_k^2$
+- Each component gets a **prior** $\pi_k$, and the priors sum to one; the mixture is $\sum_k \pi_k \, p(x_i \mid z_i = k)$
+- Fitting a GMM means recovering $\{\pi_k, \mu_k, \sigma_k^2\}$ from the left-hand curve alone
+
+::: {.notes}
+Board sketch from the original lecture. Draw the connection explicitly: the two left-hand bumps come from the narrow purple and green components overlapping, and the broad right-hand bump is the wide blue one. The latent variable z_i is "which component generated point i"; we never see it. That is exactly what the E-step estimates. For the networking example on the previous slide, the purple-green pair is scan traffic near 60 bytes and the blue is web traffic near 800.
+:::
+
+## EM: Known vs. Unknown Sources
+
+::: {.columns}
+::: {.column width="55%"}
+<!-- recovered from docs/slides/16-Clustering.pptx slide 26 (pen ink) -->
+![](images/em-known-vs-unknown-sources.png)
+:::
+::: {.column width="45%"}
+- **Top:** if every point is colored by its source, fitting each Gaussian is just a mean and a variance
+- **Bottom:** the points are gray; we only know the current guess for the two curves
+- **E-step:** color each gray point *fractionally* by how much each curve explains it (the hatch marks)
+- **M-step:** refit each curve to its fractional points, then repeat
+:::
+:::
+
+::: {.notes}
+Board sketch from the original lecture; static now, so point at the two rows. Top row is the easy supervised case: red points fit the red Gaussian, blue fit the blue. Bottom row is the real problem: gray points, unknown source. The hatch marks under each curve are the soft responsibilities from Bayes' rule, p(source | x). A point in the overlap gets some of both; that is the "soft" in soft clustering, and it is the one thing k-means cannot express.
+:::
+
 ## GMM vs. K-Means
 
 | | K-Means | GMM |
@@ -164,6 +242,25 @@ The book's packet-length example is excellent: model packet length as a mixture 
 
 ::: {.notes}
 The key insight: K-means is a special case of GMM where all covariances are equal and spherical and assignments are hard (0/1). Emphasize data generation — GMMs can produce synthetic traffic samples that look like real traffic, which is useful for augmenting small labeled datasets. Book Chapter 6.
+:::
+
+## Two Families: Distribution-Based vs. Density-Based
+
+::: {.columns}
+::: {.column width="60%"}
+<!-- recovered from docs/slides/16-Clustering.pptx slide 23 (pen ink) -->
+![](images/distribution-vs-density-clusters.png)
+:::
+::: {.column width="40%"}
+- **Distribution-based** (KDE, GMM): each cluster is a parametric blob, so clusters look like ellipses
+- **Density-based** (DBSCAN, mean-shift): a cluster is any connected high-density region, so bananas and crescents are fine
+- Choose by the shapes you expect, not by what is easiest to fit
+
+:::
+:::
+
+::: {.notes}
+Board sketch from the original lecture. Left: three round-ish blobs; a GMM would nail these. Right: two crescents wrapped around a core; a GMM would need many components to approximate a crescent, and k-means would slice it. The point of the sketch is the question to ask before picking an algorithm: do my clusters have a shape a Gaussian can describe? Mean-shift is named in the sketch but is not covered in this deck; see the coverage notes.
 :::
 
 # DBSCAN {.center}
@@ -193,6 +290,25 @@ The key insight: K-means is a special case of GMM where all covariances are equa
 
 ::: {.notes}
 The image (s24-i02.png) shows a KDE density curve with three peaks (colored clusters) and sparse outlier points marked as stars. This illustrates the density-based intuition: peaks → clusters, valleys/sparse areas → noise. In networking, outlier points might be novel attack traffic. Book Chapter 6, DBSCAN section.
+:::
+
+## DBSCAN, Drawn
+
+::: {.columns}
+::: {.column width="50%"}
+<!-- recovered from docs/slides/16-Clustering.pptx slide 28 (pen ink) -->
+![](images/dbscan-sketch.png)
+:::
+::: {.column width="50%"}
+- Each small circle with an arrow is a **seed point** and its **ε radius**
+- If enough neighbors fall inside ε, the seed is a **core point** and the cluster grows outward through its neighbors
+- The outlines are where growth stopped: the red boundary is the set of points reachable from the seed
+- The three dots at the top right have no dense neighborhood, so they stay **noise**
+:::
+:::
+
+::: {.notes}
+Board sketch from the original lecture. Walk it from a seed: pick the lower-left seed in the big cluster, draw its ε ball, count neighbors; if that count is at least minPts, pull them in and repeat from each. The red boundary is the final reachable set. Then do the same for one of the three stray points: its ε ball is empty, so it is never a core point and never gets reached, so it is noise. Contrast with k-means, which would have forced those three points into one of the two clusters.
 :::
 
 ## DBSCAN Advantages and Disadvantages {.smaller}
@@ -240,6 +356,26 @@ The varying-density problem is DBSCAN's biggest practical limitation in networki
 
 ::: {.notes}
 The dendrogram is the output, not a parameter. You inspect it and decide where to cut based on domain knowledge. The book's networking example: hierarchical clustering by IP address using Hamming distance naturally reflects topological containment (room → building → campus). Where containment doesn't hold (IP prefix AND protocol), use a different method. Book Chapter 6, Hierarchical Clustering section.
+:::
+
+## Cutting the Dendrogram
+
+::: {.columns}
+::: {.column width="38%"}
+<!-- recovered from docs/slides/16-Clustering.pptx slide 17 -->
+![](images/dendrogram-cut.png)
+:::
+::: {.column width="62%"}
+- Leaves are the nine data points; every horizontal bar is a **merge**, placed at the height of the distance at which it happened
+- The dashed line is a **cut**; the subtrees it crosses are the clusters, here four of them (3, 3, 1, 2 points)
+- Raise the cut and clusters merge; lower it and they split, always **nested** inside the previous answer
+- A singleton cluster at a cut is a candidate outlier
+
+:::
+:::
+
+::: {.notes}
+Drawn dendrogram from the original deck. Point out that no K was chosen up front; the tree was built fully, then the cut chose K = 4 after the fact. Slide the cut up with the pointer: the two left groups merge first, then the right-hand pair joins the singleton. Each level is a refinement of the one above, which is the containment property the next slide is about. Linkage choice (previous slide) changes where the bars sit, not how you read the tree.
 :::
 
 ## When to Use Hierarchical Clustering
