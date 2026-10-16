@@ -125,6 +125,26 @@ entirely local — the player cannot see what other users are doing, yet RL lear
 to infer congestion from its own buffer behavior.
 :::
 
+## Pensieve: The RL Loop in One Picture {.smaller}
+
+<!-- recovered from docs/slides/04-resource.pptx slide 4 -->
+![The Pensieve control loop (figure from Mao, Netravali, and Alizadeh, SIGCOMM 2017).](images/pensieve-rl-loop.png){width="88%"}
+
+- **Left:** the state is nothing but the player's own measurements: recent bandwidth, the last bitrate chosen, and the buffer level.
+- **Middle:** a small neural network maps that state to a distribution over bitrates (240p to 1080p) and samples one per segment.
+- **Right:** the chosen bitrate plays out; the QoE it produced comes back as the reward that trains the policy.
+- **Loop:** every decision changes the buffer the next decision sees, which is why this is RL and not classification.
+
+::: {.notes}
+Static figure; the original slide did not animate. Walk it left to right. The three
+input signals are all local to the client: no cross-traffic, no server view. Then the
+network, then the action, then the reward arrow looping back. Ask: "Where is the
+label?" There is none; the only supervision is the QoE reward, which arrives after
+the fact. That is the difference from the classification problems earlier in the course.
+Source: Mao, Netravali, Alizadeh, "Neural Adaptive Video Streaming with Pensieve,"
+SIGCOMM 2017, Figure 2.
+:::
+
 ## 2025 Update: Deep RL ABR Still Advancing {.smaller}
 
 ::: {.vignette}
@@ -191,6 +211,32 @@ Congestion Control," SIGCOMM 2013. The book discusses Remy under "Resource Alloc
 Remy optimizes offline and then deploys a fixed lookup table. Ask: "What are the
 trade-offs of offline optimization vs. online RL?" (offline: faster at run time, may
 not generalize; online: adapts but has training cost in production).
+:::
+
+## Remy: The Throughput-Delay Frontier {.smaller}
+
+::: {.columns}
+::: {.column width="55%"}
+<!-- recovered from docs/slides/04-resource.pptx slide 7 -->
+![Figure 4 from Winstein and Balakrishnan, SIGCOMM 2013: 15 Mbps dumbbell, eight senders with on-off flows; medians and 1-sigma ellipses.](images/remy-throughput-delay-frontier.png)
+:::
+::: {.column width="45%"}
+- **Axes:** throughput up, queueing delay to the *right* is smaller (log scale), so "better" is the upper right.
+- **Human-designed protocols** (Cubic, Compound, NewReno, Vegas) spread along a diagonal band: more throughput costs more delay.
+- **RemyCCs** at three values of the delay weight δ sit above and to the right of all of them; the blue line is the efficient frontier.
+- **The knob is explicit:** δ in the utility function moves you along the frontier instead of picking a new protocol.
+:::
+:::
+
+::: {.notes}
+Static figure; the original slide did not animate. Orient students on the axes first:
+the delay axis is reversed and logarithmic, which trips people up. Then the band of
+human protocols, then the three Remy points. The teaching point is not that Remy is
+"better" but that the trade-off is stated as a utility function and searched, so the
+designer picks δ rather than a heuristic. Tie back to the reality-check slide that follows:
+this is a simulation under the network model Remy was trained for.
+Source: Winstein and Balakrishnan, "TCP ex Machina: Computer-Generated Congestion
+Control," SIGCOMM 2013, Figure 4.
 :::
 
 ## Reality Check: Has Learned Congestion Control Shipped? {.smaller}
@@ -270,6 +316,30 @@ Services." The WISE system instantiates this idea. Point out: this is a case whe
 the problem structure (we have a rich operational baseline and are asking about small
 perturbations from it) makes ML tractable. The baseline data is the training set;
 the what-if transformation is the prediction task.
+:::
+
+## WISE in One Picture: Three Questions {.smaller}
+
+::: {.columns}
+::: {.column width="60%"}
+<!-- recovered from docs/slides/04-resource.pptx slide 11 -->
+![The what-if pipeline: a distribution of inputs under the hypothetical, pushed through a learned response-time function, yields the predicted response-time distribution.](images/wise-what-if-estimation.png)
+:::
+::: {.column width="40%"}
+- **What are the variables X?** Enough to determine response time; that is domain knowledge, not learning.
+- **What is f?** Learned statistically from the existing deployment's logs.
+- **What is the input distribution under the what-if?** The existing deployment gives the baseline; the hard part is transforming it to the hypothetical.
+- Everything on the next three slides answers the third question.
+:::
+:::
+
+::: {.notes}
+Static figure; the original slide built up box by box, so walk it in that order: the
+three boxes across the top first (inputs, function, output), then the arrow pointing at
+f, then the three questions below. Make the point that two of the three questions are
+easy: variables come from domain knowledge, f from regression on logs. The third
+question, how to transform the current input distribution into the what-if one, is the
+contribution of the paper and needs the causal structure on the following slides.
 :::
 
 ## WISE: A What-If Scenario Evaluator {.smaller}
