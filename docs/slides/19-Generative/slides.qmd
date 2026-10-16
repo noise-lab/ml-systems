@@ -147,6 +147,26 @@ trained on real data. See Chapter 7, "Early Approaches: GANs" and
 "NetDiffusion" sections.
 :::
 
+## NetShare: Reported Accuracy vs. Train-on-Synthetic, Test-on-Real {.smaller}
+
+<!-- recovered from docs/slides/19-Generative.pptx slide 52 -->
+![Top: NetShare's own evaluation on the TON anomaly-detection dataset. Bottom: the same generator re-evaluated for service and application classification, trained on synthetic and tested on real traffic, against NetDiffusion ("Ours")](images/netshare-eval-comparison.png){width="72%"}
+
+- In its own paper NetShare looks strong: about 0.60 accuracy, well ahead of CTGAN, STAN, and E-WGAN-GP
+- Change the task to service and application classification, train only on synthetic flows, and test on real ones: NetShare drops to 0.42 (3-class) and 0.20 (10-class)
+- The evaluation setup, not just the generator, decides the headline number; this is the hard test the rest of the deck uses
+
+::: {.notes}
+Recovered from the original deck as a static table. Walk it top to bottom:
+first the numbers NetShare reported, then what happens when the same
+generator is asked to produce training data for a classifier that is then
+tested on real traffic. The point is methodological: statistical similarity
+and in-distribution accuracy do not predict train-on-synthetic /
+test-on-real performance. "Ours" is NetDiffusion; the full comparison is on
+the evaluation slide later. IPs and ports are excluded as features so the
+classifier cannot shortcut on identifiers.
+:::
+
 # Diffusion Models {.center}
 
 > Instead of adversarial training, learn to **reverse noise**.
@@ -240,6 +260,25 @@ the three phases described on the previous slide. Point out the flow from
 real pcaps (top-left) all the way to synthetic pcaps (bottom-right). The
 post-generation heuristic is what allows the synthetic pcaps to open
 cleanly in Wireshark and replay via TCPreplay. See Chapter 7, "NetDiffusion."
+:::
+
+## Why Fine-Tuning and ControlNet Both Matter {.smaller}
+
+<!-- recovered from docs/slides/19-Generative.pptx slide 53 (NetDiffusion paper, Fig. 5) -->
+![Real Amazon traffic as an nPrint image, then the output of off-the-shelf Stable Diffusion 1.5, fine-tuned NetDiffusion without ControlNet, and fine-tuned NetDiffusion with ControlNet (NetDiffusion paper, Fig. 5)](images/netdiffusion-ablation-controlnet.png){width="90%"}
+
+- Off-the-shelf Stable Diffusion, prompted with "Amazon traffic", paints a starfield: it has no idea what a packet looks like
+- LoRA fine-tuning teaches it the green/red bit texture, but the columns smear across the whole width, so header fields land where they cannot exist
+- ControlNet's edge mask pins the generated bits to the columns real traffic uses; only panel (d) opens in Wireshark after post-processing
+
+::: {.notes}
+This is the ablation figure from the NetDiffusion paper, recovered from the
+original deck. Walk the four panels left to right and ask students what
+changed between each pair: (a) to (b) is "no fine-tuning", (b) to (c) is
+"fine-tuned but unconstrained", (c) to (d) is "add ControlNet". Panel (c)
+is the one to dwell on: the model has learned the look of traffic but not
+its structure, which is exactly why a pure image model needs external
+protocol constraints. That weakness is what motivates SSMs later.
 :::
 
 ## NetDiffusion: Protocol Compliance via Post-Processing
@@ -436,6 +475,51 @@ types. The t-SNE plot shows that fine-tuned embeddings cleanly separate
 misconfigured from properly configured sites, and within misconfigured
 sites, clusters correspond to distinct failure modes. See Chapter 7,
 "Configuration Management with Transformers."
+:::
+
+## BERT for TLS: Model Pipeline {.smaller}
+
+<!-- recovered from docs/slides/19-Generative.pptx slide 15 (extracted media s15-i23) -->
+![Two data paths feed one model: Tranco-listed sites provide unlabeled handshakes for pre-training, Qualys SSL-graded sites provide labels for fine-tuning](images/tls-bert-pipeline.png){width="100%"}
+
+::: {.columns}
+::: {.column width="50%"}
+**Pre-training path (top):**
+
+- Scan the Tranco top million, parse each TLS handshake into a flat string
+- Train BERT from scratch on the unlabeled strings with masked-language modeling
+:::
+::: {.column width="50%"}
+**Fine-tuning path (bottom):**
+
+- Qualys SSL Labs grades give labels: properly configured, weak cipher suite, known vulnerability
+- One pre-trained model, several fine-tuned heads, then embeddings for visualization
+:::
+:::
+
+::: {.notes}
+Walk the figure left to right. The key design choice is that the unlabeled
+corpus is large (a million sites) and the labeled corpus is small, which is
+exactly the regime BERT-style pre-training was built for. Point out that
+the same trained model feeds all the fine-tuned heads; the t-SNE plot on
+the previous slide comes out of the "Visualization" box at the far right.
+:::
+
+## BERT for TLS: Tokenizing a Handshake {.smaller}
+
+<!-- recovered from docs/slides/19-Generative.pptx slide 16 (WordPiece overlay stripped) -->
+![Left: the raw TLS scan record for one site. Right: the same handshake flattened to a space-delimited string, colored by handshake section (server hello, certificate, chain)](images/tls-handshake-tokenized.png){width="78%"}
+
+- The scanner emits nested JSON; BERT wants a sentence, so each handshake becomes one flat string of field values
+- Colors mark where the tokens came from: protocol version and cipher suite, then the leaf certificate, then the chain
+- WordPiece then splits these into ~32,000 subword tokens, so rare CA names and cipher-suite fragments still get embeddings
+
+::: {.notes}
+This is the data-representation step the earlier bullets only name. Ask
+students what is lost in the flattening (nesting, field names) and what is
+kept (order and co-occurrence, which is what attention exploits). The
+original slide animated a WordPiece example over the JSON; that overlay was
+dropped so the two representations are side by side.
 :::
 
 ## The Scaling Problem: O(n²) Attention
