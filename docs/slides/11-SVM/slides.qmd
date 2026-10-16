@@ -49,6 +49,25 @@ Assign class labels based on which half-space a point falls in.
 Emphasize that the hyperplane itself has measure zero — the interesting action is on either side. Worked example (from the original slides / ISL Fig. 9.1): the hyperplane $1 + 2X_1 + 3X_2 = 0$ splits the plane into a region where $1 + 2X_1 + 3X_2 > 0$ and a region where it is $< 0$ — evaluate the sign at any test point to see which side it lands on. For networking: think of a flow feature vector $\mathbf{x}$ (packet rates, byte counts, inter-arrival times). The hyperplane is a threshold rule in that feature space. For two features this is literally a line on a scatterplot.
 :::
 
+## A Hyperplane in Two Dimensions
+
+::: {.columns}
+::: {.column width="52%"}
+<!-- recovered from docs/slides/11-LogisticRegression-SVM.pptx slide 15 (pen ink drawn in lecture) -->
+![The hyperplane $1 + 2X_1 + 3X_2 = 0$ drawn on the $(X_1, X_2)$ plane](images/hyperplane-example.png)
+:::
+::: {.column width="48%"}
+- The green line is the set of points where $1 + 2X_1 + 3X_2 = 0$.
+- Every blue point above it gives $1 + 2X_1 + 3X_2 > 0$; every red point below it gives a negative value.
+- Classifying a new point is one evaluation: plug in $(X_1, X_2)$, read the sign.
+- The same picture in $d$ dimensions is a flat $(d-1)$-dimensional cut you cannot draw but can still compute.
+:::
+:::
+
+::: {.notes}
+This is the worked example from the original slides, redrawn from the lecture ink (the printed version is ISL Fig. 9.1). Walk the picture: pick one blue point and one red point, evaluate the expression out loud, and show the sign flips as you cross the line. Then ask where the line crosses the axes ($X_1 = -1/2$ when $X_2 = 0$; $X_2 = -1/3$ when $X_1 = 0$) so students see the coefficients are the geometry. The original slide built up the equation, then the ">0" label; narrate that order.
+:::
+
 ## Many Hyperplanes Exist: Which Is Best?
 
 ::: {.columns}
@@ -91,6 +110,25 @@ All other training points are irrelevant once support vectors are identified.
 
 ::: {.notes}
 Point out the arrows in the figure indicating the perpendicular distance from each support vector to the solid decision boundary. Stress the key robustness property: if you collected more data but none of it fell within the margin band, the hyperplane would not move. This is why SVMs generalize well on small datasets — a common scenario in network security research where labeled traffic datasets are expensive to collect. See the "Max-Margin Classifiers" section in the Supervised Learning chapter.
+:::
+
+## Margin Geometry: Distance and Width
+
+::: {.columns}
+::: {.column width="55%"}
+<!-- recovered from docs/slides/11-LogisticRegression-SVM.pptx slide 21 (drawn diagram; final build state) -->
+![A separating line, its margin band, and the three support vectors](images/margin-geometry.png)
+:::
+::: {.column width="45%"}
+- Every training point has a perpendicular distance $r$ to the separating line.
+- The margin $\rho$ is the smallest such distance; the dotted lines sit at $\pm\rho$ (the book calls this half-width $M$).
+- The three circled points touch the band: they are the support vectors.
+- Move any other point and nothing changes; move a circled one and the line tilts.
+:::
+:::
+
+::: {.notes}
+This diagram was built up over several clicks in the original deck: the circles around the support vectors first, then the dashed distance lines, then the $\rho$ arrow. Walk it in that order. The point to land: $r$ is defined for every observation, but the optimization only cares about the smallest $r$, and that minimum is attained at the circled points. Tie back to the constraint in the appendix, $y_i(\beta_0 + \boldsymbol{\beta}^\top \mathbf{x}_i) \geq M$: with $\|\boldsymbol{\beta}\| = 1$ the left side is exactly the signed distance $r$. Notation note: the original slides used $\rho$ for the margin; the book and the rest of this deck use $M$.
 :::
 
 ## The Problem with Hard Margins
@@ -153,6 +191,19 @@ The kernel implicitly computes inner products in a very high-dimensional space *
 
 ::: {.notes}
 The left panel of the figure shows a polynomial kernel producing curved decision boundaries; the right panel shows the RBF kernel producing a tight circular boundary that would be impossible for any linear classifier. In networking terms: traffic from a specific application might cluster in a non-convex region of feature space — the RBF kernel can capture that shape where a linear SVM cannot.
+:::
+
+## The Kernel Trick, Written Out {.smaller}
+
+<!-- recovered from docs/slides/11-LogisticRegression-SVM.pptx slide 25 (pen ink; printed text stripped) -->
+![From inner products over all $n$ points to a kernel over the support set $S$](images/kernel-support-expansion.png){width="78%" fig-align="center"}
+
+- The linear classifier can be rewritten as $f(\mathbf{x}) = \beta_0 + \sum_{i=1}^{n} \alpha_i \langle \mathbf{x}, \mathbf{x}_i \rangle$: a weighted sum of inner products with the training points.
+- Only support vectors have $\alpha_i \neq 0$, so the sum collapses to $i \in S$.
+- Replace the inner product with a kernel $K(\mathbf{x}, \mathbf{x}_i)$ and you have the SVM: same shape, non-linear boundary.
+
+::: {.notes}
+This is the derivation from the lecture ink; the deck states it in words on the previous slide, and this slide makes the two moves visible. First move (circled sum, arrow): the representer form sums over all $n$ training points, but the $\alpha_i$ are zero except on the support set $S$, which is why SVM prediction cost scales with the number of support vectors, not with $n$. Second move (top right): swap $\langle \mathbf{x}, \mathbf{x}_i \rangle$ for $K(\mathbf{x}, \mathbf{x}_i)$. Nothing else in the formula changes, which is the whole point of the kernel trick. The original ink also wrote out the polynomial and radial kernels with "tuning parameter" arrows on $d$ and $\gamma$; the next slide's table typesets those.
 :::
 
 ## Common Kernel Functions
