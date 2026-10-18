@@ -249,3 +249,18 @@ was partly inaudible the entry says so rather than guessing.
 * **Hands-On 6: Feature extraction with netml** ([notebook](../notebooks/06-Feature-Extraction-Clean.html))
     * About 20 minutes with a neighbor: install netml, load a capture, pcap to flows, flows to features, inspect. Most of it can be copied from the netml documentation. Group work was not captured. A quick check at the end found students with netml installed, flows extracted, and features computed; the room stayed for the full period to finish.
 * **Next (Mon Oct 19):** data preparation and representation (chapter 4.1), Hands-On 7.
+
+### Meeting 7 (Mon Oct 19)
+
+*Plan, written before class. It will be replaced with what was actually covered once the recording is transcribed.*
+
+* **Housekeeping:** Assignment 1 due Friday October 23; project proposal due Monday October 26; in-class midterm Friday October 30, covering material through this week; add both TAs as collaborators on assignment repositories
+* **Hands-On 6 wrap-up and Assignment 1 questions**
+* **Lecture 7: Data preparation and representation** (chapter 4.1)
+    * Feature engineering operations: generation, normalization, transformation, discretization, aggregation
+    * How data goes wrong: too little, non-representative, spurious correlations, dirty network data
+    * Data leakage, including temporal leakage in traffic traces, and the golden rule of supervised learning
+    * Training, validation, and test sets; labeling
+    * A data-engineering checklist
+* **Hands-On 7: Data preparation** ([notebook](../notebooks/07-Data-Preparation-Clean.html)): label two captures, align their feature matrices, train a first classifier
+* **Next (Fri Oct 23):** model training and evaluation (chapter 4.2–4.3)
