@@ -672,35 +672,44 @@ frequent form of leakage in the field.
 ## Overfitting and the Bias–Variance Tradeoff {.smaller}
 
 ::: {.columns}
-::: {.column width="55%"}
+::: {.column width="48%"}
 - **Underfitting (high bias):** model too simple to capture structure; fails on
   training *and* test data
 - **Overfitting (high variance):** model memorizes training noise; great on train,
   poor on test and production
-- The **bias–variance tradeoff:** find the complexity sweet spot
+- **Training error keeps falling as complexity grows; test error turns back up.**
+  The sweet spot is the bottom of the red curve, and you can only see it with
+  held-out data
 
-Detection: plot training error vs. validation error as training proceeds (or as dataset
-size grows). Divergence → overfitting.
-
-Remedies:
-- More (or more diverse) training data
-- **Regularization** — penalize parameter magnitude
-- **Early stopping** — halt when val error starts rising
-- **Ensemble methods** — bagging, boosting
-:::
-::: {.column width="45%"}
 | | Train error | Test error |
 |---|---|---|
 | Underfit | High | High |
 | Good fit | Low | Low |
 | Overfit | Very low | High |
 
-A model with 99% training accuracy and 65% test accuracy is not a good model — it has
-memorized the training set.
+Remedies: more (or more diverse) data; **regularization**; **early stopping**;
+**ensembles**.
+:::
+::: {.column width="52%"}
+<!-- same figure as 10-LinearRegression slide "Bias-Variance Tradeoff" (pptx slide 23); Hastie, Tibshirani & Friedman, ESL Fig. 2.11 -->
+![Prediction error vs. model complexity (Hastie, Tibshirani & Friedman, *The Elements of Statistical Learning*, Fig. 2.11)](images/bias-variance-hastie.png){width="100%"}
 :::
 :::
 
 ::: {.notes}
+Preview only; Friday owns this slide and the Linear Regression lecture comes back to
+it with the formal decomposition. Walk the figure: x-axis is model complexity (tree
+depth, polynomial degree, number of features, training epochs), y-axis is prediction
+error. The cyan training curve only goes down: a complex enough model memorizes the
+training set. The red test curve is a U: left side underfits (high bias, model cannot
+represent the structure), right side overfits (high variance, model fits the noise of
+this particular training set and a different sample would give a different model).
+The dashed arrows are the two regimes. You cannot locate the bottom of the red curve
+from the cyan one, which is the whole argument for a validation set (previous slide).
+
+Figure: Hastie, Tibshirani, and Friedman, *The Elements of Statistical Learning*,
+Figure 2.11; the same image is on the Linear Regression deck.
+
 See "Overfitting and Bias-Variance Tradeoff" in the pipeline chapter. Network ML
 caveat: class imbalance can make training accuracy look deceptively high (always
 predict "benign" → 99% accuracy if 1% of traffic is malicious). This is why precision,

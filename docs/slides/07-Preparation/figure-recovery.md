@@ -27,3 +27,4 @@ Source: `docs/slides/07-Preparation.pptx`, 19 slides, rendered 2026-10-16 (headl
 ## Captured
 
 - `images/ml-pipeline-packets-to-model.png` (2075×440) — source: `docs/slides/07-Preparation.pptx` slide 2, no shapes stripped (no animation), cropped box 50,255,2125,695 of the 220 dpi render. Icons are stock clip-art pictograms embedded in the original deck; the composition is the instructor's.
+- `images/bias-variance-hastie.png` (787×553) — copied from `10-LinearRegression/images/s23-i16.png` (pptx `10-LinearRegression.pptx` slide 23); Hastie, Tibshirani & Friedman, ESL Fig. 2.11. Embedded on "Overfitting and the Bias–Variance Tradeoff", Oct 19 2026.
