@@ -257,10 +257,11 @@ was partly inaudible the entry says so rather than guessing.
 * **Housekeeping:** Assignment 1 due Friday October 23; project proposal due Monday October 26; in-class midterm Friday October 30, covering material through this week; add both TAs as collaborators on assignment repositories
 * **Hands-On 6 wrap-up and Assignment 1 questions**
 * **Lecture 7: Data preparation and representation** (chapter 4.1)
-    * Feature engineering operations: generation, normalization, transformation, discretization, aggregation
+    * Feature engineering operations: one-hot encoding, normalization, transformation, discretization, aggregation
     * How data goes wrong: too little, non-representative, spurious correlations, dirty network data
     * Data leakage, including temporal leakage in traffic traces, and the golden rule of supervised learning
     * Training, validation, and test sets; labeling
     * A data-engineering checklist
+* **Breakout: audit this pipeline.** In groups of three, find everything that could go wrong with a plausible intrusion-detection pipeline (one week of traffic, normalized as a whole, shuffled and split, 97% test accuracy), pick the two worst, and redesign it
 * **Hands-On 7: Data preparation** ([notebook](../notebooks/07-Data-Preparation-Clean.html)): label two captures, align their feature matrices, train a first classifier
 * **Next (Fri Oct 23):** model training and evaluation (chapter 4.2–4.3)

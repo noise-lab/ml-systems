@@ -157,8 +157,8 @@ networking systems where explainability matters.
 ::: {.column width="50%"}
 **Encoding**
 
-- **One-hot / dummy encoding** — categorical → binary vectors (one-vs.-all;
-  variants: grouped categories, presence vs. absence)
+- **One-hot encoding** — a category becomes one binary column per value
+  (worked example next slide)
 - **Ordinal encoding** — ordered categories → integers
 - **Discretization** — equal-width, equal-size, entropy-based, or
   domain-specific bins
@@ -190,65 +190,211 @@ networking systems where explainability matters.
 :::
 
 ::: {.notes}
-See "Generating Features" and "Normalization" in source slides; the standardization
-formula image (s10-i06.png) is the z-score formula.
+This is the map for the next four slides; do not explain each item here. Say
+the four families out loud (encode, normalize, transform, discretize) and that
+each one exists because a model consumes numbers, and the raw field is either
+not a number (encoding), the wrong scale (normalization), the wrong shape
+(transformation), or more precise than the information it carries
+(discretization). Aggregation and interaction are feature *generation*: new
+columns from old ones.
+
+See "Generating Features" and "Normalization" in the source slides.
 
 Critical networking note: log transformation of packet byte counts and inter-arrival
 times is almost always a good idea because these distributions are extremely heavy-tailed.
 A raw 1 MB flow and a 1 GB flow look like a rounding error without log-scale.
 :::
 
-## Normalization Formula
+## One-Hot Encoding: Protocol as a Feature {.smaller}
 
-![Standardization (z-score): rescale each feature to zero mean, unit variance](images/s10-i06.png){width=50%}
-
-## Transformation Curves
+A model multiplies features by weights. A category like `proto = UDP` is not a number,
+so it gets **one binary column per value**:
 
 ::: {.columns}
-::: {.column width="33%"}
-![Log: compresses large values](images/s11-i07.png)
+::: {.column width="45%"}
+| flow | proto | | `is_tcp` | `is_udp` | `is_icmp` |
+|---|---|---|---|---|---|
+| 1 | TCP | → | 1 | 0 | 0 |
+| 2 | UDP | → | 0 | 1 | 0 |
+| 3 | ICMP | → | 0 | 0 | 1 |
+| 4 | TCP | → | 1 | 0 | 0 |
 :::
-::: {.column width="33%"}
-![Square root: gentler compression](images/s11-i08.png)
+::: {.column width="55%"}
+- **Why not `TCP=0, UDP=1, ICMP=2`?** That tells a linear model UDP sits *between*
+  TCP and ICMP and that ICMP is "twice" UDP. No such order exists; the weights it
+  learns are meaningless.
+- **Cost: one column per value.** Destination port has 65,535 values. Group them
+  (well-known < 1024, registered, ephemeral) or keep the top-*k* ports plus an
+  `other` column.
+- **Presence vs. absence** is the same trick for set-valued fields: one column per
+  TLS extension offered, per DNS record type seen.
+- Trees split on raw categories fine; linear models, SVMs, and neural networks need
+  the encoding.
 :::
-::: {.column width="33%"}
-![Square ($y = x^2$): amplifies large values](images/s11-i09.png)
 :::
-:::
-
-Each transformation reshapes a feature's marginal utility — pick the one
-whose curve matches how the quantity actually behaves.
 
 ::: {.notes}
-Figures from source slide 11 (converted from TIFF). Log and square root
-compress heavy tails (byte counts, durations); squaring amplifies
-differences, useful when large values should dominate.
+Worked example for the one-hot entry on the taxonomy slide (source slide 8,
+"Categorical to Binary": one-vs-all dummy variables, groups, presence vs. absence).
+
+Walk the table left to right: four flows, one categorical column, three binary
+columns out. Then ask why not just number the protocols. Let them find the answer:
+a linear model would learn a single weight for "proto" and apply it to 0, 1, 2 as if
+ICMP were two UDPs. The order is an artifact of how you typed the list.
+
+The port example is the one that bites in practice: netml does not one-hot ports,
+and students who add `dst_port` as a raw integer are feeding the model an ordinal
+feature that is really categorical. Grouping (privileged, registered, ephemeral) is
+also the discretization slide's example, so say "we will see this again in two
+slides."
+
+Dummy-variable trap, if someone asks: with an intercept, one of the three columns
+is redundant (it is 1 minus the other two); drop one for linear regression. Trees
+and regularized models do not care.
 :::
 
-Always fit normalization parameters on the **training set only**, then apply them to the
-test set — computing them on combined data leaks test-set statistics into training.
+## Normalization: Putting Features on the Same Scale {.smaller}
 
-::: {.notes}
-This is a concrete, early preview of data leakage. The formula itself is simple; the
-lesson is *when* you fit it. This is one of the most common mistakes in production ML
-pipelines. See the "Dividing Data" section of the pipeline chapter for the golden rule.
+Flow features live on wildly different scales: packets per flow run from 1 to
+10<sup>6</sup>, mean inter-arrival from 10<sup>−6</sup> to 10 s, TTL from 1 to 255.
+Any model that computes **distances or gradients** (k-NN, SVM, logistic regression,
+neural networks) is dominated by whichever feature has the biggest numbers, which is an
+artifact of units, not of information.
+
+::: {.columns}
+::: {.column width="50%"}
+**Min–max scaling** → \[0, 1\]
+
+$$x' = \frac{x - x_{\min}}{x_{\max} - x_{\min}}$$
+
+One extreme value squashes everything else toward 0.
+:::
+::: {.column width="50%"}
+**Standardization (z-score)** → mean 0, variance 1
+
+$$x' = \frac{x - \mu}{\sigma}$$
+
+Less fragile, but outliers still stretch $\sigma$; log-transform first (next slide).
+:::
 :::
 
-## Discretization in Practice {.smaller}
-
-- **Equal-width bins** — simple; sensitive to outliers
-- **Equal-size bins** — uniform occupancy; better for skewed distributions
-- **Entropy-based bins** — optimize for information content with respect to the label
-- **Domain-specific bins** — encode discontinuities a generic algorithm would miss
-
-*Network example:* port numbers have a well-known discontinuity at 1024 (privileged vs.
-ephemeral). An entropy-based binner may discover this; a domain-informed binner
-guarantees it.
+- **Fit $\mu, \sigma$ (or min, max) on the training set only**, then apply the same
+  numbers to validation and test. Computing them on everything leaks test-set
+  statistics into training; this is our first sighting of *leakage*.
+- **Trees and random forests do not care.** A split at 1,000 bytes is the same split at
+  any scale. (Friday's question: "should features be on the same scale?" Linear and
+  distance-based models, yes; trees, no.)
 
 ::: {.notes}
-The original slide mentions lead poisoning and education as domain-specific examples.
-The networking equivalent is the port-number threshold — a model predicting service type
-should almost always have a feature "is_privileged_port" rather than raw port number.
+This answers Friday's question directly; say so. The setup is the first paragraph:
+give the three features and ask which one a distance-based model would effectively
+be using. (Packets per flow, because its range is six orders of magnitude wider.)
+
+Two formulas, both one line. Min-max is what people reach for first; one giant flow
+in the dataset sets $x_{\max}$ and every normal flow lands at 0.001. Z-score is the
+default; its weakness is the same heavy tail, which is why the next slide exists.
+
+The "fit on train only" bullet is the early preview of data leakage. The formula is
+trivial; the lesson is *when* you compute $\mu$ and $\sigma$. This is one of the most
+common classroom mistakes and it is in the breakout at the end. See "Dividing Data"
+in the pipeline chapter for the golden rule.
+
+Trees: a decision tree asks "is x > t?"; scaling x and t together changes nothing.
+This is why random forests are forgiving of sloppy preprocessing, and why the
+hands-on (logistic regression) is not.
+:::
+
+## Transformations: Reshaping a Skewed Feature {.smaller}
+
+Normalization changes the **scale** of a feature, not its **shape**. Most network
+quantities are heavy-tailed: of 10,000 flows, most carry a few KB and a handful carry
+GB. After z-scoring, the handful sit at +40σ and everything else is crushed near zero,
+so the model learns about the handful.
+
+::: {.columns}
+::: {.column width="34%"}
+| flow bytes | log<sub>10</sub> | √ |
+|---|---|---|
+| 1 KB | 3 | 32 |
+| 1 MB | 6 | 1,000 |
+| 1 GB | 9 | 31,623 |
+
+A **log** turns every ×1000 into +3: the three flows become equally spaced, and
+1 MB vs. 2 MB is as visible as 1 GB vs. 2 GB.
+:::
+::: {.column width="22%"}
+![**log x**: every ×10 is +1. Bytes, packets, durations, inter-arrival times](images/s11-i07.png){width="100%"}
+:::
+::: {.column width="22%"}
+![**√x**: a milder version of the same](images/s11-i08.png){width="100%"}
+:::
+::: {.column width="22%"}
+![**x²**: the opposite; stretches large values when the big ones *should* dominate](images/s11-i09.png){width="85%"}
+:::
+:::
+
+**Rule of thumb:** long right tail in the histogram → take the log (log(1 + *x*) if
+zeros occur), *then* normalize.
+
+::: {.notes}
+Setup is the first paragraph: z-scoring does not fix a heavy tail, it just relabels
+it. Draw the histogram of flow sizes in the air (spike at the left, a tail off the
+right edge of the room). The three-row table is the whole lesson: in raw bytes the
+rows are 1 : 1,000 : 1,000,000; in log space they are 3 : 6 : 9.
+
+The curves (source slide 11, converted from TIFF) are the shapes of the three
+functions, nothing more. Log compresses, square root compresses less, square
+expands. "Marginal utility" is the economist's phrase for the slope: with a log, the
+model treats the next KB as mattering less the bigger the flow already is, which is
+how a human reads traffic too.
+
+Square is rare in networking; mention it only as the mirror image. If someone asks
+about negative values: log needs x > 0, so log(1 + x) for counts and a sign-aware
+transform for things like clock offsets.
+
+Order of operations: transform first, normalize second. Normalizing then logging
+fails on the negative values z-scoring produces.
+:::
+
+## Discretization: Turning a Number into Bins {.smaller}
+
+Sometimes the information in a number is **which side of a threshold** it falls on, not
+its value. Three reasons to bin a continuous feature:
+
+- **The relationship is a step, not a line.** Port < 1024 vs. ≥ 1024; packet < 100
+  bytes (ACKs, control) vs. ≈ 1500 (bulk data). A linear model cannot learn a step from
+  the raw number; a binned feature hands the step to it.
+- **Robustness.** Bins blunt outliers and measurement noise; a 1,504-byte and a
+  1,514-byte packet are the same thing.
+- **Some models want categories.** Naive Bayes, association rules, anything that
+  counts co-occurrences. (Decision trees find their own bins; this slide is for the
+  models that don't.)
+
+**How to choose the edges:**
+
+| Method | Edges come from | Watch out for |
+|---|---|---|
+| Equal-width | the range, cut evenly | one outlier makes most bins empty |
+| Equal-size (quantile) | the data, equal occupancy | edges land at arbitrary values |
+| Entropy-based | the label: cut where class purity jumps | overfits with few examples |
+| Domain-specific | what you know: 1024, 1500, 64 | needs someone who knows |
+
+*Network example:* an entropy-based binner may discover the 1024 boundary; a
+domain-informed binner guarantees it.
+
+::: {.notes}
+Motivation first, methods second. The question to ask the room: "why would you
+throw away precision on purpose?" Three answers on the slide. The first is the
+important one: a linear model with a raw port number learns one slope for ports
+0–65535; a column `is_privileged_port` lets it learn the discontinuity in one weight.
+This is Friday's small/medium/large packet example made explicit.
+
+The original slide's domain examples were lead-poisoning thresholds and school
+grade boundaries; the networking equivalents are the port boundary at 1024, the
+Ethernet MTU at 1500, and the 64-byte minimum frame.
+
+If short on time, read the first bullet and the "domain-specific" row and move on;
+the four-method table is reference material.
 :::
 
 # Data Pitfalls {.center}
@@ -352,8 +498,10 @@ out-of-distribution test sets.
 
 ## Cleaning Network Data {.smaller}
 
-Reference: Vern Paxson, *Strategies for Sound Internet Measurement*, IMC 2004 — the
-canonical guide to data quality in networking.
+Every operation so far assumes the numbers are right. Packet captures lie in specific,
+well-catalogued ways: skewed clocks, dropped packets, truncated frames, duplicated
+records. Vern Paxson's *Strategies for Sound Internet Measurement* (IMC 2004) is the
+canonical catalogue, and it reads as an ML data-cleaning guide.
 
 - Identify outliers with **box plots**, statistical tests, and domain knowledge
 - *Not all outliers are errors:* small packets (TCP ACKs) are normal — removing them
@@ -439,30 +587,63 @@ held-out split but fail completely when deployed because the statistical fingerp
 the test split was already visible during training.
 :::
 
-## Leakage at Scale: A Research Reproducibility Crisis {.smaller}
+## How Common Is Leakage? {.smaller}
 
-::: {.vignette}
-Kapoor & Narayanan, *Leakage and the Reproducibility Crisis in ML-based Science*
-(Patterns, September 2023; updated table May 2024): catalogued **41 papers across
-30 research fields** where data-leakage errors were found — collectively affecting
-**329+ papers** and generating wildly over-optimistic published results. Fields include
-clinical prediction, NLP, computer vision, and network security. Their accompanying
-2024 book *AI Snake Oil* (Princeton University Press) was named one of Nature's 10 best
-books of 2024. The core finding: leakage is not a rare bug — it is a pervasive,
-systematic failure mode that makes ML results look better than they are.
+The last two slides sound like beginner mistakes. They are not. Kapoor and Narayanan
+(Princeton) went looking for leakage in *published, peer-reviewed* ML-based science
+across every field that uses it.
 
-*Source: arxiv.org/abs/2207.07048; Princeton reproducibility project reproducible.cs.princeton.edu*
+::: {.columns}
+::: {.column width="45%"}
+**What they found**
+
+- **41 papers across 30 fields** with leakage errors, affecting **329+** papers that
+  built on them
+- Fields include clinical prediction, NLP, computer vision, and **network security**
+- In nearly every case the corrected result was much worse than the published one
+- Their conclusion: leakage is not a rare bug but a pervasive, systematic way ML results
+  come out better than they are
+:::
+::: {.column width="55%"}
+**Their taxonomy is this lecture**
+
+| Kapoor & Narayanan type | Where we met it |
+|---|---|
+| No test set at all | Hands-On 7, deliberately |
+| Preprocessing or feature selection on train + test | Normalization slide, golden rule |
+| Duplicates across train and test | retransmissions, repeated scans |
+| Illegitimate features that encode the label | TTL, final byte count |
+| Temporal leakage | previous slide |
+| Train and test not independent | same host or session on both sides |
+:::
+:::
+
+::: {.aside}
+Kapoor & Narayanan, *Leakage and the Reproducibility Crisis in ML-based Science*,
+Patterns, Sept. 2023 (running table updated May 2024, reproducible.cs.princeton.edu);
+popular version in *AI Snake Oil*, Princeton University Press, 2024.
 :::
 
 ::: {.notes}
-This is the current-events hook for 2024–2026. The Kapoor & Narayanan paper is the most
-comprehensive taxonomy of leakage types in the literature. The book "AI Snake Oil" has
-broad reach and is accessible to students. The finding that leakage affects 30+ fields
-makes it relevant regardless of the student's background.
+Setup is the first line: "you may think this is a beginner's mistake." The point of
+the slide is that the two leakage slides before it describe errors that got through
+peer review in 30 fields, so students should expect to make them and should build
+the checks in.
 
-Web-verified: Patterns vol. 4, issue 9 (September 2023). Running leakage table last
-updated May 2024 at reproducible.cs.princeton.edu. "AI Snake Oil" published September
-2024, Princeton University Press. Named Nature's best books of 2024.
+Left column is the finding; right column is the reason it belongs here: their
+taxonomy of leakage is a list of things already on this deck. Read the table as a
+recap of the leakage section, pointing back at each slide. "No test set" is what the
+hands-on does on purpose in twenty minutes, so that the 100% accuracy they get is the
+lesson. "Not independent" is the subtle one: flows from the same host, or packets of
+the same scan, split across train and test are near-duplicates, and a random split
+puts them on both sides.
+
+Numbers were web-verified when the slide was written: Patterns vol. 4, issue 9
+(September 2023); running leakage table last updated May 2024; *AI Snake Oil*
+published September 2024, named one of Nature's ten best books of 2024. The
+taxonomy on the right is theirs (L1 no clean separation: no test set, preprocessing,
+feature selection, duplicates; L2 illegitimate features; L3 test set not from the
+distribution of interest: temporal, non-independence, sampling bias).
 :::
 
 ## Training, Validation, and Test Sets {.smaller}
@@ -582,39 +763,100 @@ hear about a published result that failed to reproduce.
 See the "Summary" section of the pipeline chapter for the book's own synthesis.
 :::
 
-## Thought Question
+## Breakout: Audit This Pipeline
 
 ::: {.columns}
-::: {.column width="60%"}
-A team builds a network intrusion detector with the following pipeline:
+::: {.column width="55%"}
+A team builds a network intrusion detector:
 
-1. Collect one week of campus traffic, label flows (benign / attack)
-2. Normalize all features across the full week
-3. Randomly shuffle and split 80/20 for train/test
-4. Train a random forest — test accuracy: 97%
+1. Collect **one week** of campus traffic; label each flow benign or attack
+2. **Normalize** all features across the full week
+3. **Randomly shuffle** and split 80/20 into train and test
+4. Train a random forest. Test accuracy: **97%**
 
-**What could go wrong? How would you redesign this pipeline?**
+They are about to deploy it on the campus network.
 :::
-::: {.column width="40%"}
-Hints:
+::: {.column width="45%"}
+**Groups of three, 8 minutes**
 
-- What kind of leakage does step 2 introduce?
-- What kind of leakage does step 3 introduce?
-- Is 97% test accuracy a trustworthy number? Why or why not?
+1. Go step by step: list **everything** that could go wrong. Aim for more than
+   four.
+2. Pick the **two worst** and say what the symptom would be after deployment.
+3. **Redesign** the pipeline, and name the number you would report instead of 97%.
+
+Report-back: one group per step, then the redesigns.
 :::
 :::
 
 ::: {.notes}
-This is the cold-call / small-group discussion slide. Expected answers:
+Breakout, 8 minutes in groups of three, 4 minutes of report-back. Take one group per
+step so the list on the board builds in pipeline order; keep the two leakage steps
+for last so they land as the climax. Then ask two groups for their redesign.
 
-Step 2 → normalization leakage (future test stats leak into training parameters).
-Step 3 → temporal leakage (future flows train the model on what hasn't happened yet in
-the "test" window).
-97% is not trustworthy for both of the above reasons, and possibly also because benign
-traffic dominates (class imbalance).
+CHEAT SHEET: what could go wrong, step by step
 
-Fix: normalize on train split only; use a temporal split (first 5 days train, last 2
-days test); report precision/recall/F1 rather than accuracy.
+Step 1, one week of campus traffic, labelled.
+• One week misses seasonality: no weekend-vs-weekday, no semester start, no finals.
+• Where did the labels come from? If from an IDS or a blocklist, the model learns
+  the IDS, not attacks. If hand-labelled, who, and how consistently?
+• Class imbalance: attacks are well under 1% of flows. 97% may be below the base
+  rate of "always say benign".
+• One week of attacks is often one campaign from a few sources. The model can learn
+  the source (IP, TTL, hop count, TLS fingerprint) instead of the attack: husky and
+  wolf.
+• Flow-level labels lose cross-flow context (a scan is many flows, each innocuous).
+• Capture problems: dropped packets under load, truncated snaplen, clock skew,
+  duplicated records from two taps. Paxson's list.
+• Campus traffic is not any other network's traffic; non-representative for anyone
+  else, and arguably for next month's campus.
+
+Step 2, normalize across the full week.
+• Preprocessing leakage: mu and sigma include the test flows, so the training set
+  has seen test-set statistics. The golden rule, broken through the scaler.
+• In deployment, next week's mu and sigma differ (distribution shift), so the
+  scaler is stale the day it ships.
+• Heavy tails: z-scoring raw bytes without a log puts a few huge flows at +40 sigma.
+
+Step 3, shuffle then split.
+• Temporal leakage: the model trains on Friday's attack and is tested on Thursday's.
+  Future predicts past; deployment is the other way round.
+• Non-independence: flows from the same host, session, or scan land on both sides.
+  Near-duplicates (retransmissions, repeated probes) across the split inflate
+  accuracy; the test set is partly a copy of the training set.
+• The test set is not a future window, so the 97% estimates nothing about
+  deployment.
+• No validation set: any tuning (number of trees, depth, threshold) was done against
+  the test set, so test accuracy is optimistic even without the leakage.
+
+Step 4, random forest, 97%.
+• Accuracy under imbalance is meaningless; ask for precision, recall, F1, the
+  confusion matrix, and the base rate.
+• Feature importance was not checked: if TTL, IP ID, or source IP is at the top,
+  the model is a lookup table for the training week's attackers.
+• One run, one number: no variance across seeds or folds, no confidence interval.
+• Random forests are forgiving of scale, so step 2 matters less *for this model*;
+  it would matter a lot for the logistic regression in today's hands-on.
+• The deployment question: what happens on the first attack the model has never
+  seen? A classifier trained on one week's attacks is a detector for those attacks.
+
+Redesign (what a good group says).
+• Split by time first: days 1–5 train, day 6 validation, day 7 test; better, test
+  on a later week or a different network.
+• Fit the scaler (and any feature selection) on the training split only; log before
+  scaling.
+• Document label provenance; hold out some attack sources entirely so the test set
+  has attackers the model never saw.
+• Check feature importance and drop the proxies (TTL, IP ID, addresses).
+• Report precision and recall on the future window, with the base rate, and the
+  false-positive count per day, which is what the network operator will feel.
+
+Pushes if groups stall: "which step would Kapoor and Narayanan file this under?";
+"what would you see in week two that you did not see in test?"; "what does 97% mean
+if 99% of flows are benign?"
+
+The number to report instead of 97%: precision and recall (or F1) on a later time
+window, alongside the base rate. If a group says "AUC", ask which operating point
+the operator will actually run at.
 :::
 
 ## Key Takeaways
