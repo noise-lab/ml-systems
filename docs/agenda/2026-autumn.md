@@ -252,16 +252,50 @@ was partly inaudible the entry says so rather than guessing.
 
 ### Meeting 7 (Mon Oct 19)
 
-*Plan, written before class. It will be replaced with what was actually covered once the recording is transcribed.*
+*The recording begins at the end of the housekeeping block.*
 
-* **Housekeeping:** Assignment 1 due Friday October 23; project proposal due Monday October 26; in-class midterm Friday October 30, covering material through this week; add both TAs as collaborators on assignment repositories
-* **Hands-On 6 wrap-up and Assignment 1 questions**
-* **Lecture 7: Data preparation and representation** (chapter 4.1)
-    * Feature engineering operations: one-hot encoding, normalization, transformation, discretization, aggregation
-    * How data goes wrong: too little, non-representative, spurious correlations, dirty network data
-    * Data leakage, including temporal leakage in traffic traces, and the golden rule of supervised learning
-    * Training, validation, and test sets; labeling
-    * A data-engineering checklist
-* **Breakout: audit this pipeline.** In groups of three, find everything that could go wrong with a plausible intrusion-detection pipeline (one week of traffic, normalized as a whole, shuffled and split, 97% test accuracy), pick the two worst, and redesign it
-* **Hands-On 7: Data preparation** ([notebook](../notebooks/07-Data-Preparation-Clean.html)): label two captures, align their feature matrices, train a first classifier
-* **Next (Fri Oct 23):** model training and evaluation (chapter 4.2–4.3)
+* **Housekeeping**
+    * Assignment 1 is due Friday October 23; the project proposal Monday October 26; the in-class midterm Friday October 30. Add both TAs as collaborators on assignment repositories.
+    * This is week four. Friday's meeting, on building the ML pipeline, ends the first half of the course; the second half is about models and their applications. The midterm covers the first half: data acquisition, representation, preparation, and the pipeline. The agenda file is the complete list of what it can draw on. The final is "cumulative only so far as life is cumulative" and will be mostly about the use of models.
+    * Slides are in the course GitHub repository as Quarto source and are being revised continually; a legacy PowerPoint version with a few more figures is there too. The instructor will render the decks to PDF and post a zip in Slack rather than committing rendered PDFs.
+    * Hands-On 6 was not revisited; nobody asked for more time on it.
+* **Where we are in the pipeline**
+    * Packets in, a transformation step, a representation step (netml, nPrint), an optional compression step, then model training. Today's first model is trained in the hands-on. Efficient representations and the compression step were flagged again as a project area.
+    * Why representation matters: traffic is huge, so representations have to scale; sequential dependencies carry signal (a handshake followed by nothing may be a scan); inter-arrival times are one thing netml captures.
+    * Cross-flow dependencies are an open research problem: a page load opens eight or more parallel connections, the TCP connection cannot happen before the DNS lookup, and object downloads cannot start before the index page arrives. Neither netml nor nPrint captures dependencies between flows. Students interested in this were invited to office hours.
+    * Representation and model choice are coupled. A student described using an LSTM, which needs a representation with a time index; another reported that a time-series representation did not improve prediction in their application. The instructor's point: if the data has no real temporal structure, forcing it into a time-series representation and model may not help, a theme that returns in the deep-learning lectures.
+    * Whether to normalize depends on the model: linear models need it, tree-based models such as random forests generally do not. The choice of model shapes how you represent the data and vice versa.
+* **Features as domain knowledge**
+    * The best engineered features encode domain knowledge a model on raw data might not discover. For the log4j scan: short connections, small packets, higher IP-address entropy. Verify the intuition in the data, then encode it; this tends to give simpler, more interpretable models.
+    * Preview of the deep-learning reading: in its DDoS-detection comparison, nearest-neighbor and tree models perform as well as or better than deep models. Why is a second-half question.
+    * Deciding what to encode is science; deciding how is more art. Example from the instructor's spam-detection research: hundreds of adjacent IP addresses all sending mail from one network is a sign of a bot farm, since a real network has one or a handful of mail servers. Encoding "density of mail senders" took five to ten attempts; what worked was the distance to the k nearest other senders. Exploring many encodings of one idea is a good fit for agentic coding tools.
+* **Feature operations**
+    * One-hot encoding turns a categorical feature into one binary column per value. Ordinal encoding (red, green, blue as 1, 2, 3) is fine for some models but wrong for linear regression, where it implies an order that does not exist.
+    * Worked example: protocol as TCP, UDP, ICMP. Coding them 0, 1, 2 is fine for a random forest or other tree model, but a linear model would treat ICMP as twice UDP, so use one-hot. Neural networks also often do better with one-hot inputs.
+    * Discretization: bin packets per second in tens, so 15 and 17 fall in the same bin. With domain knowledge, choose the bin edges: a 100-byte threshold separates acknowledgments from data packets; port numbers split into privileged server ports and unprivileged client ports, a natural step function. Binning also adds robustness: the slightly short last packet of a transfer is still "a 1500-byte packet" to the model.
+    * Missing values: scikit-learn will impute missing values by default (for example with the column average), which you may not want. Options are to drop the row, impute, or encode "missing" as its own value, which is what nPrint does. A class discussion followed.
+        * Students suggested cases: sequence numbers, where a missing value may mean a corrupted packet you want to keep; timestamps, where a missing ACK time is bounded by its neighbors and a negative or zero time is clearly wrong and safely corrected; packet sizes, probably not; using other correlated fields in the same row to fill the gap.
+        * The networking twist: unlike a missing pixel in the middle of an ocean, a missing or strange value in traffic may be the anomaly you are trying to detect, so imputing it away can destroy the signal.
+        * **Midterm flag:** the instructor said this may become a midterm question: give a case where imputing an average for a missing value is appropriate and a case where it is not.
+    * Normalization: min-max scaling maps a feature to [0, 1] by subtracting the minimum and dividing by the range; standardization subtracts the mean and divides by the standard deviation. Needed for linear models for the same reason as one-hot ("blue is not twice green"); the bytes-to-packets regression in next week's linear-models lecture will show it.
+    * Transformations: a log transform tames long-tailed network features, such as flow sizes where most flows are short and a few have ten thousand packets. Basis expansion comes with linear regression next week. None of these is a recipe; they are tools to try.
+* **Data pitfalls** (covered in about ten minutes)
+    * Five failure modes: insufficient data, non-representative data, poor-quality data, spurious correlations, overfitting.
+    * Insufficient data: more data generally means better generalization, especially for deep learning (this answers last week's question about whether raw-bitmap representations need a lot of data: yes). In security the problem is rare attack classes; you may have to hunt for or generate examples of a specific scan or exploit. For Assignment 1, the dataset contains no 4K video, so no classifier trained on it can recognize 4K.
+    * Non-representative data: the Finnish translation example. Finnish has no gendered pronouns; translating English to Finnish and back produced gender-stereotyped pronouns learned from the training text. Students observed that non-representative data is a special case of insufficient data, which the instructor accepted (either answer would get credit on a check-all-that-apply), and that a dataset can become non-representative as the world changes.
+    * Spurious correlations: the husky-and-wolf slide, already covered twice, was not repeated.
+    * Cleaning: this is why the hands-ons keep asking for max, min, and mean of every column. Not all outliers are errors; be intentional about removing or keeping them. If timestamps are definitely wrong you must decide whether to drop, fix, or keep the data, and when the data was expensive to collect, "no data, bad data, or patched-up data" is a real trade-off. Paxson's *Strategies for Sound Internet Measurement* was recommended as optional reading; it will not be examined. The instructor plans to give a deliberately messy dataset to clean in a future year.
+* **Data leakage and splits** (covered briefly; more on Friday)
+    * The golden rule: never train on the test set. It happens by accident: normalizing features before the train/test split leaks test-set statistics into training. The instructor will check an upcoming hands-on on linear models for exactly this mistake. Do the split first, before any other operation on the data.
+    * Temporal leakage: shuffling all flows and then splitting puts future traffic in the training set, so the model predicts the past from the future.
+    * Arvind Narayanan and colleagues at Princeton (the *AI Snake Oil* authors) went back through published research papers and found these mistakes to be common.
+    * Validation set: the training set is further split to hold out a validation set used to tune model parameters. This will matter once models are being trained; details Friday.
+    * Overfitting and the bias-variance trade-off, introduced only: a model can be made to fit its training set almost perfectly. A reported 99% accuracy should set off alarm bells. The warning sign is training error that keeps improving while validation error gets worse. The figure from Hastie et al. (test error forms a U against model complexity while training error only falls) was shown at the end of class and has been added to the slides. Much more on this in the coming weeks.
+    * Not covered: the planned breakout on auditing a pipeline, the labeling slide, the data-engineering checklist, and the takeaways. The slides on training/validation/test sets and on overfitting were covered only as previews.
+* **Hands-On 7: Data preparation** ([notebook](../notebooks/07-Data-Preparation-Clean.html))
+    * About fifteen minutes: take the netml features from last time, normalize them, and make a first prediction with scikit-learn. If students need more time, it will be given at the start of Friday's class.
+    * A student asked what to do when feature vectors come out with different lengths: truncate to the shorter or pad the longer. There is no single right answer; try both.
+    * A student asked whether the assignments follow the hands-on philosophy of using an AI coding assistant for the code. Yes: the point is understanding the data and the models, not syntax, though the instructor noted that dimension-mismatch problems are the kind of thing it was once useful to struggle with.
+    * Assignment 1 questions: some features are fingerprints of the particular household where a capture was taken rather than of video quality; a student found accuracy dropped from 70–80% to about 30% when one household's data was held out of training. Removing such proxy features, balancing the classes, and choosing how many examples of each class to train on all affect the errors a model makes, and some models tolerate class imbalance worse than others. The instructor flagged this as an extension to the assignment in a future year and encouraged exploring sampling strategies now.
+    * Group work was not captured by the recording, and there was no report-back.
+* **Friday:** the ML pipeline, training and evaluation (chapter 4.2–4.3), Hands-On 8. A student will post a question from the problem set in Slack for the instructor to address at the start of class.
