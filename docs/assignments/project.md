@@ -39,14 +39,22 @@ for completing the project:
   warrants it; in that case I expect a clear delineation of who is
   responsible for what in your project report.
   
-* Let me know by the end of Week 5 what your project idea is. Turn in a **one
-  page** PDF that outlines the following:
+* Let me know by the start of Week 5 (Monday of Week 5, 11:59 p.m.) what
+  your project idea is. Turn in a **one page** proposal, as a PDF or a
+  Markdown file, pushed to your private course repository (for a group, one
+  member's repository is enough). It should outline the following:
   * Project title
   * Project summary: What is the problem, and why is it important?
   * Data: What data will you be using for the project?
   * Machine learning: What models do you expect to try?
   * Evaluation: How will you evaluate your models?
   * Learning objective: What are you expecting to learn from your project?
+  * Group members, and what each member plans to do
+
+  If your project is a contribution to an existing library or tool rather
+  than a modeling study, some of these items may not apply; say what you
+  plan to build and what the deliverables are. You are graded on your own
+  work and tests, not on whether an upstream maintainer accepts it.
 
 ## Deliverables
 

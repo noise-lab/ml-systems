@@ -302,16 +302,46 @@ was partly inaudible the entry says so rather than guessing.
 
 ### Meeting 8 (Fri Oct 23)
 
-*Plan; replaced with the record after class.*
+*Reconstructed from the class recording, which starts a few minutes in, during questions about the project proposal, and stops when Hands-On 8 began. The hands-on work itself was not captured.*
 
-- Housekeeping: Assignment 1 due today; project proposal due Monday October 26; in-class midterm Friday October 30, covering everything through this meeting; add both TAs to assignment repositories
-- Assignment 1 and Hands-On 7 questions
-- Lecture 8: Model training and evaluation (chapter 4.2–4.3)
-    - Training, validation, and test sets; random versus temporal splits of a traffic trace
-    - Overfitting and the bias–variance trade-off; detection and remedies
-    - K-fold cross-validation and overfitting to the validation set
-    - Evaluation metrics: confusion matrix, accuracy, precision, recall, specificity, F1, ROC and AUC, precision–recall curves under class imbalance
-    - Data leakage as an evaluation failure
-- Hands-On 8: the ML pipeline, from two captures to a tuned and evaluated model ([notebook](../notebooks/08-ML-Pipeline-Clean.html))
-- As time permits: whole-class audit of a plausible intrusion-detection pipeline (carried from Meeting 7)
-- Next: probabilistic models (Naive Bayes), Hands-On 9
+- **Project proposal (due Monday October 26)**
+    - One page, PDF or Markdown, pushed to your private course repository; for a group, one member's repository is enough and the instructor will deduplicate
+    - Contents as listed on the [project page](../assignments/project.md): title, summary, data, models you expect to try, evaluation, learning objective, plus the group members and what each one will do
+    - Projects that extend an existing library or tool: say what you will build and what the deliverables are; you are graded on your own work and tests, not on whether an upstream maintainer accepts a pull request
+    - The project page was updated after class to say Monday of Week 5, to accept Markdown, and to ask for member roles
+    - Assignment 1 is due tonight at 11:59 p.m.
+- **Hands-On 7 follow-up**
+    - The notebook's "normalize" wording in the shape-alignment step was changed to "align", because it read as if feature scaling happened before the train/test split; aligning column counts is not scaling. Any scaler is fit on the training set only, after the split
+- **Lecture 8: Model training and evaluation**
+    - Labels, briefly: continuous targets (throughput, latency, page load time, video startup time) make a regression problem; binary labels (spam or not, attack or benign) and multi-class labels (DNS, unencrypted web, encrypted web, video, gaming) make classification; ordered tiers of quality of experience are also discrete labels
+    - The pipeline: split into training and test sets (80/20 is a common proportion); `fit` on the training features and labels gives a trained model; `predict` on the test features gives predicted targets; the gap between predictions and the true test labels is what every evaluation metric summarizes, and the right metric depends on whether the target is continuous, binary, or multi-class
+    - Why split: evaluating on data the model was trained on is cheating on the test. Hold data back and touch it only for the final measurement
+    - Three pieces, not two: the training set fits the model parameters; the validation set, carved out of what would otherwise be training data, is for tuning hyperparameters (the lambda of ridge and lasso regression, a polynomial degree, a tree depth); the test set is never touched until training and tuning are done
+    - Random versus temporal splits: a random 80/20 coin flip per row assumes the rows are independent and identically distributed with no temporal relationship. When there is one, train on the earlier months and test on the later ones. That also simulates the real job, such as forecasting next month's load to decide whether to provision another server
+    - Bias and variance: bias is error on the training set, variance is how much the fitted model changes with changes in the training data. A more complex model lowers bias and raises variance. Whiteboard example in one feature: a straight line with some error on every point versus a high-degree polynomial that passes through every training point with zero error and then does worse on new points. That is overfitting
+    - **Midterm flag:** the bias–variance trade-off figure, or something like it, could appear on the midterm
+    - Detecting overfitting: validation error that starts climbing while training error keeps falling says the model is too complex; the validation set is a peek at how the test set will behave without using the test set
+    - Remedies: more training data (often hard); early stopping, as in choosing how many epochs to train a neural network; regularization, penalizing nonzero coefficients in a linear model; limiting the polynomial degree or tree depth; ensembles of independently trained models, which come with tree-based models later in the course
+    - Overfitting the hyperparameters to one validation slice is the next risk. The remedy is k-fold cross-validation: partition the training data into k folds (five is common), train on k minus 1 and validate on the remaining fold, rotate, and average the performance. scikit-learn does this with one function call. Leave-one-out cross-validation does the same with a single held-out point per round, for small datasets where carving out another fifth leaves too little to train on; it is slow for large data or expensive models
+    - A student described the common practice of skipping a separate validation set and tuning hyperparameters by hand across cross-validation folds. The instructor said it is done, including by them, and is quick and dirty rather than orthodox; whether it finds the best hyperparameters is less clear
+    - Confusion matrix for a binary classifier (attack is the positive class): rows are the true labels, columns the predictions, the diagonal is correct and everything off it is wrong. The same layout generalizes to multi-class (three by three, ten by ten). scikit-learn produces it, and Hands-On 8 asks for one
+    - False positive is a false alarm (benign traffic flagged as an attack); false negative is a missed detection. Both have operational costs: an operator flooded with false alarms starts ignoring the tool, and a missed attack is a missed attack. You cannot have both at zero, but a threshold lets you trade one against the other
+    - **Midterm flag:** given the numbers in a confusion matrix, compute accuracy, precision, recall, and the rest. The formulas can go on the one-page cheat sheet, but understand them intuitively
+    - Accuracy is correct predictions over everything, and it misleads under class imbalance: when attacks are rare, a classifier that always says benign is 99.9 percent accurate and misses every attack. This is the base-rate fallacy from medical screening, where a test with high accuracy and a low base rate still produces many false positives
+    - Precision (positive predictive value): of the alarms raised, what fraction were real. Recall (true positive rate, sensitivity, detection rate): of the real positives, what fraction were caught. Specificity: of the real negatives, what fraction were correctly passed over. Precision and recall are the pair used most
+    - F1 is the harmonic mean of precision and recall, between zero and one, higher is better, and either low precision or low recall drags it down; a common single number in papers
+    - Thresholds and the ROC curve (true positive rate against false positive rate): always-alarm sits at the top right with full detection and a full false-positive rate, never-alarm at the bottom left, and a tunable classifier traces a curve between them. The diagonal is random guessing with an area under the curve of 0.5; the best possible area is 1; higher is better, and the libraries compute it
+    - ROC works well with balanced classes. Under imbalance, which is the usual case in network security papers, use the precision–recall curve: as the threshold loosens and recall rises, a bad classifier's precision collapses under false alarms while a good one keeps precision high across the range; the area under that curve is the summary. The instructor drew this on the board because the deck lacks the slide, and will add it
+    - Regression metrics such as root mean squared error were skipped and will be covered Monday with linear regression
+    - **Midterm flag:** linear regression will not be on the midterm
+- **Where the course is**
+    - This closes the first part of the course: motivation, getting data out of network systems, turning data into features (manual engineering versus representation learning), setting up the pipeline, and evaluation metrics
+    - Part two is families of supervised models, starting Monday with a linear regression review, then clustering, then, time permitting, generative AI, diffusion, and reinforcement learning in the last week or two; weeks eight and nine may be rearranged to get there
+    - A student asked about training two models on different random samples of the data and combining them; the instructor said that is ensemble learning, which arrives with tree-based models around the end of week six
+- **Hands-On 8: the ML pipeline** ([notebook](../notebooks/08-ML-Pipeline-Clean.html))
+    - About twenty minutes in class, working together: the same feature pipeline as Hands-On 7, then a train/test split, training, and evaluation, including plotting the ROC and precision–recall curves just drawn in lecture
+    - Worked solutions to the hands-ons will be zipped and posted to Slack over the weekend
+- **Not covered**
+    - The whole-class audit of the intrusion-detection pipeline carried from Meeting 7 was not reached
+    - Data leakage was not treated as its own topic beyond the rule that test data stays untouched; see Meeting 7
+- **Next:** Lecture 9, probabilistic models (naive Bayes), plus the regression metrics and linear regression review deferred to Monday October 26; Hands-On 9; in-class midterm Friday October 30
