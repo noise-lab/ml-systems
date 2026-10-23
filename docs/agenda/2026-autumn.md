@@ -299,3 +299,19 @@ was partly inaudible the entry says so rather than guessing.
     * Assignment 1 questions: some features are fingerprints of the particular household where a capture was taken rather than of video quality; a student found accuracy dropped from 70–80% to about 30% when one household's data was held out of training. Removing such proxy features, balancing the classes, and choosing how many examples of each class to train on all affect the errors a model makes, and some models tolerate class imbalance worse than others. The instructor flagged this as an extension to the assignment in a future year and encouraged exploring sampling strategies now.
     * Group work was not captured by the recording, and there was no report-back.
 * **Friday:** the ML pipeline, training and evaluation (chapter 4.2–4.3), Hands-On 8. A student will post a question from the problem set in Slack for the instructor to address at the start of class.
+
+### Meeting 8 (Fri Oct 23)
+
+*Plan; replaced with the record after class.*
+
+- Housekeeping: Assignment 1 due today; project proposal due Monday October 26; in-class midterm Friday October 30, covering everything through this meeting; add both TAs to assignment repositories
+- Assignment 1 and Hands-On 7 questions
+- Lecture 8: Model training and evaluation (chapter 4.2–4.3)
+    - Training, validation, and test sets; random versus temporal splits of a traffic trace
+    - Overfitting and the bias–variance trade-off; detection and remedies
+    - K-fold cross-validation and overfitting to the validation set
+    - Evaluation metrics: confusion matrix, accuracy, precision, recall, specificity, F1, ROC and AUC, precision–recall curves under class imbalance
+    - Data leakage as an evaluation failure
+- Hands-On 8: the ML pipeline, from two captures to a tuned and evaluated model ([notebook](../notebooks/08-ML-Pipeline-Clean.html))
+- As time permits: whole-class audit of a plausible intrusion-detection pipeline (carried from Meeting 7)
+- Next: probabilistic models (Naive Bayes), Hands-On 9
