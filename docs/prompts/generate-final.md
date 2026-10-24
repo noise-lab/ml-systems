@@ -1,5 +1,5 @@
 ---
-description: Generate a final exam (standard Autumn offering) from the term's agenda and past finals
+description: Generate a final exam (nine-week offering) from the term's agenda and past finals
 ---
 
 Instantiation of [`generate-exam.md`](generate-exam.md) for the standard final.

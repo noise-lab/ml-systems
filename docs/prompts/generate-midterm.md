@@ -1,5 +1,5 @@
 ---
-description: Generate a midterm exam (standard Autumn offering) from the term's agenda and past midterms
+description: Generate a midterm exam (nine-week offering) from the term's agenda and past midterms
 ---
 
 Instantiation of [`generate-exam.md`](generate-exam.md) for the standard midterm.
