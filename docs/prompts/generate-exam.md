@@ -8,7 +8,9 @@ instructor runs it to draft the real one.
 
 ## Parameters (ask if not given)
 
-1. **Exam type**: `midterm`, `final`, or `combined` (single exam for a short term).
+1. **Exam type**: `midterm`, `final`, or `combined`. The standard (Autumn) offering
+   has a midterm and a final; the three-week Summer/September term has one
+   combined exam (see [`generate-summer-final.md`](generate-summer-final.md)).
 2. **Term agenda file**: `docs/agenda/<term>.md` (e.g. `docs/agenda/2026-summer.md`).
    The agenda index is `docs/agenda.md`.
 3. **Meeting range** to cover (e.g. Meetings 1–8 for a midterm, 1–12 for a combined exam).
@@ -23,34 +25,45 @@ instructor runs it to draft the real one.
 6. **Past exams to imitate**: 2–3 most recent under `docs/midterm/<YYYY>/` and
    `docs/final/<YYYY>/` (each has `questions.tex`, `instructions.tex`, `exam.tex`,
    `feamster.sty`, and usually a Makefile). For a combined exam, read one midterm
-   and one final.
+   and one final. Imitate exams of the same kind: Autumn midterms and finals are
+   consistent with each other; the Summer combined exam differs in length and layout.
 
 ## Task
 
 Create an exam that:
 1. Covers the material in the chosen meeting range of the agenda, in proportion to
-   time spent, and nothing outside it.
-2. Fits on exactly the requested number of single-sided pages and totals exactly the
+   time spent, and nothing outside it. The agenda is the authority on scope, not
+   the topic lists in these prompts or the past exams.
+2. **Avoids everything the agenda rules out.** Anything the agenda marks "will not
+   be asked", "not exam material", "not covered", or skipped, and anything a later
+   meeting says will not be on this exam, is out of scope even if a past exam
+   asked about it.
+3. Fits on exactly the requested number of single-sided pages and totals exactly the
    requested points.
-3. Mixes multiple choice ("select all that apply", 3–4 pts), yes/no with explanation
+4. Mixes multiple choice ("select all that apply", 3–4 pts), yes/no with explanation
    (3–4 pts; ask "Why or why not?"), and short answer (2–5 pts, generous answer boxes).
-4. Includes at least one question about each assignment and several about the
-   hands-on activities (what the code did, why, what the result showed).
-5. Uses specific examples from class: the agenda records the analogies and
+5. Includes at least one question about each assignment due in the range and
+   several about the hands-on activities the agenda records for the range (what the
+   code did, why, what the result showed). Hands-ons vary by term; use the agenda,
+   not a fixed list.
+6. Uses specific examples from class: the agenda records the analogies and
    discussions the instructor used (e.g. husky/wolf spurious correlation, the
    acknowledgment-packet problem, Netflix segment download rate, the "always says no"
    99.9%-accurate classifier, ephemeral routes for spam). Where the agenda says
-   "this would be a good exam question," it is.
-6. Tests understanding, not memorization, and is not tricky.
-7. Ends with a 3-point feedback section (interest, difficulty, one like, one suggestion).
+   "this would be a good exam question" or carries a **Midterm flag** / **Final
+   flag**, it is: cover every such flag in the range.
+7. Tests understanding, not memorization, and is not tricky.
+8. Ends with a 3-point feedback section (interest, difficulty, one like, one suggestion).
 
 ## Steps
 
 1. Read the agenda file for the meeting range and the term page (if any).
 2. Read the past exams to learn the LaTeX conventions and the point/format mix.
-3. List the key concepts per meeting; drop anything the term page marks as skipped.
+3. List the key concepts and exam flags per meeting; drop anything the term page
+   marks as skipped and anything the agenda says will not be asked.
 4. Write `questions.tex` (with solutions), `instructions.tex`, `exam.tex`, a
-   `Makefile`, and a `README.md`; copy `feamster.sty` from the most recent past exam.
+   `Makefile`, and a `README.md`; copy `feamster.sty` and the `Makefile` from the
+   most recent past exam of the same kind (e.g. last Autumn's midterm).
 5. Build both `exam.pdf` and `exam-solution.pdf`; verify page count, point total, and
    layout; iterate until they match.
 
@@ -59,11 +72,11 @@ Create an exam that:
 - `\prob{N}` … `\eprob` wraps a question worth N points. Do **not** use `\prob{}` for
   the acknowledgment box in `instructions.tex` — it would add a phantom point. Use:
   ```latex
-  {\bf 1.} Write your full name in the box to acknowledge the instructions.
+  Write your full name in the box to acknowledge the instructions.
 
   \shortanswerbox{3.25}{Nick Feamster}
   ```
-  The first real question is then numbered 2.
+  The name box is not a numbered question; the first `\prob` is question 1.
 - Multiple choice: `\correctanswercircle{}` for correct options, `\answercircle{}`
   otherwise. Keep option text short enough for the two-column layout.
 - Yes/no: `\framebox{\yesnoyes}` or `\framebox{\yesnono}` (no braces around Yes/No).
