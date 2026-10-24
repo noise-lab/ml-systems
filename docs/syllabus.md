@@ -68,19 +68,40 @@ your understanding of assignment topics through various means including pop
 quizzes in class, oral examinations, midterm/final exams, or other assessment
 methods to ensure you have grasped the fundamental concepts behind the code.
 
-**[Project.](assignments/project.md)** The course will have a small project. You will have two options
-for completing the project. 
+**[Project.](assignments/project.md)** The course will have a small project,
+in groups of up to three (four if the project warrants it, with a clear
+division of labor). There are three options:
 
-1. **ML/Net Leaderboard.** nPrint/pcapML; your goal will be to re-produce or extend some of the
-   best-known machine learning results for various applications of machine
-   learning in computer networking.
+1. **ML/Net Leaderboard.** Reproduce or extend one of the best-known machine
+   learning results in computer networking from the nPrint/pcapML
+   [leaderboard](https://nprint.github.io/benchmarks/).
 
-2. **Research.** You are welcome to work on an independent research project
-   that involves machine learning and computer systems. This option is
-   probably better suited for graduate students in computer science who are
-   comfortable working on open-ended problems. Your project must be approved
-   by the instructor, based on a concrete research proposal.
-   
+2. **Extensions to existing libraries.** Add feature representations or other
+   capabilities to a library we use in class (netml, nPrint/pcapML, or
+   another public library) and measure whether they help. You are graded on
+   your own code, tests, and evaluation, not on whether the upstream
+   maintainers accept a pull request.
+
+3. **Research.** An independent research project involving machine learning
+   and computer systems, better suited to students comfortable with
+   open-ended problems. Must be approved by the instructor on the basis of a
+   concrete proposal.
+
+**Proposal.** Due Monday of Week 5 at 11:59 p.m. (Chicago). One page, as a
+PDF or a Markdown file, pushed to your private course repository; for a
+group, one member's repository is enough, but list every member and what each
+one will do. It should give the title, the problem and why it matters, the
+data, the models you expect to try, how you will evaluate them, and what you
+expect to learn. If an item does not apply to your project (a library
+extension has no dataset to describe, say), say what you will build and what
+the deliverables are instead. The proposal is graded for completion; its
+purpose is to catch scope and data problems early.
+
+**Final deliverable.** Code the instructor can run end to end with a clear
+entry point, plus a written report in any reasonable format, both committed
+to your course repository. Details, past examples, and the rubric are on the
+[project page](assignments/project.md).
+
 **Participation.** I do not take attendance; it is my job to make this course
 interesting and something you find worth your time. If you find it is not, I
 encourage you to find a way to get me that feedback (directly if you feel
@@ -132,8 +153,8 @@ assignments according to the following policy:
 * Each assignment will be due at 11:59 p.m. (Chicago Local Time) on the due date.
 * For each assignment, every hour late (or fraction thereof) that you turn in
     the assignment will subtract one hour from your grace-period balance. For
-    example, if you turn in your assignment at 6:02 p.m. on the due date, we will
-    count this as two hours against your grace period.
+    example, if you turn in your assignment at 1:02 a.m. the morning after the
+    due date, we will count this as two hours against your grace period.
 * As long as your grace period balance is positive, you can turn in any
     assignment late without penalty. The grace period balance is recalculated 
     on every last submission.
