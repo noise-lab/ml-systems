@@ -45,7 +45,7 @@ devices, additional pages, or other materials are permitted. This policy is set
 in advance and will not change at exam time.
 
 **Practice materials.** Past midterm and final exams from prior years are posted
-for everyone in the [`midterm/`](midterm/) and [`final/`](final/) folders of the
+for everyone in the [`midterm/`](https://github.com/noise-lab/ml-systems/tree/main/docs/midterm), [`final/`](https://github.com/noise-lab/ml-systems/tree/main/docs/final), and [`combined/`](https://github.com/noise-lab/ml-systems/tree/main/docs/combined) folders of the
 course repository, so the same study materials are available to all students.
 
 **Assignments.** The course will have approximately 3-5 hands-on programming

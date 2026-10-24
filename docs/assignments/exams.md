@@ -12,8 +12,8 @@ combined exam, about 45–50), but the whole class period is available. Expect
 mostly short-answer questions, some yes/no-with-explanation, and a few multiple
 choice, drawn from what was actually covered in class (the
 [agenda](../agenda.md) for the term is the record), the hands-on activities, and
-the assignments. Past exams, with solutions, are in [`midterm/`](../midterm/)
-and [`final/`](../final/).
+the assignments. Past exams, with solutions, are in [`midterm/`](https://github.com/noise-lab/ml-systems/tree/main/docs/midterm),
+[`final/`](https://github.com/noise-lab/ml-systems/tree/main/docs/final), and (for the three-week offering) [`combined/`](https://github.com/noise-lab/ml-systems/tree/main/docs/combined).
 
 ## Permitted materials
 

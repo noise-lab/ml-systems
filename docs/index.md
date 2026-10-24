@@ -84,7 +84,8 @@ exam and is printed on it: closed-book and closed-notes except for
 no electronic devices or other materials. Details in [exams](assignments/exams.md).
 
 Past exams from prior years are available to everyone as practice material:
-[past midterms](midterm/) and [past finals](final/). You can also generate your
+[past midterms](https://github.com/noise-lab/ml-systems/tree/main/docs/midterm), [past finals](https://github.com/noise-lab/ml-systems/tree/main/docs/final), and the three-week
+offering's [combined exams](https://github.com/noise-lab/ml-systems/tree/main/docs/combined). You can also generate your
 own practice exams from the agenda with the prompts in [`prompts/`](prompts/).
 
 ## Background Videos and Readings

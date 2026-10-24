@@ -22,7 +22,7 @@ questions the instructor got, but you will get questions built from the same inp
 | Term page | `docs/terms/<term>.md`: exam date, lectures skipped or merged, and any bonus lectures given after the exam was set. Everything it lists as skipped or not on the exam is **out of scope** |
 | Assignments | Every assignment and project milestone due before the exam (in 2026: Assignment 1 and the project proposal); at least one question on each |
 | Hands-ons | The ones the agenda records for the term, not a fixed list |
-| Past exams to imitate | The most recent combined exam(s) (`docs/combined/<YYYY>/`; the 2026 one is in `docs/final/2026/`), plus the most recent nine-week midterm and final: a combined exam mixes both |
+| Past exams to imitate | The most recent combined exam(s) (`docs/combined/<YYYY>/`), plus the most recent nine-week midterm and final: a combined exam mixes both |
 | Length | 6 pages (7 if the feedback item spills), **75 points**, designed for 45–50 minutes with the full class period available (the nine-week exams are 4 pages / 50 points) |
 | Question mix | Mostly select-all / multiple choice and yes/no with "Why or why not?"; keep pure short answers to a handful (graded by keyword); where a question has two parts, make one part multiple choice and one a box; end with a 2-point feedback section |
 | Instructor output | `/Users/feamster/Dropbox/Tmp/exams/ml-systems/combined/<YYYY>/` (not committed until after the exam) |

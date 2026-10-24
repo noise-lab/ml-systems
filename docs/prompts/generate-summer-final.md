@@ -75,7 +75,7 @@ From the Meeting 9 review:
 
 ## Output
 
-- Instructor: `/Users/feamster/Dropbox/Tmp/exams/ml-systems/final/2026/` — never committed before the exam is given; afterwards it is published in `docs/final/2026/` with solutions.
+- Instructor: `/Users/feamster/Dropbox/Tmp/exams/ml-systems/combined/2026/` — never committed before the exam is given; afterwards it is published in `docs/combined/2026/` with solutions.
 - Students: any directory of your own, e.g. `~/ml-systems-practice/final/`. Copy `feamster.sty` and the `Makefile` from `2025/`, then `make all`.
 
 ## Validation
