@@ -8,8 +8,8 @@ same recipe as the real one. You will not get the same questions.
 | File | Purpose |
 |---|---|
 | [`generate-exam.md`](generate-exam.md) | The general recipe: parameters, LaTeX conventions, validation. Read first. |
-| [`generate-midterm.md`](generate-midterm.md) | Parameters for the standard midterm (Autumn offering). |
-| [`generate-final.md`](generate-final.md) | Parameters for the standard final (Autumn offering). |
+| [`generate-midterm.md`](generate-midterm.md) | Parameters for the standard midterm (nine-week offering). |
+| [`generate-final.md`](generate-final.md) | Parameters for the standard final (nine-week offering). |
 | [`generate-summer-final.md`](generate-summer-final.md) | Parameters for the Summer 2026 (Paris) single combined exam. |
 
 Typical use with Claude Code, from the repository root:

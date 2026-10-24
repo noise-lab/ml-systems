@@ -8,9 +8,11 @@ instructor runs it to draft the real one.
 
 ## Parameters (ask if not given)
 
-1. **Exam type**: `midterm`, `final`, or `combined`. The standard (Autumn) offering
-   has a midterm and a final; the three-week Summer/September term has one
-   combined exam (see [`generate-summer-final.md`](generate-summer-final.md)).
+1. **Exam type**: `midterm`, `final`, or `combined`. The nine-week offering has a
+   midterm and a final; the three-week offering has one combined exam (see
+   [`generate-summer-final.md`](generate-summer-final.md)). The nine-week offering
+   has typically run in Autumn and the three-week one in September, but either may
+   move to another part of the year; go by the offering's length, not the season.
 2. **Term agenda file**: `docs/agenda/<term>.md` (e.g. `docs/agenda/2026-summer.md`).
    The agenda index is `docs/agenda.md`.
 3. **Meeting range** to cover (e.g. Meetings 1–8 for a midterm, 1–12 for a combined exam).
@@ -25,8 +27,8 @@ instructor runs it to draft the real one.
 6. **Past exams to imitate**: 2–3 most recent under `docs/midterm/<YYYY>/` and
    `docs/final/<YYYY>/` (each has `questions.tex`, `instructions.tex`, `exam.tex`,
    `feamster.sty`, and usually a Makefile). For a combined exam, read one midterm
-   and one final. Imitate exams of the same kind: Autumn midterms and finals are
-   consistent with each other; the Summer combined exam differs in length and layout.
+   and one final. Imitate exams of the same kind: nine-week midterms and finals are
+   consistent with each other; the three-week combined exam differs in length and layout.
 
 ## Task
 
@@ -63,7 +65,7 @@ Create an exam that:
    marks as skipped and anything the agenda says will not be asked.
 4. Write `questions.tex` (with solutions), `instructions.tex`, `exam.tex`, a
    `Makefile`, and a `README.md`; copy `feamster.sty` and the `Makefile` from the
-   most recent past exam of the same kind (e.g. last Autumn's midterm).
+   most recent past exam of the same kind (e.g. the last nine-week offering's midterm).
 5. Build both `exam.pdf` and `exam-solution.pdf`; verify page count, point total, and
    layout; iterate until they match.
 
