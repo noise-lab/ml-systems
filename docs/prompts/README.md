@@ -10,10 +10,11 @@ same recipe as the real one. You will not get the same questions.
 | [`generate-exam.md`](generate-exam.md) | The general recipe: parameters, LaTeX conventions, validation. Read first. |
 | [`generate-midterm.md`](generate-midterm.md) | Parameters for the standard midterm (nine-week offering). |
 | [`generate-final.md`](generate-final.md) | Parameters for the standard final (nine-week offering). |
-| [`generate-summer-final.md`](generate-summer-final.md) | Parameters for the Summer 2026 (Paris) single combined exam. |
+| [`generate-combined.md`](generate-combined.md) | Parameters for the single combined exam (three-week offering, any year). |
+| [`generate-summer-final.md`](generate-summer-final.md) | Record of the parameters used for the Summer 2026 (Paris) combined exam. |
 
 Typical use with Claude Code, from the repository root:
 
 ```
-claude "Follow docs/prompts/generate-summer-final.md to make me a practice exam in ~/practice/final"
+claude "Follow docs/prompts/generate-midterm.md to make me a practice exam in ~/practice/midterm"
 ```

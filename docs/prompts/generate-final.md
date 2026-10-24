@@ -14,5 +14,5 @@ Read that file for the LaTeX conventions and workflow; use these parameters.
 | Must include | questions on the hands-ons the agenda records in the meeting range (typically regression, trees and ensembles, deep learning, PCA, clustering, generative models) and on the project deliverables; every final flag in the range |
 | Instructor output | `/Users/feamster/Dropbox/Tmp/exams/ml-systems/final/<YYYY>/` (not committed until after the exam) |
 
-For a short term with a single combined exam, use the term-specific file instead
-(e.g. [`generate-summer-final.md`](generate-summer-final.md)).
+For the three-week offering, which has a single combined exam, use
+[`generate-combined.md`](generate-combined.md) instead.
