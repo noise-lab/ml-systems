@@ -88,9 +88,8 @@ division of labor). There are three options:
    concrete proposal.
 
 **Proposal.** Due Monday of Week 5 at 11:59 p.m. (Chicago). One page, as a
-PDF or a Markdown file, pushed to your private course repository; for a
-group, one member's repository is enough, but list every member and what each
-one will do. It should give the title, the problem and why it matters, the
+PDF or a Markdown file; one proposal per group is fine, but list every member
+and what each one will do. It should give the title, the problem and why it matters, the
 data, the models you expect to try, how you will evaluate them, and what you
 expect to learn. If an item does not apply to your project (a library
 extension has no dataset to describe, say), say what you will build and what
@@ -98,8 +97,8 @@ the deliverables are instead. The proposal is graded for completion; its
 purpose is to catch scope and data problems early.
 
 **Final deliverable.** Code the instructor can run end to end with a clear
-entry point, plus a written report in any reasonable format, both committed
-to your course repository. Details, past examples, and the rubric are on the
+entry point, plus a written report in any reasonable format. Submission
+details, past examples, and the rubric are on the
 [project page](assignments/project.md).
 
 **Participation.** I do not take attendance; it is my job to make this course
