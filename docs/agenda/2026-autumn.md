@@ -345,3 +345,18 @@ was partly inaudible the entry says so rather than guessing.
     - The whole-class audit of the intrusion-detection pipeline carried from Meeting 7 was not reached
     - Data leakage was not treated as its own topic beyond the rule that test data stays untouched; see Meeting 7
 - **Next:** Lecture 9, probabilistic models (naive Bayes), plus the regression metrics and linear regression review deferred to Monday October 26; Hands-On 9; in-class midterm Friday October 30
+
+### Meeting 9 (Mon Oct 26)
+
+*Plan; replaced with the record after class.*
+
+- Housekeeping: project proposal due tonight at 11:59 p.m.; in-class midterm Friday October 30, covering Meetings 1 through 8 (nothing from today)
+- Midterm questions: scope, format, the cheat sheet, how literal the questions are
+- Regression metrics, deferred from Meeting 8: MSE, RMSE, MAE, R²
+- Lecture 9: Non-parametric and probabilistic models (chapter 5)
+    - The classifier landscape
+    - Naive Bayes: Bayes' rule, the independence assumption, choosing a distribution family, the zero-probability problem and Laplace smoothing, the spam-filter arms race, why it works despite violated assumptions
+    - k-nearest neighbors: distance functions and feature standardization, the curse of dimensionality, networking uses (indoor positioning, website fingerprinting, intrusion detection)
+    - Naive Bayes versus k-NN, and the pitfalls of each on network data
+- Hands-On 9: Naive Bayes spam classifier ([notebook](../notebooks/09-Naive-Bayes-Clean.html))
+- Next: midterm (Friday October 30); linear and polynomial regression (Monday November 2)
