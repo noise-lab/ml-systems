@@ -350,7 +350,7 @@ was partly inaudible the entry says so rather than guessing.
 
 *Plan; replaced with the record after class.*
 
-- Housekeeping: project proposal due tonight at 11:59 p.m.; in-class midterm Friday October 30, covering Meetings 1 through 8 (nothing from today)
+- Housekeeping: project proposal due tonight at 11:59 p.m.; Assignment 2, the take-home midterm (video-conferencing QoE, individual work), goes out today and is due Friday November 6; in-class midterm Friday October 30, covering Meetings 1 through 8 (nothing from today)
 - Midterm questions: scope, format, the cheat sheet, how literal the questions are
 - Regression metrics, deferred from Meeting 8: MSE, RMSE, MAE, R²
 - Lecture 9: Non-parametric and probabilistic models (chapter 5)
