@@ -3,12 +3,12 @@ description: Generate the Summer 2026 (Paris) combined final exam — or a pract
 ---
 
 > **Record of the 2026 exam.** For a future three-week offering, use
-> [`generate-combined.md`](generate-combined.md); this file keeps the exact
+> [`generate-combined.md`](../generate-combined.md); this file keeps the exact
 > parameters used in 2026 and is what students should use to practice for that exam.
 
 This is the term-specific recipe used to draft the **Summer 2026 combined final**
 (Thu Sep 17, 2026). It instantiates the general prompt in
-[`generate-exam.md`](generate-exam.md); read that first for the LaTeX
+[`generate-exam.md`](../../prompts/generate-exam.md); read that first for the LaTeX
 conventions, then apply the parameters below. Students: run this yourself to make
 practice exams. You will not get the same questions the instructor got, but you
 will get questions built from exactly the same inputs.

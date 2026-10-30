@@ -2,12 +2,12 @@
 description: Generate the single combined exam for the three-week offering (any year) from that term's agenda, term page, and past exams
 ---
 
-Instantiation of [`generate-exam.md`](generate-exam.md) for the **three-week
+Instantiation of [`generate-exam.md`](../prompts/generate-exam.md) for the **three-week
 offering**, which has one combined exam and no midterm. It has typically run in
 September (Paris), but the recipe depends on the offering's length, not the
 season. Read `generate-exam.md` first for the LaTeX conventions and workflow, then
 apply the parameters below. The nine-week offering uses
-[`generate-midterm.md`](generate-midterm.md) and [`generate-final.md`](generate-final.md)
+[`generate-midterm.md`](../midterm/generate-midterm.md) and [`generate-final.md`](../final/generate-final.md)
 instead.
 
 Students: run this yourself to make practice exams. You will not get the same
@@ -58,7 +58,7 @@ Set in the 2026 review and kept unless that term's agenda says otherwise:
 
 - Instructor: write to the Dropbox directory above. After the exam, publish it with
   solutions in `docs/combined/<YYYY>/` and add the term's prompt record (see
-  [`generate-summer-final.md`](generate-summer-final.md) for 2026) if the
+  [`generate-summer-final.md`](2026/generate-summer-final.md) for 2026) if the
   parameters were changed for that year.
 - Students: any directory of your own, e.g. `~/ml-systems-practice/combined/`.
   Copy `feamster.sty` and the `Makefile` from the most recent past combined exam,

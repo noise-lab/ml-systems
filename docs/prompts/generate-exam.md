@@ -10,7 +10,7 @@ instructor runs it to draft the real one.
 
 1. **Exam type**: `midterm`, `final`, or `combined`. The nine-week offering has a
    midterm and a final; the three-week offering has one combined exam (see
-   [`generate-combined.md`](generate-combined.md)). The nine-week offering
+   [`generate-combined.md`](../combined/generate-combined.md)). The nine-week offering
    has typically run in Autumn and the three-week one in September, but either may
    move to another part of the year; go by the offering's length, not the season.
 2. **Term agenda file**: `docs/agenda/<term>.md` (e.g. `docs/agenda/2026-summer.md`).

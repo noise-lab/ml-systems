@@ -2,7 +2,7 @@
 description: Generate a midterm exam (nine-week offering) from the term's agenda and past midterms
 ---
 
-Instantiation of [`generate-exam.md`](generate-exam.md) for the standard midterm.
+Instantiation of [`generate-exam.md`](../prompts/generate-exam.md) for the standard midterm.
 Read that file for the LaTeX conventions and workflow; use these parameters.
 
 | Parameter | Value |

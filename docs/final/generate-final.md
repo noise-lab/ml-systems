@@ -2,7 +2,7 @@
 description: Generate a final exam (nine-week offering) from the term's agenda and past finals
 ---
 
-Instantiation of [`generate-exam.md`](generate-exam.md) for the standard final.
+Instantiation of [`generate-exam.md`](../prompts/generate-exam.md) for the standard final.
 Read that file for the LaTeX conventions and workflow; use these parameters.
 
 | Parameter | Value |
@@ -15,4 +15,4 @@ Read that file for the LaTeX conventions and workflow; use these parameters.
 | Instructor output | `/Users/feamster/Dropbox/Tmp/exams/ml-systems/final/<YYYY>/` (not committed until after the exam; when the instructor publishes it to `docs/final/<YYYY>/`, `rubric.yaml`, `grading-notes.md`, and `analysis.md` from the grading directory in instructor-data go with it, never the scores or review pages) |
 
 For the three-week offering, which has a single combined exam, use
-[`generate-combined.md`](generate-combined.md) instead.
+[`generate-combined.md`](../combined/generate-combined.md) instead.

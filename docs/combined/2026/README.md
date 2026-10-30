@@ -4,7 +4,7 @@ Given Thu Sep 17, 2026. Published here with solutions as practice material; buil
 
 Single combined exam for the three-week Paris offering (Thu Sep 17, 2026).
 Designed for about 45–50 minutes; the full class period is available.
-Generated from `docs/prompts/generate-summer-final.md` in the course repo
+Generated from `docs/combined/2026/generate-summer-final.md` in the course repo
 (agenda `docs/agenda/2026-summer.md`, Meetings 1–8; past 2025 midterm and final
 as format models), then edited by hand.
 
