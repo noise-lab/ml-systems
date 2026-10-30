@@ -24,7 +24,7 @@ instructor runs it to draft the real one.
 5. **Output directory**. Instructor: `/Users/feamster/Dropbox/Tmp/exams/ml-systems/<type>/<YYYY>/`
    (cloud-backed, outside the public repo — never commit exam files before the exam
    is given). Students: any directory of your own; nothing here is secret.
-6. **Past exams to imitate**: 2–3 most recent under `docs/midterm/<YYYY>/` and
+6. **Past exams to imitate** (read each one's `rubric.yaml`, `grading-notes.md`, and `analysis.md` first where present; skip questions they mark ambiguous): 2–3 most recent under `docs/midterm/<YYYY>/` and
    `docs/final/<YYYY>/` (each has `questions.tex`, `instructions.tex`, `exam.tex`,
    `feamster.sty`, and usually a Makefile). For a combined exam, read one midterm
    and one final. Imitate exams of the same kind: nine-week midterms and finals are
