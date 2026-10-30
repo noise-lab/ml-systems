@@ -9,10 +9,10 @@ Read that file for the LaTeX conventions and workflow; use these parameters.
 |---|---|
 | Exam type | `midterm` |
 | Agenda | `docs/agenda/<term>.md`, Meetings 1–8 (through Model Training and Evaluation), or whatever range the agenda says the midterm covers |
-| Past exams | `docs/midterm/<YYYY>/` — the two or three most recent |
+| Past exams | `docs/midterm/<YYYY>/` — the two or three most recent. From 2026 on, each also carries `rubric.yaml` (how it was scored), `grading-notes.md` (decisions made while giving it), and `analysis.md` (where the class split from the key): read those three first, and do not reuse a question they mark as ambiguous |
 | Length | 4 pages, 50 points, designed for 30–40 minutes; ends with a 3-point feedback section |
 | Must include | one question on Assignment 1; questions on the hands-ons the agenda records in the meeting range; every midterm flag in the range |
-| Instructor output | `/Users/feamster/Dropbox/Tmp/exams/ml-systems/midterm/<YYYY>/` (not committed until after the exam) |
+| Instructor output | `/Users/feamster/Dropbox/Tmp/exams/ml-systems/midterm/<YYYY>/` (not committed until after the exam; when the instructor publishes it to `docs/midterm/<YYYY>/`, `rubric.yaml`, `grading-notes.md`, and `analysis.md` from the grading directory in instructor-data go with it, never the scores or review pages) |
 
 Follow the agenda for what to cover. As orientation only, midterms usually draw
 on: motivating applications (QoE, security, resource allocation); passive vs.
