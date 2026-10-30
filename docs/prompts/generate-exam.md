@@ -81,6 +81,17 @@ Create an exam that:
   The name box is not a numbered question; the first `\prob` is question 1.
 - Multiple choice: `\correctanswercircle{}` for correct options, `\answercircle{}`
   otherwise. Keep option text short enough for the two-column layout.
+- **Randomize where the correct answers sit.** The key must not be readable
+  from the layout. In every multiple-choice question put the correct options at
+  random positions: in a two-column grid spread them across both columns and
+  different rows, never all in the left column or the top rows; in a
+  single-column list, not always first. Across the exam, correct options should
+  land about evenly in every position and column, consecutive single-answer
+  questions should not share the key's position, and select-all questions should
+  vary in how many options are correct. Balance yes/no keys too: use both
+  `\yesnoyes` and `\yesnono`, in no fixed pattern. Before finishing, write out
+  the whole key (for example "Q1: B, C, F; Q5: no; Q9: D") and fix any pattern
+  you can see in it.
 - Yes/no: `\framebox{\yesnoyes}` or `\framebox{\yesnono}` (no braces around Yes/No).
 - Short answer: `\answerbox{height-in-inches}{solution text}`; 1.0–3.0 in depending on
   expected length; solution text must be a single paragraph and must not contain `&`.
@@ -102,7 +113,9 @@ pdfinfo exam.pdf | grep Pages          # must equal the requested page count
 grep -o '\\prob{[0-9]*}' questions.tex | tr -dc '0-9\n' | awk '{s+=$1} END {print s}'   # must equal the point total
 ```
 Open the PDF: no overlapping text, answer boxes start on a new line, multiple-choice
-options don't spill across columns. Too long: remove page breaks between sections,
+options don't spill across columns. Open `exam-solution.pdf` too and look at where
+the filled bubbles and circled yes/no answers fall: no column, row or position
+should stand out. Too long: remove page breaks between sections,
 shrink boxes, merge questions. Too short: enlarge boxes.
 
 ## Instructor-only
