@@ -40,38 +40,38 @@ Class agenda for each meeting is in the [agenda](agenda.md) (one file per term; 
 
 ## Schedule
 
-| Lecture                        | Topic                                                                                                       | Reading     |
-|--------------------------------|-------------------------------------------------------------------------------------------------------------|-------------|
-| 1                              | Introduction<br>([Packet Capture](notebooks/01-Packet-Capture-Basics-Clean.html))                           | Ch. 1       |
-| **Use Cases**                  |                                                                                                             |             |
-| 2                              | Security<br> ([Scanning](notebooks/02-Motivation-Security-Clean.html))                                      | Ch. 2.1     |
-| 3                              | Performance<br> ([QoE Inference](notebooks/03-Performance-Service-Clean.html))                              | Ch. 2.2     |
-| 4                              | Resource Optimization                                                                                       | Ch. 2.3     |
-| **Data From Computer Systems** |                                                                                                             |             |
-| 5                              | Data Acquisition<br>([Data Acquisition](notebooks/05-Data-Acquisition-Clean.html))                          | Ch. 3.2–3.3 |
-| 6                              | From Data to Analysis<br>([Feature Extraction](notebooks/06-Feature-Extraction-Clean.html))                 | Ch. 3.4     |
-| **Machine Learning Pipeline**  |                                                                                                             |             |
-| 7                              | Data Preparation and Representation<br>([Data Preparation](notebooks/07-Data-Preparation-Clean.html))       | Ch. 4.1     |
-| 8                              | Model Training and Evaluation<br>([Model Evaluation](notebooks/08-ML-Pipeline-Clean.html))                  | Ch. 4.2–4.3 |
-| **Supervised Learning**        |                                                                                                             | Ch. 5       |
-| 9                              | Non-Parametric and Probabilistic Models<br>([Naive Bayes](notebooks/09-Naive-Bayes-Clean.html))             |             |
-| 10                             | Linear and Polynomial Regression<br>([Linear Regression](notebooks/10-Linear-Regression-Clean.html))        |             |
-| 11                             | Logistic Regression and SVMs<br>([Logistic Regression](notebooks/11-Logistic-Regression-Clean.html))        |             |
-| 12                             | Trees and Ensembles<br>([Trees and Ensembles](notebooks/12-Trees-Ensembles-Clean.html))                     |             |
-| 13                             | Deep Learning<br>([Deep Learning](notebooks/13-Deep-Learning-Clean.html))                                   |             |
-| 14                             | Learning Traffic Representations<br>([nPrint](notebooks/14-nPrint-Clean.html))                              |             |
-| **Unsupervised Learning**      |                                                                                                             | Ch. 6       |
-| 15                             | Dimensionality Reduction<br> ([Dimensionality Reduction](notebooks/15-Dimensionality-Reduction-Clean.html)) |             |
-| 16                             | Clustering<br>([Clustering](notebooks/16-Clustering-Clean.html))                                            |             |
-| **Generative Models**          |                                                                                                             | Ch. 7       |
-| 17                             | Diffusion Models<br>([Diffusion Models](notebooks/17-Diffusion-Clean.html))                                 |             |
-| 18                             | State-Space Models<br>([NetSSM walkthrough](https://github.com/noise-lab/netssm/blob/main/example/train_netssm_from_scratch.ipynb) · [open in Colab](https://colab.research.google.com/github/noise-lab/netssm/blob/main/example/train_netssm_from_scratch.ipynb), needs a GPU) |             |
-| 19                             | Transformers<br>([Large Language Models](notebooks/19-LLM-Clean.html))                                      |             |
-| **Bonus Topics**               |                                                                                                             | Ch. 8       |
-| 20                             | Timeseries Analysis<br>([Timeseries](notebooks/20-Timeseries-Clean.html))                                   |             |
-| 21                             | Reinforcement Learning<br>([Reinforcement Learning](notebooks/21-Reinforcement-Clean.html))                 |             |
-| 22                             | Autoencoders (covered within Lecture 15)                                                                    |             |
-| 23                             | Model Performance and Maintenance<br>([slides](slides/23-Maintenance/slides.html) · [speaker notes](slides/23-Maintenance/speaker-notes.md))     |             |
+| Lecture                        | Topic                                                                                                       | Reading     | [Assignments (dates on the sheet)](https://docs.google.com/spreadsheets/d/1U2HWB3pQRS5Qo4_janw0ruyKe1ZarSpTqpl7nOmSiLY/edit) |
+|--------------------------------|-------------------------------------------------------------------------------------------------------------|-------------|---|
+| 1                              | Introduction<br>([Packet Capture](notebooks/01-Packet-Capture-Basics-Clean.html))                           | Ch. 1       |  |
+| **Use Cases**                  |                                                                                                             |             |  |
+| 2                              | Security<br> ([Scanning](notebooks/02-Motivation-Security-Clean.html))                                      | Ch. 2.1     |  |
+| 3                              | Performance<br> ([QoE Inference](notebooks/03-Performance-Service-Clean.html))                              | Ch. 2.2     | [A1: Video Quality Inference](https://github.com/noise-courses/video-qoe) |
+| 4                              | Resource Optimization                                                                                       | Ch. 2.3     |  |
+| **Data From Computer Systems** |                                                                                                             |             |  |
+| 5                              | Data Acquisition<br>([Data Acquisition](notebooks/05-Data-Acquisition-Clean.html))                          | Ch. 3.2–3.3 |  |
+| 6                              | From Data to Analysis<br>([Feature Extraction](notebooks/06-Feature-Extraction-Clean.html))                 | Ch. 3.4     |  |
+| **Machine Learning Pipeline**  |                                                                                                             |             |  |
+| 7                              | Data Preparation and Representation<br>([Data Preparation](notebooks/07-Data-Preparation-Clean.html))       | Ch. 4.1     |  |
+| 8                              | Model Training and Evaluation<br>([Model Evaluation](notebooks/08-ML-Pipeline-Clean.html))                  | Ch. 4.2–4.3 | [Project proposal](https://github.com/noise-courses/ml-sys-project) |
+| **Supervised Learning**        |                                                                                                             | Ch. 5       |  |
+| 9                              | Non-Parametric and Probabilistic Models<br>([Naive Bayes](notebooks/09-Naive-Bayes-Clean.html))             |             | [A2: Take-home midterm, Video Conferencing QoE](https://github.com/noise-courses/video-conference-qoe) (individual) |
+| 10                             | Linear and Polynomial Regression<br>([Linear Regression](notebooks/10-Linear-Regression-Clean.html))        |             |  |
+| 11                             | Logistic Regression and SVMs<br>([Logistic Regression](notebooks/11-Logistic-Regression-Clean.html))        |             |  |
+| 12                             | Trees and Ensembles<br>([Trees and Ensembles](notebooks/12-Trees-Ensembles-Clean.html))                     |             | [A3: Anomaly Detection](https://github.com/noise-courses/anomaly-detection) |
+| 13                             | Deep Learning<br>([Deep Learning](notebooks/13-Deep-Learning-Clean.html))                                   |             |  |
+| 14                             | Learning Traffic Representations<br>([nPrint](notebooks/14-nPrint-Clean.html))                              |             |  |
+| **Unsupervised Learning**      |                                                                                                             | Ch. 6       |  |
+| 15                             | Dimensionality Reduction<br> ([Dimensionality Reduction](notebooks/15-Dimensionality-Reduction-Clean.html)) |             |  |
+| 16                             | Clustering<br>([Clustering](notebooks/16-Clustering-Clean.html))                                            |             | [A4: Spatial Clustering](https://github.com/noise-courses/latency-geo-clustering) |
+| **Generative Models**          |                                                                                                             | Ch. 7       |  |
+| 17                             | Diffusion Models<br>([Diffusion Models](notebooks/17-Diffusion-Clean.html))                                 |             |  |
+| 18                             | State-Space Models<br>([NetSSM walkthrough](https://github.com/noise-lab/netssm/blob/main/example/train_netssm_from_scratch.ipynb) · [open in Colab](https://colab.research.google.com/github/noise-lab/netssm/blob/main/example/train_netssm_from_scratch.ipynb), needs a GPU) |             |  |
+| 19                             | Transformers<br>([Large Language Models](notebooks/19-LLM-Clean.html))                                      |             | [Project: artifact and report](https://github.com/noise-courses/ml-sys-project) |
+| **Bonus Topics**               |                                                                                                             | Ch. 8       |  |
+| 20                             | Timeseries Analysis<br>([Timeseries](notebooks/20-Timeseries-Clean.html))                                   |             |  |
+| 21                             | Reinforcement Learning<br>([Reinforcement Learning](notebooks/21-Reinforcement-Clean.html))                 |             |  |
+| 22                             | Autoencoders (covered within Lecture 15)                                                                    |             |  |
+| 23                             | Model Performance and Maintenance<br>([slides](slides/23-Maintenance/slides.html) · [speaker notes](slides/23-Maintenance/speaker-notes.md))     |             |  |
 
 Please come to class having done the reading.
 
