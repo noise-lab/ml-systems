@@ -169,6 +169,32 @@ assignments according to the following policy:
     not limited to interviews, conferences, etc.—are not legitimate excuses and
     any resulting lateness will count against your grace period.
 
+### How lateness is measured
+
+Your submission is whatever is in your course repository on GitHub when we
+pull it; we do not accept submissions by email or Slack. Submission times are
+read from git history, by one rule:
+
+* **The submission time is the timestamp of the earliest commit in which the
+  submitted file had exactly the content we grade** (its content on your
+  default branch when we pull). Moving or renaming a file, committing it again
+  unchanged, or reverting a commit and then restoring it does not change the
+  submission time, because the graded content already existed earlier.
+* **Any change to the content after the deadline moves the submission time to
+  that change,** even a small one (fixing a typo, a link, or an image path),
+  because the version we grade did not exist until then. If you touch up a
+  submission after the deadline, the touch-up is the submission.
+* If an assignment consists of several files, the newest of them sets the
+  submission time.
+* Project work that lives in a group repository is dated by the earliest
+  repository in which it appears (your own repository or the group repository
+  your pointer file names), so the group's commit counts for every member.
+* Times are the commit timestamps recorded in git, compared against the due
+  time in Chicago local time. The "Gradebook" issue in your repository shows
+  the submission time and late hours we computed for each assignment. If it
+  looks wrong, reply on that issue naming the commit you believe should count;
+  we re-check from git history.
+
 ## Communication and Response Times
 
 Slack is our primary channel for questions about the course and assignments.
