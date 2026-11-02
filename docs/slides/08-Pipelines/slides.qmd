@@ -659,6 +659,66 @@ accepting more false alarms; a system feeding scarce analyst attention may do th
 opposite. The ROC and PR curves show all achievable operating points at once.
 :::
 
+# Regression Metrics {.center}
+
+When the label is a number, not a class: no threshold, no confusion matrix.
+
+## Scoring a Regression: Residuals {.smaller}
+
+::: {.columns}
+::: {.column width="62%"}
+![](images/regression-residuals.png){width=100%}
+:::
+::: {.column width="38%"}
+Every sample leaves a **residual** $e_i = y_i - \hat{y}_i$ (orange). The metrics are summaries of the residuals:
+
+| | | |
+|---|---|---|
+| **MSE** | $\frac{1}{n}\sum e_i^2$ | units of $y^2$ |
+| **RMSE** | $\sqrt{\text{MSE}}$ | units of $y$: **report this one** |
+| **MAE** | $\frac{1}{n}\sum \lvert e_i \rvert$ | units of $y$, linear in the miss |
+
+"Off by 6 KB on average" is RMSE 6.0; MSE 36 KB² means nothing to anyone.
+
+Always on **held-out** data: a training RMSE is a description of the fit, not a prediction of error.
+:::
+:::
+
+::: {.notes}
+Regression counterpart of the confusion matrix. Walk the figure: 28 flows, bytes against packets, least-squares line, each orange segment is one residual. The three numbers in the box are all computed from those segments. Make the units point hard: RMSE and MAE are in bytes, MSE is in bytes squared, which is why RMSE is what gets reported even though MSE is what least squares minimizes. The held-out rule is the same as for classifiers: everything about splits in this deck applies unchanged. Synthetic data; the script that draws it is make-regression-figures.py beside the deck.
+:::
+
+## MSE vs. MAE: Which Line Do They Pick? {.smaller}
+
+::: {.columns}
+::: {.column width="60%"}
+![](images/regression-mse-vs-mae.png){width=100%}
+:::
+::: {.column width="40%"}
+Same data, two objectives, two lines.
+
+- **Squared error** multiplies a big miss by itself, so the few large flows dominate the fit
+- **Absolute error** counts every miss once, so the many small flows keep their say
+- On unimodal, roughly Gaussian noise the two lines agree; they split exactly when the data is **multi-modal or has outliers**
+
+Network traffic is the multi-modal case: ACK-sized flows and data flows in one trace (the ACK-packet problem, Lecture 10). Pick the loss for the error you care about, or classify first and fit two models.
+:::
+:::
+
+::: {.notes}
+The figure is the ACK-packet problem from Chapter 5 drawn as a metrics question: 60 tiny flows and 12 large ones. The blue line minimizes squared error and tilts toward the big flows; the orange line minimizes absolute error and stays with the mass of small ones. The point is not that one is right: the loss encodes whose errors matter. If the downstream use cares about big transfers, squared error is the honest choice; if it cares about typical flows, absolute error. The third option, classify then regress per cluster, is the pipeline pattern and comes back in Lecture 10.
+:::
+
+## R²: Relative to Predicting the Mean {.smaller}
+
+![](images/regression-r2.png){width=74%}
+
+$R^2 = 1 - \dfrac{\sum e_i^2}{\sum (y_i - \bar{y})^2}$: variance explained, against the baseline of **predicting the mean** (dashed). Left: good RMSE, good R². Right: a *better* RMSE but a poor R², because there was little variance to explain. On a test set R² can go **negative**: worse than the mean.
+
+::: {.notes}
+R² is the one students misread as an absolute score. Both panels have the same noise (standard deviation 5 KB) and the right panel's RMSE is lower, yet its R² is 0.23 against 0.68, because the right-hand y hardly varies, so the mean already predicts it well. So: RMSE answers "how far off, in units"; R² answers "how much better than ignoring the features". Report both, and say which split they come from. Negative R² on held-out data is common with temporal splits where the test period's mean differs from training; it is a sign, not a bug.
+:::
+
 # Common Evaluation Pitfalls {.center}
 
 Where pipelines go wrong.
