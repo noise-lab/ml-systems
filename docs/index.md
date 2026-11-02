@@ -40,7 +40,7 @@ Class agenda for each meeting is in the [agenda](agenda.md) (one file per term; 
 
 ## Schedule
 
-| Lecture                        | Topic                                                                                                       | Reading     | [Assignments (dates on the sheet)](https://docs.google.com/spreadsheets/d/1U2HWB3pQRS5Qo4_janw0ruyKe1ZarSpTqpl7nOmSiLY/edit) |
+| Lecture                        | Topic                                                                                                       | Reading     | Assignments [(due dates)](https://docs.google.com/spreadsheets/d/1U2HWB3pQRS5Qo4_janw0ruyKe1ZarSpTqpl7nOmSiLY/edit) |
 |--------------------------------|-------------------------------------------------------------------------------------------------------------|-------------|---|
 | 1                              | Introduction<br>([Packet Capture](notebooks/01-Packet-Capture-Basics-Clean.html))                           | Ch. 1       |  |
 | **Use Cases**                  |                                                                                                             |             |  |
