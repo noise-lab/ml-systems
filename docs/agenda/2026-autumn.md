@@ -391,16 +391,44 @@ was partly inaudible the entry says so rather than guessing.
 
 ### Meeting 11 (Mon Nov 2)
 
-*Plan; replaced with the record after class.*
+*Reconstructed from the class recording, which begins partway into the discussion of the midterm feedback survey and runs to the end of class. Student remarks during the discussion and the hands-on report-back were mostly off-microphone and are summarized where they could be made out.*
 
-- Housekeeping: Assignment 2 (the take-home midterm) due Friday November 6 at 11:59 pm, individual work; Assignment 3 opens November 9; add both TAs as collaborators; keep repositories private
-- Midterm debrief: class statistics, the public grading files, how to request a regrade
-- Regression metrics, deferred from before the midterm: MSE, RMSE, MAE, R², and why they are reported on held-out data
-- Lecture 10: linear and polynomial regression
-    - The linear model, where its inputs come from, least squares and its assumptions
-    - The ACK-packet problem: multi-modal traffic data and why a single linear fit fails
-    - Basis expansion: fitting curves with a linear method; degree as a hyperparameter
-    - Inductive bias, underfitting versus overfitting, the bias–variance tradeoff
-    - Ridge, lasso, and elastic net regularization; linear regression as the interpretable baseline
-- Hands-On 10: [linear regression on traffic](../notebooks/10-Linear-Regression-Clean.html), predicting flow bytes from packets, then polynomial basis expansion
-- Next: logistic regression and SVMs, Friday November 6
+* **Feedback survey and what will change** (the instructor went through the survey responses)
+    * Hands-on solutions: they exist and will be posted; the instructor is deciding how (a zip in Slack is the fallback). Every hands-on will get explicit learning objectives written into the notebook, starting with the ones still to come, and a short wrap-up at the end of each hands-on in class
+    * More time for the hands-ons: agreed; they have been rushed
+    * "Hard to find things": everything lives on the course website, with GitHub for work and Slack for announcements. This is the first full nine-week term run entirely on GitHub (GitHub Classroom was discontinued over the summer and the instructor rebuilt the workflow); the site will be made more explicit about where things are
+    * Exams: answer boxes will be about twice as large on the final and the exam correspondingly longer (eight pages or so), now that grading is no longer limited by a human reading handwriting. Select-all-that-apply questions are fine to keep. The multiple-choice options on the midterm should have been randomized (the correct options all fell in the left column) and will be
+    * A separate announcements channel versus questions in #general: undecided; the instructor has kept everything in #general so nobody misses it, and asked for opinions
+    * Due dates: students keep asking; the dates will be put in more places now that keeping copies consistent can be automated
+    * Requested topics for the remaining weeks: reinforcement learning (a classic networking application) will be worked in; generative models are already planned; other requests welcome now
+* **How the midterm was graded** (described in response to the survey)
+    * Scans were OCR'd locally (Apple Vision and small local models; the exams were not sent to a cloud service for OCR), rendered to a web page the instructor could read, and auto-graded against a point-by-point rubric derived from the LaTeX solutions. Low-confidence parts went to three additional independent graders; disagreements (about a hundred question instances across the class) were read and resolved by hand, always to the higher grade. Token cost was on the order of four cents per exam
+    * Everything used to grade is public in the course repository: the exam and solutions, the rubric, the grading notes (including instructions to give partial credit for any reasonable answer, to accept an X or an arrow where a filled bubble was asked for, and to give near-full credit on a question the instructor judged bad), and a class-wide analysis of where answers diverged from the key. Each student's repository received their scanned exam and an HTML page with the OCR transcript beside each answer, so a misread can be spotted
+    * One student had not received the scan in their repository; try `git pull` first, and tell the instructor if it is still missing. Checks will be added so this does not recur
+    * The TAs are reviewing all auto-grades as well
+* **Midterm review: the questions most people missed**
+    * A student reports Zoom was choppy half an hour ago; a speed test from their laptop now shows high throughput and low latency. This does not show the network was the cause: the test ran later and conditions are transient; a speed test measures a different path than the one to the Zoom service; and even on the same path other bottlenecks (the laptop, the application) are not measured
+    * Splitting data for a forecasting problem: a random split trains on samples that occur after the ones being tested, which is leakage for a temporal task
+    * Time of day (or month, or year) as a feature: the traces in the assignment were captured in different years, so a classifier could separate them on the date alone. The feature is an artifact of how the data was collected, the same lesson as the IP-address and TTL examples
+    * The flow-timeout question: the instructor called it too much minutiae and not conceptual, and will regrade it more generously
+    * Finding segment boundaries in a video stream (gaps marked by zero-byte packets, as in Assignment 1) and why a player pulls segments at different bitrates (adaptive streaming)
+    * When not to impute the mean: a missing or odd value may be the signal (a malformed packet can be an attack), so be intentional rather than taking the library default; a garbled timestamp in an otherwise ordered series is a case where correction is reasonable
+    * The perils of accuracy as a metric, as discussed in Lecture 8
+    * A student pointed out that one rubric item expected an alternative the question had not asked for. The instructor agreed it was an auto-grader error, will fix the rubric and the solutions, and will run a full regrade over everyone with instructions that scores can only go up. Another student noted that reasonable answers absent from the solutions were marked down; such cases should be submitted as regrade requests, and the solutions will be extended with answers the instructor had not anticipated
+* **Regrades and timeliness** (policy stated in class)
+    * Regrade requests go as a comment on the Gradebook issue in your private repository, which is also the record of everything turned in and the place for any grading discussion. Add a note if you want the instructor personally to look at it; those get a human read of the scanned exam
+    * Grades are a first cut, not set in stone; regrading is now cheap, so the plan is to return work fast and fix what needs fixing. For Assignment 2 (due Friday November 6 at 11:59 pm) the target is feedback within about 24 hours, by Sunday morning
+    * Project proposals: 47 were submitted and the instructor and TAs are reading all of them; feedback soon, and the Gradebook will at least record receipt
+    * With grading automated, TA and instructor office hours are open for concepts, research, and anything else, not debugging notebooks
+* **Where we are:** week six, behind the syllabus (which would have the class through trees and ensembles). Most of the class has seen linear regression, so the lecture was cut to the metrics and the hands-on
+* **Regression metrics** (new slides, added to the Lecture 8 pipeline deck beside the classification metrics)
+    * A regression's error is the residual per sample, the gap between the true value and the line's prediction, drawn as the red segments on the scatter of bytes against packets. Aggregates: mean squared error, root mean squared error, mean absolute error; always computed on held-out data
+    * Squared error weights big misses much more than absolute error. On a trace with large data flows and many small acknowledgment flows, minimizing squared error pulls the line toward the large flows because their errors are larger numbers; minimizing absolute error does not. The two lines were close on the example, so which to use is a matter of trying and seeing
+    * The deeper problem: the data has two modes (data flows and ACK flows), and one line fit to both serves both badly, the ACK flows most of all
+    * **Final flag:** the ACK-packet problem and the ways to address it, flagged by the instructor after class as a possible exam question. Given a two-mode regression dataset like this one, explain why a single least-squares line fails and name the remedies: transform or scale the target (for example a log transform), change the loss to absolute error, or classify first (data versus ACK) and fit a separate model to each
+* **Hands-On 10, Part 1: linear regression on traffic** ([notebook](../notebooks/10-Linear-Regression-Clean.html))
+    * About fifteen minutes: extract flow features with netml as in earlier hands-ons, fit a linear model predicting bytes from packets, and see the two modes in the result. The notebook then asks what to do about it: log-transform the target, fit two models after classifying data versus ACK, or change the loss function. There is no single right answer
+    * Report-back by show of hands: some had tried scaling or normalizing the target, some a different error, some a staged classifier. The instructor singled out the staged classifier as a technique that transfers to many real data problems. A student's suggestion about using additional packet-level fields from the capture was taken as homework by the instructor; the details were not captured
+    * The instructor will work through the notebook, post solutions or approaches, and look for a less contrived example of the same problem (page size against page load time was suggested as a candidate)
+* **Not covered:** the rest of Lecture 10 (basis expansion and polynomial regression, the bias-variance picture, ridge and lasso regularization) and Hands-On 10 Part 2. Friday opens with polynomial basis expansion and more time on Part 2; logistic regression will be quick and support vector machines may be skipped to catch up; trees and random forests come after Monday
+* **Next:** Friday November 6. Assignment 2, the take-home midterm, is due that night at 11:59 pm
