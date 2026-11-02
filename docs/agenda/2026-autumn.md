@@ -380,3 +380,27 @@ was partly inaudible the entry says so rather than guessing.
     - About twelve minutes at the end of class on the SMS spam dataset (messages labelled ham or spam). Instruction for today: load the data, then do Part 2 only, the scikit-learn multinomial Naive Bayes classifier
     - The from-scratch parts (building the vocabulary and counts by hand, Part 3) are likely to be dropped; the instructor will reorder the notebook for future terms and decide next Monday
 - **Next:** Friday October 30 is the in-class midterm, the whole period. Monday November 2: go over the midterm, more time on Hands-On 9, then linear regression with the deferred regression metrics
+
+### Meeting 10 (Fri Oct 30)
+
+* **In-class midterm**, the whole period, covering Meetings 1 through 8. No lecture content
+* Graded exams were returned on November 1 to each student's private repository (a `midterm/` folder with the scanned pages, a transcript of the answers, and the score on every part) and to the Gradebook issue there
+* Everything used to grade is public in the course repository under [`docs/midterm/2026/`](https://github.com/noise-lab/ml-systems/tree/main/docs/midterm/2026): the answer key, the rubric applied to every exam, the grading notes (every grading decision and why), and a class-wide analysis checking for questions where the class split from the key (none were flagged)
+* Class statistics, 57 exams out of 50 points: mean 42.2, median 43.5, middle half of the class 39.4 to 46.0
+* Regrade requests go as a comment on the student's Gradebook issue, naming the question part; not in Slack
+
+### Meeting 11 (Mon Nov 2)
+
+*Plan; replaced with the record after class.*
+
+- Housekeeping: Assignment 2 (the take-home midterm) due Friday November 6 at 11:59 pm, individual work; Assignment 3 opens November 9; add both TAs as collaborators; keep repositories private
+- Midterm debrief: class statistics, the public grading files, how to request a regrade
+- Regression metrics, deferred from before the midterm: MSE, RMSE, MAE, R², and why they are reported on held-out data
+- Lecture 10: linear and polynomial regression
+    - The linear model, where its inputs come from, least squares and its assumptions
+    - The ACK-packet problem: multi-modal traffic data and why a single linear fit fails
+    - Basis expansion: fitting curves with a linear method; degree as a hyperparameter
+    - Inductive bias, underfitting versus overfitting, the bias–variance tradeoff
+    - Ridge, lasso, and elastic net regularization; linear regression as the interpretable baseline
+- Hands-On 10: [linear regression on traffic](../notebooks/10-Linear-Regression-Clean.html), predicting flow bytes from packets, then polynomial basis expansion
+- Next: logistic regression and SVMs, Friday November 6
