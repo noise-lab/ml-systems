@@ -1,0 +1,497 @@
+# Grading rubric. Generated from the exam source, then edited by hand.
+image_if_confidence: 0.8
+second_opinion: higher   # grading-notes.md: low-confidence answers get an independent second grade; disagreements keep the higher (Nov 1)
+ambiguous_bubbles: favor_student   # grading-notes.md, Oct 30: unclear marks get the benefit of the doubt
+# Edit points, criteria, and select_all_policy freely; `grade` re-reads it.
+# select_all_policy: one of right_minus_wrong, per_option, all_or_nothing
+title: ML for Systems Midterm, Autumn 2026
+source_dir: /Users/feamster/Dropbox/Tmp/exams/ml-systems/midterm/2026
+total_points: 50.0
+select_all_policy: right_minus_wrong
+round_to: 0.25
+questions:
+- number: 1
+  points: 3.0
+  section: Motivation and Applications
+  text: Since most streaming video became encrypted, which of the following can a network operator no
+    longer read directly from the traffic, and so must infer? Select all that apply.
+  parts:
+  - kind: choice
+    options:
+    - text: Video resolution
+      correct: true
+      label: A
+    - text: Packet sizes and timing
+      correct: false
+      label: B
+    - text: Rebuffering (stall) events
+      correct: true
+      label: C
+    - text: IP addresses of the video servers
+      correct: false
+      label: D
+    - text: Startup delay before playback
+      correct: true
+      label: E
+    - text: Number of parallel connections
+      correct: false
+      label: F
+    prompt: Since most streaming video became encrypted, which of the following can a network operator
+      no longer read directly from the traffic, and so must infer? Select all that apply.
+    select_all: true
+    id: '1'
+    points: 3.0
+- number: 2
+  points: 2.0
+  section: Motivation and Applications
+  text: In Hands-On 1 you looked at a packet capture before doing anything else with it. Which observations
+    should make you suspect a problem with the data? Select all that apply.
+  parts:
+  - kind: choice
+    options:
+    - text: A packet with a negative length
+      correct: true
+      label: A
+    - text: Large packets flow mostly server to client
+      correct: false
+      label: B
+    - text: A packet far above the maximum packet size
+      correct: true
+      label: C
+    - text: A handshake before the large packets
+      correct: false
+      label: D
+    - text: Timestamps that go backwards
+      correct: true
+      label: E
+    - text: Round-trip times that vary over the trace
+      correct: false
+      label: F
+    prompt: In Hands-On 1 you looked at a packet capture before doing anything else with it. Which observations
+      should make you suspect a problem with the data? Select all that apply.
+    select_all: true
+    id: '2'
+    points: 2.0
+- number: 3
+  points: 3.0
+  section: Motivation and Applications
+  text: Attackers are preparing a phishing campaign that imitates the University's login page. You run
+    the campus network and can obtain domain registration data and the logs of the campus DNS resolver.
+    Name one data source and two features you would use to detect the campaign, ideally before the first
+    email arrives.
+  parts:
+  - kind: free
+    prompt: Attackers are preparing a phishing campaign that imitates the University's login page. You
+      run the campus network and can obtain domain registration data and the logs of the campus DNS resolver.
+      Name one data source and two features you would use to detect the campaign, ideally before the first
+      email arrives.
+    solution: 'Domain registration data: a burst of newly registered domains at once; names that are close
+      to (a small edit distance from) uchicago.edu; very recent registration date; hosting in a place
+      that makes no sense for the audience. DNS resolver logs: campus clients looking up domains that
+      are only days old or that resemble University names. Email logs also acceptable: sending volume,
+      recipients per message, unusual hours. One source, any two sensible features.'
+    height_in: 1.3
+    id: '3'
+    points: 3.0
+    criteria:
+    - id: key
+      points: 3.0
+      description: 'Domain registration data: a burst of newly registered domains at once; names that
+        are close to (a small edit distance from) uchicago.edu; very recent registration date; hosting
+        in a place that makes no sense for the audience. DNS resolver logs: campus clients looking up
+        domains that are only days old or that resemble University names. Email logs also acceptable:
+        sending volume, recipients per message, unusual hours. One source, any two sensible features.'
+- number: 4
+  points: 3.0
+  section: Motivation and Applications
+  text: In Hands-On 2, the Log4j scan and the normal web trace were captured at different times of day,
+    so a model with time of day as a feature separates them perfectly. Is time of day a good feature for
+    detecting scans? Why or why not?
+  parts:
+  - kind: yes_no
+    prompt: In Hands-On 2, the Log4j scan and the normal web trace were captured at different times of
+      day, so a model with time of day as a feature separates them perfectly. Is time of day a good feature
+      for detecting scans?
+    answer: 'no'
+    id: 4a
+    points: 1.0
+  - kind: free
+    prompt: Why or why not?
+    solution: 'No. It is an artifact of how this dataset was collected, not of the behavior: scans and
+      normal browsing happen at any hour, so the model would fail on new traffic. Prefer features that
+      reflect real differences in behavior: short sessions, little large server-to-client content, many
+      unique destinations, different inter-arrival times.'
+    height_in: 1.2
+    id: 4b
+    points: 2.0
+    explains: 4a
+    criteria:
+    - id: key
+      points: 2.0
+      description: 'No. It is an artifact of how this dataset was collected, not of the behavior: scans
+        and normal browsing happen at any hour, so the model would fail on new traffic. Prefer features
+        that reflect real differences in behavior: short sessions, little large server-to-client content,
+        many unique destinations, different inter-arrival times.'
+- number: 5
+  points: 3.0
+  section: Data Acquisition
+  text: Which of the following are passive measurements? Select all that apply.
+  parts:
+  - kind: choice
+    options:
+    - text: An ISP collects flow records from its routers
+      correct: true
+      label: A
+    - text: An app downloads a test file every hour
+      correct: false
+      label: B
+    - text: Campus logs every query its DNS resolver answers
+      correct: true
+      label: C
+    - text: A laptop pings a server once a minute
+      correct: false
+      label: D
+    - text: Inferring resolution from a capture of your Netflix session
+      correct: true
+      label: E
+    - text: Measuring latency while a test upload runs
+      correct: false
+      label: F
+    prompt: Which of the following are passive measurements? Select all that apply.
+    select_all: true
+    id: '5'
+    points: 3.0
+- number: 6
+  points: 3.0
+  section: Data Acquisition
+  text: A student reports that Zoom was choppy half an hour ago. You run a speed test from their laptop
+    now and it reports high throughput and low latency. Does this show the network was not the cause?
+    Why or why not?
+  parts:
+  - kind: yes_no
+    prompt: A student reports that Zoom was choppy half an hour ago. You run a speed test from their laptop
+      now and it reports high throughput and low latency. Does this show the network was not the cause?
+    answer: 'no'
+    id: 6a
+    points: 1.0
+  - kind: free
+    prompt: Why or why not?
+    solution: No. The active test measures conditions now, and the problem may have been transient. It
+      also measures the path to the speed-test server, not to Zoom, and may be limited by Wi-Fi or the
+      device rather than the network. Passive data from the time of the problem (flow records, a capture)
+      reflects what the user actually experienced.
+    height_in: 1.2
+    id: 6b
+    points: 2.0
+    explains: 6a
+    criteria:
+    - id: key
+      points: 2.0
+      description: No. The active test measures conditions now, and the problem may have been transient.
+        It also measures the path to the speed-test server, not to Zoom, and may be limited by Wi-Fi or
+        the device rather than the network. Passive data from the time of the problem (flow records, a
+        capture) reflects what the user actually experienced.
+- number: 7
+  points: 3.0
+  section: Data Acquisition
+  text: (a) Name the five header fields that define a flow. In Hands-On 5 it was safe to group packets
+    by only four of them; which one could be left out, and why? (b) Two packets match on all five fields
+    but arrive 45 seconds apart with no packets in between. Would a router using conventional settings
+    put them in the same flow record? Why or why not?
+  parts:
+  - kind: free
+    prompt: (a) Name the five header fields that define a flow. In Hands-On 5 it was safe to group packets
+      by only four of them; which one could be left out, and why? (b) Two packets match on all five fields
+      but arrive 45 seconds apart with no packets in between. Would a router using conventional settings
+      put them in the same flow record? Why or why not?
+    solution: (a) Source IP, destination IP, source port, destination port, protocol. Protocol could be
+      omitted because the whole trace was UDP DNS traffic on port 53. (b) No. Routers end a flow after
+      a period of inactivity (typically about 15 to 30 seconds), so the second packet starts a new flow
+      record.
+    height_in: 1.3
+    id: '7'
+    points: 3.0
+    criteria:
+    - id: a
+      points: 1.5
+      description: Source IP, destination IP, source port, destination port, protocol. Protocol could
+        be omitted because the whole trace was UDP DNS traffic on port 53.
+    - id: b
+      points: 1.5
+      description: No. Routers end a flow after a period of inactivity (typically about 15 to 30 seconds),
+        so the second packet starts a new flow record.
+- number: 8
+  points: 4.0
+  section: Features and Representation
+  text: In Hands-On 6 you used netml to turn a capture into per-flow STATS features. nPrint instead turns
+    each packet into a fixed-width bitmap of its header bits and lets a model learn which bits matter.
+    Give one advantage and one disadvantage of each approach.
+  parts:
+  - kind: free
+    prompt: In Hands-On 6 you used netml to turn a capture into per-flow STATS features. nPrint instead
+      turns each packet into a fixed-width bitmap of its header bits and lets a model learn which bits
+      matter. Give one advantage and one disadvantage of each approach.
+    solution: 'Manual features (netml): advantages are compact input, interpretability, encoding domain
+      knowledge, and the ability to express rates and timing; disadvantages are that it needs domain expertise,
+      many encoding choices hurt reproducibility, and features built for one task may not transfer. Representation
+      learning (nPrint): advantages are no hand-crafted features, one representation reused across tasks,
+      the model finds informative header bits; disadvantages are large storage (about twice), no notion
+      of time or rates, needs more data, and risk of spurious correlations (TTL, addresses) that domain
+      knowledge must catch.'
+    height_in: 1.6
+    id: '8'
+    note: 'One point for each of the four items: an advantage of netml features, a disadvantage of netml
+      features, an advantage of nPrint, a disadvantage of nPrint. Credit any correct, reasonable point,
+      not only those in the model answer (for example: netml is cheap to compute or works with less data;
+      nPrint can be less interpretable or needs more compute). Credit an item when it is stated loosely or
+      only implied by a contrast with the other approach. Benefit of the doubt. See grading-notes.md.'
+    points: 4.0
+    criteria:
+    - id: key
+      points: 4.0
+      description: 'Manual features (netml): advantages are compact input, interpretability, encoding
+        domain knowledge, and the ability to express rates and timing; disadvantages are that it needs
+        domain expertise, many encoding choices hurt reproducibility, and features built for one task
+        may not transfer. Representation learning (nPrint): advantages are no hand-crafted features, one
+        representation reused across tasks, the model finds informative header bits; disadvantages are
+        large storage (about twice), no notion of time or rates, needs more data, and risk of spurious
+        correlations (TTL, addresses) that domain knowledge must catch.'
+- number: 9
+  points: 2.0
+  section: Features and Representation
+  text: A flow's protocol is TCP, UDP, or ICMP, and you encode it as 0, 1, 2. Which statements are true?
+    Select all that apply.
+  parts:
+  - kind: choice
+    options:
+    - text: This is usually fine for a random forest
+      correct: true
+      label: A
+    - text: Min-max scaling fixes it for a linear model
+      correct: false
+      label: B
+    - text: A linear model treats ICMP as "twice" UDP
+      correct: true
+      label: C
+    - text: Tree models require one-hot inputs
+      correct: false
+      label: D
+    - text: One-hot encoding gives three binary columns
+      correct: true
+      label: E
+    - text: The order 0, 1, 2 carries real meaning
+      correct: false
+      label: F
+    prompt: A flow's protocol is TCP, UDP, or ICMP, and you encode it as 0, 1, 2. Which statements are
+      true? Select all that apply.
+    select_all: true
+    id: '9'
+    points: 2.0
+- number: 10
+  points: 3.0
+  section: Features and Representation
+  text: Some rows in your flow dataset have missing values. Give one example from network data where filling
+    in the column average is reasonable, and one where it is a bad idea. Explain why for the second.
+  parts:
+  - kind: free
+    prompt: Some rows in your flow dataset have missing values. Give one example from network data where
+      filling in the column average is reasonable, and one where it is a bad idea. Explain why for the
+      second.
+    solution: 'Reasonable: a missing timestamp or acknowledgment time bounded by its neighbors; a missing
+      measurement in an otherwise steady series where the gap is a recording glitch. Bad idea: when the
+      missing or strange value may itself be the anomaly you want to detect (a corrupted sequence number,
+      a malformed packet, an absent field during an attack); averaging erases exactly that signal. Also
+      bad: computing the average over the whole dataset before the split (leakage).'
+    height_in: 1.3
+    id: '10'
+    points: 3.0
+    criteria:
+    - id: key
+      points: 3.0
+      description: 'Reasonable: a missing timestamp or acknowledgment time bounded by its neighbors; a
+        missing measurement in an otherwise steady series where the gap is a recording glitch. Bad idea:
+        when the missing or strange value may itself be the anomaly you want to detect (a corrupted sequence
+        number, a malformed packet, an absent field during an attack); averaging erases exactly that signal.
+        Also bad: computing the average over the whole dataset before the split (leakage).'
+- number: 11
+  points: 3.0
+  section: Training and Evaluation
+  text: You have six months of hourly traffic volumes and want to forecast next month's load to decide
+    whether to add a server. You shuffle all rows randomly, split 80/20, and get low test error. Is that
+    a trustworthy estimate of how well the model will forecast? Why or why not?
+  parts:
+  - kind: yes_no
+    prompt: You have six months of hourly traffic volumes and want to forecast next month's load to decide
+      whether to add a server. You shuffle all rows randomly, split 80/20, and get low test error. Is
+      that a trustworthy estimate of how well the model will forecast?
+    answer: 'no'
+    id: 11a
+    points: 1.0
+  - kind: free
+    prompt: Why or why not?
+    solution: No. A random split puts later hours in the training set and earlier hours in the test set,
+      so the model predicts the past from the future (temporal leakage); rows are not independent. Train
+      on the earlier months and test on the later ones, which also mimics the real forecasting task.
+    height_in: 1.2
+    id: 11b
+    points: 2.0
+    explains: 11a
+    criteria:
+    - id: key
+      points: 2.0
+      description: No. A random split puts later hours in the training set and earlier hours in the test
+        set, so the model predicts the past from the future (temporal leakage); rows are not independent.
+        Train on the earlier months and test on the later ones, which also mimics the real forecasting
+        task.
+- number: 12
+  points: 5.0
+  section: Training and Evaluation
+  text: 'A detector labels 1,000 flows; 20 of them are attacks (attack is the positive class). Its confusion
+    matrix: 1c & 1cPredicted attack & 1cPredicted benign 2-3 True attack & 15 & 5 2-3 True benign & 15
+    & 965 2-3 (a) Compute accuracy, precision, and recall. (b) What is the accuracy of a classifier that
+    always says "benign"? What does the comparison tell you, and which curve would you use to compare
+    detectors on this data?'
+  parts:
+  - kind: free
+    prompt: 'A detector labels 1,000 flows; 20 of them are attacks (attack is the positive class). Its
+      confusion matrix: 1c & 1cPredicted attack & 1cPredicted benign 2-3 True attack & 15 & 5 2-3 True
+      benign & 15 & 965 2-3 (a) Compute accuracy, precision, and recall. (b) What is the accuracy of a
+      classifier that always says "benign"? What does the comparison tell you, and which curve would you
+      use to compare detectors on this data?'
+    solution: '(a) Accuracy = (15+965)/1000 = 98%. Precision = 15/(15+15) = 50%. Recall = 15/(15+5) =
+      75%. (b) Always-benign: 980/1000 = 98%, the same accuracy while catching no attacks. Under class
+      imbalance accuracy is misleading; use precision and recall, and the precision-recall curve rather
+      than ROC.'
+    height_in: 1.8
+    id: '12'
+    points: 5.0
+    criteria:
+    - id: a
+      points: 2.5
+      description: Accuracy = (15+965)/1000 = 98%. Precision = 15/(15+15) = 50%. Recall = 15/(15+5) =
+        75%.
+    - id: b
+      points: 2.5
+      description: 'Always-benign: 980/1000 = 98%, the same accuracy while catching no attacks. Under
+        class imbalance accuracy is misleading; use precision and recall, and the precision-recall curve
+        rather than ROC.'
+- number: 13
+  points: 3.0
+  section: Training and Evaluation
+  text: The figure shows training and validation error as model complexity increases. [figure] (a) Which
+    point (A, B, C) has high bias? (b) Which is overfitting? (c) Name one way to reduce overfitting other
+    than choosing a simpler model.
+  parts:
+  - kind: free
+    prompt: The figure shows training and validation error as model complexity increases. [figure] (a)
+      Which point (A, B, C) has high bias? (b) Which is overfitting? (c) Name one way to reduce overfitting
+      other than choosing a simpler model.
+    solution: '(a) A (underfitting: high error on training and validation). (b) C (training error keeps
+      falling while validation error rises). (c) More training data, regularization, early stopping, or
+      an ensemble. B is the model to choose, picked with the validation set, never the test set.'
+    height_in: 1.3
+    id: '13'
+    points: 3.0
+    criteria:
+    - id: a
+      points: 1.0
+      description: 'A (underfitting: high error on training and validation).'
+    - id: b
+      points: 1.0
+      description: C (training error keeps falling while validation error rises).
+    - id: c
+      points: 1.0
+      description: More training data, regularization, early stopping, or an ensemble. B is the model
+        to choose, picked with the validation set, never the test set.
+- number: 14
+  points: 3.0
+  section: 'Assignment 1: Video Quality Inference'
+  text: In Hands-On 3 and Assignment 1 you computed a segment-download-rate feature from encrypted Netflix
+    traffic. (a) How can you find segment boundaries without decrypting anything? (b) Why do segments
+    carry information about resolution?
+  parts:
+  - kind: free
+    prompt: In Hands-On 3 and Assignment 1 you computed a segment-download-rate feature from encrypted
+      Netflix traffic. (a) How can you find segment boundaries without decrypting anything? (b) Why do
+      segments carry information about resolution?
+    solution: (a) The player downloads segments in bursts; boundaries show up as gaps in the download
+      marked by small or zero-byte packets between bursts. (b) Adaptive streaming encodes the video at
+      several bitrates; the player requests each segment at a chosen bitrate, so higher resolution means
+      more bytes per segment, which shows up in segment sizes and download rate.
+    height_in: 2.0
+    id: '14'
+    points: 3.0
+    criteria:
+    - id: a
+      points: 1.5
+      description: The player downloads segments in bursts; boundaries show up as gaps in the download
+        marked by small or zero-byte packets between bursts.
+    - id: b
+      points: 1.5
+      description: Adaptive streaming encodes the video at several bitrates; the player requests each
+        segment at a chosen bitrate, so higher resolution means more bytes per segment, which shows up
+        in segment sizes and download rate.
+- number: 15
+  points: 4.0
+  section: 'Assignment 1: Video Quality Inference'
+  text: A student's Assignment 1 classifier scores 75% accuracy with a random train/test split, but about
+    30% when every session from one household is held out for testing. (a) What does this suggest the
+    model learned? (b) An ISP wants to deploy the model in new homes. Which accuracy is the better estimate,
+    and name one change that would help.
+  parts:
+  - kind: free
+    prompt: A student's Assignment 1 classifier scores 75% accuracy with a random train/test split, but
+      about 30% when every session from one household is held out for testing. (a) What does this suggest
+      the model learned? (b) An ISP wants to deploy the model in new homes. Which accuracy is the better
+      estimate, and name one change that would help.
+    solution: (a) Some features fingerprint the household (its devices, access link, network conditions)
+      rather than video quality; with a random split the same households appear in training and test,
+      so the model can recognize the home instead of the resolution (a spurious correlation, non-representative
+      training data). (b) The held-out-household number. Remove household-specific proxy features, split
+      by household, train on more diverse households, or balance the classes.
+    height_in: 2.5
+    id: '15'
+    note: '"Which accuracy is the better estimate" in (b) is a bad question; many students asked about
+      its wording. Never deduct for which accuracy the student picked or for leaving it out. Award criterion
+      b (2 points) only on naming one reasonable change (remove household-specific proxy features, split
+      by household, train on more diverse households, balance the classes, or similar). Grade (a) as written.
+      See grading-notes.md.'
+    points: 4.0
+    criteria:
+    - id: a
+      points: 2.0
+      description: Some features fingerprint the household (its devices, access link, network conditions)
+        rather than video quality; with a random split the same households appear in training and test,
+        so the model can recognize the home instead of the resolution (a spurious correlation, non-representative
+        training data).
+    - id: b
+      points: 2.0
+      description: The held-out-household number. Remove household-specific proxy features, split by household,
+        train on more diverse households, or balance the classes.
+- number: 16
+  points: 3.0
+  section: Feedback
+  text: 'Interest (1=Boring!; 10=Amazing!): Difficulty (1=Too easy; 10=Too hard): One thing you like.
+    One suggestion for improvement:'
+  parts:
+  - kind: short
+    prompt: 'Interest (1=Boring!; 10=Amazing!):'
+    solution: '7'
+    width_in: 0.5
+    id: 16a
+    points: 0.5
+    grading: completion
+  - kind: short
+    prompt: 'Difficulty (1=Too easy; 10=Too hard):'
+    solution: '6'
+    width_in: 0.5
+    id: 16b
+    points: 0.5
+    grading: completion
+  - kind: free
+    prompt: 'One thing you like. One suggestion for improvement:'
+    solution: 1. The hands-ons. 2. More office hours.
+    height_in: 1.0
+    id: 16c
+    points: 2.0
+    grading: completion
