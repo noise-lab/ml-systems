@@ -60,6 +60,25 @@ This framing matters: students often assume "linear regression" means the featur
 The red dotted lines are the residuals — the gap the model is trying to shrink. Intuition before math: a good fit places the line so the residuals are as small as possible on average. The park/temperature example is deliberately non-network so the math stands out; we will move to network examples shortly.
 :::
 
+## Measuring a Regression: MSE, RMSE, MAE, R² {.smaller}
+
+A classifier is scored with a confusion matrix; a regression has no threshold and no "wrong class," only a **residual** $e_i = y_i - \hat{y}_i$ per sample.
+
+| Metric | Formula | What it tells you |
+|---|---|---|
+| **MSE** | $\frac{1}{n}\sum e_i^2$ | Squares punish big misses; units are $y^2$, hard to read |
+| **RMSE** | $\sqrt{\text{MSE}}$ | Same units as $y$; the number to report ("off by 40 KB on average") |
+| **MAE** | $\frac{1}{n}\sum \lvert e_i \rvert$ | Every miss counts linearly; robust to a few outliers |
+| **R²** | $1 - \frac{\sum e_i^2}{\sum (y_i - \bar{y})^2}$ | Fraction of variance explained; 0 is "predict the mean," and it can go negative on a test set |
+
+- MSE and MAE disagree exactly when the data is multi-modal: the ACK-packet problem on the next slides is the case
+- Always report the metric on **held-out** data; a train RMSE alone says nothing (Lecture 8's split rules apply unchanged)
+- Hands-On 10 computes train and test error; compare both before and after basis expansion
+
+::: {.notes}
+Owed since Oct 23 and deferred past the midterm: five minutes, no more. The classification metrics from Lecture 8 (precision, recall, ROC) do not transfer because there is no decision threshold. Make the units point with RMSE: if y is bytes, RMSE is bytes, MSE is bytes squared. R² is the one students misread: it is relative to predicting the mean, so a model can have a fine RMSE and a poor R² when y barely varies, and on a test set it can be negative when the model is worse than the mean. Tie MAE vs MSE to the ACK-packet slide that follows: squared error lets the data-packet cluster dominate, absolute error does not. The final exam will have regression metrics; the midterm did not.
+:::
+
 ## Key Assumptions {.smaller}
 
 For the least-squares fit (the normal equation — see the appendix) to give a *good* estimate:
