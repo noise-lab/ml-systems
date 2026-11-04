@@ -113,7 +113,8 @@
 % Second argument gives the solution
 \newcommand{\answerbox}[2]{
 	\ifthenelse{\equal{\version}{solution}}{
-    	\tikz\draw (0,0) rectangle node[align=left, text width = .95\textwidth] {\textbf{Solution:} #2} (\textwidth, #1 * 1.5cm) node[above, anchor = south east] {(Answer inside the box)};%
+    	% the box grows to fit a long solution (never shorter than the exam's box)
+    	\tikz\node[draw, align=left, inner xsep=.025\textwidth, text width=.95\textwidth, minimum height=#1 * 1.5cm] (sol) {\textbf{Solution:} #2} node[anchor=south east] at (sol.north east) {(Answer inside the box)};%
 	} {
     	\tikz\draw (0,0) rectangle (\textwidth, #1 * 1.5cm) node[above, anchor = south east] {(Answer inside the box)};%
 	}

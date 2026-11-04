@@ -72,6 +72,9 @@ questions:
     select_all: true
     id: '2'
     points: 2.0
+    note: 'Option E (timestamps that go backwards): an in-exam clarification ("time flows forward") was
+      ambiguous between packets out of order and a file listed newest first, which is not a data problem.
+      Leaving E blank is credited as correct this term (Nov 4).'
 - number: 3
   points: 3.0
   section: Motivation and Applications
@@ -89,7 +92,8 @@ questions:
       to (a small edit distance from) uchicago.edu; very recent registration date; hosting in a place
       that makes no sense for the audience. DNS resolver logs: campus clients looking up domains that
       are only days old or that resemble University names. Email logs also acceptable: sending volume,
-      recipients per message, unusual hours. One source, any two sensible features.'
+      recipients per message, unusual hours, the sending server''s IP geolocation (distance from the recipients),
+      the sender''s AS or BGP route. One source, any two sensible features.'
     height_in: 1.3
     id: '3'
     points: 3.0
@@ -100,7 +104,8 @@ questions:
         are close to (a small edit distance from) uchicago.edu; very recent registration date; hosting
         in a place that makes no sense for the audience. DNS resolver logs: campus clients looking up
         domains that are only days old or that resemble University names. Email logs also acceptable:
-        sending volume, recipients per message, unusual hours. One source, any two sensible features.'
+        sending volume, recipients per message, unusual hours, the sending server''s IP geolocation (distance
+        from the recipients), the sender''s AS or BGP route. One source, any two sensible features.'
 - number: 4
   points: 3.0
   section: Motivation and Applications
@@ -118,20 +123,26 @@ questions:
   - kind: free
     prompt: Why or why not?
     solution: 'No. It is an artifact of how this dataset was collected, not of the behavior: scans and
-      normal browsing happen at any hour, so the model would fail on new traffic. Prefer features that
-      reflect real differences in behavior: short sessions, little large server-to-client content, many
-      unique destinations, different inter-arrival times.'
+      normal browsing happen at any hour, so the model would fail on new traffic. One correct reason earns
+      full credit. (Not required, since the question did not ask: features that reflect real differences
+      in behavior, such as short sessions, little large server-to-client content, many unique destinations,
+      different inter-arrival times.)'
     height_in: 1.2
     id: 4b
+    note: The original key required better behavioral features, which the question never asked for. Full
+      credit (2) for No plus a correct reason why, e.g. time of day is an artifact of how the data were
+      collected, or scans and browsing happen at any hour so the model would not generalize. Never deduct
+      for not proposing an alternative or better features.
     points: 2.0
     explains: 4a
     criteria:
     - id: key
       points: 2.0
       description: 'No. It is an artifact of how this dataset was collected, not of the behavior: scans
-        and normal browsing happen at any hour, so the model would fail on new traffic. Prefer features
-        that reflect real differences in behavior: short sessions, little large server-to-client content,
-        many unique destinations, different inter-arrival times.'
+        and normal browsing happen at any hour, so the model would fail on new traffic. One correct reason
+        earns full credit. (Not required, since the question did not ask: features that reflect real differences
+        in behavior, such as short sessions, little large server-to-client content, many unique destinations,
+        different inter-arrival times.)'
 - number: 5
   points: 3.0
   section: Data Acquisition
@@ -176,21 +187,29 @@ questions:
     points: 1.0
   - kind: free
     prompt: Why or why not?
-    solution: No. The active test measures conditions now, and the problem may have been transient. It
-      also measures the path to the speed-test server, not to Zoom, and may be limited by Wi-Fi or the
-      device rather than the network. Passive data from the time of the problem (flow records, a capture)
-      reflects what the user actually experienced.
+    solution: 'No. Any one correct reason earns full credit: the active test measures conditions now,
+      and the problem may have been transient; it measures the path to the speed-test server, not to Zoom;
+      it may be limited by Wi-Fi or the device rather than the network; an active test does not reflect
+      what the user experienced. (Not required, since the question did not ask: passive data from the
+      time of the problem, such as flow records or a capture, reflects what the user actually experienced.)'
     height_in: 1.2
     id: 6b
+    note: The original key required passive measurement and several reasons, which the question never
+      asked for. Full credit (2) for No plus a correct reason why, e.g. the test measures conditions now
+      and the problem may have been transient, or it measures the path to the speed-test server rather
+      than to Zoom, or Wi-Fi or the device may limit it, or an active test does not reflect what the user
+      experienced. Never deduct for not proposing passive measurement or for giving only one correct reason.
     points: 2.0
     explains: 6a
     criteria:
     - id: key
       points: 2.0
-      description: No. The active test measures conditions now, and the problem may have been transient.
-        It also measures the path to the speed-test server, not to Zoom, and may be limited by Wi-Fi or
-        the device rather than the network. Passive data from the time of the problem (flow records, a
-        capture) reflects what the user actually experienced.
+      description: 'No. Any one correct reason earns full credit: the active test measures conditions
+        now, and the problem may have been transient; it measures the path to the speed-test server, not
+        to Zoom; it may be limited by Wi-Fi or the device rather than the network; an active test does
+        not reflect what the user experienced. (Not required, since the question did not ask: passive
+        data from the time of the problem, such as flow records or a capture, reflects what the user actually
+        experienced.)'
 - number: 7
   points: 3.0
   section: Data Acquisition
@@ -243,8 +262,8 @@ questions:
     note: 'One point for each of the four items: an advantage of netml features, a disadvantage of netml
       features, an advantage of nPrint, a disadvantage of nPrint. Credit any correct, reasonable point,
       not only those in the model answer (for example: netml is cheap to compute or works with less data;
-      nPrint can be less interpretable or needs more compute). Credit an item when it is stated loosely or
-      only implied by a contrast with the other approach. Benefit of the doubt. See grading-notes.md.'
+      nPrint can be less interpretable or needs more compute). Credit an item when it is stated loosely
+      or only implied by a contrast with the other approach. Benefit of the doubt. See grading-notes.md.'
     points: 4.0
     criteria:
     - id: key
@@ -297,22 +316,34 @@ questions:
     prompt: Some rows in your flow dataset have missing values. Give one example from network data where
       filling in the column average is reasonable, and one where it is a bad idea. Explain why for the
       second.
-    solution: 'Reasonable: a missing timestamp or acknowledgment time bounded by its neighbors; a missing
-      measurement in an otherwise steady series where the gap is a recording glitch. Bad idea: when the
-      missing or strange value may itself be the anomaly you want to detect (a corrupted sequence number,
-      a malformed packet, an absent field during an attack); averaging erases exactly that signal. Also
-      bad: computing the average over the whole dataset before the split (leakage).'
+    solution: 'Reasonable: a missing measurement in an otherwise steady series where the gap is a recording
+      glitch; a numeric field that clusters tightly, such as packet sizes near the MTU; latency or throughput
+      during a stable period. Bad idea, with why: when the missing or strange value may itself be the
+      anomaly you want to detect (a corrupted sequence number, a malformed packet, an absent field during
+      an attack), averaging erases exactly that signal; a categorical or discrete field (protocol, port,
+      TCP flags, a resolution label), where the average is a value that does not exist; an ordered series
+      such as timestamps or inter-arrival times, where the column mean ignores order (fill from neighbors
+      instead) and hides bursts; computing the average over the whole dataset before the split (leakage).
+      A reason is required only for the bad example.'
     height_in: 1.3
     id: '10'
     points: 3.0
     criteria:
     - id: key
       points: 3.0
-      description: 'Reasonable: a missing timestamp or acknowledgment time bounded by its neighbors; a
-        missing measurement in an otherwise steady series where the gap is a recording glitch. Bad idea:
-        when the missing or strange value may itself be the anomaly you want to detect (a corrupted sequence
-        number, a malformed packet, an absent field during an attack); averaging erases exactly that signal.
-        Also bad: computing the average over the whole dataset before the split (leakage).'
+      description: 'Reasonable: a missing measurement in an otherwise steady series where the gap is a
+        recording glitch; a numeric field that clusters tightly, such as packet sizes near the MTU; latency
+        or throughput during a stable period. Bad idea, with why: when the missing or strange value may
+        itself be the anomaly you want to detect (a corrupted sequence number, a malformed packet, an
+        absent field during an attack), averaging erases exactly that signal; a categorical or discrete
+        field (protocol, port, TCP flags, a resolution label), where the average is a value that does
+        not exist; an ordered series such as timestamps or inter-arrival times, where the column mean
+        ignores order (fill from neighbors instead) and hides bursts; computing the average over the whole
+        dataset before the split (leakage). A reason is required only for the bad example.'
+    note: 'The original key was flawed: its reasonable example (a timestamp bounded by its neighbors)
+      is filling from neighbors, not the column mean; it missed categorical and ordered fields as bad
+      examples; and it expected a reason for the first example, which the question did not ask for. Every
+      non-blank answer receives full credit (3) this term (Nov 4).'
 - number: 11
   points: 3.0
   section: Training and Evaluation
@@ -329,20 +360,26 @@ questions:
     points: 1.0
   - kind: free
     prompt: Why or why not?
-    solution: No. A random split puts later hours in the training set and earlier hours in the test set,
-      so the model predicts the past from the future (temporal leakage); rows are not independent. Train
-      on the earlier months and test on the later ones, which also mimics the real forecasting task.
+    solution: 'No. A random split puts later hours in the training set and earlier hours in the test set,
+      so the model predicts the past from the future (temporal leakage); hourly rows are not independent.
+      One correct reason earns full credit. (Not required, since the question did not ask: train on the
+      earlier months and test on the later ones, which also mimics the real forecasting task.)'
     height_in: 1.2
     id: 11b
+    note: The original key required a fix (train on earlier months, test on later), which the question
+      never asked for. Full credit (2) for No plus a correct reason why, e.g. a random split trains on
+      later hours and tests on earlier ones (temporal leakage, the model sees the future), or hourly rows
+      are not independent. Never deduct for not proposing a fix or for not writing No in prose when the
+      yes/no part is marked No.
     points: 2.0
     explains: 11a
     criteria:
     - id: key
       points: 2.0
-      description: No. A random split puts later hours in the training set and earlier hours in the test
-        set, so the model predicts the past from the future (temporal leakage); rows are not independent.
-        Train on the earlier months and test on the later ones, which also mimics the real forecasting
-        task.
+      description: 'No. A random split puts later hours in the training set and earlier hours in the test
+        set, so the model predicts the past from the future (temporal leakage); hourly rows are not independent.
+        One correct reason earns full credit. (Not required, since the question did not ask: train on
+        the earlier months and test on the later ones, which also mimics the real forecasting task.)'
 - number: 12
   points: 5.0
   section: Training and Evaluation
@@ -414,10 +451,11 @@ questions:
     prompt: In Hands-On 3 and Assignment 1 you computed a segment-download-rate feature from encrypted
       Netflix traffic. (a) How can you find segment boundaries without decrypting anything? (b) Why do
       segments carry information about resolution?
-    solution: (a) The player downloads segments in bursts; boundaries show up as gaps in the download
+    solution: '(a) The player downloads segments in bursts; boundaries show up as gaps in the download
       marked by small or zero-byte packets between bursts. (b) Adaptive streaming encodes the video at
       several bitrates; the player requests each segment at a chosen bitrate, so higher resolution means
-      more bytes per segment, which shows up in segment sizes and download rate.
+      more bytes per segment, which shows up in segment sizes and download rate. Also correct: segments
+      have roughly constant duration, so the bytes per segment reveal the bitrate, and with it the resolution.'
     height_in: 2.0
     id: '14'
     points: 3.0
@@ -448,7 +486,8 @@ questions:
       rather than video quality; with a random split the same households appear in training and test,
       so the model can recognize the home instead of the resolution (a spurious correlation, non-representative
       training data). (b) The held-out-household number. Remove household-specific proxy features, split
-      by household, train on more diverse households, or balance the classes.
+      by household, train on more diverse households ("more data" counts when it means more households),
+      or balance the classes.
     height_in: 2.5
     id: '15'
     note: '"Which accuracy is the better estimate" in (b) is a bad question; many students asked about

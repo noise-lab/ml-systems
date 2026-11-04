@@ -138,6 +138,17 @@ Create an exam that:
 - Short answer: `\answerbox{height-in-inches}{solution text}`; 1.0–3.0 in depending on
   expected length; solution text must be a single paragraph and must not contain `&`.
   Put a blank line before `\answerbox`. Very short answers: `\shortanswerbox{width}{text}`.
+- **The solution box grows to fit its answer.** In `feamster.sty`, the solution
+  branch of `\answerbox` must draw a node that stretches to its text, never
+  shorter than the student's box, so a long model answer (or one amended after
+  grading) can't spill over the next question. The student version keeps the
+  fixed-height rectangle. If the copied `feamster.sty` still has the
+  fixed-height solution branch, replace that one line with:
+
+  ```latex
+  % the box grows to fit a long solution (never shorter than the exam's box)
+  \tikz\node[draw, align=left, inner xsep=.025\textwidth, text width=.95\textwidth, minimum height=#1 * 1.5cm] (sol) {\textbf{Solution:} #2} node[anchor=south east] at (sol.north east) {(Answer inside the box)};%
+  ```
 - Sections: `\section*{Name}` inside the first question's minipage (above), with
   `\vspace{1.2ex}` before the minipage; `\titlespacing*{\section}{0pt}{1.2ex}{1.0ex}`
   in `exam.tex` so the heading is not jammed against the question.
