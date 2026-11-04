@@ -71,9 +71,12 @@ Recorded 2026-10-30.
 
 - **Status: applied 2026-11-04.** Announced in class and on Slack
   (2026-11-02). 57 of 59 students went up on at least one of the three
-  parts; nobody went down. Full credit before and after: 4b 4 → 48,
-  6b 3 → 50, 11b 15 → 37. Answers that still give no correct reason keep
-  the partial credit they already had.
+  parts; nobody went down. Full credit before and after: 4b 4 → 55,
+  6b 3 → 55, 11b 15 → 50. A correct reason earns full credit even when it
+  is stated briefly or loosely (for example, "it ignores time order" or
+  "the model can cheat with future hours" for 11b). Answers that reach the
+  wrong conclusion or give no correct reason keep the partial credit they
+  already had.
 - **The error.** Each part asks only "Why or why not?", but the original key
   also required an alternative the question never asked for: better
   behavioral features (4b), passive measurement from the time of the problem
@@ -157,5 +160,5 @@ Bigger answer boxes on the final.
 - **2026-11-04.** 18 comments on Gradebook issues: 16 regrade requests and
   2 notes about project proposals. All answered on the issue. With the
   class-wide fixes above, 58 of 59 students went up; nobody went down. Class
-  mean 42.2 → 44.9 of 50.
+  mean 42.2 → 45.1 of 50 (median 46).
 
