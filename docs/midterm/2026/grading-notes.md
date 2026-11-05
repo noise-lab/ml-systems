@@ -129,6 +129,22 @@ Recorded 2026-10-30.
   was ambiguous between passive and active measurement. 44 of 59 students
   marked it, so the class did not split on it; it stays as written.
 
+## Q13(c) and Q14: one correct answer is enough, class-wide regrade (2026-11-05)
+
+- **Q14(a), segment boundaries.** The model answer has two halves (bursts
+  separated by gaps; small or zero-byte request packets between segments),
+  and the grader took points off for whichever half was missing. Either one
+  finds the boundary, so either earns full credit.
+- **Q14(b), segments to resolution.** A terse but correct chain ("bytes over
+  time gives bitrate gives resolution") earns full credit, as the Nov 4 note
+  on terse correct reasons already says.
+- **Q13(c), reducing overfitting.** k-fold cross-validation is accepted. It
+  is widely taught as a way to prevent overfitting (tuning regularization or
+  depth on held-out folds).
+- Applied to every exam with `grade --parts 13,14`, keeping the higher
+  score: no score went down. Notes on both parts in rubric.yaml; Q13(c) and
+  Q14(a) model answers updated in the solutions.
+
 ## Answers added to the solutions on regrade (2026-11-04)
 
 Reasonable, correct answers the original key did not list. Each is now in
@@ -161,4 +177,10 @@ Bigger answer boxes on the final.
   2 notes about project proposals. All answered on the issue. With the
   class-wide fixes above, 58 of 59 students went up; nobody went down. Class
   mean 42.2 → 45.1 of 50 (median 46).
-
+- **2026-11-05.** 6 comments: 4 regrade requests, 1 question about
+  submissions not showing (both had registered by the next pull), and 1
+  thank-you. All answered on the issue. The Q13(c) and Q14 fix above raised
+  30 students; individual requests were applied only to the parts asked
+  about (a crossed-out bubble with the answer in the margin, writing outside
+  the box, four reasonable Q8 items). Nobody went down. Class mean 45.2 →
+  45.6 of 50.

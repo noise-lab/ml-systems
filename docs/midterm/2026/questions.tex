@@ -165,7 +165,7 @@ The figure shows training and validation error as model complexity increases.
 
 (a) Which point (A, B, C) has high bias? (b) Which is overfitting? (c) Name one way to reduce overfitting other than choosing a simpler model.
 
-\answerbox{1.3}{(a) A (underfitting: high error on training and validation). (b) C (training error keeps falling while validation error rises). (c) More training data, regularization, early stopping, or an ensemble. B is the model to choose, picked with the validation set, never the test set.}
+\answerbox{1.3}{(a) A (underfitting: high error on training and validation). (b) C (training error keeps falling while validation error rises). (c) More training data, regularization, early stopping, or an ensemble; k-fold cross-validation to tune regularization or depth is also accepted. B is the model to choose, picked with the validation set, never the test set.}
 \eprob
 
 \newpage
@@ -174,7 +174,7 @@ The figure shows training and validation error as model complexity increases.
 \prob{3}
 In Hands-On 3 and Assignment 1 you computed a segment-download-rate feature from encrypted Netflix traffic. (a) How can you find segment boundaries without decrypting anything? (b) Why do segments carry information about resolution?
 
-\answerbox{2.0}{(a) The player downloads segments in bursts; boundaries show up as gaps in the download marked by small or zero-byte packets between bursts. (b) Adaptive streaming encodes the video at several bitrates; the player requests each segment at a chosen bitrate, so higher resolution means more bytes per segment, which shows up in segment sizes and download rate. Also correct: segments have roughly constant duration, so the bytes per segment reveal the bitrate, and with it the resolution.}
+\answerbox{2.0}{(a) The player downloads segments in bursts; boundaries show up as gaps in the download marked by small or zero-byte packets between bursts. Either the bursts and gaps or the small packets alone is a full answer. (b) Adaptive streaming encodes the video at several bitrates; the player requests each segment at a chosen bitrate, so higher resolution means more bytes per segment, which shows up in segment sizes and download rate. Also correct: segments have roughly constant duration, so the bytes per segment reveal the bitrate, and with it the resolution.}
 \eprob
 
 \prob{4}

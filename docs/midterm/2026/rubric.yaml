@@ -440,6 +440,8 @@ questions:
       points: 1.0
       description: More training data, regularization, early stopping, or an ensemble. B is the model
         to choose, picked with the validation set, never the test set.
+    note: 'Part (c): k-fold cross-validation is accepted. It is widely taught as a way to prevent overfitting (tuning hyperparameters such as regularization strength or tree depth on held-out folds), so it earns full credit (decided 2026-11-05).'
+
 - number: 14
   points: 3.0
   section: 'Assignment 1: Video Quality Inference'
@@ -469,6 +471,8 @@ questions:
       description: Adaptive streaming encodes the video at several bitrates; the player requests each
         segment at a chosen bitrate, so higher resolution means more bytes per segment, which shows up
         in segment sizes and download rate.
+    note: 'Part (a): either half of the model answer identifies the boundary and earns full credit on its own: bursts separated by gaps, or the small or zero-byte (request) packets between segments. Part (b): a terse but correct chain, such as bytes over time gives bitrate gives resolution, earns full credit (decided 2026-11-05).'
+
 - number: 15
   points: 4.0
   section: 'Assignment 1: Video Quality Inference'
