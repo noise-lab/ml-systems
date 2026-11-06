@@ -7815,7 +7815,7 @@ a.anchor-link {
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=dcc80706">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=4d80f176">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -7865,6 +7865,7 @@ a.anchor-link {
 <li>align the two feature sets to the same number of columns and concatenate them into one 2D matrix, with the labels in a separate vector (as in Hands-On 7).</li>
 </ol>
 <p>Do not scale the features yet. Any feature scaling (min-max, z-score) is fit on the training set only, after the split below.</p>
+<p><em>Hint:</em> short flows yield fewer inter-arrival features than long ones, so the two feature tables can have different widths. After you concatenate them, fill the missing values (for example with <code>fillna(0)</code>); scikit-learn will refuse a matrix that contains NaN.</p>
 </div>
 </div>
 </div>
