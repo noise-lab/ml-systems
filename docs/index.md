@@ -62,9 +62,9 @@ Class agenda for each meeting is in the [agenda](agenda.md) (one file per term; 
 | 14                             | Learning Traffic Representations<br>([nPrint](notebooks/14-nPrint-Clean.html))                              |             |  |
 | **Unsupervised Learning**      |                                                                                                             | Ch. 6       |  |
 | 15                             | Dimensionality Reduction<br> ([Dimensionality Reduction](notebooks/15-Dimensionality-Reduction-Clean.html)) |             |  |
-| 16                             | Clustering<br>([Clustering](notebooks/16-Clustering-Clean.html))                                            |             | [A4: Spatial Clustering](https://github.com/noise-courses/latency-geo-clustering) |
+| 16                             | Clustering<br>([Clustering](notebooks/16-Clustering-Clean.html))                                            |             |  |
 | **Generative Models**          |                                                                                                             | Ch. 7       |  |
-| 17                             | Diffusion Models<br>([Diffusion Models](notebooks/17-Diffusion-Clean.html))                                 |             |  |
+| 17                             | Diffusion Models<br>([Diffusion Models](notebooks/17-Diffusion-Clean.html))                                 |             | [A4: Generative AI](https://github.com/noise-courses/netdiffusion) |
 | 18                             | State-Space Models<br>([NetSSM walkthrough](https://github.com/noise-lab/netssm/blob/main/example/train_netssm_from_scratch.ipynb) · [open in Colab](https://colab.research.google.com/github/noise-lab/netssm/blob/main/example/train_netssm_from_scratch.ipynb), needs a GPU) |             |  |
 | 19                             | Transformers<br>([Large Language Models](notebooks/19-LLM-Clean.html))                                      |             | [Project: artifact and report](https://github.com/noise-courses/ml-sys-project) |
 | **Bonus Topics**               |                                                                                                             | Ch. 8       |  |
