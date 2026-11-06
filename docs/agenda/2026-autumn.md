@@ -432,3 +432,22 @@ was partly inaudible the entry says so rather than guessing.
     * The instructor will work through the notebook, post solutions or approaches, and look for a less contrived example of the same problem (page size against page load time was suggested as a candidate)
 * **Not covered:** the rest of Lecture 10 (basis expansion and polynomial regression, the bias-variance picture, ridge and lasso regularization) and Hands-On 10 Part 2. Friday opens with polynomial basis expansion and more time on Part 2; logistic regression will be quick and support vector machines may be skipped to catch up; trees and random forests come after Monday
 * **Next:** Friday November 6. Assignment 2, the take-home midterm, is due that night at 11:59 pm
+
+### Meeting 12 (Fri Nov 6)
+
+*Plan; replaced with the record after class.*
+
+- Housekeeping: Assignment 2 (the take-home midterm) due tonight at 11:59 pm, individual work; Assignment 3 (anomaly detection) released Monday November 9; regrade batches done, nobody's score went down; project proposal feedback
+- Lecture 10, second half: basis expansion and polynomial regression
+    - Fitting curves with a linear method by transforming the features; the design matrix changes, the solver does not
+    - Polynomial, radial-basis, and Fourier bases; the degree as a hyperparameter
+    - Inductive bias and why learning is impossible without it; underfitting, overfitting, and the bias–variance U-curve
+    - Ridge and lasso regularization: shrinking versus zeroing out coefficients
+- Hands-On 10, Part 2 ([notebook](../notebooks/10-Linear-Regression-Clean.html)): polynomial expansion on the bytes-from-packets model; held-out error by degree
+- Lecture 11: logistic regression
+    - From a number to a 0/1 label: the sigmoid, decision boundaries, and the threshold as a choice
+    - DNS query versus response from packet length
+    - The same linear score with a different noise model
+- Hands-On 11 ([notebook](../notebooks/11-Logistic-Regression-Clean.html)): DNS request versus response; data packet versus ACK, the "classify first" remedy to the ACK-packet problem
+- Not planned today: support vector machines
+- Next: trees and random forests, Monday November 9
