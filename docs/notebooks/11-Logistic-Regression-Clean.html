@@ -7803,8 +7803,6 @@ a.anchor-link {
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <h1 id="Logistic-Regression-on-Network-Traffic">Logistic Regression on Network Traffic<a class="anchor-link" href="#Logistic-Regression-on-Network-Traffic">¶</a></h1><p>Logistic Regression is very similar to linear regression, except all of the points can only have $y$-values of $1$ or $0$. This is useful if we want to predict whether something is or isn't part of a particular class. Instead of fitting a line (as in linear regression), logistic regression involves fitting a probability curve.</p>
-<p>For example, using our device traffic, let's see whether we can predict a DNS packet is request or response from its length.</p>
-<p>First, let's import the data, extract only the DNS packets, and view the first few packets.</p>
 </div>
 </div>
 </div>
@@ -7845,7 +7843,7 @@ a.anchor-link {
 
 <span class="c1"># Plotting</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
-<span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
+<span class="o">%</span><span class="k">matplotlib</span> inline
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
 <span class="c1">#sys.path.insert(1,"/Users/feamster/research/netml/src/")</span>
@@ -7856,12 +7854,12 @@ a.anchor-link {
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [16]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [2]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">hpcap</span> <span class="o">=</span> <span class="n">PCAP</span><span class="p">(</span><span class="s1">'data/http.pcap'</span><span class="p">,</span> <span class="n">flow_ptks_thres</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
@@ -7873,16 +7871,30 @@ a.anchor-link {
 </div>
 </div>
 </div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
 </div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>'_pcap2pandas()' starts at 2022-11-02 17:17:32
-'_pcap2pandas()' ends at 2022-11-02 17:17:39 and takes 0.1196 mins.
-</pre>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="Part-1:-DNS-Requests-vs.-Responses">Part 1: DNS Requests vs. Responses<a class="anchor-link" href="#Part-1:-DNS-Requests-vs.-Responses">¶</a></h2><p>Using our device traffic, let's see whether we can predict whether a DNS packet is a request or a response from its length.</p>
+<p>First, import the data, extract only the DNS packets, and view the first few packets. <code>pcap2pandas</code> gives one row per packet; the <code>is_dns</code> column marks DNS packets and <code>dns_resp</code> is non-zero for responses.</p>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># TODO: keep only the DNS packets and look at the first few rows</span>
+<span class="c1"># dns_packets = pcap.loc[pcap['is_dns'] == True]</span>
+<span class="c1"># dns_packets.head(5)</span>
+</pre></div>
 </div>
 </div>
 </div>
@@ -7895,7 +7907,23 @@ a.anchor-link {
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <p>Each row in the printed data is a packet and each column is a feature of the packet.</p>
-<p>Next let's divide the DNS packets into requests and repsonses, and convert them into points where the $x$-value is the length of the packet and $y$-value is $0$ for requests and $1$ for responses. This will allow us to fit the data to a logistic regression curve.</p>
+<p>Next let's divide the DNS packets into requests and responses, and convert them into points where the $x$-value is the length of the packet and $y$-value is $0$ for requests and $1$ for responses. This will allow us to fit the data to a logistic regression curve.</p>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># TODO: keep just the two columns we need, packet length and the response flag</span>
+<span class="c1"># dns_ft = dns_packets.loc[:, ['length', 'dns_resp']]</span>
+<span class="c1"># dns_ft.head(10)</span>
+</pre></div>
+</div>
 </div>
 </div>
 </div>
@@ -7910,6 +7938,21 @@ a.anchor-link {
 </div>
 </div>
 </div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># TODO: how many (rows, columns)?</span>
+<span class="c1"># dns_ft.shape</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
 </div>
 <div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
 <div class="jp-Cell-inputWrapper" tabindex="0">
@@ -7917,7 +7960,185 @@ a.anchor-link {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>Next we will convert the DNS response column into a 0/1 value so that it is amenable to logstic regression.</p>
+<p>Next we will convert the DNS response column into a 0/1 value so that it is amenable to logistic regression.</p>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># TODO: 0 for a request, 1 for a response</span>
+<span class="c1"># dns_ft['response'] = dns_ft['dns_resp'].astype(bool).astype(int)</span>
+<span class="c1"># dns_ft.head(10)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h3 id="Plot-the-Points">Plot the Points<a class="anchor-link" href="#Plot-the-Points">¶</a></h3><p>Plot the packets as points: $x$ is the packet length, $y$ is 0 (request) or 1 (response). Label your axes. What do you notice about where the requests and the responses sit?</p>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># TODO: scatter the points</span>
+<span class="c1"># x = dns_ft['length'].values</span>
+<span class="c1"># y = dns_ft['response'].values</span>
+<span class="c1"># plt.plot(x, y, 'x', color='red')</span>
+<span class="c1"># plt.ylabel("Request (0) or Response (1)")</span>
+<span class="c1"># plt.xlabel("DNS Packet Length (Bytes)")</span>
+<span class="c1"># plt.grid(linestyle='--', alpha=0.6)</span>
+<span class="c1"># plt.show()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h3 id="Train-the-Model">Train the Model<a class="anchor-link" href="#Train-the-Model">¶</a></h3><p>Fit a <code>LogisticRegression</code> from scikit-learn that predicts the response flag from the packet length. (<code>fit</code> wants a column vector of features, so reshape <code>x</code> with <code>reshape(-1, 1)</code>.)</p>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># TODO: fit a logistic regression</span>
+<span class="c1"># regr = LogisticRegression(solver='lbfgs', C=1)</span>
+<span class="c1"># regr.fit(x.reshape(-1, 1), y)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h3 id="Visualize-the-Model">Visualize the Model<a class="anchor-link" href="#Visualize-the-Model">¶</a></h3><p>Plot the fitted probability curve (the sigmoid) over a range of packet lengths, with the points overlaid. Where is the decision boundary, the length at which the model's probability of "response" crosses 0.5?</p>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># TODO: plot the sigmoid over a number line of packet lengths</span>
+<span class="c1"># z = np.arange(1, 600, 0.5).reshape(-1, 1)</span>
+<span class="c1"># plt.plot(z, regr.predict_proba(z)[:, 1], color='green')</span>
+<span class="c1"># plt.plot(x, y, 'x', color='red')</span>
+<span class="c1"># plt.ylabel("Request (0) or Response (1)")</span>
+<span class="c1"># plt.xlabel("DNS Packet Length")</span>
+<span class="c1"># plt.grid(linestyle='--', alpha=0.6)</span>
+<span class="c1"># plt.show()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput celltag_hide" data-mime-type="text/markdown">
+<hr/>
+<h2 id="Model-Selection/Cross-Validation">Model Selection/Cross Validation<a class="anchor-link" href="#Model-Selection/Cross-Validation">¶</a></h2><p>How do we know we have a good model? How do we know that the machine learning algorithm is "good"?</p>
+<p>We can perform a K-fold cross-validation on the data:</p>
+<ul>
+<li>holding out 1/K of the data for testing,</li>
+<li>training on the remaining data,</li>
+<li>repeating this K times, one for each fold</li>
+<li>averaging the resulting accuracy/score of the model</li>
+</ul>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">KFold</span><span class="p">,</span> <span class="n">cross_val_score</span>
+
+<span class="c1"># TODO: five-fold cross-validation of the model above, scored by accuracy</span>
+<span class="c1"># kf = KFold(n_splits=5)</span>
+<span class="c1"># cv_results = cross_val_score(regr, x.reshape(-1, 1), y, cv=kf, scoring="accuracy")</span>
+<span class="c1"># cv_results, cv_results.mean()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput celltag_hide" data-mime-type="text/markdown">
+<h3 id="Hyper-Parameter-Tuning:-Grid-Search">Hyper-Parameter Tuning: Grid Search<a class="anchor-link" href="#Hyper-Parameter-Tuning:-Grid-Search">¶</a></h3><p>Grid search can allow for hyper-parameter tuning, with cross validation, such as the k-fold cross validation that we just performed.  The search performs the evaluation above, automating the search through the set of all possible parameters defined in the grid.</p>
+<p>The resulting model is returned as a result, and a model can be generated from the training data by calling <code>fit</code> on the results of the search.</p>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">GridSearchCV</span>
+
+<span class="c1"># TODO: search over the regularization strength C with five-fold cross-validation</span>
+<span class="c1"># params = {'C': np.arange(1, 5, 1)}</span>
+<span class="c1"># grid_model = GridSearchCV(estimator=regr, param_grid=params, cv=5,</span>
+<span class="c1">#                           return_train_score=True, scoring='accuracy')</span>
+<span class="c1"># grid_model_result = grid_model.fit(x.reshape(-1, 1), y)</span>
+<span class="c1"># pd.DataFrame(grid_model.cv_results_)</span>
+</pre></div>
+</div>
 </div>
 </div>
 </div>
