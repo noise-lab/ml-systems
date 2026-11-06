@@ -437,17 +437,18 @@ was partly inaudible the entry says so rather than guessing.
 
 *Plan; replaced with the record after class.*
 
-- Housekeeping: Assignment 2 (the take-home midterm) due tonight at 11:59 pm, individual work; Assignment 3 (anomaly detection) released Monday November 9; regrade batches done, nobody's score went down; project proposal feedback
-- Lecture 10, second half: basis expansion and polynomial regression
+- Housekeeping: Assignment 2 (the take-home midterm) due tonight at 11:59 pm, individual work; Assignment 3 (anomaly detection) released Monday November 9; regrade batches done, nobody's score went down; project proposal feedback; every hands-on notebook now opens with its learning objectives
+- Lecture 10, the end: basis expansion and polynomial regression
     - Fitting curves with a linear method by transforming the features; the design matrix changes, the solver does not
-    - Polynomial, radial-basis, and Fourier bases; the degree as a hyperparameter
-    - Inductive bias and why learning is impossible without it; underfitting, overfitting, and the bias–variance U-curve
-    - Ridge and lasso regularization: shrinking versus zeroing out coefficients
+    - Underfitting, overfitting, and the bias–variance U-curve; ridge and lasso regularization
 - Hands-On 10, Part 2 ([notebook](../notebooks/10-Linear-Regression-Clean.html)): polynomial expansion on the bytes-from-packets model; held-out error by degree
-- Lecture 11: logistic regression
+- Lecture 11, compressed: logistic regression
     - From a number to a 0/1 label: the sigmoid, decision boundaries, and the threshold as a choice
-    - DNS query versus response from packet length
-    - The same linear score with a different noise model
-- Hands-On 11 ([notebook](../notebooks/11-Logistic-Regression-Clean.html)): DNS request versus response; data packet versus ACK, the "classify first" remedy to the ACK-packet problem
-- Not planned today: support vector machines
-- Next: trees and random forests, Monday November 9
+    - DNS query versus response from packet length; classify first, then regress, as the remedy to the ACK-packet problem
+- Hands-On 11 ([notebook](../notebooks/11-Logistic-Regression-Clean.html)): DNS request versus response; data packet versus ACK
+- Lecture 12, the start: decision trees
+    - Partitioning the feature space with binary splits; a tree as readable rules
+    - Regression versus classification trees; choosing a split by Gini impurity
+    - Overfitting, pruning, and why a single tree is brittle
+- Not planned today: support vector machines; the rest of Lecture 11 (softmax, the noise-model view); ensembles (Monday)
+- Next: bagging, random forests, and boosting, with Hands-On 12, Monday November 9
