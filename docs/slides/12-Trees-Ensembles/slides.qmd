@@ -28,7 +28,7 @@ Open with the paradox of interpretability vs. accuracy that motivates this lectu
 
 ::: {.columns}
 ::: {.column width="42%"}
-**The tree drawn in class** (flows, attack vs. benign):
+**A tree over network flows** (attack vs. benign):
 
 - Every internal node asks one yes/no question about one feature
 - Every leaf is a prediction: the most common class of the training flows that land there
@@ -135,7 +135,7 @@ digraph twofeat {
 The tree and the picture are the same model: each leaf is a rectangle, and its label is the majority class of the training flows inside it. The two halves split *the same* feature at *different* cutpoints, which is normal. Depth is the hyperparameter: keep splitting and the rectangles shrink until each holds one point.
 
 ::: {.notes}
-This is the pair of pictures drawn on the board in class, redrawn and cleaned up. On the board the top half (pps > 50) was split on destination port and the bottom half on duration; a two-dimensional picture can only show two features, so here both halves split on duration, at 10 s above and at 1 s below. That is the point worth making out loud: a tree may split the same feature at different thresholds in different branches, and the regions are always axis-aligned rectangles. Walk one path both ways: "more than 50 packets a second, under 10 seconds" is the top-left rectangle, a burst; "under 50 packets a second, under a second" is the bottom-left, a probe. Ask what a stray point in the wrong rectangle does (nothing, the majority wins) and what happens if you keep splitting (one point per rectangle, 100 percent training accuracy, overfit). The port-443 version of the tree is on the previous slide; it is the better rule to read aloud, but it needs three axes to draw.
+Draw this pair on the board if you can; the slide is the clean version. A two-dimensional picture can only show two features, so both halves split on duration, at 10 s above and at 1 s below (the port-443 split from the previous slide would need a third axis). The point worth making out loud: a tree may split the same feature at different thresholds in different branches, and the regions are always axis-aligned rectangles. Walk one path both ways: "more than 50 packets a second, under 10 seconds" is the top-left rectangle, a burst; "under 50 packets a second, under a second" is the bottom-left, a probe. Ask what a stray point in the wrong rectangle does (nothing, the majority wins) and what happens if you keep splitting (one point per rectangle, 100 percent training accuracy, overfit). The port-443 tree on the previous slide is the better rule to read aloud.
 :::
 
 ## Representing the Feature Space {.smaller}
