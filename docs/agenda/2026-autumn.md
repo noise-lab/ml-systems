@@ -476,3 +476,17 @@ was partly inaudible the entry says so rather than guessing.
     * **Final flag:** advantages and disadvantages of a decision tree, flagged by the instructor after class. Name the advantages (interpretable and auditable, simple and fast, no feature normalization, continuous and categorical features side by side, easy to retrain) and the disadvantages (sensitive to exactly which points are in the training set, overfits easily as depth grows), and say what fixes the disadvantages: limiting or pruning depth, and ensembles of trees
 * **Not covered:** support vector machines, skipped for the term; the rest of Lecture 10 (the bias-variance curve in detail, ridge and lasso); Hands-On 10 Part 3 and the bonus; the rest of Lecture 11 (softmax, the noise-model view); in Lecture 12, how a split is chosen, regression trees, and pruning
 * **Next:** Monday November 9, trees continued and ensembles (bagging, random forests, boosting) with Hands-On 12. Traffic representations and nPrint are already done, so the class catches up to the syllabus next week; unsupervised learning starts by the end of it
+
+### Meeting 13 (Mon Nov 9)
+
+*Plan; replaced with the record after class.*
+
+- Housekeeping: Hands-On 11 solutions are in each private repo; Assignment 2 grades are on the Gradebook issues (regrades by comment there); Assignment 3, anomaly detection, is released today and due Friday November 20
+- Decision trees, finished: how a split is chosen (Gini impurity, a worked example), regression vs. classification trees, overfitting and cost-complexity pruning, brittleness, advantages and disadvantages
+- Ensemble methods
+    - Bagging: bootstrap samples, deep trees, averaging or voting; out-of-bag error as a free estimate of test error
+    - Random forests: a random subset of features at each split decorrelates the trees; why they work so well on tabular data
+    - Application: inferring in-home activity from encrypted IoT traffic
+    - Boosting: gradient boosting on residuals, AdaBoost, tuning; random forests vs. boosting
+- Hands-On 12: a random forest that infers Nest Cam activity from packet sizes and timing ([notebook](../notebooks/12-Trees-Ensembles-Clean.html))
+- Next: deep learning (Friday November 13)
