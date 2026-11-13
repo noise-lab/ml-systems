@@ -10,6 +10,13 @@ date: last-modified
 > Earlier models expected you to hand-craft features.
 > Deep learning learns the *best representation* from raw data.
 
+```{=html}
+<style>
+.reveal .cell-output-display svg, .reveal .cell-output-display img { width: 100%; height: auto; }
+.reveal .caption { font-size: 0.55em; color: #666666; margin-top: 0.2em; }
+</style>
+```
+
 ::: {.notes}
 Open with the key shift: traditional ML requires a human expert to decide
 which features matter (e.g., packet size, flow duration). Deep learning
@@ -210,23 +217,29 @@ Neural Networks" and "Multi-Layer Perceptron."
 
 ::: {.columns}
 ::: {.column width="50%"}
-**Forward pass:**
+```{dot}
+//| fig-width: 5.2
+//| fig-height: 4.3
+digraph train {
+  rankdir=TB; nodesep=0.3; ranksep=0.35;
+  node [shape=box, style="rounded,filled", fontname="Helvetica", fontsize=15, margin="0.12,0.06"];
+  edge [fontname="Helvetica", fontsize=11, color="#555555"];
+  x   [label="training batch\n(features, labels)", fillcolor="#cfe3f5"];
+  net [label="layers: weighted sums\nand activations", fillcolor="#cfe3f5"];
+  yh  [label="prediction", fillcolor="#cfe3f5"];
+  L   [label="loss: MSE or\ncross-entropy", fillcolor="#f8d7c4"];
+  g   [label="chain rule, layer by layer:\ngradient of the loss\nfor every weight", fillcolor="#f2d9a8"];
+  u   [label="step each weight\nagainst its gradient\n(learning rate)", fillcolor="#d9efd3"];
+  x -> net -> yh -> L [label=""];
+  L -> g [label=" backward pass"];
+  g -> u;
+  u -> net [label=" next batch", constraint=false, style=dashed];
+  {rank=same; net; g;}
+  {rank=same; yh; u;}
+}
+```
 
-1. Push data through the network layer by layer
-2. Compute prediction at output
-3. Compute loss: MSE (regression) or cross-entropy (classification)
-
-**Backward pass (backpropagation):**
-
-Apply the **chain rule** to propagate the loss gradient back through all
-layers, computing $\frac{\partial \mathcal{L}}{\partial w}$ for every weight.
-
-**Weight update (gradient descent):**
-nudge every weight a small step against its gradient.
-
-The step size $\eta$ is the **learning rate** — critical hyperparameter.
-
-*(Equation in the appendix.)*
+Forward pass down the left, backward pass up the right; one loop per mini-batch. *(Equations in the appendix.)*
 :::
 ::: {.column width="50%"}
 **Mini-batch training:**
@@ -660,7 +673,7 @@ See *Machine Learning for Networking*, Chapter 5, "Convolutional Neural
 Networks" and the VGG-16 figure in the source extract (s39-i42/43).
 :::
 
-## CNNs for Network Traffic
+## CNNs for Network Traffic {.smaller}
 
 CNNs exploit the **sequential structure of network data**:
 
@@ -674,14 +687,33 @@ CNNs exploit the **sequential structure of network data**:
 - Detects the same pattern regardless of **position in sequence**
 - Works with variable-length inputs (via pooling / global average pooling)
 
-**Networking applications:**
+::: {.partition}
+<svg viewBox="0 0 900 190" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica, Arial, sans-serif" style="width:100%; display:block; margin:0 auto;">
+  <g font-size="17" text-anchor="middle" fill="#333">
+    <rect x="20" y="40" width="80" height="44" fill="#cfe3f5" stroke="#555"/><text x="60" y="68">pkt 1</text>
+    <rect x="120" y="40" width="80" height="44" fill="#cfe3f5" stroke="#555"/><text x="160" y="68">pkt 2</text>
+    <rect x="220" y="40" width="80" height="44" fill="#cfe3f5" stroke="#555"/><text x="260" y="68">pkt 3</text>
+    <rect x="320" y="40" width="80" height="44" fill="#cfe3f5" stroke="#555"/><text x="360" y="68">pkt 4</text>
+    <rect x="420" y="40" width="80" height="44" fill="#cfe3f5" stroke="#555"/><text x="460" y="68">pkt 5</text>
+    <rect x="520" y="40" width="80" height="44" fill="#cfe3f5" stroke="#555"/><text x="560" y="68">pkt 6</text>
+    <rect x="620" y="40" width="80" height="44" fill="#cfe3f5" stroke="#555"/><text x="660" y="68">pkt 7</text>
+    <rect x="720" y="40" width="80" height="44" fill="#cfe3f5" stroke="#555"/><text x="760" y="68">…</text>
+  </g>
+  <rect x="210" y="28" width="300" height="68" fill="none" stroke="#b91c1c" stroke-width="3" stroke-dasharray="8,5"/>
+  <text x="360" y="20" font-size="16" fill="#b91c1c" text-anchor="middle">one filter, three packets wide, the same weights at every position</text>
+  <path d="M560 112 L660 112" stroke="#b91c1c" stroke-width="2" fill="none" marker-end="url(#arr)"/>
+  <text x="760" y="117" font-size="15" fill="#777" text-anchor="middle">slides along the packets</text>
+  <defs><marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#b91c1c"/></marker></defs>
+  <path d="M360 96 L360 130" stroke="#555" stroke-width="2" fill="none" marker-end="url(#arr2)"/>
+  <defs><marker id="arr2" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#555"/></marker></defs>
+  <rect x="200" y="136" width="320" height="44" rx="10" fill="#d9efd3" stroke="#555"/>
+  <text x="360" y="163" font-size="16" fill="#333" text-anchor="middle">one feature-map value: did the pattern occur here?</text>
+</svg>
+:::
 
-- Encrypted traffic classification (no payload inspection needed)
-- Intrusion detection from raw flow features
-- IoT device fingerprinting from packet-header sequences
 
 ::: {.notes}
-The nPrint representation feeds naturally into 1D CNNs: each packet
+The figure is the whole idea in one row: a filter of fixed width (here three packets) multiplies its weights against each window of the sequence and writes one number per position; the same weights are reused at every position, which is parameter sharing, and the pattern is found wherever it occurs, which is position invariance. The nPrint representation feeds naturally into 1D CNNs: each packet
 is a row of bits (1088+ features), and a sequence of packets forms a 2D
 array. A 1D CNN sliding across the packet dimension detects patterns
 that span multiple consecutive packets. The book cites Wang et al. 2017,
@@ -690,7 +722,7 @@ networking CNN papers. See *Machine Learning for Networking*, Chapter 5,
 "CNNs for Network Traffic."
 :::
 
-## Recurrent Neural Networks and LSTMs
+## Recurrent Neural Networks and LSTMs {.smaller}
 
 **For variable-length sequences with long-range dependencies:**
 
@@ -713,19 +745,24 @@ long sequences — they forget early context.
 performance to LSTM in most cases.
 :::
 ::: {.column width="50%"}
-**Networking applications:**
+```{dot}
+//| fig-width: 5.2
+//| fig-height: 3.1
+digraph rnn {
+  rankdir=TB; nodesep=0.3; ranksep=0.35;
+  node [shape=box, style="rounded,filled", fontname="Helvetica", fontsize=15, margin="0.12,0.06"];
+  edge [fontname="Helvetica", fontsize=12, color="#555555"];
+  x1 [label="pkt 1", fillcolor="#cfe3f5"]; x2 [label="pkt 2", fillcolor="#cfe3f5"]; x3 [label="pkt 3", fillcolor="#cfe3f5"]; x4 [label="…", fillcolor="#cfe3f5"];
+  h1 [label="state", fillcolor="#f2d9a8"]; h2 [label="state", fillcolor="#f2d9a8"]; h3 [label="state", fillcolor="#f2d9a8"]; h4 [label="state", fillcolor="#f2d9a8"];
+  y [label="output: class,\nor the next value", fillcolor="#d9efd3"];
+  x1 -> h1; x2 -> h2; x3 -> h3; x4 -> h4;
+  h1 -> h2 -> h3 -> h4 [penwidth=2.5, color="#b91c1c"];
+  h4 -> y;
+  {rank=same; x1; x2; x3; x4;} {rank=same; h1; h2; h3; h4;}
+}
+```
 
-- Flow volume **prediction** (future bandwidth)
-- **Anomaly detection** in time-series metrics
-- Classifying flows from **variable-length** packet sequences
-
-**Caveat:**
-LSTMs and GRUs are largely **supplanted by foundation models**
-(transformers / attention-based architectures) for most sequence
-tasks — but remain a useful building block.
-
-See *Machine Learning for Networking*, Chapter 5, "Recurrent Neural
-Networks" and the pointer to Chapter 7 on foundation models.
+One cell, unrolled: each step reads a packet and the state so far; LSTM gates decide what the state forgets, writes, and exposes. **Uses:** flow-volume prediction, time-series anomalies, variable-length sequences. Largely supplanted by transformers (Chapter 7).
 :::
 :::
 
@@ -745,7 +782,7 @@ Learning for Networking*, Chapter 5, "LSTM and GRU Architectures."
 > Deep learning is now embedded in production network security systems —
 > not just research benchmarks.
 
-## Vignette: Hybrid Attention-CNN-LSTM for Intrusion Detection (2025) {.smaller}
+## Vignette: Hybrid Attention-CNN-LSTM for Intrusion Detection (2025)
 
 ::: {.vignette}
 A July 2025 paper in *Scientific Reports* (Nature) — "Deep learning for
@@ -778,34 +815,34 @@ result is what makes it deployable inline; purely batch-mode deep learning
 systems have appeared in research for years but rarely hit this target.
 :::
 
-## Deep Learning vs. Simpler Models: When to Use Which {.smaller}
+## Deep Learning vs. Simpler Models: When to Use Which
 
 ::: {.columns}
 ::: {.column width="50%"}
 **Prefer deep learning when:**
 
-- Large labeled dataset (thousands to millions of flows)
-- Raw data is hard to featurize: raw packets, payload bytes, images
-- Performance ceiling of simpler models is too low
-- You have GPU compute available
+- Large labeled data (thousands to millions of flows)
+- Raw inputs: packets, payload bytes, images
+- Simpler models have hit their ceiling
+- GPU compute is available
 
-**Prefer simpler models (RF, SVM, logistic regression) when:**
+**Prefer a forest, SVM, or logistic regression when:**
 
-- Small or medium dataset
+- Small or medium data
 - Interpretability is required (regulatory, forensics)
-- Latency or compute is constrained (edge / IoT)
-- Features are well understood and hand-engineerable
+- Latency or compute is constrained (edge, IoT)
+- The features are already well understood
 :::
 ::: {.column width="50%"}
 **Practical strategy:**
 
-1. Start with a **random forest** baseline on hand-crafted features
-2. If performance is insufficient, try an **MLP** on the same features
-3. If raw data is available, try a **1D CNN** on packet sequences (e.g., nPrint)
-4. If temporal context matters, add an **LSTM** or attention layer
-5. Monitor **training vs. validation loss curves** at every step
+1. A **random forest** baseline on hand-crafted features
+2. Not enough? An **MLP** on the same features
+3. Raw data available? A **1D CNN** on packet sequences (nPrint)
+4. Temporal context? Add an **LSTM** or attention
+5. Watch **training vs. validation loss** throughout
 
-*Deep learning is not always the right tool — and the book is explicit about that.*
+*Deep learning is not always the right tool, and the book says so.*
 :::
 :::
 
@@ -826,14 +863,23 @@ Doshi, Apthorpe, Feamster, "Machine Learning DDoS Detection for Consumer Interne
 
 ::: {.columns}
 ::: {.column width="52%"}
-**Pipeline**
-
-1. **Capture** packets at the home router: src/dst IP and port, protocol, size, timestamp
-2. **Split by device** (source IP), then into **10-second time bins**
-3. **Per-packet features**
-   - *Stateless:* packet size, inter-packet interval (ΔT, dΔT/dt, d²ΔT/dt²), protocol (one-hot TCP/UDP/HTTP/other)
-   - *Stateful (per bin):* bandwidth, number of distinct destination IPs, change in distinct-destination count
-4. **Binary classification:** attack vs. normal
+```{dot}
+//| fig-width: 5.4
+//| fig-height: 4.2
+digraph ddos {
+  rankdir=TB; nodesep=0.25; ranksep=0.3;
+  node [shape=box, style="rounded,filled", fontname="Helvetica", fontsize=14, margin="0.1,0.05"];
+  edge [fontname="Helvetica", fontsize=10, color="#555555"];
+  cap [label="capture at the home router\nIPs, ports, protocol, size, time", fillcolor="#cfe3f5"];
+  dev [label="split by device (source IP),\nthen into 10-second bins", fillcolor="#cfe3f5"];
+  sl  [label="stateless, per packet:\nsize, inter-arrival ΔT and its\nderivatives, protocol one-hot", fillcolor="#f2d9a8"];
+  st  [label="stateful, per bin:\nbandwidth, distinct destinations,\nchange in distinct destinations", fillcolor="#f2d9a8"];
+  clf [label="binary classifier:\nk-NN, SVM, tree, forest, or neural net", fillcolor="#f8d7c4"];
+  out [label="attack  or  normal", fillcolor="#d9efd3"];
+  cap -> dev; dev -> sl; dev -> st; sl -> clf; st -> clf; clf -> out;
+  {rank=same; sl; st;}
+}
+```
 :::
 ::: {.column width="48%"}
 **Data**
@@ -852,7 +898,7 @@ k-NN · linear SVM · decision tree · random forest · 4-layer neural net
 This is the hands-on you are about to do. The feature design is driven by domain knowledge about IoT devices: they talk to a small, fixed set of endpoints and send at regular intervals, so a flood shows up as tiny packets, near-zero inter-arrival times, and a jump in destination count. Every feature is derivable from flow-level headers — no payload inspection — so the whole thing can run on a home gateway. Note the class imbalance (about 14:1 attack to benign): always-predict-attack already gets 0.93 accuracy, so look at per-class F1, not just accuracy.
 :::
 
-## Result: You Often Don't Need Deep Learning {.smaller}
+## Result: You Often Don't Need Deep Learning
 
 ::: {.columns}
 ::: {.column width="50%"}
