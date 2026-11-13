@@ -515,3 +515,17 @@ was partly inaudible the entry says so rather than guessing.
     * The class plays network eavesdropper: from a Nest camera's encrypted traffic, build a time series of send rates, turn it into labeled points, and train a random forest to tell livestreaming from a motion event. The setup is from the instructor's group's papers. The classifier is simple because the device is idle most of the time and bursts when something happens; the same reasoning applies to a smart speaker that goes quiet until spoken to. About 20 minutes were given; the instructor planned to show the solution before the end of class and will poll the class on whether to give hands-ons more time. The work period and report-back were not captured
 * **Not covered:** the out-of-bag error slide in detail; the weighted Gini worked example (slide to be redone); the interpretability and SHAP slide
 * **Next:** Friday November 13 opens with ten minutes on the new worked examples in the trees deck (choosing a split by Gini and by entropy, why early stopping can quit too soon) and ten minutes to finish Hands-On 12, then deep learning, and why tree ensembles compete with it on tabular data. Assignment 3 (anomaly detection) is out, due Friday November 20, and uses the same smart-home traces without labels
+
+### Meeting 14 (Fri Nov 13)
+
+*Plan; replaced with the record after class.*
+
+- Trees, the worked examples: choosing a split by Gini and by entropy on the same ten flows; why early stopping can quit too soon; why bagging alone is not enough when one feature dominates
+- Hands-On 12 finished: report-back, and a single tree against the forest
+- Deep learning (Lecture 13)
+    - The neuron as logistic regression; activations and why ReLU won; multi-layer perceptrons
+    - Training: forward and backward passes, gradient descent, and the challenges (vanishing gradients, overfitting)
+    - When deep learning is worth it, and when a random forest is
+    - A return to traffic representations: nPrint and nPrintML
+    - Convolutions over packet sequences; recurrent networks in one slide
+- Hands-On 13: [DDoS detection for consumer IoT](../notebooks/13-Deep-Learning-Clean.html), a neural net against a random forest
