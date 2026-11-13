@@ -184,3 +184,8 @@ Bigger answer boxes on the final.
   about (a crossed-out bubble with the answer in the margin, writing outside
   the box, four reasonable Q8 items). Nobody went down. Class mean 45.2 →
   45.6 of 50.
+- **2026-11-12.** 1 regrade request (two questions), read by the
+  instructor: sensible DNS timing features on Q3 earned partial credit, and
+  a Q7(b) answer giving closeness in time as the reason earned full credit
+  on (b), as other answers like it had. Nobody went down. Class mean 45.62 →
+  45.65 of 50.

@@ -6,13 +6,13 @@ Exams: 59. Flags appear once there are at least 5. A flagged part may be an ambi
 |---|---|---|---|---|
 | 1 | choice | 2.83 / 3 | marked: A* 100%, B 3%, C* 100%, D 5%, E* 100%, F 10%  (* = key) |  |
 | 2 | choice | 1.91 / 2 | marked: A* 98%, B 5%, C* 97%, D 2%, E* 83%, F 2%  (* = key) |  |
-| 3 | free | 2.69 / 3 | mean 2.69 / 3 |  |
+| 3 | free | 2.71 / 3 | mean 2.71 / 3 |  |
 | 4a | yes_no | 0.95 / 1 | 95% answered 'no' (the key) |  |
 | 4b | free | 1.9 / 2 | mean 1.9 / 2 |  |
 | 5 | choice | 2.71 / 3 | marked: A* 100%, B 5%, C* 93%, D 2%, E* 83%, F 3%  (* = key) |  |
 | 6a | yes_no | 1.0 / 1 | 100% answered 'no' (the key) |  |
 | 6b | free | 1.92 / 2 | mean 1.92 / 2 |  |
-| 7 | free | 2.18 / 3 | mean 2.18 / 3 |  |
+| 7 | free | 2.19 / 3 | mean 2.19 / 3 |  |
 | 8 | free | 3.96 / 4 | mean 3.96 / 4 |  |
 | 9 | choice | 1.74 / 2 | marked: A* 92%, B 5%, C* 93%, D 10%, E* 93%, F 3%  (* = key) |  |
 | 10 | free | 3.0 / 3 | mean 3.0 / 3 |  |
