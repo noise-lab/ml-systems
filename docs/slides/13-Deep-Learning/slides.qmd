@@ -173,7 +173,7 @@ Learning for Networking*, Chapter 5, "Activation Functions."
 - Dead neurons turned out to be **rare in practice** once people used He initialization, batch norm, and adaptive optimizers (Adam); the disease mostly went away for other reasons
 - The comparisons (Maas et al. 2013, Xu et al. 2015) show leaky is **never worse and only occasionally slightly better**; nothing like the ReLU-over-sigmoid jump
 - Leaky adds a hyperparameter (the slope) and gives up the exact zeros that make ReLU activations **sparse and cheap**
-- When practitioners leave ReLU today they go to **GELU or SiLU** (what transformers use), not leaky
+- When practitioners did decide ReLU's kink was a problem, the fix that won was a **smooth curve** (GELU, SiLU; next slide), not leaky's second straight line
 :::
 ::: {.column width="50%"}
 ```{dot}
@@ -207,6 +207,37 @@ rare, so the fix buys little. Where it is most likely to matter is a narrow
 network like the hands-on's; point students at the optional to-do there.
 If anyone asks what people switch to instead: GELU and SiLU/Swish, in
 transformers.
+:::
+
+## Smooth Rectifiers: GELU and SiLU {.smaller}
+
+::: {.columns}
+::: {.column width="55%"}
+![ReLU, leaky ReLU, GELU, and SiLU plotted together](images/relu-leaky-gelu-silu.png)
+:::
+::: {.column width="45%"}
+Both are **smooth versions of ReLU**: near zero for negative inputs, near the identity for positive ones, a gentle curve through zero instead of a kink, and a small dip just below zero instead of a hard floor.
+
+- **SiLU** (Swish): $f(z) = z \cdot \sigma(z)$, where $\sigma$ is the sigmoid
+- **GELU**: $f(z) = z \cdot \Phi(z)$, where $\Phi$ is the standard normal CDF; numerically very close to SiLU
+- Both have a non-zero gradient everywhere, so there is no dead-neuron problem, and the curve is what helped, not an extra straight line
+- **Where they live:** GELU in BERT and GPT-2; SiLU in most recent LLMs and modern vision networks
+- For a three-layer, 11-unit network on packet features: ReLU, leaky, GELU and SiLU all land within noise of each other. Start with ReLU.
+:::
+:::
+
+::: {.notes}
+One slide so the names are not mysterious. Point at the plot: all four
+agree for large positive and large negative z; the difference is what
+happens in a window of about two units around zero. GELU and SiLU bend
+through it, and dip slightly negative before flattening. The kink in ReLU
+is what makes its gradient jump from 0 to 1; the smooth curve gives a
+gradient that changes gradually, which turned out to train large
+transformers better. This is the answer to "why not leaky": the field
+tried removing the dead zone with a second line and it barely helped;
+removing the kink with a curve did. For networks the size of the hands-on
+it does not matter. Keras 3 accepts activation='gelu' and 'silu' if
+anyone wants to try.
 :::
 
 ## Activation Functions, Sketched
