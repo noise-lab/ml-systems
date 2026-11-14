@@ -88,7 +88,7 @@ stack of learned transformations. nPrint later in the deck is the networking
 version of moving from the outer ring to the inner one.
 :::
 
-## The Artificial Neuron
+## The Artificial Neuron {.smaller}
 
 ::: {.columns}
 ::: {.column width="45%"}
@@ -108,16 +108,38 @@ Stack many neurons into layers → **neural network**.
 *(Equation in the appendix.)*
 :::
 ::: {.column width="55%"}
-<!-- recovered from 13-Deep-Learning.pptx slide 5 -->
-![Weighted inputs and a bias feed a summation node, whose output passes through an activation function](images/neuron-sum-activation.png)
+```{dot}
+//| fig-width: 5.2
+//| fig-height: 3.4
+digraph neuron {
+  rankdir=LR; nodesep=0.35; ranksep=0.7;
+  node [fontname="Helvetica", fontsize=13, style=filled, color="#444444"];
+  edge [fontname="Helvetica", fontsize=12, color="#555555"];
+  x1 [label="x₁", shape=circle, fixedsize=true, width=0.5, fillcolor="#cfe3f5"];
+  x2 [label="x₂", shape=circle, fixedsize=true, width=0.5, fillcolor="#cfe3f5"];
+  xd [label="⋮", shape=plaintext, style="", fontsize=18];
+  xn [label="xₙ", shape=circle, fixedsize=true, width=0.5, fillcolor="#cfe3f5"];
+  b  [label="1", shape=circle, fixedsize=true, width=0.5, fillcolor="#eeeeee"];
+  sum [label="Σ\nz = Σ wᵢxᵢ + b", shape=circle, fixedsize=true, width=1.15, fillcolor="#ffffff"];
+  act [label="f(z)\nactivation", shape=box, style="rounded,filled", fillcolor="#f2d9a8", margin="0.15,0.1"];
+  out [label="output\nf(z)", shape=circle, fixedsize=true, width=0.8, fillcolor="#f8d7c4"];
+  x1 -> sum [label="w₁", fontcolor="#1f5fa8"]; x2 -> sum [label="w₂", fontcolor="#1f5fa8"]; xn -> sum [label="wₙ", fontcolor="#1f5fa8"];
+  b  -> sum [label="b (bias)", fontcolor="#1f5fa8", style=dashed];
+  sum -> act -> out [penwidth=1.6];
+  {rank=same; x1; x2; xd; xn; b;}
+  x1 -> x2 -> xd -> xn -> b [style=invis];
+}
+```
+
+*Blue labels are the learned parameters: one weight per input, plus the bias.*
 :::
 :::
 
 ::: {.notes}
 The analogy to logistic regression is exact: one neuron with sigmoid
 activation is logistic regression. The power comes from stacking neurons
-and using non-linear activations. Draw a circle for the neuron, label the
-weighted inputs, and show the activation box. See the "Artificial Neuron"
+and using non-linear activations. Walk the diagram left to right: inputs,
+weights on the edges, the bias as a constant-1 input, the sum, the activation box. See the "Artificial Neuron"
 subsection of Chapter 5 in *Machine Learning for Networking*.
 :::
 
@@ -240,18 +262,17 @@ it does not matter. Keras 3 accepts activation='gelu' and 'silu' if
 anyone wants to try.
 :::
 
-## Activation Functions, Sketched
+## Activation Functions, Plotted
 
-<!-- recovered from 13-Deep-Learning.pptx slide 7 -->
-![Sigmoid, tanh, and ReLU drawn side by side](images/activation-functions-sketch.png)
+![Sigmoid, tanh, and ReLU with their gradients](images/activation-functions-plot.png)
 
 - **Sigmoid** squashes to (0, 1); **tanh** squashes to (−1, 1); both go flat at the extremes, so the gradient there is near zero
-- **ReLU** is zero for negative inputs and the identity line $y = x$ for positive ones; the slope is exactly 1 wherever it is on
+- **ReLU** is zero for negative inputs and the identity line $y = x$ for positive ones; the gradient (dashed) is exactly 1 wherever it is on, and 0 where it is off
 - The flat tails are the vanishing gradient; ReLU's straight line is why it trains deep stacks
 
 ::: {.notes}
-Hand-drawn in the original lecture. Point at the flat tails on sigmoid and tanh
-and ask what the derivative is there. Then point at the ReLU line and ask the
+Point at the dashed gradient curves: the flat tails on sigmoid and tanh
+are where the gradient goes to zero. Then point at the ReLU line and ask the
 same question on either side of zero: 1 to the right, 0 to the left, which is
 the dying-ReLU caveat from the previous slide.
 :::
@@ -482,20 +503,20 @@ batch.
 
 ::: {.columns}
 ::: {.column width="55%"}
-<!-- recovered from 13-Deep-Learning.pptx slide 11 -->
-![Loss as a bowl-shaped function of one weight, with gradient descent stepping toward the bottom](images/gradient-descent-loss-bowl.png)
+![Loss as a bowl-shaped function of one weight, with gradient descent stepping toward the bottom](images/gradient-descent-bowl.png)
 :::
 ::: {.column width="45%"}
-- Fix every weight but one and plot the loss $\mathcal{L}$ against that weight $w_i$: a bowl
-- The gradient $\partial \mathcal{L} / \partial w_i$ is the slope where you stand; step a little way *downhill* and repeat
+- Fix every weight but one and plot the loss $L$ against that weight $w_i$: a bowl
+- The gradient $\partial L / \partial w_i$ is the slope where you stand; step a little way *downhill* and repeat
 - Backpropagation is how you get that slope for every weight at once (chain rule)
 - A real network has millions of these axes, and the surface is not convex: you find *a* valley, not necessarily *the* valley
 :::
 :::
 
 ::: {.notes}
-Hand-drawn in the original lecture. Walk the picture: pick a starting point on
-the left wall, draw the tangent, step down, repeat. Then say the honest part out
+Walk the picture: start on the left wall, the blue tangent is the slope
+backprop computed, each red arrow is one update step, the steps shrink as the
+slope does. Then say the honest part out
 loud: this bowl is one weight; the real surface has as many dimensions as there
 are weights and is full of local minima and saddle points. That is the "does not
 assume convexity" caveat from the original slides, and why Adam and mini-batches
