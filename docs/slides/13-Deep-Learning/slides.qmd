@@ -69,20 +69,19 @@ more data and compute. See *Machine Learning for Networking*, Chapter 5.
 
 ::: {.columns}
 ::: {.column width="60%"}
-<!-- recovered from 13-Deep-Learning.pptx slide 3 -->
-![Machine learning contains representation learning, which contains deep learning](images/deep-learning-nested-circles.png)
+<!-- redrawn Nov 2026 from the hand-drawn rings in 13-Deep-Learning.pptx slide 3 -->
+![Machine learning contains representation learning, which contains deep learning](images/deep-learning-nested-boxes.png)
 :::
 ::: {.column width="40%"}
 - **Machine learning:** features are defined by hand; the designer hunts for a good representation
 - **Representation learning:** the algorithm learns the representation itself
 - **Deep learning:** learns *complex, layered* feature representations
-- Everything in this lecture lives in the inner two rings
+- Everything in this lecture lives in the inner two boxes
 :::
 :::
 
 ::: {.notes}
-Hand-drawn in the original lecture; the animation is gone, so walk the three
-rings outward-in. Outer ring: classic ML as taught so far, where a human picks
+Walk the three boxes outside-in. Outer ring: classic ML as taught so far, where a human picks
 packet size, inter-arrival time, and so on. Middle ring: the algorithm finds the
 representation. Inner ring: deep learning, where the representation is itself a
 stack of learned transformations. nPrint later in the deck is the networking
@@ -160,6 +159,54 @@ layers the gradient signal shrinks to nothing. ReLU keeps the gradient
 at exactly 1 for all positive inputs. Cold-call: "What is the gradient of
 ReLU at z = −2?" (Zero — that's the dying ReLU problem.) See *Machine
 Learning for Networking*, Chapter 5, "Activation Functions."
+
+:::
+
+## ReLU vs. Leaky ReLU: Why Is ReLU Still the Default? {.smaller}
+
+::: {.columns}
+::: {.column width="50%"}
+**The problem leaky ReLU fixes.** ReLU is $\max(0, z)$: for a negative input the output is $0$ and so is the gradient. A neuron whose weighted input is negative on *every* training example never updates again, a **dead neuron**. Leaky ReLU, $\max(0.01z, z)$, keeps a small slope on the negative side so the neuron can recover.
+
+**Why ReLU stayed the default anyway:**
+
+- Dead neurons turned out to be **rare in practice** once people used He initialization, batch norm, and adaptive optimizers (Adam); the disease mostly went away for other reasons
+- The comparisons (Maas et al. 2013, Xu et al. 2015) show leaky is **never worse and only occasionally slightly better**; nothing like the ReLU-over-sigmoid jump
+- Leaky adds a hyperparameter (the slope) and gives up the exact zeros that make ReLU activations **sparse and cheap**
+- When practitioners leave ReLU today they go to **GELU or SiLU** (what transformers use), not leaky
+:::
+::: {.column width="50%"}
+```{dot}
+//| fig-width: 4.6
+//| fig-height: 2.9
+digraph relu {
+  rankdir=LR; nodesep=0.25; ranksep=0.6;
+  node [shape=box, style="rounded,filled", fontname="Helvetica", fontsize=12, margin="0.12,0.06"];
+  edge [fontname="Helvetica", fontsize=11, color="#555555"];
+  z [label="z < 0 on every\ntraining example", fillcolor="#f8d7c4"];
+  r [label="ReLU: output 0,\ngradient 0", fillcolor="#ffffff"];
+  d [label="weights never move:\ndead neuron", fillcolor="#f4b6b6"];
+  l [label="leaky ReLU: output 0.01z,\ngradient 0.01", fillcolor="#ffffff"];
+  a [label="small signal,\ncan recover", fillcolor="#d9efd3"];
+  z -> r -> d; z -> l -> a;
+}
+```
+
+**When it is worth trying:** a **narrow** network, like Hands-On 13's 11-unit layers, where losing a few neurons is a real fraction of the capacity. The hands-on has an optional to-do: swap in leaky ReLU and compare. Expect a small difference at most; that is the lesson.
+:::
+:::
+
+::: {.notes}
+This slide answers the question from the Nov 13 class: if leaky ReLU fixes
+the dying-ReLU problem, why is ReLU the default? Walk the diagram first
+(negative input, zero gradient, stuck; leaky keeps a trickle), then the
+four reasons. The honest summary: leaky is never worse, occasionally a
+little better, and the gain is too small and inconsistent to displace the
+simpler function. He initialization, batch norm, and Adam made dead neurons
+rare, so the fix buys little. Where it is most likely to matter is a narrow
+network like the hands-on's; point students at the optional to-do there.
+If anyone asks what people switch to instead: GELU and SiLU/Swish, in
+transformers.
 :::
 
 ## Activation Functions, Sketched
@@ -178,7 +225,7 @@ same question on either side of zero: 1 to the right, 0 to the left, which is
 the dying-ReLU caveat from the previous slide.
 :::
 
-## Multi-Layer Perceptron (Feedforward Neural Network)
+## Multi-Layer Perceptron (Feedforward Neural Network) {.smaller}
 
 ::: {.columns}
 ::: {.column width="50%"}
@@ -197,17 +244,42 @@ adds a bias vector, and applies the activation element-wise.
 *(Equation in the appendix.)*
 :::
 ::: {.column width="50%"}
-![Feedforward network: inputs on left, hidden neurons in middle, outputs on right](images/s25-i31.png)
+```{dot}
+//| fig-width: 5.6
+//| fig-height: 3.6
+digraph mlp {
+  rankdir=LR; nodesep=0.16; ranksep=1.0; splines=line; newrank=true;
+  node [shape=circle, fixedsize=true, width=0.4, fontname="Helvetica", fontsize=11, style=filled, fillcolor="#ffffff", color="#444444"];
+  edge [color="#9a9a9a", arrowsize=0.5, penwidth=0.8];
+  subgraph cluster_in  { label="input layer\n4 features"; fontname="Helvetica"; fontsize=12; color=none;
+    x1 [label="size", fillcolor="#cfe3f5"]; x2 [label="IAT", fillcolor="#cfe3f5"]; x3 [label="pkts/s", fillcolor="#cfe3f5"]; x4 [label="bytes/s", fillcolor="#cfe3f5"]; }
+  subgraph cluster_h1  { label="hidden layer 1\nReLU, W¹ is 4×5"; fontname="Helvetica"; fontsize=12; fontcolor="#1f5fa8"; color=none;
+    h11 [label=""]; h12 [label=""]; h13 [label=""]; h14 [label=""]; h15 [label=""]; }
+  subgraph cluster_h2  { label="hidden layer 2\nReLU, W² is 5×5"; fontname="Helvetica"; fontsize=12; fontcolor="#1f5fa8"; color=none;
+    h21 [label=""]; h22 [label=""]; h23 [label=""]; h24 [label=""]; h25 [label=""]; }
+  subgraph cluster_out { label="output\nsigmoid, W³ is 5×1"; fontname="Helvetica"; fontsize=12; fontcolor="#1f5fa8"; color=none;
+    y [label="attack?", fillcolor="#f8d7c4", width=0.62]; }
+  {rank=same; x1 -> x2 -> x3 -> x4 [style=invis];}
+  {rank=same; h11 -> h12 -> h13 -> h14 -> h15 [style=invis];}
+  {rank=same; h21 -> h22 -> h23 -> h24 -> h25 [style=invis];}
+  x1 -> {h11 h12 h13 h14 h15}; x2 -> {h11 h12 h13 h14 h15}; x3 -> {h11 h12 h13 h14 h15}; x4 -> {h11 h12 h13 h14 h15};
+  h11 -> {h21 h22 h23 h24 h25}; h12 -> {h21 h22 h23 h24 h25}; h13 -> {h21 h22 h23 h24 h25}; h14 -> {h21 h22 h23 h24 h25}; h15 -> {h21 h22 h23 h24 h25};
+  {h21 h22 h23 h24 h25} -> y;
+}
+```
 
-The book's recommendation: **start small**, add layers only when
-simpler architectures underperform. Use an existing architecture
-proven on a similar task rather than designing from scratch.
+Every edge is one learned weight: 4·5 + 5·5 + 5·1 = 50 here, plus 11 biases. The book's advice: **start small**, and reuse an architecture proven on a similar task rather than designing from scratch.
 :::
 :::
 
 ::: {.notes}
-Walk through the diagram: data flows left to right. Each hidden layer
-is a matrix multiply followed by element-wise activation. The output
+Walk through the diagram: data flows left to right. Four engineered
+traffic features in, two hidden layers of five ReLU units, one sigmoid
+output that says attack or not (the shape of the Hands-On 13 network,
+which uses 11 units per layer). Each hidden layer is a matrix multiply
+followed by element-wise activation; the W and b labels between the
+layers are what training learns. Count the edges to make the point that
+weights multiply fast. The output
 layer configuration (sigmoid vs. softmax vs. linear) is determined by
 the task. See *Machine Learning for Networking*, Chapter 5, "Feedforward
 Neural Networks" and "Multi-Layer Perceptron."
@@ -263,6 +335,116 @@ via the chain rule. Without it, training even modestly deep networks
 would require separate computation for each weight. The mini-batch
 framing also ties directly to GPU parallelism. See *Machine Learning
 for Networking*, Chapter 5, "Training Neural Networks."
+:::
+
+## Backpropagation, Pictured {.smaller}
+
+::: {.columns}
+::: {.column width="62%"}
+```{dot}
+//| fig-width: 6.8
+//| fig-height: 2.4
+digraph bp {
+  rankdir=LR; nodesep=0.5; ranksep=1.0;
+  label="blue, solid: forward pass, values flow right          red, dashed: backward pass, gradients flow left"; labelloc=b; fontname="Helvetica"; fontsize=12; fontcolor="#333333";
+  node [shape=circle, fixedsize=true, width=0.8, fontname="Helvetica", fontsize=13, style=filled, color="#444444", fillcolor="#ffffff"];
+  edge [fontname="Helvetica", fontsize=12];
+  x [label="x", fillcolor="#cfe3f5"];
+  h [label="h = f(w₁x)", width=1.0];
+  y [label="ŷ = g(w₂h)", width=1.0];
+  L [label="loss\nL(ŷ, y)", fillcolor="#f8d7c4", width=0.9];
+  x -> h [label="w₁", color="#1f5fa8", fontcolor="#1f5fa8", penwidth=2];
+  h -> y [label="w₂", color="#1f5fa8", fontcolor="#1f5fa8", penwidth=2];
+  y -> L [color="#1f5fa8", penwidth=2];
+  L -> y [label="∂L/∂ŷ", color="#c8302e", fontcolor="#c8302e", style=dashed, penwidth=2, constraint=false];
+  y -> h [label="· ∂ŷ/∂h", color="#c8302e", fontcolor="#c8302e", style=dashed, penwidth=2, constraint=false];
+  h -> x [label="· ∂h/∂x", color="#c8302e", fontcolor="#c8302e", style=dashed, penwidth=2, constraint=false];
+}
+```
+
+$$\frac{\partial L}{\partial w_1}
+ = \underbrace{\frac{\partial L}{\partial \hat y}}_{\text{from the loss}}
+ \cdot \underbrace{\frac{\partial \hat y}{\partial h}}_{w_2\, g'}
+ \cdot \underbrace{\frac{\partial h}{\partial w_1}}_{x\, f'}$$
+:::
+::: {.column width="38%"}
+**The question** for every weight: *if I nudge this weight, how much does the loss move?*
+
+- **Forward pass** (blue): compute every neuron's value and the loss; remember them
+- **Backward pass** (red): start at the loss and walk left, multiplying the local derivative at each hop (the **chain rule**)
+- Each layer's gradient reuses the one from the layer to its right, so one sweep gives $\partial L / \partial w$ for **every** weight
+- Then every weight steps against its gradient (next slide)
+:::
+:::
+
+::: {.notes}
+This is the slide to draw on the board. One input, one hidden neuron, one
+output, one loss: the whole network is a chain, so the derivative of the
+loss with respect to the first weight is a product of three local
+derivatives. Point at each red edge as you multiply. The thing to land:
+the backward pass is cheap because each hop reuses the product so far; you
+never differentiate the whole network from scratch for each weight. A real
+layer has many neurons, so the products become matrix products (the
+appendix has the vector form), but nothing else changes. The f′ factor is
+also where vanishing gradients and dying ReLUs live: if f′ is zero or tiny
+at a neuron, everything to its left gets no signal.
+:::
+
+## Backpropagation, by the Numbers {.smaller}
+
+::: {.columns}
+::: {.column width="50%"}
+A one-input, one-hidden-unit network with **ReLU** in the middle, a **linear** output, and **squared-error** loss. Target $y = 1$.
+
+**Forward pass** ($x = 2,\ w_1 = 0.5,\ w_2 = -1$):
+
+| step | value |
+|---|---|
+| $z = w_1 x$ | $0.5 \cdot 2 = 1$ |
+| $h = \text{ReLU}(z)$ | $1$ |
+| $\hat y = w_2 h$ | $-1$ |
+| $L = \tfrac12(\hat y - y)^2$ | $\tfrac12(-2)^2 = 2$ |
+
+**Backward pass** (walk right to left):
+
+| local derivative | value |
+|---|---|
+| $\partial L / \partial \hat y = \hat y - y$ | $-2$ |
+| $\partial \hat y / \partial w_2 = h$ | $1$ |
+| $\partial \hat y / \partial h = w_2$ | $-1$ |
+| $\partial h / \partial z = \text{ReLU}'(z)$ | $1$ (since $z > 0$) |
+| $\partial z / \partial w_1 = x$ | $2$ |
+:::
+::: {.column width="50%"}
+**Chain them:**
+
+$$\frac{\partial L}{\partial w_2} = (-2)(1) = -2$$
+
+$$\frac{\partial L}{\partial w_1} = (-2)(-1)(1)(2) = 4$$
+
+**Update** with learning rate $\eta = 0.1$:
+
+$$w_2 \leftarrow -1 - 0.1(-2) = -0.8 \qquad w_1 \leftarrow 0.5 - 0.1(4) = 0.1$$
+
+**Check:** forward again gives $z = 0.2,\ h = 0.2,\ \hat y = -0.16$, so $L = \tfrac12(1.16)^2 \approx 0.67$. Down from $2$.
+
+- Positive gradient on $w_1$ means *raising* $w_1$ raises the loss, so we lowered it
+- Had $z$ been negative, $\text{ReLU}'(z) = 0$ and $w_1$ would not have moved at all: the **dying ReLU** in one line
+- A real network does exactly this, for millions of weights, in matrix form
+:::
+:::
+
+::: {.notes}
+Do this one slowly; it is the only place in the course where a gradient is
+computed by hand. Forward: multiply, ReLU, multiply, loss. Backward: five
+local derivatives, each one line of calculus. Then chain them: dL/dw2 needs
+two factors, dL/dw1 needs four. Ask the class why dL/dw1 came out positive
+even though the prediction was too low (because w2 is negative, so pushing
+h up pushes ŷ down). The ReLU′ row is worth a pause: set x = −2 instead and
+the whole w1 gradient is zero, which is the dying-ReLU problem from the
+activation slide. Then show the loss actually fell after one step, and say
+that an epoch is this, averaged over a mini-batch, repeated for every
+batch.
 :::
 
 ## Gradient Descent, Pictured
