@@ -551,4 +551,4 @@ was partly inaudible the entry says so rather than guessing.
     * Rohan Doshi was an undergraduate when this was done; class projects can turn into papers.
 * **Where the course is headed**
     * Lecture 14 (nPrint) is skipped because it was already covered, so the schedule is back on track. Next week is unsupervised learning: dimensionality reduction (PCA) and clustering, with autoencoders folded in. The instructor said he may compress unsupervised learning to give generative AI more than one lecture in the remaining three meetings; the exact plan for the last three meetings will be posted on Slack.
-    * **Final flag:** the final on the last Friday is cumulative. The first four weeks are fair game.
+    * The final is on the last Friday. It is really a second midterm: it covers the second half of the course, the models and their applications, not the first four weeks (the midterm already covered those). "Cumulative only in the sense that life is cumulative" was a joke, as in week four.

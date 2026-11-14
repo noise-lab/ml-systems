@@ -8,7 +8,7 @@ Read that file for the LaTeX conventions and workflow; use these parameters.
 | Parameter | Value |
 |---|---|
 | Exam type | `final` |
-| Agenda | `docs/agenda/<term>.md`, Meetings 9 onward (supervised models, deep learning and nPrint, unsupervised learning, generative models), with light reference back to the pipeline material |
+| Agenda | `docs/agenda/<term>.md`, Meetings 9 onward (supervised models, deep learning and nPrint, unsupervised learning, generative models), with light reference back to the pipeline material. The final is not cumulative: the first half of the course (data acquisition, representation, preparation, the pipeline) belongs to the midterm, and the instructor's "cumulative only as far as life is cumulative" line in class is a joke, not a scope statement |
 | Past exams | `docs/final/<YYYY>/` — the two or three most recent. From 2026 on, each also carries `rubric.yaml` (how it was scored), `grading-notes.md` (decisions made while giving it), and `analysis.md` (where the class split from the key): read those three first, and do not reuse a question they mark as ambiguous |
 | Length | 4 pages, 50 points, designed for 30–40 minutes; ends with a 2-point feedback section |
 | Must include | questions on the hands-ons the agenda records in the meeting range (typically regression, trees and ensembles, deep learning, PCA, clustering, generative models) and on the project deliverables; every final flag in the range |
