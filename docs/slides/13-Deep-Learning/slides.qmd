@@ -1214,7 +1214,7 @@ solving a real systems problem at scale.
 
 # Appendix: The Math {.center}
 
-## The Neuron, Formally
+## The Neuron, Formally {.smaller}
 
 **A single neuron** computes a weighted sum of its inputs, adds a bias, and applies
 an activation function:
@@ -1230,7 +1230,8 @@ $\mathbf{W}^{(l)}$ and the biases as a vector $\mathbf{b}^{(l)}$, the layer's ou
 $$\mathbf{h}^{(l)} = f\!\left(\mathbf{W}^{(l)}\mathbf{h}^{(l-1)} + \mathbf{b}^{(l)}\right), \qquad \mathbf{h}^{(0)} = \mathbf{x}$$
 
 with $f$ applied element-wise. A network with $L$ layers is the composition
-$\mathbf{h}^{(L)} = f(\mathbf{W}^{(L)} f(\mathbf{W}^{(L-1)} \cdots f(\mathbf{W}^{(1)}\mathbf{x} + \mathbf{b}^{(1)}) \cdots + \mathbf{b}^{(L-1)}) + \mathbf{b}^{(L)})$.
+
+$$\mathbf{h}^{(L)} = f\!\left(\mathbf{W}^{(L)} f\!\left(\mathbf{W}^{(L-1)} \cdots f\!\left(\mathbf{W}^{(1)}\mathbf{x} + \mathbf{b}^{(1)}\right) \cdots + \mathbf{b}^{(L-1)}\right) + \mathbf{b}^{(L)}\right)$$
 
 ::: {.notes}
 Companion to "The Artificial Neuron" and "Multi-Layer Perceptron" slides. The
@@ -1243,23 +1244,23 @@ and one bias, i.e. a linear model. See *Machine Learning for Networking*, Chapte
 ## Gradient Descent and Backpropagation {.smaller}
 
 **Gradient descent.** After each mini-batch, every weight moves a small step against
-the gradient of the loss $\mathcal{L}$:
+the gradient of the loss $L$:
 
-$$w \leftarrow w - \eta \cdot \frac{\partial \mathcal{L}}{\partial w}$$
+$$w \leftarrow w - \eta \cdot \frac{\partial L}{\partial w}$$
 
 $\eta$ is the learning rate. Adam replaces the single global $\eta$ with a per-parameter
 step size adapted from running gradient moments.
 
-**Backpropagation** computes $\partial \mathcal{L} / \partial w$ for *every* weight in
+**Backpropagation** computes $\partial L / \partial w$ for *every* weight in
 one backward pass by applying the chain rule layer by layer. With pre-activation
 $\mathbf{z}^{(l)} = \mathbf{W}^{(l)}\mathbf{h}^{(l-1)} + \mathbf{b}^{(l)}$ and
-$\boldsymbol{\delta}^{(l)} = \partial \mathcal{L} / \partial \mathbf{z}^{(l)}$:
+$\boldsymbol{\delta}^{(l)} = \partial L / \partial \mathbf{z}^{(l)}$:
 
 $$\boldsymbol{\delta}^{(l)} = \left(\mathbf{W}^{(l+1)\top} \boldsymbol{\delta}^{(l+1)}\right) \odot f'\!\left(\mathbf{z}^{(l)}\right),
 \qquad
-\frac{\partial \mathcal{L}}{\partial \mathbf{W}^{(l)}} = \boldsymbol{\delta}^{(l)} \left(\mathbf{h}^{(l-1)}\right)^{\top},
+\frac{\partial L}{\partial \mathbf{W}^{(l)}} = \boldsymbol{\delta}^{(l)} \left(\mathbf{h}^{(l-1)}\right)^{\top},
 \qquad
-\frac{\partial \mathcal{L}}{\partial \mathbf{b}^{(l)}} = \boldsymbol{\delta}^{(l)}$$
+\frac{\partial L}{\partial \mathbf{b}^{(l)}} = \boldsymbol{\delta}^{(l)}$$
 
 The error signal $\boldsymbol{\delta}$ starts at the output layer (from the loss) and
 is passed backward; each layer reuses the next layer's $\boldsymbol{\delta}$ rather
