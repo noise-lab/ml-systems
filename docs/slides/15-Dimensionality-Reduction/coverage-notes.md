@@ -90,3 +90,7 @@ Images dropped:
   workflow, and (5) autoencoder variants (VAE, sparse, denoising, convolutional).
   These are all covered or noted in the deck/coverage notes but were absent from the
   original 10-slide PowerPoint.
+
+## Figures added, 2026-11-15 (deck-graphics pass before Meeting 15)
+
+Generated (src/15_figures.py, SVG): `gen-pca-arrows-projection.svg` (PCA in Pictures; replaces the two small legacy scatters s05-i01/i02), `gen-pca-rotation.svg` (Input vs. PC space; replaces s06-i03), `gen-scree.svg` (scree plot on a 20-feature synthetic flow matrix with four factors; replaces the MNIST curve s08-i06). Graphviz: the autoencoder hourglass (replaces s10-i09) and the raw-to-autoencoder-to-k-means pipeline on the deep-embedding slide. The appendix loading equation and objective are typeset instead of the images s07-i04/i05. Legacy clippings kept: `s09-i08.png` (T-SNE of a real packet capture, DNS in red; a landmark result, now shown larger). Type: "How T-SNE Works", "Why Autoencoders", "Where DR Appears", "Summary" moved to .smaller to stop overflow; "Evaluating T-SNE" back to full size (sparse-slide rule).

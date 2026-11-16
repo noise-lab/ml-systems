@@ -36,3 +36,5 @@ Source: `docs/slides/16-Clustering.pptx`, 31 slides (slide 16 hidden), rendered 
 - `images/gmm-mixture-sketch.png` — source: 16-Clustering.pptx slide 25, region below the bullets; a sliver of bullet text at the top edge painted white; downscaled to 1800 px wide.
 - `images/em-known-vs-unknown-sources.png` — source: 16-Clustering.pptx slide 26, right-hand ink sketch.
 - `images/dbscan-sketch.png` — source: 16-Clustering.pptx slide 28, right-hand ink sketch.
+
+2026-11-15: the ink sketches listed above were superseded by generated figures (see coverage-notes.md, "Figures added"); files left in place.
