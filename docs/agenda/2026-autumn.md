@@ -554,3 +554,20 @@ was partly inaudible the entry says so rather than guessing.
 * **Where the course is headed**
     * Lecture 14 (nPrint) is skipped because it was already covered, so the schedule is back on track. Next week is unsupervised learning: dimensionality reduction (PCA) and clustering, with autoencoders folded in. The instructor said he may compress unsupervised learning to give generative AI more than one lecture in the remaining three meetings; the exact plan for the last three meetings will be posted on Slack.
     * The final is on the last Friday. It is really a second midterm: it covers the second half of the course, the models and their applications, not the first four weeks (the midterm already covered those). "Cumulative only in the sense that life is cumulative" was a joke, as in week four.
+
+### Meeting 15 (Mon Nov 16)
+
+*Plan; replaced with the record after class.*
+
+- Unsupervised learning, part 1: dimensionality reduction (Lecture 15)
+    - Why: too many features to look at, cluster, or trust; every reduction is lossy
+    - PCA as a change of basis: the maximum-variance and minimum-projection-distance views, the scree plot and choosing the number of components, what the top component is made of
+    - t-SNE: for visualization only (stochastic, no transform for new data); how to tell a real cluster from an artifact
+    - Autoencoders: encoder, bottleneck, decoder; reconstruction error as an anomaly score; embeddings before clustering
+- Hands-On 15: [PCA on HTTP vs. Log4j flows](../notebooks/15-Dimensionality-Reduction-Clean.html); a random forest on twelve features vs. two components
+- Unsupervised learning, part 2: clustering (Lecture 16)
+    - k-means step by step, the elbow method, and the shapes it cannot split
+    - Gaussian mixture models and EM; DBSCAN and why outliers come for free; hierarchical clustering if time allows
+    - Clustering for anomaly detection; choosing an algorithm
+- Hands-On 16: [k-means, DBSCAN and GMM on the same flows](../notebooks/16-Clustering-Clean.html)
+- Assignment 3 (anomaly detection) is due Friday November 20; this meeting is its material
