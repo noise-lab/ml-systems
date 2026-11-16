@@ -151,3 +151,28 @@ ax.set_ylabel("merge distance (average linkage)"); ax.set_title("A dendrogram on
 ax.spines["top"].set_visible(False); ax.spines["right"].set_visible(False)
 fig.tight_layout(); fig.savefig(OUT / "gen-dendrogram-cut.svg"); plt.close(fig)
 print("wrote", len(list(OUT.glob("gen-*.svg"))), "figures")
+
+# --- 11. the board version of hierarchical clustering: nested loops on the points, beside the dendrogram
+from matplotlib.patches import Ellipse
+from scipy.cluster.hierarchy import fcluster
+pts2 = np.array([[1.0, 6.0], [2.2, 6.3], [0.6, 4.6], [4.6, 3.2], [5.8, 3.0], [3.4, 4.2], [9.0, 6.2], [10.0, 5.4], [2.0, 11.5]])
+Z2 = linkage(pts2, "average")
+fig, (axp, axd) = plt.subplots(1, 2, figsize=(13, 5.6), dpi=100, gridspec_kw={"width_ratios": [1, 1.2]})
+axp.scatter(pts2[:, 0], pts2[:, 1], s=70, color="k", zorder=5)
+for i, (x, y) in enumerate(pts2):
+    axp.annotate(str(i + 1), (x, y), xytext=(7, 5), textcoords="offset points", fontsize=15, fontweight="bold")
+members = {i: [i] for i in range(len(pts2))}
+for step, (a, b, dist, _) in enumerate(Z2):
+    group = members[int(a)] + members[int(b)]; members[len(pts2) + step] = group
+    if dist > 4.7: continue                      # the board stops at the three-cluster loop
+    P = pts2[group]; cx, cy = P.mean(0); w, h = np.ptp(P, 0) + 1.5 + 0.35 * step
+    axp.add_patch(Ellipse((cx, cy), w, h, fill=False, lw=2 if dist < 3 else 2.4, color=RED if dist < 3 else ORANGE))
+axp.set_xlim(-1.5, 12.0); axp.set_ylim(0.5, 13.0); clean(axp, "Nine points; every loop is one merge")
+dendrogram(Z2, ax=axd, labels=[str(i + 1) for i in range(9)], color_threshold=3.0, above_threshold_color=GREY, leaf_font_size=14)
+axd.axhline(3.0, color=RED, ls="--", lw=2); axd.text(0.3, 3.2, "cut: 4 clusters  {1,2,3} {4,5,6} {7,8} {9}", color=RED, fontsize=12.5)
+axd.axhline(4.7, color=ORANGE, ls="--", lw=2); axd.text(0.3, 4.9, "cut: 3 clusters  {1..6} {7,8} {9}", color=ORANGE, fontsize=12.5)
+axd.set_ylabel("merge distance (average linkage)"); axd.set_title("The same merges as a dendrogram; read down from a cut")
+axd.spines["top"].set_visible(False); axd.spines["right"].set_visible(False)
+fig.tight_layout(); fig.savefig(OUT / "gen-hierarchical-board.svg"); plt.close(fig)
+print("merge order:", [(int(a) + 1 if a < 9 else f"c{int(a)}", int(b) + 1 if b < 9 else f"c{int(b)}", round(float(d), 2)) for a, b, d, _ in Z2])
+print("4 clusters:", fcluster(Z2, 4, "maxclust"), " 3 clusters:", fcluster(Z2, 3, "maxclust"))

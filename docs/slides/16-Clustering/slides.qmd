@@ -365,23 +365,15 @@ The varying-density problem is DBSCAN's biggest practical limitation in networki
 The dendrogram is the output, not a parameter. You inspect it and decide where to cut based on domain knowledge. The book's networking example: hierarchical clustering by IP address using Hamming distance naturally reflects topological containment (room → building → campus). Where containment doesn't hold (IP prefix AND protocol), use a different method. Book Chapter 6, Hierarchical Clustering section.
 :::
 
-## Cutting the Dendrogram
+## Cutting the Dendrogram {.smaller}
 
-::: {.columns}
-::: {.column width="58%"}
-![A dendrogram on nine points with average linkage; the dashed line is the cut](images/gen-dendrogram-cut.svg){width="100%"}
-:::
-::: {.column width="42%"}
-- Leaves are the nine data points; every horizontal bar is a **merge**, placed at the height of the distance at which it happened
-- The dashed line is a **cut**; the subtrees it crosses are the clusters, here four of them (3, 3, 2, 1 points)
-- Raise the cut and clusters merge; lower it and they split, always **nested** inside the previous answer
-- A singleton cluster at a cut is a candidate outlier
+![](images/gen-hierarchical-board.svg){.nostretch width="80%" fig-align="center" fig-alt="Nine points with nested loops drawn around every merge, beside the dendrogram of the same merges with cuts at four and three clusters"}
 
-:::
-:::
+- Merge the closest pair each time: {4,5}, {1,2}, {7,8}, then 3 joins {1,2} and 6 joins {4,5}; every loop on the left is one bar on the right
+- A **cut** picks K afterwards: read down from the red line for four clusters (3, 3, 2, 1), from the orange line for three. Clusters at a lower cut nest inside those at a higher one; a singleton at a cut is a candidate outlier
 
 ::: {.notes}
-Generated with scipy (src/16_figures.py). Point out that no K was chosen up front; the tree was built fully, then the cut chose K = 4 after the fact. Slide the cut up with the pointer: the two left groups merge first, then the right-hand pair joins the singleton. Each level is a refinement of the one above, which is the containment property the next slide is about. Linkage choice (previous slide) changes where the bars sit, not how you read the tree.
+Generated with scipy (src/16_figures.py), average linkage; the merge order is the one worked on the board. Walk it: closest pair first (4 and 5), then 1 and 2, then 7 and 8; now the next question is cluster-to-point distance, which is where linkage comes in (previous slide): nearest member is the cheap and common choice, average needs a centroid, farthest is complete linkage. Slide the cut up with the pointer: the two left groups merge, then the right-hand pair joins, and last the lone point 9. Exam forms: points to clusters, dendrogram to clusters, list the members at a cut.
 :::
 
 ## When to Use Hierarchical Clustering

@@ -123,6 +123,16 @@ dimensionality reduction. See the worked example in Chapter 6 of
 *Machine Learning for Networking*.
 :::
 
+## PCA for Anomaly Detection
+
+![](images/gen-pca-anomaly.svg){.nostretch width="74%" fig-align="center" fig-alt="Normal flows along PC1 with one anomalous flow far along PC2, in feature space (left) and in PC coordinates (right)"}
+
+Normal flows share one relationship between bytes and packets, so they lie along PC1. A flow with many packets and few bytes (a flood of small packets) has a large PC2 score and almost no PC1: anomalous in one number.
+
+::: {.notes}
+Generated figure (src/15_figures.py). This is the picture behind the early PCA-for-traffic papers (Lakhina et al., 2004): the top components are the "normal subspace", the rest is the residual, and an anomaly is a point whose residual is large. Ask: where would a flow with many packets and few bytes land? Then: which component is large for it? Exam-style version: given a cloud and one stray point, draw PC1 and say which component flags the stray. Detection is the usual goal; explaining the anomaly means reading which original features load on the residual component.
+:::
+
 ## Input vs. Principal Component Space
 
 ![](images/gen-pca-rotation.svg){.nostretch width="74%" fig-align="center" fig-alt="Rotating data into the PC basis: input axes (left) vs. component axes (right)"}
@@ -334,53 +344,25 @@ dimensionality reduction and deep learning. See Chapter 6 of *Machine
 Learning for Networking*.
 :::
 
-## Autoencoder Architecture
+## Autoencoder Architecture {.smaller}
 
-```{dot}
-//| fig-width: 12.4
-//| fig-height: 2.6
-digraph ae {
-  rankdir=LR; nodesep=0.12; ranksep=0.45; bgcolor="transparent";
-  node [shape=box, style="filled,rounded", fontname="Helvetica", fontsize=16, color="#555555", penwidth=1.4, margin="0.14,0.08"];
-  edge [color="#555555", penwidth=1.5, fontname="Helvetica", fontsize=14];
-  subgraph cluster_enc { label="encoder"; fontname="Helvetica"; fontsize=16; color="#999999"; style=dashed;
-    x [label="input\n100 features", fillcolor="#cfe3f5"]; e1 [label="64", fillcolor="#e8f0f8"]; e2 [label="32", fillcolor="#e8f0f8"]; }
-  z [label="bottleneck\n10 numbers", fillcolor="#f2d9a8", penwidth=2.2];
-  subgraph cluster_dec { label="decoder (discarded after training)"; fontname="Helvetica"; fontsize=16; color="#999999"; style=dashed;
-    d1 [label="32", fillcolor="#e8f0f8"]; d2 [label="64", fillcolor="#e8f0f8"]; xh [label="reconstruction\n100 features", fillcolor="#d9efd3"]; }
-  L [label="reconstruction loss\n||x − x̂||²", fillcolor="#f8d7c4", shape=box, style="filled,rounded,dashed"];
-  x -> e1 -> e2 -> z -> d1 -> d2 -> xh;
-  xh -> L [style=dashed]; x -> L [style=dashed, constraint=false];
-}
-```
+![](images/gen-autoencoder-neurons.svg){.nostretch width="78%" fig-align="center" fig-alt="An autoencoder drawn neuron by neuron: 100 inputs narrow through 64 and 32 to a 10-neuron bottleneck, then widen back to a 100-neuron reconstruction; a red box computes the reconstruction loss between x and x′"}
 
 ::: {.columns}
 ::: {.column width="50%"}
-**Encoder:** compresses input through progressively narrower layers to the
-**bottleneck** (latent representation)
+**Encoder:** narrower and narrower layers down to the **bottleneck**, the latent representation (100 features → 10 numbers)
 
-**Bottleneck:** the dimensionality reduction — e.g., 100 features → 10
-neurons forces the network to find the essential structure
+**Decoder:** mirrors the encoder and rebuilds the input, x′, from the bottleneck alone
 :::
 ::: {.column width="50%"}
-**Decoder:** mirrors the encoder in reverse, reconstructing the original
-input from the bottleneck representation
+**Training:** minimize the **reconstruction loss** between x and x′ (mean squared error). No labels: the input is its own target
 
-**Training objective:** minimize **reconstruction loss**
-(typically mean squared error between input and output)
-
-After training, discard the decoder — use the **encoder alone** for
-dimensionality reduction.
+After training, discard the decoder; the **encoder alone** is the dimensionality reduction
 :::
 :::
 
 ::: {.notes}
-The hourglass diagram is the clearest possible illustration of how
-autoencoders enforce compression. Compare to PCA: PCA's "bottleneck" is
-just choosing $m < p$ eigenvectors; an autoencoder's bottleneck is a
-neural network layer that learns *non-linear* projections. The training
-trick is elegant: no labels needed — the input is its own target. See
-Chapter 6 of *Machine Learning for Networking*.
+Drawn neuron by neuron (src/15_figures.py), the way it goes on the board: x with 100 features on the left, every layer narrower until the ten-neuron bottleneck in the orange box, then wider again until x′ has 100 outputs, and the red box is the loss that compares x′ with x. Compare to PCA: PCA's "bottleneck" is choosing m < p eigenvectors; an autoencoder's bottleneck is a layer that learns a non-linear projection. The question to expect: how are the weights set? Same as any network, by backpropagation, except the loss is reconstruction error instead of classification error. See Chapter 6 of *Machine Learning for Networking*.
 :::
 
 ## Why Autoencoders for Networking {.smaller}

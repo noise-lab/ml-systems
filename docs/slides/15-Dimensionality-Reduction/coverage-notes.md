@@ -94,3 +94,10 @@ Images dropped:
 ## Figures added, 2026-11-15 (deck-graphics pass before Meeting 15)
 
 Generated (src/15_figures.py, SVG): `gen-pca-arrows-projection.svg` (PCA in Pictures; replaces the two small legacy scatters s05-i01/i02), `gen-pca-rotation.svg` (Input vs. PC space; replaces s06-i03), `gen-scree.svg` (scree plot on a 20-feature synthetic flow matrix with four factors; replaces the MNIST curve s08-i06). Graphviz: the autoencoder hourglass (replaces s10-i09) and the raw-to-autoencoder-to-k-means pipeline on the deep-embedding slide. The appendix loading equation and objective are typeset instead of the images s07-i04/i05. Legacy clippings kept: `s09-i08.png` (T-SNE of a real packet capture, DNS in red; a landmark result, now shown larger). Type: "How T-SNE Works", "Why Autoencoders", "Where DR Appears", "Summary" moved to .smaller to stop overflow; "Evaluating T-SNE" back to full size (sparse-slide rule).
+
+## Figures added, 2026-11-16
+
+After Meeting 15 (board drawings in `Dropbox/Tmp/2026-11-16 16-24.pdf`, page 1):
+
+- `images/gen-pca-anomaly.svg` (src/15_figures.py): new slide "PCA for Anomaly Detection" after "PCA in Pictures": a normal cloud along PC1 and one flow with many packets and few bytes far along PC2, in feature space and in PC coordinates. The packets-per-second versus bytes-per-second example given in class with the pointer.
+- `images/gen-autoencoder-neurons.svg`: "Autoencoder Architecture" now shows the network neuron by neuron (x with 100 features, 64, 32, bottleneck 10, 32, 64, x′) with the reconstruction loss in a red box, as drawn on the board; replaces the box-and-arrow Graphviz hourglass. Text moved under the figure, `.smaller`.

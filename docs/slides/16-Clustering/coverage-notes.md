@@ -38,3 +38,9 @@ Refresh the dated content below per `../TEMPLATE.md` → "Annual current-events 
 ## Figures added, 2026-11-15 (deck-graphics pass before Meeting 15)
 
 All eight pen-ink board sketches recovered from the pptx on Oct 16 are replaced by figures generated from real fits (src/16_figures.py, SVG), keeping each picture's content: `gen-kmeans-steps.svg` (six frames of an actual k-means run from bad seeds), `gen-elbow.svg` (new, SSE vs. K on the same data), `gen-kmeans-elongated.svg` (replaces s22-i01), `gen-kmeans-two-shapes.svg` (rings; line plus outliers), `gen-gmm-mixture.svg` (observed density vs. three components with priors), `gen-em-known-unknown.svg` (labeled vs. gray points with responsibilities as split stems), `gen-distribution-vs-density.svg` (blobs vs. crescents), `gen-dbscan-density.svg` (replaces s24-i02), `gen-dbscan.svg` (DBSCAN fit with ε-balls and noise), `gen-dendrogram-cut.svg` (scipy dendrogram with the cut). Graphviz: the unsupervised-learning taxonomy tree (replaces the ink sketch). The sketch PNGs stay in images/ unused. Rule applied: refresh (board sketches are not landmarks; the drawn-from-data versions teach the same thing legibly).
+
+## Figures added, 2026-11-16
+
+After Meeting 15 (board drawing in `Dropbox/Tmp/2026-11-16 16-24.pdf`, page 2):
+
+- `images/gen-hierarchical-board.svg` (src/16_figures.py): "Cutting the Dendrogram" now pairs the nine points with nested loops around every merge (red inside the four-cluster cut, orange for the {1..6} merge) with the dendrogram of the same merges and two cuts. The point layout and merge order ({4,5}, {1,2}, {7,8}, 3 joins {1,2}, 6 joins {4,5}, then {1..6}, then {7,8}, then 9) are the ones worked on the board. `gen-dendrogram-cut.svg` is kept but no longer used by a slide.
