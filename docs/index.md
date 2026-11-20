@@ -69,7 +69,7 @@ Class agenda for each meeting is in the [agenda](agenda.md) (one file per term; 
 | **Bonus Topics**               |                                                                                                             | Ch. 8       |  |
 | 19                             | Reinforcement Learning<br>([Reinforcement Learning](notebooks/19-Reinforcement-Clean.html))                 |             |  |
 | 20                             | Timeseries Analysis<br>([Timeseries](notebooks/20-Timeseries-Clean.html))                                   |             |  |
-| 21                             | Model Performance and Maintenance<br>([slides](slides/21-Maintenance/slides.html) · [speaker notes](slides/21-Maintenance/speaker-notes.md)) |             |  |
+| 21                             | Model Performance and Maintenance                                                                                                            |             |  |
 
 Please come to class having done the reading.
 
