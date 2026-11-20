@@ -597,3 +597,19 @@ was partly inaudible the entry says so rather than guessing.
     * Not covered: Gaussian mixtures and EM in any detail, mean shift, clustering for anomaly detection and the evaluation slides, and both hands-ons. The lecture material through deck 16 is done
 * **Hands-ons:** neither Hands-On 15 nor Hands-On 16 was reached. Hands-On 15 (dimensionality reduction) opens Friday's class, and the instructor will work through it beforehand; its t-SNE and autoencoder sections are optional. Hands-On 16 (clustering) will not be done in class: the notebook just runs the clustering algorithms, and students can run it on their own
 * **Next:** Friday November 20 opens with Hands-On 15, then generative models: diffusion models for certain, plus some subset of transformers and state-space models, and possibly one generative-AI hands-on, to be linked in Slack ahead of time. Assignment 3 is due Friday November 20
+
+### Meeting 16 (Fri Nov 20)
+
+*Plan; replaced with the record after class.*
+
+- Hands-On 15, carried over from Monday: PCA on HTTP versus Log4j flows; a random forest on two components versus twelve features
+- Generative models for network data
+    - Why synthetic network data: scarcity, privacy, staleness, imbalance; what a generator buys
+    - GANs for traffic (DoppelGANger, NetShare) and their limits
+    - Diffusion models: the forward noising process, the learned reverse process, conditioning on text
+    - NetDiffusion: packet captures as nPrint bitmaps, LoRA fine-tuning, ControlNet guidance, protocol-compliance post-processing; evaluation and limitations
+    - Transformers for network data: tokens, embeddings, attention, and the quadratic cost of context
+    - State-space models and NetSSM: a fixed-size state, linear cost, protocol state, long and multi-flow traces
+    - Privacy of synthetic data
+- Hands-On 17: the NetDiffusion pipeline on Colab (nPrint to images, embeddings, LoRA fine-tuning, generation, PCAP reconstruction)
+- Assignment 3 due tonight
