@@ -39,8 +39,8 @@ DECKS = [
     ("14-nPrint.pptx", "14-nPrint", None),
     ("15-Dimensionality-Reduction.pptx", "15-Dimensionality-Reduction", None),
     ("16-Clustering.pptx", "16-Clustering", None),
-    ("17-Diffusion.pptx", "17-Diffusion", None),
-    ("19-Generative.pptx", "19-Generative", None),
+    ("17-Diffusion.pptx", "17-Motivation-NetDiffusion", None),
+    ("19-Generative.pptx", "18-Transformers-SSM", None),
     ("19-Timeseries.pptx", "19-Timeseries", None),
 ]
 
