@@ -67,8 +67,8 @@ Class agenda for each meeting is in the [agenda](agenda.md) (one file per term; 
 | 17                             | Generative Models: Motivation and NetDiffusion<br>([NetDiffusion on Colab](https://colab.research.google.com/github/noise-lab/ml-systems/blob/main/docs/notebooks/17-NetDiffusion-Colab.ipynb), needs a GPU and a Hugging Face account) |             | [A4: Generative AI](https://github.com/noise-courses/netdiffusion) |
 | 18                             | Transformers and State-Space Models<br>([NetSSM walkthrough](https://github.com/noise-lab/netssm/blob/main/example/train_netssm_from_scratch.ipynb) · [open in Colab](https://colab.research.google.com/github/noise-lab/netssm/blob/main/example/train_netssm_from_scratch.ipynb), needs a GPU) |             | [Project: artifact and report](https://github.com/noise-courses/ml-sys-project) |
 | **Bonus Topics**               |                                                                                                             | Ch. 8       |  |
-| 19                             | Timeseries Analysis<br>([Timeseries](notebooks/19-Timeseries-Clean.html))                                   |             |  |
-| 20                             | Reinforcement Learning<br>([Reinforcement Learning](notebooks/20-Reinforcement-Clean.html))                 |             |  |
+| 19                             | Reinforcement Learning<br>([Reinforcement Learning](notebooks/19-Reinforcement-Clean.html))                 |             |  |
+| 20                             | Timeseries Analysis<br>([Timeseries](notebooks/20-Timeseries-Clean.html))                                   |             |  |
 | 21                             | Autoencoders (covered within Lecture 15)                                                                    |             |  |
 | 22                             | Model Performance and Maintenance<br>([slides](slides/22-Maintenance/slides.html) · [speaker notes](slides/22-Maintenance/speaker-notes.md)) |             |  |
 
