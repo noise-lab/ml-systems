@@ -61,7 +61,7 @@ Class agenda for each meeting is in the [agenda](agenda.md) (one file per term; 
 | 13                             | Deep Learning<br>([Deep Learning](notebooks/13-Deep-Learning-Clean.html))                                   |             |  |
 | 14                             | Learning Traffic Representations<br>([nPrint](notebooks/14-nPrint-Clean.html))                              |             |  |
 | **Unsupervised Learning**      |                                                                                                             | Ch. 6       |  |
-| 15                             | Dimensionality Reduction<br> ([Dimensionality Reduction](notebooks/15-Dimensionality-Reduction-Clean.html)) |             |  |
+| 15                             | Dimensionality Reduction and Autoencoders<br> ([Dimensionality Reduction](notebooks/15-Dimensionality-Reduction-Clean.html)) |             |  |
 | 16                             | Clustering<br>([Clustering](notebooks/16-Clustering-Clean.html))                                            |             |  |
 | **Generative Models**          |                                                                                                             | Ch. 7       |  |
 | 17                             | Generative Models: Motivation and NetDiffusion<br>([NetDiffusion on Colab](https://colab.research.google.com/github/noise-lab/ml-systems/blob/main/docs/notebooks/17-NetDiffusion-Colab.ipynb), needs a GPU and a Hugging Face account) |             | [A4: Generative AI](https://github.com/noise-courses/netdiffusion) |
@@ -69,8 +69,7 @@ Class agenda for each meeting is in the [agenda](agenda.md) (one file per term; 
 | **Bonus Topics**               |                                                                                                             | Ch. 8       |  |
 | 19                             | Reinforcement Learning<br>([Reinforcement Learning](notebooks/19-Reinforcement-Clean.html))                 |             |  |
 | 20                             | Timeseries Analysis<br>([Timeseries](notebooks/20-Timeseries-Clean.html))                                   |             |  |
-| 21                             | Autoencoders (covered within Lecture 15)                                                                    |             |  |
-| 22                             | Model Performance and Maintenance<br>([slides](slides/22-Maintenance/slides.html) · [speaker notes](slides/22-Maintenance/speaker-notes.md)) |             |  |
+| 21                             | Model Performance and Maintenance<br>([slides](slides/21-Maintenance/slides.html) · [speaker notes](slides/21-Maintenance/speaker-notes.md)) |             |  |
 
 Please come to class having done the reading.
 
