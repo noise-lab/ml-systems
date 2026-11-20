@@ -41,7 +41,7 @@ DECKS = [
     ("16-Clustering.pptx", "16-Clustering", None),
     ("17-Diffusion.pptx", "17-Diffusion", None),
     ("19-Generative.pptx", "19-Generative", None),
-    ("20-Timeseries.pptx", "20-Timeseries", None),
+    ("19-Timeseries.pptx", "19-Timeseries", None),
 ]
 
 
