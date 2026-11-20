@@ -10,10 +10,17 @@ date: last-modified
 > Labeled network data is **scarce**. Generative models let us learn from what we have
 > and produce realistic synthetic examples.
 
+```{=html}
+<style>
+.reveal .cell-output-display svg { width: 100%; height: auto; }
+.reveal .caption { font-size: 0.55em; color: #555555; margin-top: 0.2em; }
+</style>
+```
+
 ::: {.notes}
 Open with the central tension: ML for networking needs labeled data, but labeled
 network data is expensive to collect, privacy-sensitive, and often missing rare events
-like attacks. Today we explore whether generative models — and diffusion models in
+like attacks. This lecture asks whether generative models — and diffusion models in
 particular — can close that gap. See the "Generative Models" chapter (Chapter 7) of
 the course textbook.
 :::
@@ -43,7 +50,7 @@ different things to a classifier and to a device under test; the next slide
 explains why both kinds are scarce.
 :::
 
-## The Network Data Problem {.smaller}
+## The Network Data Problem
 
 ::: {.columns}
 ::: {.column width="55%"}
@@ -77,14 +84,28 @@ synthetic generation before we can explain *how* to do it.
 
 ## What Synthetic Data Buys Us
 
-- **Traffic augmentation** — synthesize examples of rare classes; improve
-  classifier performance on minority classes
-- **Simulation and testing** — feed synthetics into network simulators,
-  test devices and protocols without live traffic
-- **Privacy-preserving sharing** — preserve statistical properties while
-  removing real user data
-- **What-if analysis** — generate hypothetical attack patterns or new
-  protocol variations not yet observed in the wild
+- **Traffic augmentation** — synthesize rare classes; lift minority-class accuracy
+- **Simulation and testing** — exercise simulators, devices, and protocols without live traffic
+- **Privacy-preserving sharing** — keep the statistics, drop the real users
+- **What-if analysis** — attack patterns or protocol variants not yet seen in the wild
+
+```{dot}
+//| fig-width: 12.4
+//| fig-height: 3.0
+digraph uses {
+  rankdir=LR; nodesep=0.12; ranksep=0.55; bgcolor="transparent";
+  node [shape=box, style="filled,rounded", fontname="Helvetica", fontsize=18, color="#555555", penwidth=1.3, margin="0.14,0.07"];
+  edge [color="#555555", penwidth=1.4];
+  real [label="a few real traces\n(scarce, sensitive)", fillcolor="#cfe3f5"];
+  gen  [label="generative model\n(GAN, diffusion, SSM)", fillcolor="#f2d9a8"];
+  syn  [label="unlimited synthetic traces\n(no real user inside)", fillcolor="#d9efd3"];
+  a [label="augment rare classes", fillcolor="#eeeeee"];
+  b [label="simulate and test devices", fillcolor="#eeeeee"];
+  c [label="share without leaking users", fillcolor="#eeeeee"];
+  d [label="what-if: unseen attacks", fillcolor="#eeeeee"];
+  real -> gen -> syn; syn -> a; syn -> b; syn -> c; syn -> d;
+}
+```
 
 ::: {.notes}
 These four use cases come directly from the Chapter 7 motivation. Stress that each
@@ -142,8 +163,10 @@ NetDiffusion is designed to close. See the "Early Approaches" section of Chapter
 
 ## Why Raw Packets Matter
 
+::: {.columns}
+::: {.column width="50%"}
 Training on **raw packet captures** (pcap) rather than flow-level statistics yields
-significantly higher ML accuracy because:
+higher ML accuracy because:
 
 - Headers carry rich **protocol semantics** (sequence numbers, flags, checksums)
 - **Inter-packet timing** and payload patterns encode application behavior
@@ -151,6 +174,11 @@ significantly higher ML accuracy because:
 
 The goal: an **interactive, text-prompted generator** — ask it for "Netflix TCP traffic"
 and receive a valid, analyzable pcap.
+:::
+::: {.column width="50%"}
+![Service-classification accuracy by training and test data (Jiang et al. 2024, Table 1; drawn from the table's numbers)](images/gen-accuracy-gap.svg){width="100%"}
+:::
+:::
 
 ::: {.notes}
 This is the key motivating gap from Slides 7–9 of the source. Contrast with how a
@@ -169,54 +197,45 @@ The two-phase process is elegant and worth explaining in detail. See the "Diffus
 Models" section of Chapter 7 and the DDPM paper (Ho et al., 2020).
 :::
 
-## The Forward Process: Adding Noise {.smaller}
+## The Forward Process: Adding Noise
 
-::: {.columns}
-::: {.column width="55%"}
-**Phase 1 — Forward (diffusion):**
+![A packet bitmap $x_0$ pushed through the DDPM forward process ($T = 1000$, linear $\beta_t$ from $10^{-4}$ to $0.02$), from the closed form in the appendix; the curves show how much signal and noise each $x_t$ holds](images/gen-forward-noise.svg){.nostretch width="74%"}
 
-Starting from a real data sample $x_0$, add small Gaussian noise at each
-of $T$ timesteps: each step adds a little Gaussian noise following a fixed schedule.
-
-- By step $T$, the original signal is completely destroyed
-- The forward process is **fixed** — the model never learns it
-- Noise schedule $\beta_t$ controls how fast structure is erased
-
-The model only needs to learn the **reverse** direction.
-
-*(Equations in the appendix.)*
-:::
-::: {.column width="45%"}
-![Forward diffusion: original image → pure noise](images/s13-i08.png)
-
-Each strip shows the same image at increasing noise levels (t=0 to t=999).
-:::
-:::
+- Each step adds a little Gaussian noise on a **fixed schedule** $\beta_t$; by $t = T$ the
+  signal is gone, and nothing about this direction is learned
+- The model only needs to learn the **reverse** direction *(equations in the appendix)*
 
 ::: {.notes}
-The image (s13-i08.png) is a good intuition pump: by t≈300 the image is already barely
-recognizable; by t≈900 it is pure noise. The key pedagogical point: the forward process
-is deterministic and cheap; all the learning happens in the reverse process.
+The figure is generated from code (figures.py): the bitmap is a real IPv4+TCP
+header byte string laid out nPrint-style, and each panel is the closed-form
+$x_t = \sqrt{\bar\alpha_t} x_0 + \sqrt{1-\bar\alpha_t}\,\epsilon$ at that timestep.
+Point at the curves: by $t \approx 300$ only 60% of the signal amplitude survives
+and the structure is already hard to see; by $t = 600$ it is gone. The key
+pedagogical point: the forward process is deterministic and cheap; all the
+learning happens in the reverse process. The legacy photo strip (s13-i08.png)
+tells the same story with a landscape photo if a student wants the image case.
 :::
 
 ## The Reverse Process: Denoising to Generate
 
-**Phase 2 — Reverse (denoising):**
+![Start from pure noise and apply the learned denoiser $\epsilon_\theta$ once per step until a sample appears (panels reuse the forward-process states)](images/gen-reverse-chain.svg){.nostretch width="82%"}
 
-A neural network $\epsilon_\theta$ is trained to predict the noise added at
-each step. During generation:
+::: {.columns}
+::: {.column width="50%"}
+**Generation:**
 
-1. Sample $x_T \sim \mathcal{N}(0, I)$ (pure noise)
-2. At each step, the network predicts the noise present and subtracts it
-3. Repeat until $x_0$ is recovered
-
+1. Sample $x_T \sim \mathcal{N}(0, I)$
+2. Predict the noise present, subtract it
+3. Repeat until $x_0$ *(appendix)*
+:::
+::: {.column width="50%"}
 **Why this beats GANs:**
 
-- **No adversarial training** — stable, predictable convergence
-- **No mode collapse** — each denoising step is an independent supervised task
-- **High diversity** — stochastic noise at each step introduces variation
-
-*(Equations in the appendix.)*
+- **No adversarial training** — stable
+- **No mode collapse** — supervised steps
+- **High diversity** — fresh noise each step
+:::
+:::
 
 ::: {.notes}
 The training objective is a simple mean-squared-error loss: predict the noise that was
@@ -250,20 +269,28 @@ closed form in the appendix).
 
 ## Conditional Generation with Text Prompts
 
-**Unconditional diffusion** generates realistic but uncontrolled samples.
+```{dot}
+//| fig-width: 10.6
+//| fig-height: 2.75
+digraph cond {
+  rankdir=LR; nodesep=0.5; ranksep=0.6; bgcolor="transparent";
+  node [shape=box, style="filled,rounded", fontname="Helvetica", fontsize=16, color="#555555", penwidth=1.4, margin="0.16,0.08"];
+  edge [color="#555555", penwidth=1.5, fontname="Helvetica", fontsize=13];
+  prompt [label="prompt\n\"type-0, Amazon traffic\"", fillcolor="#cfe3f5"];
+  enc [label="text encoder\n(CLIP / T5)", fillcolor="#eeeeee"];
+  emb [label="embedding\nvector", fillcolor="#cfe3f5"];
+  noise [label="x_T\npure noise", fillcolor="#cfe3f5"];
+  den [label="denoiser ε_θ(x_t, t, embedding)\ncross-attention reads the\nembedding at every step", fillcolor="#f2d9a8"];
+  out [label="x_0: sample\nmatching the prompt", fillcolor="#d9efd3"];
+  prompt -> enc -> emb; emb -> den [label="conditions", constraint=false]; noise -> den; den -> out [label="T steps"];
+  den -> den [label="repeat", dir=back];
+}
+```
 
-**Conditioning** steers generation toward a specific output:
-
-1. Encode a text prompt (e.g., "Netflix TCP traffic") via a language model (CLIP, T5)
-   into an embedding vector
-2. During each denoising step, the network uses **cross-attention** to "look at"
-   the embedding
-3. The model learns the mapping: prompt → corresponding data pattern
-
-**Examples in practice:**
-
-- Image generation: "a cat wearing sunglasses" → DALL-E / Stable Diffusion
-- **Network traffic: "type-0, Amazon traffic"** → NetDiffusion
+- **Unconditional diffusion** is realistic but uncontrolled; **conditioning** steers every
+  denoising step toward the prompt
+- Same mechanism for "a cat wearing sunglasses" (Stable Diffusion) and **"type-0, Amazon
+  traffic"** (NetDiffusion)
 
 ::: {.notes}
 Cross-attention is the same mechanism used in transformers. The embedding acts as
@@ -277,7 +304,7 @@ generation possible.
 > A text-to-traffic synthesis pipeline built on Stable Diffusion.
 
 ::: {.notes}
-NetDiffusion (Liu et al., SIGMETRICS 2024) is the concrete application of diffusion
+NetDiffusion (Jiang, Liu, et al., SIGMETRICS 2024) is the concrete application of diffusion
 models to network traffic. See the "NetDiffusion" section of Chapter 7 and the paper
 at https://dl.acm.org/doi/10.1145/3673660.3655071. The four-step pipeline maps
 cleanly onto the diffusion model concepts just introduced.
@@ -287,14 +314,20 @@ cleanly onto the diffusion model concepts just introduced.
 
 ![NetDiffusion generation framework: traffic → image → fine-tune → constrained generation → pcap](images/s17-i09.png)
 
-Four steps: **(1)** traffic-to-image conversion, **(2)** LoRA fine-tuning of Stable Diffusion 1.5,
-**(3)** ControlNet-guided generation, **(4)** protocol-compliance post-processing.
+Four steps: **(1)** traffic-to-image conversion, **(2)** LoRA fine-tuning of a text-to-image
+model (Stable Diffusion 1.5 in the paper; the current `noise-lab/NetDiffusion` code is a
+Stable Diffusion 3 + ControlNet reimplementation), **(3)** ControlNet-guided generation,
+**(4)** protocol-compliance post-processing.
 
 ::: {.notes}
 This figure (s17-i09.png) is the key architecture diagram from the NetDiffusion paper.
 Walk through each component from left to right. The central insight is that existing
 powerful text-to-image infrastructure can be repurposed for network traffic once you
-have a good image representation of packets.
+have a good image representation of packets. The base model is swappable: the
+paper used Stable Diffusion 1.5, and the public code at
+github.com/noise-lab/NetDiffusion now fine-tunes a LoRA on Stable Diffusion 3
+with the InstantX SD3-Controlnet-Canny model for the edge conditioning, because
+the SD 1.5 dependencies went stale.
 :::
 
 ## The Four Steps at a Glance
@@ -352,23 +385,65 @@ structure is what ControlNet will later use to constrain generation. Unlike tabu
 data, the image format makes neighboring-packet relationships visible to the model.
 :::
 
-## Step 2: LoRA Fine-Tuning {.smaller}
+## One Packet, One Row
 
+![A short TCP flow (handshake, client record, server data with ACKs, FIN exchange) encoded nPrint-style: real IPv4 and TCP header bytes expanded to bits, one row per packet, 1,088 columns; drawn from code](images/gen-nprint-bitmap.svg){.nostretch width="70%"}
+
+- Fields that **never change** in a flow (version, addresses, ports) are solid stripes; fields that
+  **count** (seq, ack, IP id) shimmer; **flags** flip on handshake and FIN rows; absent headers are grey
+- These stripes are what the Canny edge detector in Step 3 will find
+
+::: {.notes}
+Generated from code (figures.py) so every bit is real: the script builds IPv4 and
+TCP headers with struct, computes the IP checksum, and unpacks the bytes. Use it
+to explain why the image representation is not a gimmick: the vertical stripes
+are the invariants of the flow, the shimmering columns are the counters, and
+the handshake rows differ from the data rows exactly in the flags and length
+fields. The paper's full-size 1024-row image on the previous slide is the same
+thing at scale.
+:::
+
+## Step 2: LoRA Fine-Tuning
+
+::: {.columns}
+::: {.column width="50%"}
 **Why fine-tune rather than train from scratch?**
 
-- Training Stable Diffusion from scratch requires billions of images and enormous compute
-- **LoRA (Low-Rank Adaptation)** updates only a *small subset* of model parameters
-  while freezing the rest
-- Resembles **few-shot learning**: a small number of network traces adapts the model
-  to the specific domain
+- Training Stable Diffusion from scratch takes billions of images
+- **LoRA (Low-Rank Adaptation)** freezes the pretrained weights and trains a small
+  low-rank update beside them; a few hundred traffic images adapt the model
 
 **Training procedure:**
 
 - Each traffic image is paired with a **text prompt** from its label
-  (e.g., "type-0, Netflix traffic")
-- The model learns the mapping between prompt tokens and visual traffic patterns
-- Fine-tuning inherits Stable Diffusion 1.5's ability to produce high-resolution,
-  structured images
+  ("type-0, Netflix traffic"); the model learns prompt tokens → traffic patterns
+- The base model's structure is inherited (SD 1.5 in the paper, SD 3 in the current code)
+:::
+::: {.column width="50%"}
+::: {style="width:58%; margin:0 auto;"}
+```{dot}
+//| fig-width: 4.6
+//| fig-height: 5.0
+digraph lora {
+  rankdir=TB; nodesep=0.35; ranksep=0.4; bgcolor="transparent";
+  node [shape=box, style="filled,rounded", fontname="Helvetica", fontsize=15, color="#555555", penwidth=1.3, margin="0.14,0.07"];
+  edge [color="#555555", penwidth=1.4, fontname="Helvetica", fontsize=13];
+  x [label="layer input x\n(d dims)", fillcolor="#cfe3f5"];
+  W [label="pretrained weights W\nd × d, frozen", fillcolor="#eeeeee"];
+  A [label="A: d × r\ntrainable", fillcolor="#f2d9a8"];
+  B [label="B: r × d\ntrainable", fillcolor="#f2d9a8"];
+  sum [label="h = W x + B A x", fillcolor="#d9efd3"];
+  x -> W; x -> A [label="r ≪ d\n(rank 4–64)"]; A -> B; W -> sum; B -> sum;
+  {rank=same; W; A;}
+}
+```
+:::
+
+::: {.caption}
+Only the two thin matrices $A$ and $B$ are trained; $W$ never changes.
+:::
+:::
+:::
 
 ::: {.notes}
 LoRA (Hu et al., 2022) is a parameter-efficient fine-tuning technique that was
@@ -409,32 +484,36 @@ structural boundaries during generation.
 
 ## Step 4: Protocol-Compliance Post-Processing {.smaller}
 
-Even with ControlNet, some generated traffic violates specific rules.
-**Dependency trees** encode both intra- and inter-packet protocol rules:
+```{dot}
+//| fig-width: 11
+//| fig-height: 3.35
+digraph post {
+  rankdir=LR; nodesep=0.35; ranksep=0.5; bgcolor="transparent";
+  node [shape=box, style="filled,rounded", fontname="Helvetica", fontsize=16, color="#555555", penwidth=1.4, margin="0.14,0.07"];
+  edge [color="#555555", penwidth=1.5, fontname="Helvetica", fontsize=13];
+  img [label="generated image\n(ControlNet output)", fillcolor="#cfe3f5"];
+  dec [label="image → nPrint bits\n→ raw packets", fillcolor="#eeeeee"];
+  intra [label="1. intra-packet rules\nchecksums, length fields,\nreserved bits = 0", fillcolor="#f2d9a8"];
+  inter [label="2. inter-packet rules\nseq/ack progression,\nSYN → SYN-ACK → ACK, FIN/RST", fillcolor="#f2d9a8"];
+  vote [label="3. flow constants\nIPs, ports: majority vote\nover generated values", fillcolor="#f2d9a8"];
+  pcap [label="valid pcap\nopens in Wireshark,\nreplays with tcpreplay", fillcolor="#d9efd3"];
+  img -> dec -> intra; intra -> inter [constraint=false, label="then"]; inter -> vote -> pcap;
+}
+```
 
 ::: {.columns}
 ::: {.column width="50%"}
-**Intra-packet rules** (within one packet):
-
-- Checksum fields must be consistent with payload
-- Field lengths must match header length fields
-- Reserved bits must be zero
-
-**Traversal:** bottom-up — fix individual packets first.
+- Even with ControlNet, some generated traffic breaks specific rules; the
+  **dependency trees** (traversed bottom-up: packet first, then flow) fix only **low-tolerance** fields
+- **Intra-packet** first (one packet is internally consistent), then **inter-packet**
+  (the packets of a flow relate correctly)
 :::
 ::: {.column width="50%"}
-**Inter-packet rules** (across packets in a flow):
-
-- TCP sequence and acknowledgement number progression
-- Three-way handshake ordering (SYN → SYN-ACK → ACK)
-- FIN/RST sequencing for connection teardown
-
-**IP/port consistency:** majority voting across generated values.
+- **High-tolerance** fields (TTL, window size) are left as generated, to keep
+  the model's variation and limit the effect on downstream ML
+- **Goal:** minimal modifications, Wireshark and TCPreplay compatibility
 :::
 :::
-
-**Goal:** minimal modifications — preserve as much of the model's creative output
-as possible while ensuring Wireshark and TCPreplay compatibility.
 
 ::: {.notes}
 The dependency-tree approach is a hybrid of model output and deterministic rule
@@ -475,16 +554,20 @@ application-level patterns, not just macro-service-level patterns.
 
 ## Statistical Similarity Results
 
+::: {.columns}
+::: {.column width="48%"}
 **NetDiffusion vs. NetShare:**
 
-| Metric | Improvement |
-|---|---|
-| **Common fields** (fields both methods generate) | **> 30% higher** similarity (JSD, EMD) |
-| **All fields** (full pcap header fields) | **> 70% higher** similarity |
-
-The improvement on all fields is larger because NetShare generates only NetFlow-style
-summary attributes — it cannot produce the full header field distributions that
-NetDiffusion captures.
+- **Common fields** (fields both methods generate): **> 30% higher** similarity
+  to real traffic (JSD, EMD)
+- **All fields** (full pcap header fields): **> 70% higher** similarity
+- The all-fields gap is larger because NetShare emits only NetFlow-style
+  summary attributes; it cannot produce most header field distributions at all
+:::
+::: {.column width="52%"}
+![The three headline numbers from the paper (statistical similarity on common and on all fields; train-on-synthetic accuracy, next slide), drawn from the stated values](images/gen-headline-gains.svg){width="100%"}
+:::
+:::
 
 ::: {.notes}
 JSD = Jensen-Shannon Divergence; EMD = Earth Mover's Distance. Both are lower-is-better
@@ -563,17 +646,33 @@ data can be replayed with TCPreplay and analyzed with Wireshark — this enables
 
 ## Current Limitations
 
-**Where NetDiffusion still falls short:**
-
-- **Sequence length** — image size limits generation to ~1,024 packets; long flows
-  or multi-flow sessions are truncated
-- **External compliance mechanism** — ControlNet and the dependency tree are
-  post-hoc fixes, not integrated into the diffusion process itself
-- **No explicit state modeling** — TCP state machines are implicit in spatial patterns,
-  not in model state; complex state transitions (retransmission recovery) are
-  error-prone
-- **Fidelity vs. diversity tradeoff** — generating traffic too similar to training
-  data risks memorization; too diverse risks uselessness for downstream ML
+::: {.columns}
+::: {.column width="60%"}
+```{dot}
+//| fig-width: 8.2
+//| fig-height: 4.2
+digraph lim {
+  rankdir=LR; nodesep=0.2; ranksep=1.0; bgcolor="transparent";
+  node [shape=box, style="filled,rounded", fontname="Helvetica", fontsize=16, color="#555555", penwidth=1.4, margin="0.14,0.07"];
+  edge [color="#555555", penwidth=1.5, fontname="Helvetica", fontsize=13];
+  l1 [label="sequence length\n~1,024 packets per image", fillcolor="#f8d7c4", style="filled,rounded,dashed"];
+  l2 [label="compliance is external\nControlNet + dependency tree\nbolted on after the fact", fillcolor="#f8d7c4", style="filled,rounded,dashed"];
+  l3 [label="no explicit state\nTCP state only implicit\nin spatial patterns", fillcolor="#f8d7c4", style="filled,rounded,dashed"];
+  l4 [label="fidelity vs. diversity\nmemorize, or be useless", fillcolor="#f8d7c4", style="filled,rounded,dashed"];
+  s1 [label="sequence models\n(state space models, NetSSM)", fillcolor="#d9efd3"];
+  s2 [label="constraints inside the model\n(open problem)", fillcolor="#d9efd3"];
+  s3 [label="privacy-aware evaluation\n(membership inference, DP)", fillcolor="#d9efd3"];
+  l1 -> s1; l3 -> s1; l2 -> s2; l4 -> s3;
+}
+```
+:::
+::: {.column width="40%"}
+- **Sequence length:** long flows and sessions are cut at the image edge
+- **No explicit state:** retransmission recovery is error-prone
+- **External compliance:** the fixes are post hoc
+- **Fidelity vs. diversity:** memorize the training data, or be useless
+:::
+:::
 
 ::: {.notes}
 These four limitations are taken directly from the "Limitations of Diffusion Models"
@@ -650,10 +749,10 @@ discussion connects to the "Privacy-Preserving Models" section of Chapter 7, whi
 students should read.
 :::
 
-## Current Events: NetSSM at ACM CoNEXT 2025 {.smaller}
+## Follow-on Work: NetSSM (2025) {.smaller}
 
 ::: {.vignette}
-**March 2025 — NetSSM published (arXiv:2503.22663; ACM on Networking / CoNEXT 2025)**
+**Dated note — NetSSM, arXiv:2503.22663 (March 2025); Proceedings of the ACM on Networking, CoNEXT 2025 / March 2026 issue**
 
 Andrew Chu, Xi Jiang, Shinan Liu, Arjun Bhagoji, Francesco Bronzino, Paul Schmitt, and
 Nick Feamster released **NetSSM**, a follow-on to NetDiffusion built on the Mamba
@@ -661,15 +760,16 @@ selective state-space architecture. NetSSM generates raw packet traces at the
 packet-level, capturing interactions across multiple interleaved flows — something
 neither NetDiffusion nor transformer-based generators could do. It learns from and
 produces traces **8× to 78× longer** than transformer baselines, with high protocol
-compliance and session-level fidelity. The work was accepted to Proceedings of the
-ACM on Networking (PACMNET), appearing at CoNEXT 2025.
+compliance and session-level fidelity. The same group also reimplemented NetDiffusion
+on Stable Diffusion 3 with ControlNet (`github.com/noise-lab/NetDiffusion`).
 :::
 
 **Thought question:** NetSSM explicitly models TCP state; NetDiffusion relies on
 spatial image patterns. For which networking task would you choose each, and why?
 
 ::: {.notes}
-Verified source: arxiv.org/abs/2503.22663 (submitted March 28, 2025) and
+Verified source: arxiv.org/abs/2503.22663 (v1 March 28, 2025; v3 January 2026,
+"accepted to PACMNET V4, CoNEXT 1, March 2026 issue") and
 dl.acm.org/doi/abs/10.1145/3786289. This is a direct follow-up from the same
 research group (Feamster et al.), making it a natural bridge between this lecture
 and the next. The thought question is a good cold-call: a student who says
@@ -693,7 +793,7 @@ and the next. The thought question is a good cold-call: a student who says
 ::: {.notes}
 See the Chapter 7 summary. End with a preview: the next lecture covers state space
 models (Mamba / NetSSM), which address the sequence-length and state-modeling
-limitations highlighted today. Students should read the "State Space Models" section
+limitations highlighted in this lecture. Students should read the "State Space Models" section
 of Chapter 7 before that session.
 :::
 

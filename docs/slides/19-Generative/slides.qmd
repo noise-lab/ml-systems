@@ -10,6 +10,13 @@ date: last-modified
 > Labeled network traces are scarce.
 > Generative models let us *create* the data we need.
 
+```{=html}
+<style>
+.reveal .cell-output-display svg, .reveal .cell-output-display img { width: 100%; height: auto; }
+.reveal .caption { font-size: 0.55em; color: #666666; margin-top: 0.2em; }
+</style>
+```
+
 ::: {.notes}
 Open with the core motivation: everything downstream — classifiers, anomaly
 detectors, protocol testers — depends on training data. Network data is
@@ -80,6 +87,25 @@ deep-learning literature, so students can connect it to what they know.
 See Chapter 7 of *Machine Learning for Networking* for the full arc.
 :::
 
+## Four Generations of Generative Models
+
+![](images/generative-landscape-timeline.svg){width="100%"}
+
+::: {.caption}
+Orange GANs, blue diffusion, purple transformers and LLMs, green state space models. Each family reached network traffic two to five years after it appeared in general ML.
+:::
+
+::: {.notes}
+Read the figure left to right. GANs (2014) reached traffic generation with
+DoppelGANger (2020) and NetShare (2022), but only as flow statistics.
+Diffusion (DDPM 2020, Stable Diffusion 2022) became NetDiffusion (2024),
+the first raw-pcap generator. Transformers (2017) reached traffic as
+ET-BERT (2022) for classification and NetLLM (2024) for decisions, but the
+quadratic attention cost blocks long traces. Mamba (2023) became NetSSM
+(CoNEXT 2025). The lag between lanes is the gap this lecture is about:
+what has to change for a general model to produce protocol-valid packets.
+:::
+
 ## Generative Adversarial Networks (GANs) {.smaller}
 
 ::: {.columns}
@@ -123,17 +149,17 @@ Chapter 7, "Early Approaches: Generative Adversarial Networks."
 ::: {.column width="50%"}
 **Strengths**
 
-- Generative: introduces variation, not just replay
+- Generative: variation, not replay
 - High statistical resemblance to real flow records
-- Useful for downstream ML training augmentation
+- Useful for augmenting ML training sets
 :::
 ::: {.column width="50%"}
 **Limitations**
 
-- Generate only **flow-level statistics** (not raw pcaps)
-- Suffer from **mode collapse** and training instability
-- ML models trained on GAN data often underperform vs. real data
-- Do not enforce protocol rules — generated records may be protocol-invalid
+- Only **flow-level statistics**, not raw pcaps
+- **Mode collapse** and training instability
+- Models trained on GAN data underperform on real data
+- No protocol rules: records can be invalid
 :::
 :::
 
@@ -188,20 +214,36 @@ becomes pure Gaussian noise
 **Reverse process:** train a neural network to denoise, step by step —
 starting from pure noise and recovering the original structure
 
-**Key advantages over GANs:**
-
-- No adversarial training instability
-- No mode collapse
-- Supports **conditional generation** via text prompts or other context
+**Why it beats GANs:** one network, one supervised denoising loss; no
+adversary, no mode collapse; conditioning (a text prompt) steers the output
 :::
 ::: {.column width="45%"}
 **Stable Diffusion** (Rombach et al., 2022):
 
-- Runs diffusion in a **compressed latent space** (not raw pixels)
-- Accepts text prompts to steer generation
-- Pre-trained on billions of images → adaptable via fine-tuning
+- Diffuses in a **compressed latent space**, not raw pixels
+- Text prompts steer generation
+- Pre-trained on billions of images; adaptable by fine-tuning
 :::
 :::
+
+```{dot}
+//| fig-width: 12.4
+//| fig-height: 2.6
+digraph diffusion {
+  rankdir=LR; nodesep=0.3; ranksep=0.5; bgcolor="transparent";
+  node [shape=box, style="filled,rounded", fontname="Helvetica", fontsize=16,
+        color="#555555", penwidth=1.4, margin="0.14,0.08"];
+  edge [color="#555555", penwidth=1.6, fontname="Helvetica", fontsize=14];
+  x0 [label="x₀\nreal traffic\nimage", fillcolor="#cfe3f5"];
+  x1 [label="x₁\nslightly\nnoisy", fillcolor="#dbe9f6"];
+  x2 [label="…", fillcolor="#e9e1dc"];
+  xT [label="x_T\npure\nnoise", fillcolor="#f8d7c4"];
+  x0 -> x1 [label="forward q:\nadd noise", fontcolor="#c05621", color="#c05621"];
+  x1 -> x2 -> xT [color="#c05621"];
+  xT -> x2 [label="reverse p_θ:\nlearned denoiser", fontcolor="#2f855a", color="#2f855a", constraint=false];
+  x2 -> x1 -> x0 [color="#2f855a", constraint=false];
+}
+```
 
 ::: {.notes}
 Ho et al. (2020) introduced DDPM (denoising diffusion probabilistic models).
@@ -221,15 +263,14 @@ diffusion model to generate synthetic flows.
 ::: {.column width="55%"}
 **Four-stage pipeline:**
 
-1. **Traffic → image** via nPrint encoding:
-   each packet is a row of pixels;
-   bit fields map to green (1), red (0), gray (absent)
-2. **Fine-tune** Stable Diffusion 1.5 with LoRA on traffic images +
-   text prompts (e.g., "TCP Amazon traffic")
-3. **Controlled generation** with ControlNet: edge detection on an example
-   image enforces which protocol header fields are valid
-4. **Image → pcap** with post-processing dependency trees to enforce
-   intra-packet and inter-packet protocol rules
+1. **Traffic → image** via nPrint: one packet per row;
+   bits map to green (1), red (0), gray (absent)
+2. **Fine-tune** Stable Diffusion with LoRA on traffic images
+   plus text prompts ("TCP Amazon traffic")
+3. **Controlled generation** with ControlNet: edges from an example
+   image fix which header fields may be populated
+4. **Image → pcap** with dependency-tree post-processing for
+   intra- and inter-packet protocol rules
 :::
 ::: {.column width="45%"}
 ![Traffic encoded as image: each row is one packet; columns are header bit fields](images/s35-i37.png)
@@ -251,11 +292,30 @@ trees handle checksum fields, sequence numbers, IP addresses. See Chapter 7,
 
 ## NetDiffusion Pipeline Overview
 
-![NetDiffusion generation framework: traffic-to-image conversion, LoRA fine-tuning, ControlNet-guided generation, and post-processing](images/s33-i35.png)
+```{dot}
+//| fig-width: 12.4
+//| fig-height: 1.7
+digraph netdiffusion {
+  rankdir=LR; nodesep=0.25; ranksep=0.4; bgcolor="transparent";
+  node [shape=box, style="filled,rounded", fontname="Helvetica", fontsize=17,
+        color="#555555", penwidth=1.4, margin="0.14,0.07"];
+  edge [color="#555555", penwidth=1.5, fontname="Helvetica", fontsize=14];
+  pcap [label="real pcaps\n+ labels", fillcolor="#cfe3f5"];
+  img  [label="1. nPrint → image\none packet per row", fillcolor="#f2d9a8"];
+  ft   [label="2. LoRA fine-tune\nStable Diffusion\non (image, caption)", fillcolor="#f2d9a8"];
+  gen  [label="3. generate\ntext prompt + ControlNet\nedge mask", fillcolor="#f2d9a8"];
+  post [label="4. image → pcap\ndependency-tree\nprotocol repair", fillcolor="#f2d9a8"];
+  out  [label="synthetic pcaps\nopen in Wireshark,\nreplay with tcpreplay", fillcolor="#d9efd3"];
+  pcap -> img -> ft -> gen -> post -> out;
+}
+```
+
+![NetDiffusion generation framework (paper Fig. 1): traffic-to-image conversion, LoRA fine-tuning, ControlNet-guided generation, and post-processing](images/s33-i35.png){width="82%"}
 
 ::: {.notes}
-This is the full pipeline diagram from the NetDiffusion paper (Liu et al.,
-2024, published in ACM SIGMETRICS / POMACS). The three rows correspond to
+This is the full pipeline diagram from the NetDiffusion paper (Jiang et al.,
+2024, published in ACM SIGMETRICS / POMACS); the strip above it is the same
+four steps in one line. The three rows correspond to
 the three phases described on the previous slide. Point out the flow from
 real pcaps (top-left) all the way to synthetic pcaps (bottom-right). The
 post-generation heuristic is what allows the synthetic pcaps to open
@@ -283,27 +343,36 @@ protocol constraints. That weakness is what motivates SSMs later.
 
 ## NetDiffusion: Protocol Compliance via Post-Processing
 
-**Two classes of rules enforced by dependency trees:**
+```{dot}
+//| fig-width: 12.4
+//| fig-height: 2.6
+digraph post {
+  rankdir=LR; nodesep=0.2; ranksep=0.45; bgcolor="transparent";
+  node [shape=box, style="filled,rounded", fontname="Helvetica", fontsize=16,
+        color="#555555", penwidth=1.4, margin="0.14,0.07"];
+  edge [color="#555555", penwidth=1.5, fontname="Helvetica", fontsize=14];
+  img [label="generated image\n(bits may be\ninconsistent)", fillcolor="#f8d7c4"];
+  fields [label="decode rows into\nheader fields", fillcolor="#cfe3f5"];
+  subgraph cluster_intra { label="intra-packet rules (each packet alone)"; fontname="Helvetica"; fontsize=15; color="#999999"; style=dashed;
+    ck [label="checksums match\npayload", fillcolor="#f2d9a8"];
+    len [label="header length ≥\nminimum", fillcolor="#f2d9a8"];
+    fl [label="legal flag sets\n(no SYN+FIN)", fillcolor="#f2d9a8"];
+  }
+  subgraph cluster_inter { label="inter-packet rules (across the flow)"; fontname="Helvetica"; fontsize=15; color="#999999"; style=dashed;
+    hs [label="three-way\nhandshake first", fillcolor="#f2d9a8"];
+    seq [label="seq / ack\nnumbers advance", fillcolor="#f2d9a8"];
+    ip [label="IPs and ports:\nmajority vote", fillcolor="#f2d9a8"];
+  }
+  out [label="valid pcap\n(Wireshark,\ntcpreplay)", fillcolor="#d9efd3"];
+  img -> fields -> ck -> hs -> out;
+  fields -> len -> seq -> out;
+  fields -> fl -> ip -> out;
+}
+```
 
-::: {.columns}
-::: {.column width="50%"}
-**Intra-packet rules** *(within one packet)*
-
-- Checksum consistency with payload
-- Valid field relationships (e.g., header length ≥ minimum)
-- Mandatory flag combinations (e.g., SYN+FIN is invalid)
-:::
-::: {.column width="50%"}
-**Inter-packet rules** *(across packets in a flow)*
-
-- TCP three-way handshake ordering
-- Sequence / acknowledgment number progression
-- Source/destination IP and port consistency (majority vote)
-:::
-:::
-
-**Goal:** minimal modifications to preserve the generative model's output while
-ensuring compatibility with tools like Wireshark and TCPreplay.
+**Goal:** the fewest edits that make the model's output tool-compatible.
+Intra-packet fixes run first (each packet valid on its own), then
+inter-packet fixes (the flow coherent as a whole).
 
 ::: {.notes}
 The post-processing pass traverses the dependency tree bottom-up: fix
@@ -336,7 +405,7 @@ shift to SSMs later. See Chapter 7, "Post-Processing with Dependency Trees."
 :::
 
 ::: {.notes}
-These numbers come from the ACM SIGMETRICS 2024 paper (Liu et al., 2024).
+These numbers come from the ACM SIGMETRICS 2024 paper (Jiang et al., 2024).
 Evaluation uses 10 applications across 3 macro-service classes (video
 streaming, video conferencing, social media). The train-on-synthetic /
 test-on-real scenario is the hardest test: if synthetic data is truly
@@ -386,16 +455,29 @@ scalability limitations motivate state space models. See Chapter 7,
 
 **The word vector idea** (word2vec, Mikolov et al., 2013):
 
-- Each word is a point in a high-dimensional vector space
-- Words with similar *meaning* are near each other: "cat" ≈ "lion"
-- Simple arithmetic captures analogies: king − man + woman ≈ queen
+- Each word is a point in a vector space; similar meaning, nearby points ("cat" ≈ "lion"); king − man + woman ≈ queen
 
 **Extended to networking:**
 
-- **nPrint**: each packet → fixed-size bit-level vector; preserve protocol structure
-- **IP2Vec**: IP addresses → vectors; addresses in similar flow contexts are nearby
-- **ET-BERT**: packet byte sequences as tokens; self-supervised pre-training on
-  unlabeled encrypted traffic (Lin et al., 2022)
+- **nPrint**: each packet → fixed-size bit vector that keeps protocol structure
+- **ET-BERT**: packet bytes as tokens; self-supervised pre-training on unlabeled encrypted traffic (Lin et al., 2022)
+
+```{dot}
+//| fig-width: 12.4
+//| fig-height: 1.9
+digraph emb {
+  rankdir=LR; nodesep=0.25; ranksep=0.45; bgcolor="transparent";
+  node [shape=box, style="filled,rounded", fontname="Helvetica", fontsize=16,
+        color="#555555", penwidth=1.4, margin="0.12,0.07"];
+  edge [color="#555555", penwidth=1.5];
+  w  [label="words in\na sentence", fillcolor="#cfe3f5"];
+  p  [label="packets\nin a flow", fillcolor="#cfe3f5"];
+  t  [label="tokens\n(WordPiece |\nnPrint bits, bytes)", fillcolor="#f2d9a8"];
+  e  [label="one embedding\nvector per token", fillcolor="#f2d9a8"];
+  a  [label="attention over\nthe sequence", fillcolor="#d9efd3"];
+  w -> t; p -> t; t -> e -> a;
+}
+```
 
 ::: {.notes}
 The analogy between words-in-sentences and packets-in-flows is powerful:
@@ -524,36 +606,22 @@ dropped so the two representations are side by side.
 
 ## The Scaling Problem: O(n²) Attention
 
-**Critical bottleneck** for applying transformers to network traffic:
-
-**Attention cost grows as O(n²) in the sequence length n.**
+**Attention compares every token with every other: cost O(n²) in the sequence length n.**
 
 ::: {.columns}
-::: {.column width="50%"}
+::: {.column width="52%"}
+![](images/attention-vs-ssm-cost.svg)
+:::
+::: {.column width="48%"}
 **Why this hurts networking:**
 
-- A few seconds of traffic → hundreds to thousands of packets
-- A single TCP flow → tens of thousands of packets
-- Multi-flow traces → millions of packets
+- A few seconds of traffic is thousands of packets; a session is millions
+- 1,000 packets → 10⁶ scores; 100,000 packets → 10¹⁰
 
-| Sequence length | Attention operations |
-|---|---|
-| 1,000 packets | 10⁶ |
-| 10,000 packets | 10⁸ |
-| 100,000 packets | 10¹⁰ |
-:::
-::: {.column width="50%"}
-**Also: no explicit state modeling**
+**Also: no explicit state**
 
-Network protocols are **state machines**:
-TCP transitions SYN_SENT → SYN_RECEIVED → ESTABLISHED → FIN_WAIT
-
-Transformers learn state *implicitly* from spatial patterns.
-This is brittle for long flows where state transitions
-are widely separated in the sequence.
-
-Context windows in modern LLMs now exceed 1M tokens, but the
-**quadratic cost** means very long contexts remain expensive.
+- TCP is a state machine (SYN_SENT → ESTABLISHED → FIN_WAIT); a transformer learns it only *implicitly* from position patterns
+- Million-token context windows exist, but the quadratic bill is paid every time
 :::
 :::
 
@@ -578,34 +646,47 @@ architecture survey. See Chapter 7, "State Space Models."
 
 ## State Space Models and Mamba
 
-**Core idea:** instead of O(n²) pairwise attention, maintain a
-**hidden state** $h_t$ that summarizes all past inputs: each step updates the
-state from the previous state and the current input, and the output is read
-off the state. *(Equation in the appendix.)*
+**Core idea:** no pairwise attention; a fixed-size **hidden state** $h_t$
+summarizes everything seen so far. Each packet updates the state; the output
+is read off the state. *(Equation in the appendix.)*
 
 ::: {.columns}
-::: {.column width="55%"}
-**Mamba** (Gu & Dao, 2024):
+::: {.column width="50%"}
+**Mamba** (Gu & Dao, 2023):
 
-- Makes the state-update matrices $\mathbf{A}, \mathbf{B}, \mathbf{C}$
-  **input-dependent** — selective retention vs. forgetting
-- Hardware-aware parallel scan: efficient on GPU
-- **O(n) complexity** — scales linearly with sequence length
+- $\mathbf{A}, \mathbf{B}, \mathbf{C}$ are **input-dependent**: the model
+  chooses what to keep and what to forget
+- Hardware-aware parallel scan on GPU
+- **O(n)**: cost grows linearly with length
 
 **Why this fits networking:**
 
-- TCP, UDP, QUIC are state machines → SSM hidden state mirrors protocol state
-- Long flows (thousands of packets) are tractable
+- TCP, UDP, QUIC are state machines; the hidden state can hold protocol state
+- Flows of thousands of packets are tractable
 :::
-::: {.column width="45%"}
-**Comparison**
+::: {.column width="50%"}
+```{dot}
+//| fig-width: 6
+//| fig-height: 4.2
+digraph ssm {
+  rankdir=TB; nodesep=0.5; ranksep=0.45; bgcolor="transparent";
+  node [shape=box, style="filled,rounded", fontname="Helvetica", fontsize=18,
+        color="#555555", penwidth=1.4, margin="0.16,0.08"];
+  edge [color="#555555", penwidth=1.6, fontname="Helvetica", fontsize=16];
+  hp [label="h₍t−1₎\nstate so far", fillcolor="#f2d9a8"];
+  x  [label="x_t\npacket t", fillcolor="#cfe3f5"];
+  h  [label="h_t\nupdated state\n(fixed size)", fillcolor="#f2d9a8"];
+  y  [label="y_t\noutput /\nnext packet", fillcolor="#d9efd3"];
+  hp -> h [label="A: carry forward"];
+  x  -> h [label="B: write in"];
+  h  -> y [label="C: read out"];
+  h  -> hp [style=dashed, constraint=false];
+}
+```
 
-| Property | Transformer | SSM (Mamba) |
-|---|---|---|
-| Complexity | O(n²) | O(n) |
-| State | Implicit | Explicit |
-| Long traces | Expensive | Efficient |
-| Protocol compliance | External | Natural |
+::: {.caption}
+One fixed-size update per packet; in Mamba, A, B, C depend on x_t.
+:::
 :::
 :::
 
@@ -620,24 +701,20 @@ Space Models" and "How State Space Models Work."
 
 ## NetSSM: State-Aware Traffic Generation
 
-**NetSSM** (Chu et al., 2025, *ACM Proceedings on Networking*) applies
-Mamba to raw packet-level network trace generation.
+**NetSSM** (Chu et al., *Proc. ACM on Networking*, CoNEXT 2025) applies
+Mamba to raw packet-level trace generation.
 
 ::: {.columns}
 ::: {.column width="55%"}
 **Key advances over NetDiffusion:**
 
-- **Multi-flow sessions** — generates interleaved flows from a session,
-  capturing inter-flow dependencies unexplored by prior work
-- **8× and 78× longer traces** than prior transformer-based approaches
-- No image representation needed — processes packets natively as sequences
-- Protocol state machines modeled in the hidden state — fewer external
-  heuristics needed for compliance
+- **Multi-flow sessions**: interleaved flows and their dependencies
+- **8× and 78× longer traces** than prior transformer generators
+- No image detour: packets are tokens in a sequence
+- Protocol state lives in the hidden state
 
-**Results:**
-
-- Outperforms prior approaches on statistical similarity benchmarks
-- High semantic similarity to real data on protocol-compliance metrics
+**Results:** higher fidelity and protocol compliance than prior
+generators, without post-processing
 :::
 ::: {.column width="45%"}
 **Architecture comparison:**
@@ -677,19 +754,14 @@ existing LLMs for three networking tasks:
 
 ::: {.columns}
 ::: {.column width="55%"}
-**Tasks addressed:**
+**Tasks:** viewport prediction for 360° video, adaptive bitrate
+selection, and cluster job scheduling
 
-- **Viewport prediction** for 360° video streaming
-- **Adaptive bitrate (ABR) selection** — choose video quality given bandwidth
-- **Cluster job scheduling** — allocate compute/network resources
+**Approach:** a multimodal encoder turns network time series into
+LLM-readable tokens; the LLM is fine-tuned to emit the decision
 
-**Approach:**
-
-1. Multimodal encoder converts networking time-series to LLM-readable tokens
-2. Fine-tune the LLM to output task-specific decisions
-
-**Results:** significantly outperforms task-specific algorithms; strong
-generalization to new network environments.
+**Results:** beats the task-specific algorithms and generalizes to
+unseen network environments
 :::
 ::: {.column width="45%"}
 **Key insight:**
@@ -712,38 +784,29 @@ reasoning is doing real work, not just memorizing the training environment.
 See Chapter 7, "Adapting LLMs for Networking Tasks."
 :::
 
-## Privacy in Synthetic Data: The Privacy-Utility Trade-off {.smaller}
+## Privacy in Synthetic Data: The Privacy-Utility Trade-off
 
 **Synthetic data is not automatically private.**
 
 ::: {.columns}
 ::: {.column width="55%"}
-**Membership inference attacks:**
-An adversary with access to synthetic traffic may be able to determine
-whether a specific user's flows were in the training set — by exploiting
-statistical differences in how the model treats training vs. unseen data.
+**Membership inference:** from synthetic traffic alone, an adversary may
+tell whether a given user's flows were in the training set
 
-**Differential privacy:**
-Adds calibrated noise during training so no single training example
-significantly influences model outputs (Dwork et al., 2014).
+**Differential privacy:** calibrated noise during training so no single
+example moves the output much (Dwork et al., 2014)
 
-**The fundamental tension:**
-
-**More privacy → more noise → lower data quality**
-
-Stronger privacy guarantees degrade statistical fidelity; weaker guarantees
-risk leaking real user behavior.
+**The tension:** more privacy → more noise → lower fidelity
 :::
 ::: {.column width="45%"}
-**Three competing requirements:**
+**Three requirements at once:**
 
-1. **Similar enough** to real traffic → useful for downstream ML
-2. **Different enough** from real traffic → protects individual privacy
-3. **Diverse enough** → provides new information beyond training data
+1. **Similar enough** to be useful for downstream ML
+2. **Different enough** to protect individuals
+3. **Diverse enough** to add information
 
-All three must hold simultaneously.
-Balancing them for protocol-constrained, temporally-dependent network
-data remains an **open problem**.
+Holding all three for stateful, protocol-constrained
+traffic is an **open problem**.
 :::
 :::
 
@@ -758,25 +821,21 @@ the temporal dependencies make DP even harder to apply correctly. See
 Chapter 7, "Privacy-Preserving Models."
 :::
 
-## Current Events: NetSSM in 2025 {.smaller}
+## Where the Field Stood in 2025: NetSSM at CoNEXT
 
 ::: {.vignette}
-**March 2025 — NetSSM published in ACM Proceedings on Networking**
-
-Chu et al. published "NetSSM: Multi-Flow and State-Aware Network Trace
-Generation using State-Space Models" (arXiv:2503.22663, March 28 2025;
-DOI: 10.1145/3786289). NetSSM generates raw packet-level traces using the
-Mamba SSM architecture, producing traces **8× to 78× longer** than prior
-transformer-based approaches while maintaining higher statistical fidelity
-and protocol compliance than GAN or diffusion baselines. The paper is the
-first to explicitly model **multi-flow session** structure — capturing how
-concurrent flows in a session interact. This closes the most significant
-remaining gap identified in the NetDiffusion evaluation: sequence length
-and stateful modeling.
+**Dated note (2025).** Chu et al., "NetSSM: Multi-Flow and State-Aware
+Network Trace Generation using State-Space Models," arXiv March 2025,
+published in *Proceedings of the ACM on Networking* (ACM CoNEXT 2025).
+Mamba-based, raw packet-level, **8× to 78× longer traces** than prior
+transformer generators, with higher statistical fidelity and protocol
+compliance than GAN and diffusion baselines, and the first generator to model
+**multi-flow sessions**. It closes the two gaps NetDiffusion's own evaluation
+named: sequence length and protocol state.
 :::
 
 **Thought question:** NetSSM handles longer traces without quadratic cost.
-What *other* limitation from the diffusion model list does it still share?
+Which limitation from the diffusion list does it *still* share?
 
 ::: {.notes}
 Cold-call: the fidelity-diversity trade-off and the privacy-utility
@@ -790,14 +849,14 @@ Update this vignette if a NetSSM follow-on or a competing approach
 publishes stronger results.
 :::
 
-## Architecture Summary and Tradeoffs {.smaller}
+## Architecture Summary and Tradeoffs
 
-| Architecture | Exemplar | Format | Seq. Length | Protocol State | Strengths | Limitations |
-|---|---|---|---|---|---|---|
-| **GAN** | NetShare | Flow stats | Unlimited | None | Simple, fast | Low fidelity, mode collapse |
-| **Diffusion** | NetDiffusion | Image (pcap) | ~1024 pkts | External heuristics | High fidelity, uses pretrained SD | Short sequences, no state |
-| **Transformer** | ET-BERT | Token sequences | O(n²) cost | Implicit | Strong context modeling | Quadratic scaling, brittle state |
-| **SSM** | NetSSM | Raw packets | O(n), very long | Implicit (selective) | Efficient, long traces, protocol-aware | Less spatial fidelity than diffusion |
+| Architecture | Exemplar | Output | Length | Protocol state | Weak spot |
+|---|---|---|---|---|---|
+| **GAN** | NetShare | Flow stats | Unlimited | None | Low fidelity, mode collapse |
+| **Diffusion** | NetDiffusion | Image → pcap | ~1024 pkts | Repaired afterwards | Short flows, no state |
+| **Transformer** | ET-BERT | Tokens | O(n²) cost | Implicit | Quadratic scaling |
+| **SSM** | NetSSM | Raw packets | O(n), very long | In the hidden state | Less spatial fidelity |
 
 ::: {.notes}
 This table is the take-home summary for the chapter. Emphasize that there

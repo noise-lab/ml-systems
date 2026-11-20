@@ -114,3 +114,13 @@ to age:
   chapter and verified against the published ACM paper (arXiv:2503.22663).
 - State Space Models are treated briefly here as a bridge to Deck 18 (NetSSM), which
   covers them in full depth.
+
+## Figures added (2026-11-20 graphics pass)
+
+- `images/generative-landscape-timeline.svg` (generated, `figures.py`): GAN → diffusion → transformer → SSM, general-ML lane above, networking lane below; new slide "Four Generations of Generative Models".
+- `images/attention-vs-ssm-cost.svg` (generated, `figures.py`): n² vs n on log axes with 1,000 / 10,000 / 100,000 packets marked; replaces the operations table on "The Scaling Problem".
+- Graphviz diagrams in `slides.qmd`: forward/reverse diffusion ("How Diffusion Models Work"), four-step NetDiffusion strip above the paper's Fig. 1 ("NetDiffusion Pipeline Overview"), dependency-tree repair flow ("Protocol Compliance via Post-Processing"), words/packets → tokens → embeddings → attention ("Embeddings"), SSM recurrence ("State Space Models and Mamba").
+- Legacy clippings kept under the landmark rule: GAN flow, Transformer encoder-decoder, nPrint image, NetDiffusion Fig. 1 and Fig. 5, NetShare tables, BERT/TLS t-SNE, pipeline and tokenization figures.
+- Font gate: `.smaller` dropped from the privacy slide, the NetSSM dated note, and the summary table (trimmed to six columns); GAN-for-traffic, NetSSM and NetLLM bullets trimmed to stop footer overflow.
+- Text: "Current Events: NetSSM in 2025" retitled "Where the Field Stood in 2025: NetSSM at CoNEXT" and written as a dated note; NetSSM venue is *Proc. ACM on Networking* (CoNEXT 2025); NetDiffusion author attribution corrected from "Liu et al." to Jiang et al.; Mamba dated 2023.
+- `speaker-notes.md` written (one table, one row per slide).

@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="518.4pt" height="302.4pt" viewBox="0 0 518.4 302.4" xmlns="http://www.w3.org/2000/svg" version="1.1">
+ <metadata>
+  <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+   <cc:Work>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:date>2026-11-20T13:57:33.683701</dc:date>
+    <dc:format>image/svg+xml</dc:format>
+    <dc:creator>
+     <cc:Agent>
+      <dc:title>Matplotlib v3.10.7, https://matplotlib.org/</dc:title>
+     </cc:Agent>
+    </dc:creator>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <defs>
+  <style type="text/css">*{stroke-linejoin: round; stroke-linecap: butt}</style>
+ </defs>
+ <g id="figure_1">
+  <g id="patch_1">
+   <path d="M 0 302.4 
+L 518.4 302.4 
+L 518.4 0 
+L 0 0 
+z
+" style="fill: #ffffff"/>
+  </g>
+  <g id="axes_1">
+   <g id="patch_2">
+    <path d="M 55.37 259.616 
+L 504.36 259.616 
+L 504.36 28.9275 
+L 55.37 28.9275 
+z
+" style="fill: #ffffff"/>
+   </g>
+   <g id="patch_3">
+    <path d="M 75.778636 259.616 
+L 145.686673 259.616 
+L 145.686673 53.644125 
+L 75.778636 53.644125 
+z
+" clip-path="url(#p1f046fd348)" style="fill: #1a8a4a"/>
+   </g>
+   <g id="patch_4">
+    <path d="M 188.533533 259.616 
+L 258.44157 259.616 
+L 258.44157 82.480188 
+L 188.533533 82.480188 
+z
+" clip-path="url(#p1f046fd348)" style="fill: #1f5fa8"/>
+   </g>
+   <g id="patch_5">
+    <path d="M 301.28843 259.616 
+L 371.196467 259.616 
+L 371.196467 178.051138 
+L 301.28843 178.051138 
+z
+" clip-path="url(#p1f046fd348)" style="fill: #c8302e"/>
+   </g>
+   <g id="patch_6">
+    <path d="M 414.043327 259.616 
+L 483.951364 259.616 
+L 483.951364 156.012147 
+L 414.043327 156.012147 
+z
+" clip-path="url(#p1f046fd348)" style="fill: #c8302e"/>
+   </g>
+   <g id="matplotlib.axis_1">
+    <g id="xtick_1">
+     <g id="line2d_1">
+      <defs>
+       <path id="m55041ab1e1" d="M 0 0 
+L 0 3.5 
+" style="stroke: #000000; stroke-width: 0.8"/>
+      </defs>
+      <g>
+       <use xlink:href="#m55041ab1e1" x="110.732654" y="259.616" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_1">
+      <text style="font-size: 10px; font-family: 'Helvetica'" transform="translate(99.891248 273.789438)">pcap</text>
+      <text style="font-size: 10px; font-family: 'Helvetica'" transform="translate(88.112342 284.481938)">real → real</text>
+     </g>
+    </g>
+    <g id="xtick_2">
+     <g id="line2d_2">
+      <g>
+       <use xlink:href="#m55041ab1e1" x="223.487551" y="259.616" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_2">
+      <text style="font-size: 10px; font-family: 'Helvetica'" transform="translate(205.150833 273.789438)">NetFlow</text>
+      <text style="font-size: 10px; font-family: 'Helvetica'" transform="translate(200.867239 284.481938)">real → real</text>
+     </g>
+    </g>
+    <g id="xtick_3">
+     <g id="line2d_3">
+      <g>
+       <use xlink:href="#m55041ab1e1" x="336.242449" y="259.616" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_3">
+      <text style="font-size: 10px; font-family: 'Helvetica'" transform="translate(295.394792 273.789438)">NetShare NetFlow</text>
+      <text style="font-size: 10px; font-family: 'Helvetica'" transform="translate(302.228386 284.510063)">synthetic → real</text>
+     </g>
+    </g>
+    <g id="xtick_4">
+     <g id="line2d_4">
+      <g>
+       <use xlink:href="#m55041ab1e1" x="448.997346" y="259.616" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_4">
+      <text style="font-size: 10px; font-family: 'Helvetica'" transform="translate(408.149689 273.789438)">NetShare NetFlow</text>
+      <text style="font-size: 10px; font-family: 'Helvetica'" transform="translate(414.983283 284.510063)">real → synthetic</text>
+     </g>
+    </g>
+   </g>
+   <g id="matplotlib.axis_2">
+    <g id="ytick_1">
+     <g id="line2d_5">
+      <defs>
+       <path id="m6adcb172ed" d="M 0 0 
+L -3.5 0 
+" style="stroke: #000000; stroke-width: 0.8"/>
+      </defs>
+      <g>
+       <use xlink:href="#m6adcb172ed" x="55.37" y="259.616" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_5">
+      <text style="font-size: 13px; font-family: 'Helvetica'; text-anchor: end" x="48.37" y="264.278734" transform="rotate(-0 48.37 264.278734)">0.0</text>
+     </g>
+    </g>
+    <g id="ytick_2">
+     <g id="line2d_6">
+      <g>
+       <use xlink:href="#m6adcb172ed" x="55.37" y="218.421625" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_6">
+      <text style="font-size: 13px; font-family: 'Helvetica'; text-anchor: end" x="48.37" y="223.084359" transform="rotate(-0 48.37 223.084359)">0.2</text>
+     </g>
+    </g>
+    <g id="ytick_3">
+     <g id="line2d_7">
+      <g>
+       <use xlink:href="#m6adcb172ed" x="55.37" y="177.22725" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_7">
+      <text style="font-size: 13px; font-family: 'Helvetica'; text-anchor: end" x="48.37" y="181.889984" transform="rotate(-0 48.37 181.889984)">0.4</text>
+     </g>
+    </g>
+    <g id="ytick_4">
+     <g id="line2d_8">
+      <g>
+       <use xlink:href="#m6adcb172ed" x="55.37" y="136.032875" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_8">
+      <text style="font-size: 13px; font-family: 'Helvetica'; text-anchor: end" x="48.37" y="140.695609" transform="rotate(-0 48.37 140.695609)">0.6</text>
+     </g>
+    </g>
+    <g id="ytick_5">
+     <g id="line2d_9">
+      <g>
+       <use xlink:href="#m6adcb172ed" x="55.37" y="94.8385" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_9">
+      <text style="font-size: 13px; font-family: 'Helvetica'; text-anchor: end" x="48.37" y="99.501234" transform="rotate(-0 48.37 99.501234)">0.8</text>
+     </g>
+    </g>
+    <g id="ytick_6">
+     <g id="line2d_10">
+      <g>
+       <use xlink:href="#m6adcb172ed" x="55.37" y="53.644125" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_10">
+      <text style="font-size: 13px; font-family: 'Helvetica'; text-anchor: end" x="48.37" y="58.306859" transform="rotate(-0 48.37 58.306859)">1.0</text>
+     </g>
+    </g>
+    <g id="text_11">
+     <text style="font-size: 13px; font-family: 'Helvetica'; text-anchor: middle" x="23.513125" y="144.27175" transform="rotate(-90 23.513125 144.27175)">macro-level accuracy (best model)</text>
+    </g>
+   </g>
+   <g id="patch_7">
+    <path d="M 55.37 259.616 
+L 55.37 28.9275 
+" style="fill: none; stroke: #000000; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="patch_8">
+    <path d="M 55.37 259.616 
+L 504.36 259.616 
+" style="fill: none; stroke: #000000; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="text_12">
+    <text style="font-size: 12px; font-family: 'Helvetica'; text-anchor: middle" x="110.732654" y="49.524688" transform="rotate(-0 110.732654 49.524688)">1.00</text>
+   </g>
+   <g id="text_13">
+    <text style="font-size: 12px; font-family: 'Helvetica'; text-anchor: middle" x="223.487551" y="78.36075" transform="rotate(-0 223.487551 78.36075)">0.86</text>
+   </g>
+   <g id="text_14">
+    <text style="font-size: 12px; font-family: 'Helvetica'; text-anchor: middle" x="336.242449" y="173.9317" transform="rotate(-0 336.242449 173.9317)">0.40</text>
+   </g>
+   <g id="text_15">
+    <text style="font-size: 12px; font-family: 'Helvetica'; text-anchor: middle" x="448.997346" y="151.892709" transform="rotate(-0 448.997346 151.892709)">0.50</text>
+   </g>
+   <g id="text_16">
+    <text style="font-size: 12px; font-family: 'Helvetica'; text-anchor: middle" x="279.865" y="22.9275" transform="rotate(-0 279.865 22.9275)">Service classification: train → test data (Jiang et al. 2024, Table 1)</text>
+   </g>
+  </g>
+ </g>
+ <defs>
+  <clipPath id="p1f046fd348">
+   <rect x="55.37" y="28.9275" width="448.99" height="230.6885"/>
+  </clipPath>
+ </defs>
+</svg>

@@ -38,4 +38,4 @@ Source: `docs/slides/17-Diffusion.pptx`, 37 slides, rendered 2026-10-16 (headles
 - `images/ddpm-markov-chain.png` (2058×312) — source: `17-Diffusion.pptx` slide 15, raw `ppt/media/image11.png`, auto-trimmed. Figure 2 of Ho, Jain, and Abbeel, "Denoising Diffusion Probabilistic Models" (NeurIPS 2020); credited in the slide caption.
 - `images/netdiffusion-four-step-pipeline.png` (2833×408) — source: `17-Diffusion.pptx` slide 26, 220 dpi render, box 30,860,2905,1298, auto-trimmed; picture 16 below the strip left out of the crop.
 
-No `speaker-notes.md` exists for this deck, so no rows were added.
+Nov 20 2026: `speaker-notes.md` now exists (one row per slide) and names each recovered figure on its slide; s13-i08 was replaced on The Forward Process slide by the generated `gen-forward-noise.svg` (file kept).

@@ -1,261 +1,34 @@
-# State Space Models & NetSSM - Speaker Notes
+# Lecture 18 — Speaker Notes (State-Space Models and NetSSM)
 
-## Slide 1: Title
-- Introduce the research team
-- Frame this as: we're going to learn about a new architecture (state space models) and see how it applies to network traffic generation
+Per-slide brief, one row per slide in deck order. In-deck notes (the `::: {.notes}` blocks) are also visible in reveal.js speaker view (press **S**). Every URL below was verified this session (arXiv abstract pages and GitHub repositories) or is a canonical landing page; papers without a verified page are cited by name only. This deck is the NetSSM deep-dive; the 19-Generative deck is the spine of the lecture and dips into this one for detail.
 
-## Slide 2: The Challenge - Network Data Scarcity
-- Start with the problem: ML for networking needs data, but data is hard to get
-- Privacy laws (GDPR), collection costs, organizational barriers
-- This motivates why we'd want to generate synthetic data
-- Connect to earlier lectures on data acquisition challenges
-
-## Slide 3: Limitations of Current Approaches
-- Two existing approaches, both have gaps:
-  - NetShare: only generates statistics/metadata, not actual packets
-  - NetDiffusion: generates raw packets but only short traces
-- **Key point to emphasize**: Neither can do multi-flow sessions
-- Ask class: why might multi-flow matter? (Think: video streaming, IoT)
-
-## Slide 4: NetSSM Overview
-- This is where we introduce the solution
-- Built on Mamba/state-space models - a newer architecture than transformers
-- Teaser: we'll explain what SSMs are in the next few slides
-- Key advantage: can handle much longer sequences
-
----
-
-## Slide 5: Background - What is a State Space Model?
-- **Core intuition**: It's a compressed, running summary of what you've seen
-- Analogy: Reading a book and keeping mental notes
-  - You don't memorize every word verbatim
-  - You maintain a mental model that updates as you read
-- Fixed-size state vector gets updated with each new token
-- Output is generated from this compressed state
-
-**Teaching tip**: Draw on board - show a sequence of tokens and a "state box" that gets updated
-
-## Slide 6: Background - Transformers - A Quick Refresher
-- **Start with what students know**: Most students have heard of ChatGPT/GPT models
-- Transformers are the dominant architecture since 2017
-- Key innovation: self-attention mechanism
-  - Every position can look at every other position
-  - No sequential constraint (unlike RNNs)
-  - Highly parallelizable during training
-- Famous examples: GPT, BERT, Vision Transformers
-- **Set up the narrative**: Transformers are powerful but have limitations we'll explore
-
-**Teaching tip**: Ask class - "Who has used ChatGPT?" to engage them with familiar examples
-
-## Slide 7: Background - The Attention Mechanism
-- **This is the core of transformers** - make sure students understand this
-- Use the Query-Key-Value analogy:
-  - **Query**: "I'm looking for information about X"
-  - **Key**: "I contain information about Y"
-  - **Value**: "Here's the actual information I have"
-- Process:
-  1. Compare query at one position with ALL keys
-  2. Get similarity scores (attention weights)
-  3. Take weighted sum of values
-- **Result**: Each position can access info from entire sequence
-
-**Teaching tip**: Use a concrete example - "the cat sat on the mat"
-- When processing "sat", attention might focus on "cat" (subject)
-- Attention learns what's relevant contextually
-
-## Slide 8: Background - Transformer Strengths and Weaknesses
-- **Set up the motivation for SSMs**
-- Strengths:
-  - Perfect memory - nothing is forgotten
-  - Parallel processing - fast training
-  - Works great for many tasks
-- Weaknesses:
-  - **O(L²) complexity** - this is the killer
-  - Walk through the numbers:
-    - 1K tokens: 1M pairwise comparisons
-    - 10K tokens: 100M comparisons
-    - 100K tokens: 10B comparisons (memory explodes!)
-- **Key point**: Network traces can be very long (100K+ tokens)
-- This naturally leads to: "What if we could get transformer-like performance with better scaling?"
-
-**Ask class**: At what sequence length does quadratic scaling become a problem?
-
-## Slide 9: Background - SSMs vs Transformers
-- **Transformers**: "Look back at everything"
-  - Every token attends to every other token
-  - O(L²) complexity - quadratic scaling
-  - 10× longer = 100× more compute
-
-- **SSMs**: "Compress as you go"
-  - O(L) complexity - linear scaling
-  - 10× longer = 10× more compute
-  - Can handle 100K+ tokens
-
-**Ask class**: If you have a 10,000 packet trace, which approach scales better?
-
-## Slide 10: Background - The Selectivity Problem
-- Traditional SSMs had a fatal flaw: they're "dumb" about what to remember
-- Use the selective copy example:
-  - Input has markers, you need to copy only marked items
-  - Old SSMs can't do this - they use fixed rules for all inputs
-- Camera analogy: fixed focus can't adapt to the scene
-
-**This sets up why Mamba is special**
-
-## Slide 11: Background - Mamba's Key Insight
-- **The breakthrough**: Let the input itself control what gets remembered
-- Parameters become input-dependent, not fixed
-- Model learns WHEN to store, ignore, or retrieve
-- Smart note-taking analogy:
-  - Important fact → write it down heavily
-  - Filler → skim past
-  - Need to recall → state provides answer
-
-**Key point**: This is what makes Mamba work for content-aware tasks
-
-## Slide 12: Background - Why Mamba for Network Traffic?
-- Walk through the table - each challenge maps to a Mamba strength:
-  - Long sessions → linear scaling
-  - Protocol state (TCP!) → recurrent structure is natural fit
-  - Multi-flow → selective memory can distinguish flows
-  - Efficiency → 5× faster, less memory
-
-- **Punchline**: Network traffic is inherently sequential and stateful - perfect match
-
----
-
-## Slide 13: Innovation 1 - Multi-Flow Sessions
-- **This is a FIRST** - emphasize the novelty
-- Real traffic is multi-flow:
-  - Netflix: CDN setup + video segments
-  - IoT: sensor data + control channels
-  - Web browsing: HTML + CSS + JS + images
-- Previous generators couldn't handle this reliably
-- NetSSM's recurrent structure naturally captures flow interactions
-
-## Slide 14: Innovation 2 - Length Scaling
-- **Numbers matter here**: 8× longer context, 78× longer generation
-- 100,000 tokens ≈ 943 packets of context
-- Why this matters:
-  - TCP handshake at start affects later behavior
-  - Can model entire sessions, not just setup
-  - Events late in session depend on early state
-
-## Slide 15: Architecture Diagram
-- Walk through left to right:
-  1. Pre-processing: PCAP files → tokenized sequences
-  2. Training: Mamba model learns patterns
-  3. Generation: produces new synthetic PCAPs
-- All automatic once trained
-
-## Slide 16: Method Details
-- Tokenization is simple: one byte = one token (256 possible values)
-- Special tokens: `<|netflix|>`, `<|pkt|>` for boundaries
-- Training is unsupervised - predict next byte
-- Batch size of 1 allows maximum sequence length
-
----
-
-## Slide 17: Evaluation Framework
-- **Three dimensions** - this is comprehensive evaluation:
-  1. Statistical similarity: does it look right? (traditional)
-  2. ML utility: can you train on it? (practical)
-  3. Semantic similarity: does it behave right? (NEW)
-- The semantic similarity is a contribution of this work
-
-## Slide 18: Results - Statistical Similarity
-- 10 apps tested: streaming, conferencing, social media
-- Jensen-Shannon Divergence: 0.02 (lower = better)
-- **8× better than NetShare, 2× better than NetDiffusion**
-- Validates basic statistical fidelity
-
-## Slide 19: Results - ML Performance
-- **This is the money slide**
-- Random forest trained ONLY on synthetic data
-- Tested on REAL data
-- **97% accuracy** for NetSSM
-- Compare: 16% NetDiffusion, 13% NetShare
-- This proves synthetic data is actually useful
-
-## Slide 20: Results - Detailed Comparison
-- Shows consistent wins across multiple metrics
-- Different applications, different measures
-- NetSSM wins across the board
-
-## Slide 21: Results - Mixing Rate
-- **New result**: What if you mix synthetic and real data?
-- X-axis: proportion of synthetic data in training
-- NetSSM stays at ~97% even at 100% synthetic
-- Others degrade badly as you add more synthetic
-- **Implication**: NetSSM synthetic data can fully replace real data
-
-## Slide 22: Results - Statistical Distributions
-- KDE plots show we match real packet size distributions
-- Visual confirmation of statistical fidelity
-
-## Slide 23: Results - TCP Compliance
-- Semantic similarity evaluation
-- Generated traffic follows TCP rules:
-  - Correct handshakes
-  - Proper sequence number progression
-  - Even captures real-world quirks (partial teardowns)
-- Passes protocol validators - this is huge
-
-## Slide 24: Results - Application Patterns
-- Multi-flow capability shines here
-- Video streaming example:
-  - CDN setup flows
-  - Video segment downloads
-  - Interleaved correctly
-- Captures timing and sequencing patterns
-
----
-
-## Slide 25: Impact and Applications
-- Security: train IDS without real attack data
-- Performance testing: scale without production traffic
-- Protocol development: validate before deployment
-- **Key benefit**: No privacy/governance barriers
-
-## Slide 26: Comparison Table
-- Direct head-to-head comparison
-- **Only NetSSM has multi-flow**
-- Look at the context/generation length differences
-- This is a significant advance
-
-## Slide 27: Key Takeaways
-- Three contributions:
-  1. First multi-flow generator
-  2. Superior performance (quantified)
-  3. Semantic similarity evaluation (new)
-- Synthetic data that's similar AND useful
-
-## Slide 28: Future Directions
-- UDP and other protocols
-- Encrypted payload patterns
-- Integration with network simulators
-- Benchmark dataset creation
-
-## Slide 29: Summary
-- Reinforce the three innovations
-- State-space models are a good fit for network traffic
-- Results speak for themselves
-
----
-
-## Teaching Tips
-
-**For the SSM background section**:
-- Draw the state update process on the board
-- Compare to RNNs if students know them (SSMs are similar but more principled)
-- The selectivity insight is key - spend time on it
-
-**Discussion questions**:
-1. Why is multi-flow generation important for realistic traffic?
-2. What other domains might benefit from SSMs? (genomics, audio, time series)
-3. What are the limitations of synthetic data in general?
-
-**Connections to other lectures**:
-- Data acquisition (Lecture 5): This addresses data scarcity
-- Deep learning (Lecture 13): SSMs are an alternative to transformers
-- Diffusion (Lecture 17): Another generative approach, compare/contrast
+| # | Slide | Notes |
+|---|---|---|
+| 1 | Title | • Frame the hour: a new sequence architecture (state-space models) and what it buys for network traffic generation.<br>• Anchor paper: Chu, Jiang, Liu, Bhagoji, Bronzino, Schmitt, Feamster, "NetSSM: Multi-Flow and State-Aware Network Trace Generation using State-Space Models", Proc. ACM on Networking vol. 4 (CoNEXT1), presented at ACM CoNEXT 2025. **Read first:** [arXiv:2503.22663](https://arxiv.org/abs/2503.22663).<br>• Code and a from-scratch training notebook: [github.com/noise-lab/netssm](https://github.com/noise-lab/netssm). |
+| 2 | The Data Scarcity Problem (section) | • Connect back to the data acquisition lecture: ask what would stop you from training an IDS on real attack traffic.<br>• Expected answers: privacy law, governance, collection cost, rarity of labelled attacks. That list motivates the whole generative-models thread. |
+| 3 | Why Synthetic Network Data? | • Hold students to the four vocabulary words: augmentation, simulation and testing, privacy-preserving sharing, what-if analysis.<br>• Sommer and Paxson, "Outside the Closed World" (IEEE S&P 2010) is the classic statement of why labelled network data is scarce and why ML-for-security has struggled with it.<br>• Ask: which of the four matters most for a university lab versus a carrier? (Lab: sharing and augmentation; carrier: what-if and testing without touching production.) |
+| 4 | The Generative Model Landscape | • The table is the spine of the whole chapter: GANs gave flow-level statistics, diffusion added packet fidelity but short traces, SSMs get length and fidelity together.<br>• NetShare: Yin, Lin, Jin, Fanti, Sekar, "Practical GAN-Based Synthetic IP Header Trace Generation Using NetShare" (SIGCOMM 2022), code at [github.com/netsharecmu/NetShare](https://github.com/netsharecmu/NetShare).<br>• NetDiffusion: Jiang et al., [arXiv:2310.08543](https://arxiv.org/abs/2310.08543) (SIGMETRICS 2024), covered in the 17-Diffusion deck.<br>• Say explicitly that each row fixed the previous row's weakness and introduced its own; the "newer, less explored" weakness of SSMs is the honest one. |
+| 5 | Background: From Transformers to State-Space Models (section) | • Transition: "why not just use a transformer?" Most students know transformers from the deep-learning lecture; this section is the one-slide review plus the scaling problem. |
+| 6 | Transformers: Review and Scaling Problem | • **Figure:** operations per layer versus sequence length drawn from the two formulas, n² for self-attention and n for an SSM, on log axes; the dotted lines mark 1 K and 100 K tokens, and the arrows mark the ~12 K context of transformer-class generators and NetSSM's 100 K.<br>• Walk the numbers: 1 K tokens is a million attention scores, 100 K tokens is ten billion, per layer, per step.<br>• Underlying paper: Vaswani et al., "Attention Is All You Need", [arXiv:1706.03762](https://arxiv.org/abs/1706.03762).<br>• Ask: at what length does O(n²) become the bottleneck on one GPU? (Roughly 10–50 K tokens depending on hardware and tricks like FlashAttention; the point is that a single TCP session can be longer than that.) |
+| 7 | State Space Models: The Intuition | • Core framing: a fixed-size state vector is a running summary; output comes from the state, not from the full history.<br>• Analogy: reading a book and keeping notes rather than memorising every word.<br>• The right-hand table is the takeaway: 10× longer sequence is 100× compute for attention and 10× for an SSM.<br>• Compare to RNNs: same recurrent shape, but SSMs are linear in the state, which is what lets them be trained in parallel (next slide). |
+| 8 | The State-Space Recurrence | • **Figure:** the recurrence unrolled over time; blue row is the input bytes, orange row the states h₁…hₙ, green row the outputs, with A along the state chain, B on the way in, C on the way out.<br>• Read it aloud left to right: each state is the previous state transformed by A plus the new token projected by B; the output reads the state through C.<br>• The state never grows, which is the whole reason the cost is linear.<br>• The convolution view: unrolling the recurrence gives y as a convolution of x with a kernel built from A, B, C, so training runs as one parallel convolution. That is S4: Gu, Goel, Ré, "Efficiently Modeling Long Sequences with Structured State Spaces", [arXiv:2111.00396](https://arxiv.org/abs/2111.00396).<br>• If someone asks about discretisation: the continuous A, B become Ā, B̄ through a step size Δ, which becomes important on the Mamba slide. |
+| 9 | Mamba: Selective State Spaces | • **Figure:** the selective-state sketch; the input token feeds a small selection network that produces Δ, B, C for that token, Δ discretises A and B, and the state update uses those token-specific matrices.<br>• The selective-copy intuition pump: given "a b [c] d e [f] g h" with brackets marking the tokens that matter, a fixed-rule SSM cannot copy only the marked ones; Mamba can because its gates depend on content.<br>• A large Δ means "attend to this token and reset", a tiny Δ means "ignore it"; that is the mechanism behind "learns when to store, skip, or retrieve".<br>• Mamba: Gu and Dao, "Mamba: Linear-Time Sequence Modeling with Selective State Spaces", [arXiv:2312.00752](https://arxiv.org/abs/2312.00752) (Dec 2023). Mamba-2, the NetSSM backbone: Dao and Gu, "Transformers are SSMs", ICML 2024, [arXiv:2405.21060](https://arxiv.org/abs/2405.21060).<br>• The reference implementation at [github.com/state-spaces/mamba](https://github.com/state-spaces/mamba) now also ships a Mamba-3; NetSSM's published results use Mamba-2, so do not over-claim about successors. |
+| 10 | Why SSMs Fit Network Traffic | • The mapping is the argument of the deck: sequential, stateful, long, multi-flow traffic meets linear scaling, recurrent state, and selective memory.<br>• The recurrent hidden state is a learned protocol state machine: a TCP connection walks SYN_SENT → ESTABLISHED → FIN_WAIT and the state vector can track that progression.<br>• Contrast with diffusion, which relies on spatial image patterns (nPrint rows) to encode state implicitly, which is far less natural.<br>• The "~5× faster than transformers" cell is the Mamba paper's inference-throughput claim, not a NetSSM measurement; say so if pressed. |
+| 11 | NetSSM: Design and Method (section) | • Now apply the theory to the concrete system: three stages, pre-processing, training, generation. |
+| 12 | NetSSM Overview | • Three contributions to repeat later: reliable multi-flow session generation, 8× longer training context and 78× longer generation than transformer-based generators, and a semantic-similarity evaluation.<br>• "Multi-flow" means a session with several interleaved flows, not a longer single flow; prior work never addressed it, it was a gap rather than a failed attempt.<br>• Paper: [arXiv:2503.22663](https://arxiv.org/abs/2503.22663); code: [github.com/noise-lab/netssm](https://github.com/noise-lab/netssm). |
+| 13 | The NetSSM Pipeline | • **Figures:** top, the three stages as a flow (real labelled PCAPs → tokenize → train Mamba-2 with next-token cross-entropy on 100 K-token contexts → seed with an application token → generate autoregressively → detokenize to a synthetic PCAP); bottom, the architecture figure from the paper.<br>• Walk left to right and stress that there is no post-processing stage for protocol compliance, unlike NetDiffusion's ControlNet plus dependency trees.<br>• Generation is seeded by a label token such as `<\|netflix\|>`, so the model is conditional on application class. |
+| 14 | Tokenization and Training | • **Figure:** the first bytes of a packet in hex on top, and the token sequence the model sees below: an application label token, one ID per byte (0x45 → 69, and so on), a `<\|pkt\|>` boundary, then the next packet.<br>• Compare to NetDiffusion's nPrint encoding of packets as bit-level image rows: NetSSM's byte tokens are simpler and generalise across protocols without redesigning the representation.<br>• Training: next-token cross-entropy, no per-packet labels, batch size 1, sequences up to 100,000 tokens (about 943 packets), Mamba-2 backbone. The 100 K context versus roughly 12 K for transformer-class generators is the core scaling advantage.<br>• Hands-on pointer: the notebook `example/train_netssm_from_scratch.ipynb` in [github.com/noise-lab/netssm](https://github.com/noise-lab/netssm) trains a small model end to end on Colab; it needs a GPU runtime, so tell students to pick one before running. |
+| 15 | Evaluation (section) | • The evaluation framework is itself a contribution; introduce the three dimensions before any result so students know why each metric exists. |
+| 16 | A Three-Dimensional Evaluation Framework | • **Figure:** synthetic and held-out real PCAPs feed three evaluators: statistical similarity (JSD of packet-size distributions), downstream ML utility (train on synthetic, test on real), and semantic similarity (protocol rules and application behaviour), each with its own verdict.<br>• Ask why statistical similarity is not enough: a model can match every marginal byte distribution and still emit syntactically invalid TCP.<br>• Ask why ML utility is not enough: a classifier can score well for spurious reasons unrelated to protocol fidelity.<br>• Semantic similarity is the hardest to fake and the most practically meaningful. |
+| 17 | Results: Statistical and ML Performance | • **Figure:** two bar charts drawn from the paper's numbers. Left, JSD: NetShare 0.16, NetDiffusion 0.04, NetSSM 0.02. Right, random-forest accuracy when trained entirely on synthetic data and tested on real: NetShare 0.13, NetDiffusion 0.16, NetSSM 0.97.<br>• The 0.97 is the money number: it answers the practitioner's question "can I train my classifier on this?"<br>• The 0.16 for NetDiffusion is the sharper lesson: packet-level fidelity in the marginals did not make the data useful for training real classifiers.<br>• The per-application breakdown is in `figures/evaluation_detailed.png` in this folder for a seminar-depth question. |
+| 18 | Results: ML Utility vs. Synthetic Data Mix Rate | • **Figure:** accuracy as the synthetic share of training data goes from 0 to 100 %, for application-level and service-type classifiers.<br>• NetSSM stays near 0.97 all the way to 100 % synthetic; NetDiffusion and NetShare fall off steeply, so their synthetic data actively hurts.<br>• Implication to say out loud: an organisation with no access to real traffic could train a production-grade classifier on NetSSM output alone. |
+| 19 | Results: Packet Size Distributions | • **Figure:** kernel density of average packet size, generated versus ground truth.<br>• Read the shape: the left peak is ACKs and small control packets, the right peak is MTU-sized data packets; a model that only gets the mean right would produce one mode and fail this test.<br>• `figures/ks_sizes.png` in this folder has the KS-statistic version if someone asks for a formal test. |
+| 20 | Results: Semantic Similarity — TCP Compliance | • **Figure:** the TCP exchange as a chain, SYN → SYN-ACK → ACK → data and ACKs with advancing counters → FIN or the partial teardowns seen in the wild, with the hidden state shown tracking the connection's phase, counters, and options.<br>• Generated traces have correct handshakes, valid sequence and acknowledgment progression, and advanced options (timestamps, window scaling, SACK), and they pass standard TCP validators.<br>• The anomalies point matters: real captures contain partial teardowns and conflicting flags, and NetSSM reproduces those too, which is fidelity, not a bug.<br>• Contrast: NetDiffusion needed external correction to fix protocol violations; here compliance emerges from the recurrent state. |
+| 21 | Results: Multi-Flow Sessions | • **Figure:** an illustrative timeline of one video-streaming session with four interleaved flows: CDN endpoint setup (TLS handshake, manifest), two segment-download bursts, and a small periodic control flow; marker size scales with packet size, ticks are ACKs. It shows the shape NetSSM reproduces, not a generated trace.<br>• Ask what breaks with single-flow synthetic data: IDS signatures that rely on cross-flow correlation, load balancers tested with unrealistic session patterns, streaming QoE models that need the setup-then-segments sequence.<br>• This is the gap that motivates NetSSM's headline claim. |
+| 22 | Comparison and Context (section) | • Pull back from the results to where NetSSM sits among the generators, and to the caveat every synthetic-data project must face. |
+| 23 | Comparison to Prior Work | • **Figure:** training context and longest generated trace on a log scale: NetDiffusion about 12 K and 1.3 K tokens, NetSSM 100 K and 100 K, the 8× and 78× from the abstract.<br>• Translate the 78×: NetDiffusion generates about 1,300 tokens, a dozen packets; NetSSM generates about 100,000 tokens, roughly 943 packets, an entire TCP session rather than a handshake.<br>• NetShare has no context or generation length in tokens because it generates flow statistics, not packets. |
+| 24 | Privacy Caveat: Synthetic ≠ Automatically Private | • The vignette: Tran, Liu, Li, Feamster, "Quantifying the Privacy Implications of High-Fidelity Synthetic Network Traffic", [arXiv:2511.20497](https://arxiv.org/abs/2511.20497), posted November 2025 (the deck used to say March; corrected).<br>• What it shows: membership-inference attacks can tell whether a user's flows were in the training set, and the paper proposes network-specific privacy metrics for identifier memorisation, sensitive-property leakage, and topology extraction.<br>• The trilemma to write on the board: similar enough to train real classifiers, diverse enough to add information, private enough not to leak individual flows.<br>• Cold call: before releasing NetSSM traces to a partner university, what would you do? (Differential-privacy training, a membership-inference audit, redaction of rare or unique patterns.)<br>• Check at the next refresh whether this preprint has a venue. |
+| 25 | Limitations and Open Problems | • Limitations: TCP-focused (UDP and QUIC are future work), byte-level modelling of TLS-encrypted payloads is an open question, batch size 1 limits training throughput, no differential-privacy guarantee in the base model.<br>• Directions: QUIC and UDP, hybrid SSM-plus-diffusion architectures, networking foundation models (NetFound), standard semantic-similarity benchmarks, the privacy-utility tradeoff.<br>• Flip the question: what would motivate a fourth architecture after SSMs? Hybrids and foundation models are the two live answers. |
+| 26 | Summary (section) | • Close the arc: GANs (flow stats) → diffusion (short raw packets) → SSMs (long, multi-flow, protocol-compliant), each fixing the last gap and opening a new one. |
+| 27 | Key Takeaways | • Three contributions: first reliable multi-flow generator; 0.97 downstream accuracy versus 0.16 for prior art and JSD 0.02 versus 0.04–0.16; the three-dimensional evaluation.<br>• Broader lesson: architecture choice matters for long, stateful sequences, and Mamba's linear scaling and selective state line up with how protocols behave.<br>• Point students at the code and notebook: [github.com/noise-lab/netssm](https://github.com/noise-lab/netssm).<br>• Ask: which of the three evaluation dimensions matters most for your project's application? |
+| 28 | Discussion Questions | • Good as a five-minute breakout plus five-minute debrief if time remains after the 19-Generative material; otherwise pick one for a cold call.<br>• Q1 (single- versus multi-flow) surfaces who thinks in systems terms; Q3 connects to the privacy vignette; Q4 (IDS-specific metrics) is open-ended and suits the last few minutes. |

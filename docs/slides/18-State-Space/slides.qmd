@@ -9,6 +9,13 @@ date: last-modified
 
 > Network ML needs data — but data is hard to get.
 
+```{=html}
+<style>
+.reveal .cell-output-display svg, .reveal .cell-output-display img { width: 100%; height: auto; }
+.reveal .caption { font-size: 0.55em; color: #666666; margin-top: 0.2em; }
+</style>
+```
+
 ::: {.notes}
 Open by connecting to the data acquisition lecture (Lecture 5). Ask: if you wanted to train
 an intrusion detection system on real attack traffic, what would stop you? Lead them to:
@@ -18,7 +25,7 @@ This motivates the entire generative-models thread. See the Generative Models ch
 
 ## Why Synthetic Network Data?
 
-**Labeled network data is scarce** :cite:`sommer2010outside`
+**Labeled network data is scarce** (Sommer & Paxson, 2010)
 
 ::: {.columns}
 ::: {.column width="50%"}
@@ -75,18 +82,24 @@ just use a transformer?"
 
 ## Transformers: Review and Scaling Problem
 
+::: {.columns}
+::: {.column width="42%"}
 **Self-attention**: every token attends to every other token
 
-- **Computational cost**: O(n²) in sequence length
-- 1 K tokens → 1 M comparisons; 100 K tokens → 10 B comparisons
-- Memory also grows quadratically
+- Cost **O(n²)** in sequence length; memory too
+- 1 K tokens → 1 M scores; 100 K → 10 B
+- A few seconds of a TCP session is thousands of packets; a session can exceed 100 K tokens
 
-**Network traffic problem**: even a few seconds of a TCP session can span
-thousands of packets; a full session can easily exceed 100 K tokens.
+Transformers power today's LLMs, but the quadratic cost rules out
+generating long traces.
+:::
+::: {.column width="58%"}
+![](figures/attention-vs-ssm-cost.svg)
 
-::: {.callout-note}
-Transformers are powerful — GPT-4, Claude, Gemini all use them — but their
-quadratic cost makes them impractical for generating long network traces.
+::: {.caption}
+Operations per layer from the two cost formulas, n² and n; the vertical lines mark the contexts the two generators actually use.
+:::
+:::
 :::
 
 ::: {.notes}
@@ -128,31 +141,81 @@ Compare to RNNs: SSMs are more principled and can be parallelized during trainin
 a convolution view.
 :::
 
+## The State-Space Recurrence
+
+$$h_t = A\,h_{t-1} + B\,x_t, \qquad y_t = C\,h_t$$
+
+```{dot}
+//| fig-width: 12.4
+//| fig-height: 3.6
+digraph ssm {
+  rankdir=TB; nodesep=0.35; ranksep=0.4; bgcolor="transparent";
+  node [shape=box, style="filled,rounded", fontname="Helvetica", fontsize=18, color="#555555", penwidth=1.4, margin="0.16,0.08"];
+  edge [color="#555555", penwidth=1.5, fontname="Helvetica", fontsize=16];
+  { rank=same; x1 [label="x₁ (byte 1)", fillcolor="#cfe3f5"]; x2 [label="x₂ (byte 2)", fillcolor="#cfe3f5"]; x3 [label="x₃ (byte 3)", fillcolor="#cfe3f5"]; xd [label="…", shape=plaintext, style=""]; xn [label="xₙ (byte n)", fillcolor="#cfe3f5"]; }
+  { rank=same; h0 [label="h₀", fillcolor="#eeeeee"]; h1 [label="h₁ = A h₀ + B x₁", fillcolor="#f2d9a8"]; h2 [label="h₂ = A h₁ + B x₂", fillcolor="#f2d9a8"]; h3 [label="h₃ = A h₂ + B x₃", fillcolor="#f2d9a8"]; hd [label="…", shape=plaintext, style=""]; hn [label="hₙ = A hₙ₋₁ + B xₙ", fillcolor="#f2d9a8"]; }
+  { rank=same; y1 [label="y₁ = C h₁", fillcolor="#d9efd3"]; y2 [label="y₂ = C h₂", fillcolor="#d9efd3"]; y3 [label="y₃ = C h₃", fillcolor="#d9efd3"]; yd [label="…", shape=plaintext, style=""]; yn [label="yₙ = C hₙ", fillcolor="#d9efd3"]; }
+  h0 -> h1 -> h2 -> h3 -> hd -> hn [label="A"];
+  x1 -> h1 [label="B"]; x2 -> h2 [label="B"]; x3 -> h3 [label="B"]; xn -> hn [label="B"];
+  h1 -> y1 [label="C"]; h2 -> y2 [label="C"]; h3 -> y3 [label="C"]; hn -> yn [label="C"];
+  x1 -> x2 -> x3 -> xd -> xn [style=invis]; y1 -> y2 -> y3 -> yd -> yn [style=invis]; xd -> hd -> yd [style=invis];
+}
+```
+
+- $h_t$ has a **fixed size** however long the input: one update per token, so cost is linear
+- $A$ says what to **keep**, $B$ what to **write** from the new token, $C$ what to **read out**; unrolled, it is a long convolution, so training is parallel (S4, Gu et al., 2021)
+
+::: {.notes}
+This is the equation slide the coverage notes asked for. Read the recurrence left to right
+along the orange row: every state is the previous state transformed by A plus the new token
+projected by B; the output row reads the state through C. Point out that h never grows:
+that is the whole reason the cost is O(n). The convolution view (S4) is why SSMs train as
+fast as transformers even though they look like RNNs.
+:::
+
 ## Mamba: Selective State Spaces
 
 **Problem with classical SSMs**: fixed update rules treat all inputs equally — cannot
 decide "this token matters" based on content.
 
-**Mamba's key insight** (Gu & Dao, 2024): make the state-update parameters **input-dependent**
+**Mamba's key insight** (Gu & Dao, 2023): make the state-update parameters **input-dependent**
 
 ::: {.columns}
 ::: {.column width="50%"}
 **Classical SSM**
 
-- Same $A$, $B$, $C$ matrices for every input
-- Can't selectively remember or forget
-- Like a camera with fixed focus
+- Same $A$, $B$, $C$ for every input: a camera with fixed focus
+- Cannot selectively remember or forget
 :::
 ::: {.column width="50%"}
 **Mamba (selective SSM)**
 
-- $A$, $B$, $C$ computed from the current input token
+- $B$, $C$, and the step size $\Delta$ are **computed from $x_t$**
 - Model learns *when* to store, skip, or retrieve
 - Hardware-aware parallel scan keeps cost O(n)
 :::
 :::
 
-**Result**: content-aware memory with linear scaling.
+```{dot}
+//| fig-width: 12.4
+//| fig-height: 2.6
+digraph mamba {
+  rankdir=LR; nodesep=0.25; ranksep=0.5; bgcolor="transparent";
+  node [shape=box, style="filled,rounded", fontname="Helvetica", fontsize=17, color="#555555", penwidth=1.4, margin="0.16,0.08"];
+  edge [color="#555555", penwidth=1.5, fontname="Helvetica", fontsize=15];
+  x [label="input token xₜ", fillcolor="#cfe3f5"];
+  sel [label="selection network\nΔ(xₜ), B(xₜ), C(xₜ)", fillcolor="#f2d9a8"];
+  disc [label="discretize\nĀ = exp(ΔA), B̄ = ΔB", fillcolor="#eeeeee"];
+  hprev [label="state hₜ₋₁", fillcolor="#eeeeee"];
+  h [label="state hₜ = Ā hₜ₋₁ + B̄ xₜ", fillcolor="#f8d7c4"];
+  y [label="output yₜ = C(xₜ) hₜ", fillcolor="#d9efd3"];
+  x -> sel -> disc -> h; hprev -> h; h -> y; x -> h [style=dashed, label="same byte,\nchosen weight"];
+}
+```
+
+::: {.caption}
+Content-aware memory with linear scaling: a large Δ for a token means "pay attention and reset", a tiny Δ means "ignore it" (Gu & Dao, 2023; Mamba-2: Dao & Gu, 2024).
+:::
 
 ::: {.notes}
 The selective copy task is a good intuition pump: given input "a b [c] d e [f] g h" where
@@ -214,14 +277,36 @@ pipeline in the architecture figure.
    application-specific behavior
 
 ::: {.notes}
-The paper (Chu et al., Proc. ACM Networking, March 2025, arXiv:2503.22663) uses the term
+The paper (Chu et al., Proc. ACM on Networking 4, CoNEXT1, presented at ACM CoNEXT 2025;
+arXiv:2503.22663; code at github.com/noise-lab/netssm) uses the term
 "multi-flow" to distinguish session-level generation from single-flow generation. Emphasize
 that prior work simply never addressed multi-flow; it was a gap, not a failed attempt.
 :::
 
 ## The NetSSM Pipeline
 
-![Three-stage pipeline: Pre-processing → Training → Generation](figures/pipeline.png)
+```{dot}
+//| fig-width: 12.4
+//| fig-height: 2.0
+digraph pipe {
+  rankdir=LR; nodesep=0.25; ranksep=0.45; bgcolor="transparent";
+  node [shape=box, style="filled,rounded", fontname="Helvetica", fontsize=17, color="#555555", penwidth=1.4, margin="0.16,0.08"];
+  edge [color="#555555", penwidth=1.5, fontname="Helvetica", fontsize=15];
+  pcap [label="real PCAPs\n(labelled by app)", fillcolor="#cfe3f5"];
+  tok [label="tokenize\nbyte → ID, <|pkt|>, <|app|>", fillcolor="#eeeeee"];
+  train [label="train Mamba-2\nnext-token cross-entropy\n100 K-token context", fillcolor="#f2d9a8"];
+  seed [label="seed with\n<|netflix|>", fillcolor="#eeeeee"];
+  gen [label="generate tokens\nautoregressively", fillcolor="#f2d9a8"];
+  out [label="detokenize →\nsynthetic PCAP", fillcolor="#d9efd3"];
+  pcap -> tok -> train -> seed -> gen -> out;
+}
+```
+
+![](figures/pipeline.png){height="230px"}
+
+::: {.caption}
+Top: the three stages as a flow. Bottom: the architecture figure from the NetSSM paper (Chu et al., CoNEXT 2025).
+:::
 
 ::: {.notes}
 Walk left to right: (1) PCAP files are tokenized byte-by-byte; (2) the Mamba model is
@@ -231,31 +316,28 @@ reassembled into PCAP. No separate post-processing step needed for TCP complianc
 unlike NetDiffusion's ControlNet + dependency trees.
 :::
 
-## Tokenization and Training {.smaller}
+## Tokenization and Training
+
+![](figures/tokenization-bytes-to-tokens.svg)
 
 ::: {.columns}
 ::: {.column width="50%"}
 **Tokenization**
 
-- **One-to-one** byte → token ID mapping (0–255)
-- Special tokens for application labels:
-  `<|netflix|>`, `<|facebook|>`, …
-- Special token for packet boundaries: `<|pkt|>`
-- No hand-crafted feature engineering needed
+- One token per byte (IDs 0–255); no feature engineering
+- Special tokens: app labels (`<|netflix|>`, …) and `<|pkt|>` boundaries
 :::
 ::: {.column width="50%"}
 **Training**
 
-- Objective: **next-token prediction** (cross-entropy)
-- Unsupervised — no per-packet labels required
-- Batch size 1, sequences up to **100,000 tokens**
-- ~943 packets per training sequence
-- Mamba-2 backbone with selective state spaces
+- Next-token prediction (cross-entropy), no per-packet labels
+- Sequences up to **100,000 tokens** (~943 packets); Mamba-2 backbone
 :::
 :::
 
-**Key design choice**: treating raw bytes as tokens means the model must learn
-protocol structure entirely from data — and it does.
+::: {.caption}
+Treating raw bytes as tokens means the model must learn protocol structure from data alone, and it does. Try it: `example/train_netssm_from_scratch.ipynb` in github.com/noise-lab/netssm trains a small model on Colab (GPU runtime).
+:::
 
 ::: {.notes}
 Compare to NetDiffusion's tokenization: nPrint encodes packets as bit-level image rows.
@@ -273,16 +355,25 @@ assessment before showing results so students understand why each metric matters
 
 ## A Three-Dimensional Evaluation Framework
 
-Prior work evaluated only **statistical similarity**. NetSSM adds two more dimensions:
+```{dot}
+//| fig-width: 12.4
+//| fig-height: 3.4
+digraph evalfw {
+  rankdir=LR; nodesep=0.3; ranksep=0.6; bgcolor="transparent";
+  node [shape=box, style="filled,rounded", fontname="Helvetica", fontsize=17, color="#555555", penwidth=1.4, margin="0.16,0.08"];
+  edge [color="#555555", penwidth=1.5, fontname="Helvetica", fontsize=15];
+  gen [label="synthetic PCAP", fillcolor="#cfe3f5"]; real [label="real PCAP\n(held out)", fillcolor="#cfe3f5"];
+  s [label="1. Statistical similarity\nJSD of packet-size distributions", fillcolor="#f2d9a8"];
+  m [label="2. Downstream ML utility\ntrain classifier on synthetic,\ntest on real", fillcolor="#f2d9a8"];
+  sem [label="3. Semantic similarity (new)\nprotocol rules obeyed?\napp-level behaviour reproduced?", fillcolor="#f8d7c4"];
+  o1 [label="distribution match", fillcolor="#d9efd3"]; o2 [label="accuracy on real data", fillcolor="#d9efd3"]; o3 [label="valid TCP, realistic sessions", fillcolor="#d9efd3"];
+  gen -> s; real -> s; gen -> m; real -> m; gen -> sem; real -> sem; s -> o1; m -> o2; sem -> o3;
+}
+```
 
-1. **Statistical similarity** — does the byte-level distribution match real traffic?
-   (Jensen-Shannon Divergence on packet-size distributions)
-
-2. **Downstream ML utility** — can you train a classifier on synthetic data and
-   deploy it on real data? (Random forest accuracy on held-out ground truth)
-
-3. **Semantic similarity** *(new)* — does generated traffic obey protocol rules
-   and reproduce application-level behavioral patterns?
+Prior work stopped at **statistical similarity**. A model can match every marginal byte
+distribution and still emit TCP that no stack would accept, so NetSSM adds **ML utility**
+and **semantic similarity**: the hardest dimension to fake and the most practically meaningful.
 
 ::: {.notes}
 Ask students: why isn't statistical similarity enough? (A model could perfectly reproduce
@@ -294,31 +385,13 @@ the most practically meaningful.
 
 ## Results: Statistical and ML Performance
 
-::: {.columns}
-::: {.column width="50%"}
-**Statistical similarity** (Jensen-Shannon Divergence — lower is better)
+![](figures/results-jsd-accuracy.svg)
 
-| Method | JSD |
-|---|---|
-| NetShare | 0.16 |
-| NetDiffusion | 0.04 |
-| **NetSSM** | **0.02** |
+- **Statistical**: JSD 0.02, 8× better than NetShare (0.16) and 2× better than NetDiffusion (0.04)
+- **ML utility**: a random forest trained **entirely on synthetic data** reaches **0.97** accuracy on real traffic; prior generators, even packet-level ones, gave 0.13–0.16
 
-NetSSM is 8× better than NetShare, 2× better than NetDiffusion.
-:::
-::: {.column width="50%"}
-**Downstream ML utility**
-
-Random forest trained **entirely on synthetic data**, tested on real data:
-
-| Method | Accuracy |
-|---|---|
-| NetShare | 0.13 |
-| NetDiffusion | 0.16 |
-| **NetSSM** | **0.97** |
-
-97% accuracy using only synthetic training data.
-:::
+::: {.caption}
+Numbers from the NetSSM paper (Chu et al., CoNEXT 2025); bars drawn from the same values.
 :::
 
 ::: {.notes}
@@ -361,15 +434,26 @@ would produce a single-mode distribution and fail this test.
 
 ## Results: Semantic Similarity — TCP Compliance
 
-**NetSSM generates protocol-adherent traffic without external correction**
+**Protocol-adherent traffic with no external correction step**
 
-- Correct TCP three-way handshake (SYN → SYN-ACK → ACK)
-- Valid sequence number and acknowledgment number progression
-- Advanced TCP options (timestamps, window scaling, SACK)
-- Faithfully replicates real-world anomalies: partial teardowns,
-  conflicting flags seen in the wild
+```{dot}
+//| fig-width: 12.4
+//| fig-height: 2.5
+digraph tcp {
+  rankdir=LR; nodesep=0.25; ranksep=0.45; bgcolor="transparent";
+  node [shape=box, style="filled,rounded", fontname="Helvetica", fontsize=16, color="#555555", penwidth=1.4, margin="0.14,0.08"];
+  edge [color="#555555", penwidth=1.5, fontname="Helvetica", fontsize=14];
+  syn [label="SYN\nseq=x", fillcolor="#cfe3f5"]; sa [label="SYN-ACK\nseq=y, ack=x+1", fillcolor="#cfe3f5"]; ack [label="ACK\nack=y+1", fillcolor="#cfe3f5"];
+  data [label="DATA / ACK\nseq, ack advance\nby bytes sent", fillcolor="#d9efd3"]; fin [label="FIN / FIN-ACK\n(or the partial\nteardowns seen in the wild)", fillcolor="#f8d7c4"];
+  st [label="hidden state hₜ tracks\nthe connection's phase,\nseq/ack counters, options", fillcolor="#f2d9a8"];
+  syn -> sa -> ack -> data -> fin;
+  st -> syn [style=dashed]; st -> data [style=dashed]; st -> fin [style=dashed];
+}
+```
 
-**Generated traces pass standard TCP protocol validators.**
+- Correct three-way handshake, valid sequence and acknowledgment progression
+- Advanced options (timestamps, window scaling, SACK); real-world anomalies such as partial teardowns and conflicting flags reproduced faithfully
+- **Generated traces pass standard TCP protocol validators**
 
 ::: {.notes}
 Contrast with NetDiffusion: NetDiffusion needed ControlNet + dependency trees as external
@@ -383,15 +467,14 @@ protocol semantics without requiring extensive post-processing."
 
 **NetSSM is the first generator to reliably produce multi-flow PCAP sessions.**
 
-Example — video streaming session:
+![](figures/multiflow-session-timeline.svg)
 
-1. **CDN endpoint setup** flows (HTTP/HTTPS negotiation)
-2. **Video segment download** flows (large data bursts)
-3. Correct **interleaving** of control and data flows
-4. Accurate timing and sequencing across flows
+::: {.caption}
+Illustrative shape of a video-streaming session: CDN endpoint setup, then segment-download bursts, with control flows interleaved throughout. NetSSM reproduces the interleaving, timing, and sequencing across flows.
+:::
 
-**Why it matters**: real-world traffic (web browsing, IoT, streaming) is always
-multi-flow. Single-flow generators produce traces no network system would ever see.
+**Why it matters**: real traffic (web browsing, IoT, streaming) is always multi-flow.
+Single-flow generators produce traces no network system would ever see.
 
 ::: {.notes}
 Ask: what real-world systems would break if you only had single-flow synthetic traces?
@@ -402,23 +485,24 @@ sequences. This is the gap that motivates NetSSM's main claim.
 
 # Comparison and Context {.center}
 
-## Comparison to Prior Work {.smaller}
+## Comparison to Prior Work
 
 ::: {.columns}
-::: {.column width="60%"}
-| Method | Type | Multi-Flow | Max Context | Max Generation |
-|---|---|---|---|---|
-| NetShare | Flow stats | No | N/A | N/A |
-| NetDiffusion | Raw packets | No | ~12 K tokens | ~1.3 K tokens |
-| **NetSSM** | **Raw packets** | **Yes** | **100 K tokens** | **~100 K tokens** |
-:::
-::: {.column width="40%"}
-**Key gaps closed by NetSSM**:
+::: {.column width="50%"}
+| Method | Output | Multi-flow |
+|---|---|---|
+| NetShare | flow stats | no |
+| NetDiffusion | raw packets | no |
+| **NetSSM** | **raw packets** | **yes** |
+
+**Gaps closed by NetSSM**
 
 - Multi-flow sessions: first of its kind
-- 8× longer training context
-- 78× longer trace generation
-- No external post-processing for protocol compliance
+- 8× longer context, 78× longer generation
+- No post-processing for protocol compliance
+:::
+::: {.column width="50%"}
+![](figures/context-generation-length.svg)
 :::
 :::
 
@@ -432,7 +516,7 @@ handshake.
 ## Privacy Caveat: Synthetic ≠ Automatically Private {.smaller}
 
 ::: {.vignette}
-**March 2025 — arXiv:2511.20497, "Quantifying the Privacy Implications of High-Fidelity Synthetic Network Traffic":** as models like NetSSM produce increasingly realistic traces, researchers demonstrated that *membership inference attacks* can determine whether a specific user's flows were in the training data. The paper introduces network-specific privacy metrics covering identifier memorization, sensitive property leakage, and topology extraction. The takeaway: fidelity and privacy exist in tension — stronger privacy guarantees (e.g., differential privacy) degrade synthetic data quality.
+**November 2025 — arXiv:2511.20497, "Quantifying the Privacy Implications of High-Fidelity Synthetic Network Traffic":** as models like NetSSM produce increasingly realistic traces, researchers demonstrated that *membership inference attacks* can determine whether a specific user's flows were in the training data. The paper introduces network-specific privacy metrics covering identifier memorization, sensitive property leakage, and topology extraction. The takeaway: fidelity and privacy exist in tension — stronger privacy guarantees (e.g., differential privacy) degrade synthetic data quality.
 :::
 
 **The fidelity–diversity–privacy trilemma**: synthetic traffic must be
@@ -485,7 +569,7 @@ Hybrid SSM+diffusion is one active direction. Foundation models (NetFound) are a
 
 ## Key Takeaways
 
-**Three contributions of NetSSM** (Chu et al., ACM Networking 2025):
+**Three contributions of NetSSM** (Chu et al., ACM CoNEXT 2025):
 
 1. **First reliable multi-flow session generator** — addresses the critical gap for
    real-world traffic scenarios (streaming, IoT, web)
@@ -496,6 +580,8 @@ Hybrid SSM+diffusion is one active direction. Foundation models (NetFound) are a
 
 **Broader lesson**: architecture choice matters for long, stateful sequences —
 Mamba's linear scaling and selective state align naturally with network protocols.
+
+Code and a from-scratch training notebook: [github.com/noise-lab/netssm](https://github.com/noise-lab/netssm)
 
 ::: {.notes}
 Close by connecting back to the course arc: we've now seen GANs (flow stats), diffusion

@@ -16,11 +16,21 @@ Instructor-facing companion to `slides.qmd`. Not shown to students.
   CoNEXT1, March 2025; arXiv:2503.22663) as the primary citation anchor rather than the
   earlier SIGCOMM workshop feasibility study (2024).
 
+## Figures added (2026-11-20 graphics pass)
+
+Script: `make-figures.py` in this directory (run with `/usr/local/bin/python3.12`), SVGs in `figures/`.
+Generated figures (matplotlib, drawn from the numbers already on the slide):
+- `figures/attention-vs-ssm-cost.svg` (Transformers slide): n² vs n operations per layer, log axes.
+- `figures/tokenization-bytes-to-tokens.svg` (Tokenization slide): packet bytes → byte tokens plus `<|netflix|>` and `<|pkt|>`; illustrative bytes.
+- `figures/results-jsd-accuracy.svg` (Statistical and ML Performance): bars for JSD 0.16/0.04/0.02 and accuracy 0.13/0.16/0.97.
+- `figures/multiflow-session-timeline.svg` (Multi-Flow Sessions): illustrative four-flow session timeline, labelled as illustrative.
+- `figures/context-generation-length.svg` (Comparison): 12 K/1.3 K vs 100 K/100 K tokens, log scale.
+Graphviz `{dot}` diagrams inline in `slides.qmd`: the state-space recurrence over time (new slide "The State-Space Recurrence", closing the "formal SSM math" gap below), the Mamba selective-state sketch, the NetSSM pipeline (above the paper's architecture figure, which is kept), the three-dimensional evaluation framework, and the TCP handshake with the hidden state tracking it.
+Text fixes in the same pass: the literal `:cite:` artifact on "Why Synthetic Network Data?" is now "(Sommer & Paxson, 2010)"; the privacy vignette's date is November 2025 (arXiv 2511 numbering); NetSSM is cited as Proc. ACM on Networking vol. 4 (CoNEXT1, March 2026 issue), presented at ACM CoNEXT 2025, with the code repository and the `example/train_netssm_from_scratch.ipynb` notebook (GPU, Colab) named on the Tokenization and Takeaways slides. `.smaller` dropped from Tokenization and Comparison. Legacy `speaker-notes.md` (Marp-era sections) replaced by the one-table format, 28 rows.
+
 ## Suggested missing coverage on broad themes
 
-- **Formal SSM math**: The slides give the O(n) intuition but skip the state-transition
-  equations (x_t = A x_{t-1} + B u_t; y_t = C x_t). A single equation slide would
-  bridge to students who want the precise formulation.
+- **Formal SSM math**: closed 2026-11-20 by the slide "The State-Space Recurrence".
 - **Differential privacy for generative models**: The privacy vignette raises DP but
   the deck does not explain how DP is applied during training (e.g., DP-SGD). A follow-on
   slide or lab exercise on the noise-calibration tradeoff would close this gap.
@@ -44,8 +54,8 @@ Refresh the dated content below per `../TEMPLATE.md` → "Annual current-events 
 - **Privacy vignette (arXiv:2511.20497)**: verify whether this preprint has been
   published in a venue by the next refresh cycle; if so, update to journal/conference
   citation. Also check whether follow-up papers on network-specific DP have appeared.
-- **NetSSM citation status**: the paper was published in Proc. ACM Networking (March 2025,
-  doi:10.1145/3786289). Verify at next refresh whether a longer journal version or
+- **NetSSM citation status**: the paper is in Proc. ACM on Networking vol. 4, CoNEXT1 (March 2026
+  issue; presented at ACM CoNEXT 2025; doi:10.1145/3786289). Verify at next refresh whether a longer journal version or
   follow-on (QUIC/UDP extension) has appeared.
 - **Mamba architecture**: Mamba-2 (Dao & Gu, 2024) is the backbone. Check whether a
   Mamba-3 or successor architecture has displaced it by the next teaching cycle.
