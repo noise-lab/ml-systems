@@ -43,3 +43,6 @@ $code-block-font-size: 0.7em;
 // Smaller captioned images
 .reveal figure img { max-height: 460px; }
 .reveal figcaption { font-size: 0.55em; color: lighten($uchicago-dark, 20%); }
+
+.reveal .larger { font-size: 1.25em; }
+.reveal .large { font-size: 1.15em; }

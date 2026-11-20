@@ -799,7 +799,7 @@ of Chapter 7 before that session.
 
 # Appendix: The Math {.center}
 
-## Forward Process: Equations
+## Forward Process: Equations {.large}
 
 **One step** of the forward (diffusion) process adds Gaussian noise with variance
 $\beta_t$ from a fixed schedule:
@@ -823,7 +823,7 @@ $t$, and a random $\epsilon$, and produce $x_t$ in one shot. See the DDPM paper
 (Ho et al., 2020) and the "Diffusion Models" section of Chapter 7.
 :::
 
-## Reverse Process: Equations
+## Reverse Process: Equations {.large}
 
 **Noise-prediction objective.** A network $\epsilon_\theta(x_t, t)$ is trained to
 recover the noise $\epsilon$ that produced $x_t$ from $x_0$ — a plain mean-squared-error
@@ -836,8 +836,7 @@ the predicted noise and re-injects a little fresh noise ($z \sim \mathcal{N}(0, 
 
 $$x_{t-1} = \frac{1}{\sqrt{\alpha_t}}\left(x_t - \frac{\beta_t}{\sqrt{1-\bar{\alpha}_t}}\, \epsilon_\theta(x_t, t)\right) + \sigma_t z$$
 
-The main-flow slide summarizes this as "predict the noise and subtract it"; the compact
-form $x_{t-1} \leftarrow x_t - \epsilon_\theta(x_t, t)$ drops the scaling factors and the fresh-noise term.
+In words: predict the noise and subtract it; $x_{t-1} \leftarrow x_t - \epsilon_\theta(x_t, t)$ with the scaling dropped.
 
 ::: {.notes}
 Companion to "The Reverse Process" slide. Each training iteration samples a random
