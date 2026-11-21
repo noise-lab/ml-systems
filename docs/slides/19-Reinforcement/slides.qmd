@@ -512,7 +512,7 @@ Chapter: "Tabular Q-Learning".
 ![](images/abr-learning-curve.svg)
 
 ::: {.caption}
-Greedy policy evaluated on five held-out traces every 50 episodes (`figures.py`, α = 0.05, γ = 0.9, ε decays 1 → 0.05). Final QoE 53 against 48 (buffer-based), 33 (rate-based), 18 (fixed lowest).
+Greedy policy evaluated on five held-out sessionss every 50 episodes (`figures.py`, α = 0.05, γ = 0.9, ε decays 1 → 0.05). Final QoE 53 against 48 (buffer-based), 33 (rate-based), 18 (fixed lowest).
 :::
 :::
 ::: {.column width="50%"}
@@ -810,7 +810,7 @@ digraph pipe {
   traces [label="measurements\ntraces, topologies,\nworkloads", fillcolor="#cfe3f5"];
   sim [label="simulator or emulator\ntrace replay (Pensieve) · ns-3 (ns3-gym)\nMininet (Iroko) · Park", fillcolor="#eeeeee"];
   train [label="training\nmillions of episodes,\nexploration is free", fillcolor="#f2d9a8"];
-  eval [label="evaluation\nheld-out traces,\nemulated paths (Pantheon)", fillcolor="#eeeeee"];
+  eval [label="evaluation\nheld-out sessionss,\nemulated paths (Pantheon)", fillcolor="#eeeeee"];
   deploy [label="deployment\nfast inference, little\nexploration, monitoring", fillcolor="#d9efd3"];
   traces -> sim -> train -> eval -> deploy;
   deploy -> traces [label="new measurements", style=dashed, constraint=false];
@@ -889,7 +889,7 @@ Chapter: "Simulation Environments" (the mitigation list) and the Puffer paragrap
 
 ::: {.notes}
 The figure is the hands-on's penalty experiment run in advance. Three bars per panel, one
-per penalty weight, on the held-out traces. Read left to right: average bitrate barely
+per penalty weight, on held-out sessionss. Read left to right: average bitrate barely
 moves; rebuffering falls from about 23 seconds to under 2; switches move too because the
 switch penalty is now relatively more or less important. The lesson is from the chapter's
 reward-design paragraphs: a reward is a proxy for an operator's goal, and the agent will find
@@ -954,7 +954,7 @@ digraph ho {
   edge [color="#555555", penwidth=1.5];
   p1 [label="Part 1 · bandit\nfour servers, unknown latency\nε-greedy, ε ∈ {0, 0.1, 0.3}\ncumulative regret", fillcolor="#cfe3f5"];
   p2 [label="Part 2 · ABR environment\n4 bitrates, 4 s chunks, synthetic trace\nQoE = bitrate − 4.3·stall − 1·switch\nthree baselines", fillcolor="#f2d9a8"];
-  p3 [label="Part 3 · Q-learning\ndecaying ε, held-out trace\nthen change the rebuffer penalty", fillcolor="#d9efd3"];
+  p3 [label="Part 3 · Q-learning\ndecaying ε, held-out sessions\nthen change the rebuffer penalty", fillcolor="#d9efd3"];
   p4 [label="Part 4 · questions\ndiscretisation · sim-to-real\nreward design · other formulations", fillcolor="#f8d7c4"];
   p1 -> p2 -> p3 -> p4;
 }
