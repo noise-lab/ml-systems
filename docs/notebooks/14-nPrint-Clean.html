@@ -7332,7 +7332,12 @@ a.anchor-link {
     if (!diagrams.length) {
       return;
     }
-    const mermaid = (await import("https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.7.0/mermaid.esm.min.mjs")).default;
+    const mermaid = (await import("https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.10.0/mermaid.esm.min.mjs")).default;
+    const elkUrl = "https://cdnjs.cloudflare.com/ajax/libs/mermaid-layout-elk/0.1.9/mermaid-layout-elk.esm.min.mjs";
+    if(elkUrl) {
+      const elkLayouts = (await import(elkUrl)).default;
+      mermaid.registerLayoutLoaders(elkLayouts);
+    }
     const parser = new DOMParser();
 
     mermaid.initialize({
@@ -7429,7 +7434,8 @@ a.anchor-link {
      * Post-process to ensure mermaid diagrams contain only valid SVG and XHTML.
      */
     function cleanMermaidSvg(svg) {
-      return svg.replace(RE_VOID_ELEMENT, replaceVoidElement);
+      svg = svg.replace(RE_VOID_ELEMENT, replaceVoidElement);
+      return `${SVG_XML_HEADER}${svg}`;
     }
 
 
@@ -7455,6 +7461,285 @@ a.anchor-link {
       }
       return `<${tag} ${rest}>`;
     }
+
+
+  /**
+   * Named HTML entities with their decimal equivalent codes.
+   *
+   * @see https://www.w3.org/TR/WD-html40-970708/sgml/entities.html
+   * */
+  const HTML_ENTITIES = `<!ENTITY Aacute "&#193;">
+<!ENTITY aacute "&#225;">
+<!ENTITY Acirc "&#194;">
+<!ENTITY acirc "&#226;">
+<!ENTITY acute "&#180;">
+<!ENTITY AElig "&#198;">
+<!ENTITY aelig "&#230;">
+<!ENTITY Agrave "&#192;">
+<!ENTITY agrave "&#224;">
+<!ENTITY alefsym "&#8501;">
+<!ENTITY Alpha "&#913;">
+<!ENTITY alpha "&#945;">
+<!ENTITY amp "&#38;">
+<!ENTITY and "&#8869;">
+<!ENTITY ang "&#8736;">
+<!ENTITY Aring "&#197;">
+<!ENTITY aring "&#229;">
+<!ENTITY asymp "&#8776;">
+<!ENTITY Atilde "&#195;">
+<!ENTITY atilde "&#227;">
+<!ENTITY Auml "&#196;">
+<!ENTITY auml "&#228;">
+<!ENTITY bdquo "&#8222;">
+<!ENTITY Beta "&#914;">
+<!ENTITY beta "&#946;">
+<!ENTITY brvbar "&#166;">
+<!ENTITY bull "&#8226;">
+<!ENTITY cap "&#8745;">
+<!ENTITY Ccedil "&#199;">
+<!ENTITY ccedil "&#231;">
+<!ENTITY cedil "&#184;">
+<!ENTITY cent "&#162;">
+<!ENTITY Chi "&#935;">
+<!ENTITY chi "&#967;">
+<!ENTITY circ "&#710;">
+<!ENTITY clubs "&#9827;">
+<!ENTITY cong "&#8773;">
+<!ENTITY copy "&#169;">
+<!ENTITY crarr "&#8629;">
+<!ENTITY cup "&#8746;">
+<!ENTITY curren "&#164;">
+<!ENTITY dagger "&#8224;">
+<!ENTITY Dagger "&#8225;">
+<!ENTITY darr "&#8595;">
+<!ENTITY dArr "&#8659;">
+<!ENTITY deg "&#176;">
+<!ENTITY Delta "&#916;">
+<!ENTITY delta "&#948;">
+<!ENTITY diams "&#9830;">
+<!ENTITY divide "&#247;">
+<!ENTITY Eacute "&#201;">
+<!ENTITY eacute "&#233;">
+<!ENTITY Ecirc "&#202;">
+<!ENTITY ecirc "&#234;">
+<!ENTITY Egrave "&#200;">
+<!ENTITY egrave "&#232;">
+<!ENTITY empty "&#8709;">
+<!ENTITY emsp "&#8195;">
+<!ENTITY ensp "&#8194;">
+<!ENTITY epsilon "&#949;">
+<!ENTITY Epsilon "&#917;">
+<!ENTITY equiv "&#8801;">
+<!ENTITY Eta "&#919;">
+<!ENTITY eta "&#951;">
+<!ENTITY ETH "&#208;">
+<!ENTITY eth "&#240;">
+<!ENTITY Euml "&#203;">
+<!ENTITY euml "&#235;">
+<!ENTITY exist "&#8707;">
+<!ENTITY fnof "&#402;">
+<!ENTITY forall "&#8704;">
+<!ENTITY frac12 "&#189;">
+<!ENTITY frac14 "&#188;">
+<!ENTITY frac34 "&#190;">
+<!ENTITY frasl "&#8260;">
+<!ENTITY Gamma "&#915;">
+<!ENTITY gamma "&#947;">
+<!ENTITY ge "&#8805;">
+<!ENTITY gt "&#62;">
+<!ENTITY harr "&#8596;">
+<!ENTITY hArr "&#8660;">
+<!ENTITY hearts "&#9829;">
+<!ENTITY hellip "&#8230;">
+<!ENTITY Iacute "&#205;">
+<!ENTITY iacute "&#237;">
+<!ENTITY Icirc "&#206;">
+<!ENTITY icirc "&#238;">
+<!ENTITY iexcl "&#161;">
+<!ENTITY Igrave "&#204;">
+<!ENTITY igrave "&#236;">
+<!ENTITY image "&#8465;">
+<!ENTITY infin "&#8734;">
+<!ENTITY int "&#8747;">
+<!ENTITY Iota "&#921;">
+<!ENTITY iota "&#953;">
+<!ENTITY iquest "&#191;">
+<!ENTITY isin "&#8712;">
+<!ENTITY Iuml "&#207;">
+<!ENTITY iuml "&#239;">
+<!ENTITY Kappa "&#922;">
+<!ENTITY kappa "&#954;">
+<!ENTITY Lambda "&#923;">
+<!ENTITY lambda "&#955;">
+<!ENTITY lang "&#9001;">
+<!ENTITY laquo "&#171;">
+<!ENTITY larr "&#8592;">
+<!ENTITY lArr "&#8656;">
+<!ENTITY lceil "&#8968;">
+<!ENTITY ldquo "&#8220;">
+<!ENTITY le "&#8804;">
+<!ENTITY lfloor "&#8970;">
+<!ENTITY lowast "&#8727;">
+<!ENTITY loz "&#9674;">
+<!ENTITY lrm "&#8206;">
+<!ENTITY lsaquo "&#8249;">
+<!ENTITY lsquo "&#8216;">
+<!ENTITY lt "&#60;">
+<!ENTITY macr "&#175;">
+<!ENTITY mdash "&#8212;">
+<!ENTITY micro "&#181;">
+<!ENTITY middot "&#183;">
+<!ENTITY minus "&#8722;">
+<!ENTITY Mu "&#924;">
+<!ENTITY mu "&#956;">
+<!ENTITY nabla "&#8711;">
+<!ENTITY nbsp "&#160;">
+<!ENTITY ndash "&#8211;">
+<!ENTITY ne "&#8800;">
+<!ENTITY ni "&#8715;">
+<!ENTITY not "&#172;">
+<!ENTITY notin "&#8713;">
+<!ENTITY nsub "&#8836;">
+<!ENTITY Ntilde "&#209;">
+<!ENTITY ntilde "&#241;">
+<!ENTITY Nu "&#925;">
+<!ENTITY nu "&#957;">
+<!ENTITY Oacute "&#211;">
+<!ENTITY oacute "&#243;">
+<!ENTITY Ocirc "&#212;">
+<!ENTITY ocirc "&#244;">
+<!ENTITY OElig "&#338;">
+<!ENTITY oelig "&#339;">
+<!ENTITY Ograve "&#210;">
+<!ENTITY ograve "&#242;">
+<!ENTITY oline "&#8254;">
+<!ENTITY Omega "&#937;">
+<!ENTITY omega "&#969;">
+<!ENTITY Omicron "&#927;">
+<!ENTITY omicron "&#959;">
+<!ENTITY oplus "&#8853;">
+<!ENTITY or "&#8870;">
+<!ENTITY ordf "&#170;">
+<!ENTITY ordm "&#186;">
+<!ENTITY Oslash "&#216;">
+<!ENTITY oslash "&#248;">
+<!ENTITY Otilde "&#213;">
+<!ENTITY otilde "&#245;">
+<!ENTITY otimes "&#8855;">
+<!ENTITY Ouml "&#214;">
+<!ENTITY ouml "&#246;">
+<!ENTITY para "&#182;">
+<!ENTITY part "&#8706;">
+<!ENTITY permil "&#8240;">
+<!ENTITY perp "&#8869;">
+<!ENTITY Phi "&#934;">
+<!ENTITY phi "&#966;">
+<!ENTITY Pi "&#928;">
+<!ENTITY pi "&#960;">
+<!ENTITY piv "&#982;">
+<!ENTITY plusmn "&#177;">
+<!ENTITY pound "&#163;">
+<!ENTITY prime "&#8242;">
+<!ENTITY Prime "&#8243;">
+<!ENTITY prod "&#8719;">
+<!ENTITY prop "&#8733;">
+<!ENTITY Psi "&#936;">
+<!ENTITY psi "&#968;">
+<!ENTITY quot "&#34;">
+<!ENTITY radic "&#8730;">
+<!ENTITY rang "&#9002;">
+<!ENTITY raquo "&#187;">
+<!ENTITY rarr "&#8594;">
+<!ENTITY rArr "&#8658;">
+<!ENTITY rceil "&#8969;">
+<!ENTITY rdquo "&#8221;">
+<!ENTITY real "&#8476;">
+<!ENTITY reg "&#174;">
+<!ENTITY rfloor "&#8971;">
+<!ENTITY Rho "&#929;">
+<!ENTITY rho "&#961;">
+<!ENTITY rlm "&#8207;">
+<!ENTITY rsaquo "&#8250;">
+<!ENTITY rsquo "&#8217;">
+<!ENTITY sbquo "&#8218;">
+<!ENTITY Scaron "&#352;">
+<!ENTITY scaron "&#353;">
+<!ENTITY sdot "&#8901;">
+<!ENTITY sect "&#167;">
+<!ENTITY shy "&#173;">
+<!ENTITY Sigma "&#931;">
+<!ENTITY sigma "&#963;">
+<!ENTITY sigmaf "&#962;">
+<!ENTITY sim "&#8764;">
+<!ENTITY spades "&#9824;">
+<!ENTITY sub "&#8834;">
+<!ENTITY sube "&#8838;">
+<!ENTITY sum "&#8721;">
+<!ENTITY sup "&#8835;">
+<!ENTITY sup1 "&#185;">
+<!ENTITY sup2 "&#178;">
+<!ENTITY sup3 "&#179;">
+<!ENTITY supe "&#8839;">
+<!ENTITY szlig "&#223;">
+<!ENTITY Tau "&#932;">
+<!ENTITY tau "&#964;">
+<!ENTITY there4 "&#8756;">
+<!ENTITY Theta "&#920;">
+<!ENTITY theta "&#952;">
+<!ENTITY thetasym "&#977;">
+<!ENTITY thinsp "&#8201;">
+<!ENTITY THORN "&#222;">
+<!ENTITY thorn "&#254;">
+<!ENTITY tilde "&#732;">
+<!ENTITY times "&#215;">
+<!ENTITY trade "&#8482;">
+<!ENTITY Uacute "&#218;">
+<!ENTITY uacute "&#250;">
+<!ENTITY uarr "&#8593;">
+<!ENTITY uArr "&#8657;">
+<!ENTITY Ucirc "&#219;">
+<!ENTITY ucirc "&#251;">
+<!ENTITY Ugrave "&#217;">
+<!ENTITY ugrave "&#249;">
+<!ENTITY uml "&#168;">
+<!ENTITY upsih "&#978;">
+<!ENTITY Upsilon "&#933;">
+<!ENTITY upsilon "&#965;">
+<!ENTITY Uuml "&#220;">
+<!ENTITY uuml "&#252;">
+<!ENTITY weierp "&#8472;">
+<!ENTITY Xi "&#926;">
+<!ENTITY xi "&#958;">
+<!ENTITY Yacute "&#221;">
+<!ENTITY yacute "&#253;">
+<!ENTITY yen "&#165;">
+<!ENTITY Yuml "&#376;">
+<!ENTITY yuml "&#255;">
+<!ENTITY Zeta "&#918;">
+<!ENTITY zeta "&#950;">
+<!ENTITY zwj "&#8205;">
+<!ENTITY zwnj "&#8204;">`.replace(/\n/g, ' ');
+
+  /**
+   * A reasonably strict xml declaration.
+   */
+  const XML_DECL = '<?xml version="1.0" standalone="no"?>';
+
+  /**
+   * The beginning of the XML doctype declaration.
+   */
+  const DOCTYPE_START = `<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd" [`;
+
+  /**
+   * The end of the XML docype declaration.
+   */
+  const DOCTYPE_END = ']>';
+
+  /**
+   * A full header for an SVG XML document.
+   */
+  const SVG_XML_HEADER = `${XML_DECL}
+    ${DOCTYPE_START}${HTML_ENTITIES}${DOCTYPE_END}`;
 
     void Promise.all([...diagrams].map(renderOneMarmaid));
   });
@@ -7563,6 +7848,53 @@ a.anchor-link {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="Setup:-nPrint">Setup: nPrint<a class="anchor-link" href="#Setup:-nPrint">¶</a></h2><p>This notebook calls the <code>nprint</code> command-line tool. The next cell uses your installed copy if there is one; otherwise it downloads nPrint 1.2.1 and builds it in this folder (about a minute, once). On a Mac it first installs <code>argp-standalone</code> with <a href="https://brew.sh">Homebrew</a>; on Linux or Colab it installs <code>libpcap-dev</code> if it can. See the <a href="https://nprint.github.io/nprint/install.html">nPrint install guide</a> if the build fails.</p>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">platform</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">subprocess</span>
+
+<span class="n">NPRINT_VERSION</span> <span class="o">=</span> <span class="s1">'1.2.1'</span>
+<span class="n">nprint</span> <span class="o">=</span> <span class="n">shutil</span><span class="o">.</span><span class="n">which</span><span class="p">(</span><span class="s1">'nprint'</span><span class="p">)</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="sa">f</span><span class="s1">'nprint-</span><span class="si">{</span><span class="n">NPRINT_VERSION</span><span class="si">}</span><span class="s1">/nprint'</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">nprint</span><span class="p">):</span>
+    <span class="n">flags</span> <span class="o">=</span> <span class="s1">''</span>
+    <span class="k">if</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">==</span> <span class="s1">'Darwin'</span><span class="p">:</span>
+        <span class="c1"># macOS has no argp library; Homebrew provides it</span>
+        <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s1">'brew'</span><span class="p">,</span> <span class="s1">'install'</span><span class="p">,</span> <span class="s1">'argp-standalone'</span><span class="p">],</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">prefix</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s1">'brew'</span><span class="p">,</span> <span class="s1">'--prefix'</span><span class="p">],</span> <span class="n">capture_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="n">flags</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'CPPFLAGS=-I</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s1">/include LDFLAGS=-L</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s1">/lib'</span>
+    <span class="k">elif</span> <span class="n">shutil</span><span class="o">.</span><span class="n">which</span><span class="p">(</span><span class="s1">'apt-get'</span><span class="p">)</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">geteuid</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="c1"># Colab (or any Debian/Ubuntu machine where you are root): libpcap headers</span>
+        <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="s1">'apt-get install -qq -y libpcap-dev &gt; /dev/null'</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'https://github.com/nprint/nprint/releases/download/v</span><span class="si">{</span><span class="n">NPRINT_VERSION</span><span class="si">}</span><span class="s1">/nprint-</span><span class="si">{</span><span class="n">NPRINT_VERSION</span><span class="si">}</span><span class="s1">.tar.gz'</span>
+    <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="sa">f</span><span class="s2">"curl -sL </span><span class="si">{</span><span class="n">url</span><span class="si">}</span><span class="s2"> | tar xz &amp;&amp; cd nprint-</span><span class="si">{</span><span class="n">NPRINT_VERSION</span><span class="si">}</span><span class="s2"> &amp;&amp; ./configure -q </span><span class="si">{</span><span class="n">flags</span><span class="si">}</span><span class="s2"> "</span>
+                   <span class="sa">f</span><span class="s2">"&amp;&amp; make -s -j4 CXXFLAGS='-g -O2 -include cstdint'"</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="n">nprint</span><span class="p">,</span> <span class="s1">'--version'</span><span class="p">],</span> <span class="n">capture_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">stdout</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <h2 id="Part-1:-Generating-nPrints-from-Traffic">Part 1: Generating nPrints from Traffic<a class="anchor-link" href="#Part-1:-Generating-nPrints-from-Traffic">¶</a></h2><p>First, use nPrint to generate nPrints from each traffic trace, <em>only including the TCP headers in the nPrints</em>. (see which option you will need for that).</p>
 </div>
 </div>
@@ -7575,8 +7907,7 @@ a.anchor-link {
 <div class="jp-InputPrompt jp-InputArea-prompt">In [2]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">nprint</span> <span class="o">=</span> <span class="s1">'/usr/local/bin/nprint'</span>
-<span class="n">data</span> <span class="o">=</span> <span class="s1">'data/'</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="s1">'data/'</span>
 
 <span class="n">cmd_http</span> <span class="o">=</span> <span class="s1">'</span><span class="si">{}</span><span class="s1"> -P </span><span class="si">{}</span><span class="s1">/http.pcap -t -W </span><span class="si">{}</span><span class="s1">/http.npt'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nprint</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
 <span class="n">cmd_log4j</span> <span class="o">=</span> <span class="s1">'</span><span class="si">{}</span><span class="s1"> -P </span><span class="si">{}</span><span class="s1">/log4j.pcap -t -W </span><span class="si">{}</span><span class="s1">/log4j.npt'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nprint</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
@@ -7862,7 +8193,7 @@ Index(['payload_bit_0', 'payload_bit_1', 'payload_bit_2', 'payload_bit_3',
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p><strong>Note on the dataset (this part is optional).</strong> The file <code>data/country-of-origin.pcapng</code> is not included in the repository. Download it from the <a href="https://nprint.github.io/datasets.html">nPrint/pcapML datasets page</a> (see also the <a href="https://nprint.github.io/pcapml/">pcapML page</a>) and place it in <code>data/</code> before running the cell below. You will also need the <code>pcapml_fe</code> Python package installed.</p>
+<p><strong>The dataset.</strong> <code>data/country-of-origin.pcapng</code> is the country-of-origin case study from the <a href="https://nprint.github.io/datasets.html">nPrint datasets</a>: mobile-app traffic captured in China, India, and the US (Ren, Dubois, and Choffnes, <em>An International View of Privacy Risks for Mobile Apps</em>, 2019). In the pcapML format every packet carries a comment <code>&lt;sample id&gt;,&lt;label&gt;</code>, so any pcapng reader can recover the labels; the cell below reads them with scapy (version 2.6 or later; see <code>requirements.txt</code>).</p>
 </div>
 </div>
 </div>
@@ -7871,25 +8202,22 @@ Index(['payload_bit_0', 'payload_bit_1', 'payload_bit_2', 'payload_bit_3',
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [11]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">"scapy"</span><span class="p">)</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">CRITICAL</span><span class="p">)</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">pcapml_fe</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">pcapml_fe_helpers</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scapy.all</span><span class="w"> </span><span class="kn">import</span> <span class="n">IP</span><span class="p">,</span> <span class="n">PcapNgReader</span>   <span class="c1"># scapy 2.6+ reads the per-packet comments</span>
 
 <span class="n">packets</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">pkt</span> <span class="ow">in</span> <span class="n">PcapNgReader</span><span class="p">(</span><span class="s1">'data/country-of-origin.pcapng'</span><span class="p">):</span>
+    <span class="n">sample_id</span><span class="p">,</span> <span class="n">country</span> <span class="o">=</span> <span class="n">pkt</span><span class="o">.</span><span class="n">comment</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">','</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># pcapML label: "&lt;sample id&gt;,&lt;label&gt;"</span>
+    <span class="n">ip</span> <span class="o">=</span> <span class="n">IP</span><span class="p">(</span><span class="nb">bytes</span><span class="p">(</span><span class="n">pkt</span><span class="p">))</span> <span class="k">if</span> <span class="n">IP</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">pkt</span> <span class="k">else</span> <span class="n">pkt</span><span class="p">[</span><span class="n">IP</span><span class="p">]</span>         <span class="c1"># these captures are raw IP, no Ethernet header</span>
+    <span class="n">l4</span> <span class="o">=</span> <span class="n">ip</span><span class="o">.</span><span class="n">payload</span>                                           <span class="c1"># TCP or UDP</span>
+    <span class="n">packets</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">ip</span><span class="o">.</span><span class="n">src</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">l4</span><span class="p">,</span> <span class="s1">'sport'</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">ip</span><span class="o">.</span><span class="n">dst</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">l4</span><span class="p">,</span> <span class="s1">'dport'</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">ip</span><span class="p">),</span> <span class="n">country</span><span class="p">))</span>
 
-<span class="k">for</span> <span class="n">traffic_sample</span> <span class="ow">in</span> <span class="n">pcapml_fe</span><span class="o">.</span><span class="n">sampler</span><span class="p">(</span><span class="s1">'data/country-of-origin.pcapng'</span><span class="p">):</span>
-    <span class="k">for</span> <span class="n">pkt</span> <span class="ow">in</span> <span class="n">traffic_sample</span><span class="o">.</span><span class="n">packets</span><span class="p">:</span>
-        <span class="c1"># Print packet timestamp and raw bytes</span>
-        <span class="n">pip</span> <span class="o">=</span> <span class="n">IP</span><span class="p">(</span><span class="n">pkt</span><span class="o">.</span><span class="n">raw_bytes</span><span class="p">)</span>
-        <span class="n">ptcp</span> <span class="o">=</span> <span class="n">TCP</span><span class="p">(</span><span class="n">pkt</span><span class="o">.</span><span class="n">raw_bytes</span><span class="p">)</span>
-        <span class="n">packets</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="nb">str</span><span class="p">(</span><span class="n">pip</span><span class="o">.</span><span class="n">src</span><span class="p">),</span> <span class="n">ptcp</span><span class="o">.</span><span class="n">sport</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">pip</span><span class="o">.</span><span class="n">dst</span><span class="p">),</span> <span class="n">ptcp</span><span class="o">.</span><span class="n">dport</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">pip</span><span class="p">),</span> <span class="n">traffic_sample</span><span class="o">.</span><span class="n">metadata</span><span class="p">))</span>
-            
 <span class="n">pdf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">packets</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">'src IP'</span><span class="p">,</span> <span class="s1">'src port'</span><span class="p">,</span> <span class="s1">'dst IP'</span><span class="p">,</span> <span class="s1">'dst port'</span><span class="p">,</span> <span class="s1">'length'</span><span class="p">,</span> <span class="s1">'country'</span><span class="p">])</span>
 </pre></div>
 </div>

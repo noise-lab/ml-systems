@@ -1,17 +1,17 @@
-dnslib==0.9.26
-dpkt==1.9.8
-keras==3.15.1
-matplotlib-inline==0.1.7
-matplotlib==3.10.1
-netml==0.7.1
-numpy==2.0.2
-pandas==2.2.3
-pcapml_fe==0.0.3
-pydotplus==2.0.2
-python-dateutil==2.9.0.post0
-scapy==2.5.0
-scikit-learn==1.5.2
-scipy==1.15.2
-seaborn==0.13.2
-statsmodels==0.14.4
-torch==2.15.0
+# Everything the hands-on notebooks need:  pip install -r requirements.txt
+# Deliberately unpinned: the course tracks current releases.
+# Hands-On 17 (NetDiffusion) runs on Colab and installs its own packages.
+
+netml @ git+https://github.com/noise-lab/netml.git   # until the next PyPI release
+scapy>=2.6          # 2.6+ reads pcapng packet comments (Hands-On 14)
+arrow
+dnslib
+keras               # runs on PyTorch (Hands-On 13, 15)
+matplotlib
+numpy
+pandas
+scikit-learn
+scipy
+seaborn
+statsmodels
+torch
